@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+
+<HTML>
+<HEAD>
+   <TITLE>Exporter for Code</TITLE>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <!-- meta http-equiv="Content-Type" content="text/html; charset=utf8" -->
+   <meta http-equiv="author" content="Engelbert Niehaus">
+   <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
+   <meta http-equiv="content-language" content="de">
+   <meta http-equiv="desktop-type" content="tasks">
+
+<script language="javascript">
+//#################################################################
+//# Javascript Code Generator
+//# GNU Public License V3 - OpenSource
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//# 2012 University Koblenz-Landau
+//#################################################################
+
+function replaceStringReverse(pString,pReplace,pSearch)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	return replaceString(pString,pSearch,pReplace);
+}
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDate() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+function getInputCode()  {
+	var vInput = "";
+	vInput += "Author ___AUTHOR____ and e-Mail ___EMAIL___ Backgroundcolor ___BGCOLOR___ with the date ___DATE___";
+	var vHashID = new Array("TPL1","TPL2","TPL3");
+    var vTemplates = loadVariables(vHashID);
+	for (var iTemplateID in vTemplates) {
+		vInput += vTemplates[iTemplateID];
+	}
+
+	return vInput;
+}
+
+function createCode()  {
+	var vHashID = new Array("AUTHOR","EMAIL","BGCOLOR");
+	var vVariables = loadVariables(vHashID);
+	var vInput    = getInputCode();
+	vOutput = replaceVariables(vInput,vVariables);
+	vOutput += "\n<!---------------------------------->\n";
+	vOutput += "<SCRIPT LANGUAGE=\"JavaScript\">\n";
+	vOutput += "</"+"SCRIPT>\n";
+	vOutput += "<!---------------------------------->\n";
+
+	document.fCreator.tOutput.value = vOutput;	
+}
+
+function loadVariables(pHashID)  {
+	var vVariables = new Array(); 
+	var vEval = "";
+	vVariables["DATE"] = getDate();
+	for (var i=0; i<pHashID.length; i++) {
+    	vEval = "vVariables[\""+pHashID[i]+"\"] = document.fCreator.t"+pHashID[i]+".value";
+    	eval(vEval);
+	}
+	return vVariables;
+}
+
+function saveVariables(pVariables)  {
+	var vEval = "";
+	for (var iHashID in pVariables) {
+		vEval = "document.fCreator.t"+iHashID+".value = pVariables[\""+iHashID+"\"]";
+    	eval(vEval);
+	}
+}
+
+function replaceVariables(pOutput,pVariables)  {
+	//-------------------------------
+	for (var iHashID in pVariables) {
+		pOutput = replaceString(pOutput,"___"+iHashID+"___",pVariables[iHashID]);
+
+	}
+	return pOutput
+}
+
+function onLoad_Form_Replace() {
+	var vHashID = new Array("TPL1","TPL2","TPL3");
+    var vTemplates = loadVariables(vHashID);
+    var vVariables = new Array();
+    vVariables["TEXTAREA"] = "TEXTAREA";
+	for (var iTemplateID in vTemplates) {
+		vTemplates[iTemplateID] = replaceVariables(vTemplates[iTemplateID],vVariables);
+	}
+	saveVariables(vTemplates);
+}
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+  <title>Eporter4Code</title>
+
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>Eporter4Code</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
+</a>
+<hr>
+</center>
+<form name="fCreator">
+<center>
+<input type="button" name="bCreator" Value="Create Code" onclick="createCode()">
+<!-- table border=1 bgcolor="#A9BCF5" -->
+<table border=1 bgcolor="#DDDDDD">
+    </tr>
+		<td>
+		   <b>Background Color:</b> 
+		</td>
+		<td>
+		  <select name="tBGCOLOR" size="1">
+          <option value="#FFFFFF">white</option>
+          <option value="#EEEEEE" selected>grey</option>
+          <option value="blue">blue</option>
+          <option value="#A9BCF5">light blue</option>
+          <option value="red">red</option>
+          <option value="green">green</option>
+          <option value="yellow">yellow</option>
+          </select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>Author:</b> 
+		</td>
+		<td>
+		  <input type=text name="tAUTHOR" value="My Name"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>Date:</b> 
+		</td>
+		<td>
+		  <input type=text name="tDATE" value="My Date"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>e-Mail Author:</b> 
+		</td>
+		<td>
+		   <input type=text name="tEMAIL" value="mymail@example.com"> 
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+			<b>Variable:</b> 
+		</td>
+		<td>
+<tt>V_VAR_NAME | V_TITLE | V_DEFAULT_VALUE | V_INPUT_TYPE | V_SIZE	<br/>	
+<textarea name="tCOMMENT" cols="70" rows="10">
+EMAIL|e-Mail|mymail@example.com|TEXT|25
+COMMENT|Comment|Enter Comment here|TEXTAREA|8
+DATE|Date|---|TEXT|12
+</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2>
+<b> Generated Code:</b><br>
+<textarea name="tOutput" cols="120" rows="10">
+</textarea>
+		</td>
+	</tr>
+<table>
+</center>
+<hr/>
+
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>TPL1</b><br/>
+<!---------------------------------------------------------------------------->
+<textarea name="tTPL1" cols="125" rows="3">
+<___TEXTAREA___ lsakdsad>
+Bla Bla ___AUTHOR___ Email ___EMAIL___
+</___TEXTAREA___>
+</textarea>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>TPL2</b><br/>
+<!---------------------------------------------------------------------------->
+<textarea name="tTPL2" cols="125" rows="3">
+Template 2
+<___TEXTAREA___ lsakdsad>
+Bla Bla ___AUTHOR___ Email ___EMAIL___
+</___TEXTAREA___>
+</textarea>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>TPL3</b><br/>
+<!---------------------------------------------------------------------------->
+<textarea name="tTPL3" cols="125" rows="3">
+<___TEXTAREA___ lsakdsad>
+Bla Bla ___AUTHOR___ Email ___EMAIL___
+</___TEXTAREA___>
+</textarea>
+<!---------------------------------------------------------------------------->
+
+
+ <SCRIPT LANGUAGE="JavaScript">
+    onLoad_Form_Replace();
+ </SCRIPT>
+</form>
+</body>
+</HTML>

@@ -1,0 +1,499 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+
+<HTML>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta http-equiv="author" content="Engelbert Niehaus">
+   <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
+   <meta http-equiv="content-language" content="de">
+   <meta http-equiv="desktop-type" content="tasks">
+<script language="javascript">
+//#################################################################
+//# Javascript Code Generator
+//# GNU Public License V3 - OpenSource
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//# 2012 University Koblenz-Landau
+//#################################################################
+
+function replaceStringReverse(pString,pReplace,pSearch)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	return replaceString(pString,pSearch,pReplace);
+}
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDate() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+function importJavaClass()
+{
+   //var vAttributes 	= document.fCreator.tAttributes.value;
+   //var vMethods    	= document.fCreator.tMethods.value;
+   var vAttributes 	= "";
+   var vMethods    	= "";
+   var vOutput = "";
+   var vString = document.fCreator.tJavaSource.value;   
+   //alert(vString);
+   var vReplaceString = ""
+   var vSuchpattern = /class\s+(\w+)\s+extends\s+(\w+)/;
+   var Ergebnis = vSuchpattern.exec(vString);
+   if (Ergebnis) { 
+       //alert("Klasse:" + RegExp.$1 + "\nOberklasse: " + RegExp.$2);
+       document.fCreator.tClassname.value = RegExp.$1;
+       document.fCreator.tSuperClassname.value = RegExp.$2;
+       //vString = vString.replace(vSuchpattern, "function $1 ()\n     this.SuperClass=$2;\n     this.SuperClass();\n");
+       
+   } else { 
+       vSuchpattern = /class\s+(\w+)/;
+       var Ergebnis2 = vSuchpattern.exec(vString);
+       if (Ergebnis2) {
+           document.fCreator.tClassname.value = RegExp.$1;
+           document.fCreator.tSuperClassname.value = "";
+       }
+   }
+   vSuchpattern = /{author=([^,]+)/;
+   Ergebnis = vSuchpattern.exec(vString);
+   if (Ergebnis) { 
+      document.fCreator.tAuthor.value = RegExp.$1;
+   }
+   var vZeilen = vString.split("\n");
+   //---Search all Attributes-----
+   var vVariable = "";
+   var vType = "";
+   for (var k = 1; k < vZeilen.length; k++) {
+      //vOutput+=". " + Ergebnis[i] + "\n";
+      vReplaceString = vZeilen[k].replace(/\/\*\*/,"//-----Comment-------------------------");
+      vReplaceString = vReplaceString.replace(/^\s+\/\*/,"//---");
+      vReplaceString = vReplaceString.replace(/^\*/,"//---");
+      vReplaceString = vReplaceString.replace(/^\s+\* /,"// ");
+      vReplaceString = vReplaceString.replace(/\*\//,"");
+      vSuchpattern = /class\s+(\w+)\s+extends\s+(\w+)/;
+      Ergebnis = vSuchpattern.exec(vZeilen[k]);
+      if (Ergebnis) { 
+          //alert("Klasse:" + RegExp.$1 + "\nOberklasse: " + RegExp.$2);
+          vReplaceString = "function "+RegExp.$1 +"()\n      "
+          vReplaceString += "this.SuperClass="+RegExp.$2+";\n      this.SuperClass();\n"
+          document.fCreator.tClassname.value = RegExp.$1;
+          document.fCreator.tSuperClassname.value = RegExp.$2;
+      }
+      //----Search Attributes-----------------
+      vSuchpattern = /public\s+(\w+)\s+(\w+);/;
+      var Ergebnis = vSuchpattern.exec(vZeilen[k]);
+      if (Ergebnis) {
+         vType = RegExp.$1
+         vVariable = RegExp.$2
+         //alert("RegEx: "+Ergebnis[0])
+         vReplaceString = "      "
+         //alert("Class:"+RegExp.$1+" Variable:"+RegExp.$2);
+         if (vType == "Vector") {
+            vAttributes += vVariable+" = new Array()\n"; 
+            vReplaceString += "this."+vVariable+" = new Array()";         
+         } else if (vType == "Boolean") {
+            vAttributes += vVariable+" = true\n";
+            vReplaceString += "this."+vVariable+" = true";
+         } else if (vType == "Integer") {
+            vAttributes += vVariable+" = 0\n"; 
+            vReplaceString += "this."+vVariable+" = 0";
+         } else if (vType == "Real") {
+            vAttributes += vVariable+" = 0.0\n"; 
+            vReplaceString += "this."+vVariable+" = 0.0";
+         } else if (vType == "String") {
+            vAttributes += vVariable+" = \"\"\n"; 
+            vReplaceString += "this."+vVariable+" = \"\"";
+         } else {
+            vAttributes += vVariable+" = new "+vType+"()\n"; 
+            vReplaceString += "this."+vVariable+" = new "+vType+"()";
+         }
+      }
+      //----Search Methods-----------------
+      //vSuchpattern = /public\s+(\w+)\s+(\w+)\s*\((.*)\);/;
+      vSuchpattern = /public\s+(\w+)\s+(\w+)\s*\((.*)\)/;
+      var Ergebnis = vSuchpattern.exec(vZeilen[k]);
+      if (Ergebnis) {
+         vReturn = RegExp.$1
+         vMethodname = RegExp.$2
+         vParameter = RegExp.$3
+         //alert("RegEx: "+Ergebnis[0])
+         //alert("ReturnClass:"+RegExp.$1+" Methodname:"+RegExp.$2+" Parameter:"+RegExp.$3);
+         var vParameter = RegExp.$3.split(",");
+         var vClassVariable = ""; 
+         vMethods += vMethodname+"(";
+         vKomma = "";
+         var vJS_Parameter = ""
+        for (var j = 0; j < vParameter.length; j++) {
+             if (vParameter[j].indexOf(" ")>=0) {
+                vClassVariable = vParameter[j].split(/\s+/);
+                vJS_Parameter += vKomma + vClassVariable[1]
+                vKomma = ",";
+            }
+        }
+        vMethods += vJS_Parameter;
+        if (vReturn != "void") {
+           vMethods += "):"+vReturn+"\n";
+           vReplaceString = "   function "+vMethodname+"("+vJS_Parameter+") {"
+           vReplaceString += "\n     var vReturn"+vReturn+" = new "+vReturn+"()";
+        } else {
+           vMethods += ")\n";
+           vReplaceString = "   function "+vMethodname+"("+vJS_Parameter+") {"           
+        }
+      }
+      //vReplaceString =vZeilen[k].replace(/(http:\/\/\S*)/g, '<a href="$1">$1<\/a>');
+      //vReplaceString =vZeilen[k].replace(vSuchpattern, 'Variable:$2 Type:$1');
+      vOutput += "\n"+vReplaceString;
+   };
+   // alert(vOutput);
+   //document.fCreator.tOutput.value = vOutput; 
+   document.fCreator.tAttributes.value = vAttributes;
+   document.fCreator.tMethods.value = vMethods;
+	
+   alert("Java Class imported successfully!");
+   //createJSClass();
+}
+
+function createJSClass()
+{
+	var vString = "";
+	var vDate 			= getDate();
+	var vClassname 		= document.fCreator.tClassname.value;
+	var vClassFile  	= vClassname.toLowerCase()+".js";
+	var vSuperClassname = document.fCreator.tSuperClassname.value;
+	var vAuthor     	= document.fCreator.tAuthor.value;
+	var vEMail      	= document.fCreator.tEMail.value;
+	var vHeader     	= document.fCreator.tHeader.value;
+	var vSuperClass     = document.fCreator.tSuperClass.value;
+	var vMethodHeader   = document.fCreator.tMethodHeader.value;
+	var vAttributes 	= document.fCreator.tAttributes.value;
+	var vMethods    	= document.fCreator.tMethods.value;
+	var vAttribArray    = vAttributes.split(/\n/);
+	var vMethodArray    = vMethods.split(/\n/);
+	var vAttribConstructor = "	//---Attributes-------------------------\n";
+	var vMethodConstructor = "	//---Methods----------------------------\n";
+	var vOutput = vHeader;
+	if (vSuperClassname == "") {
+		vSuperClass = "	// no superclass defined\n";
+	};
+	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
+	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
+	vOutput = replaceString(vOutput,"___SUPERCLASS___",vSuperClass);
+	vOutput = replaceString(vOutput,"___SUPERCLASSNAME___",vSuperClassname);
+	vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
+	vOutput = replaceString(vOutput,"___DATE___",vDate);
+	vMethodHeader = replaceString(vMethodHeader,"___SUPERCLASS___",vSuperClass);
+	vMethodHeader = replaceString(vMethodHeader,"___CLASSNAME___",vClassname);
+	vMethodHeader = replaceString(vMethodHeader,"___CLASSFILENAME___",vClassFile);
+	vMethodHeader = replaceString(vMethodHeader,"___DATE___",vDate);
+	var vMethod = vMethodHeader;
+	//vAttributes = replaceString(vAttributes,"\n","\nthis.");
+	//alert(vAttributes);
+	for (var i=0; i<vAttribArray.length; i++) {
+		//alert(vAttribArray[i]);	
+		if (vAttribArray[i].indexOf("=")>0) {
+			vAttribConstructor += "\tthis."+vAttribArray[i]+";\n";
+		}
+	};
+	var vSplitArray;
+	for (var i=0; i<vMethodArray.length; i++) {
+		if (vMethodArray[i].indexOf("(")>0) {
+			vSplitArray = vMethodArray[i].split("(");
+			vMethodConstructor += "\tthis."+vSplitArray[0]+"\t = "+vSplitArray[0]+"_"+vClassname+";\n";
+		};
+	}
+	vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribConstructor);
+	vOutput = replaceString(vOutput,"___METHODS___",vMethodConstructor);
+	var vMethodname = "";
+	var vMethodAllParamters = "";
+	for (var i=0; i<vMethodArray.length; i++) {
+		vMethod = vMethodHeader;
+		var vOpenBracketPos = vMethodArray[i].indexOf("(");
+		if (vOpenBracketPos >0) {
+			vSplitArray = vMethodArray[i].split("(");
+			var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
+			if (vCloseBracketPos<0) {
+				alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
+			} else {
+				vMethodAllParamters = vSplitArray[1].substring(0,vCloseBracketPos);
+			};
+			var vReturnString = vSplitArray[1].substring(vCloseBracketPos,vSplitArray[1].length);
+			vSuchpattern = /:\s*(\w+)/;
+            var Ergebnis = vSuchpattern.exec(vReturnString);
+            var vLocalVar = ""; 
+            var vReturn = ""; 
+            var vReturnVoid = "void";
+            if (Ergebnis) {
+             	//alert("Return:"+RegExp.$1+" Class found!");
+             	vLocalVar = "var vReturn"+RegExp.$1+" = new "+RegExp.$1+"();"
+             	vReturn =  "return vReturn"+RegExp.$1+";"
+             	vReturnVoid = RegExp.$1
+         	}
+			vMethod = replaceString(vMethod,"___LOCALVAR___",vLocalVar);         	
+			vMethod = replaceString(vMethod,"___RETURN___",vReturn);         	
+			vMethod = replaceString(vMethod,"___RETURNVOID___",vReturnVoid);         	
+			vMethod = replaceString(vMethod,"___METHODCALL___",vMethodArray[i]);
+			vMethod = replaceString(vMethod,"___METHODNAME___",vSplitArray[0]);
+			vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParamters);
+			vOutput += vMethod;
+			//vSplitArray = vMethodArray[i].split("(");
+		} else {
+			//alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
+		}
+	};
+	vOutput = replaceString(vOutput,"___CLASSNAME___",vClassname);
+	document.fCreator.tOutput.value = vOutput;
+	alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vClassFile+"'!");
+}
+
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+  <title>Java2Javascript Class Generator</title>
+
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>Java2Javascript Class Generator</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3"></a>
+</center>
+<form name="fCreator">
+<table border=1 bgcolor="#A9BCF5">
+	<tr>
+		<td>
+		<b>Class Name:</b> <input type=text name="tClassname" value=""> 
+		</td>
+		<td>
+		<b>Super Class Name:</b> <input type=text name="tSuperClassname" value=""> <br/>leave empty if this class does not inherit from a super class.
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<b>Author:</b> <input type=text name="tAuthor" value=""> 
+		</td>
+		<td>
+		<b>e-Mail Author:</b> <input type=text name="tEMail" value="mymail@example.com"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>Attributes</b><br/>
+			<textarea name="tAttributes" cols="60" rows="5">
+			</textarea>
+		</td>
+		<td>
+			<b>Methods</b><br/>
+			<textarea name="tMethods" cols="60" rows="5">
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+	    <td colspan=2>
+	    	<b>Java Source Code</b>
+	<input type="button" name="bImportButton" value=" Import Java Class " onclick="importJavaClass()"> 
+	<input type="button" name="bCreatorButton" value=" Create Javascript Class " onclick="createJSClass()">
+ 		<br/>
+ 	Copy Java-Code Export from <a href="http://argouml.tigris.org/" target="_blank">ArgoUML</a> in the 
+ 	following text area and extract Java Class Structure. 
+	
+			<textarea name="tJavaSource" cols="125" rows="8">
+import java.util.Vector;
+
+/** 
+ *  Doc bla1
+ *  Doc Bla2
+ *  Doc Bla3
+ */
+public class MeineKlasse1 extends Oberklasse {
+  /* {author=Engelbert Niehaus, version=Meine Version, since=MeinSeit}*/
+
+
+  public Integer meinZustand1;
+
+  public Boolean meinZustand2;
+
+    /**
+   * 
+   * @element-type AggKlasse
+   */
+  public Vector  vAgg;
+    public Vector  myAssKlasse;
+
+  public void meineMethode1() {
+  }
+
+  public void meineMethode2(Boolean arg2) {
+  }
+ 
+  public void meineMethode3(Boolean arg1,Integer arg2,String arg3) {
+  }
+
+  /** 
+   *  Bla Methode1
+   *  Bla Methode2
+   *  Bla Methode3
+   */
+  public AssKlasse newOperationReturn() {
+  /* {author=Engelbert Niehaus, version=MethVersion 1, since=Seit Meth}*/
+
+  return null;
+  }
+
+}
+
+       </textarea>
+
+	    </td>
+	</tr>
+	<tr>    
+		<td colspan=2 align="center">
+		<b>Javascript Source Code</b>
+			<textarea name="tOutput" cols="125" rows="20">
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+	<hr/>
+	The following text areas define templates for the JavaScript Class Generation. If want to use 
+	differente templates for the javascript class generator, just download the file and edit the HTML 
+	source code. Use your Browser to save the html-file to your local filesystem.
+	It is pure HTML with the javascript functions included in the file. So it will be easy to modify
+	the source code according to your requirements and constraints.
+	<hr/>
+ 		<b>Class Header</b>
+			<textarea name="tHeader" cols="125" rows="10">
+//#################################################################
+//# Javascript Class: ___CLASSNAME___()
+//#       SuperClass: ___SUPERCLASSNAME___
+//#   Class Filename: ___CLASSFILENAME___
+//#                
+//# Author of Class:      ___AUTHOR___                    
+//# email:                ___EMAIL___                 
+//# created               ___DATE___             
+//# last modifications    ___DATE___             
+//# GNU Public License - OpenSource
+//# created with JavaScript Class Generator by Engelbert Niehaus 
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="myclass.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class ___CLASSNAME___() 
+// Call the constructor for creating an instance of class ___CLASSNAME___
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new ___CLASSNAME___();
+//---------------------------------------------------------------------
+
+function ___CLASSNAME___ () {
+___SUPERCLASS___
+___ATTRIBUTES___
+___METHODS___
+	//--------------------------------------
+}
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+// If you want to access the attributes of ___CLASSNAME___, use
+// the attribute name with a leading "this.", e.g.
+// this.myattrib3 = "Hello World";
+//---------------------------------------------------------------------
+//----Methodes---------------------------------------------------------
+// In the definition of the methods of  '___CLASSNAME___'
+// the function name is extended with '____CLASSNAME___'.
+// This is done to avoid name space conflicts, if you overwrite a 
+// method 'my_method()' that was inherited from a superclass 'MySuperClass' e.g.
+//   SuperClass: MySuperClass.my_method()
+//   Class:       ___CLASSNAME___.my_method()
+// The method definitions are as follows
+//   function my_method____CLASSNAME___(...) { .....
+// and
+//   function my_method_MySuperClass(...) { .....
+//---------------------------------------------------------------------
+//---Methods of Class "___CLASSNAME___()" defined as JS functions 
+//---------------------------------------------------------------------
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+ 		<b>Method Header</b>
+			<textarea name="tMethodHeader" cols="125" rows="10">
+
+//#################################################################
+//# Method: ___METHODNAME___  Return: ___RETURNVOID___
+//#    used in Class: ___CLASSNAME___
+//#                
+//# Comment:                        
+//#
+//# created               ___DATE___             
+//# last modifications    ___DATE___             
+//#################################################################
+
+function ___METHODNAME_______CLASSNAME___(___METHODPARAMETERS___) {
+	//----Debugging------------------------------------------
+	// The following alert-Command is useful for debugging 
+	//alert("___CLASSFILENAME___:___METHODCALL___-Call")
+	//----Create Object/Instance of ___CLASSNAME___----
+	//    var vMyInstance = new ___CLASSNAME___();
+	//    vMyInstance.___METHODCALL___;
+	//-------------------------------------------------------
+	___LOCALVAR___
+	
+	//>>>> INSERT YOUR CODE HERE <<<<<
+	
+	___RETURN___
+}
+//----End of Method ___METHODNAME___ Definition
+
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+ 		<b>Inherit from SuperClass</b>
+			<textarea name="tSuperClass" cols="125" rows="3">
+	//--------------------------------------
+	//---Super Class------------------------
+	this.SuperClass = ___SUPERCLASSNAME___;
+	this.SuperClass();
+	//--------------------------------------
+	</textarea>
+		</td>
+	</tr>	
+</table>
+</form>
+<center>
+Javascript Class Generator was developed 2013 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de" target="_bank">University Koblenz-Landau</a> <br/> 
+<br/>
+<a href="http://mathematik.uni-landau.de/javascript/java2javascript/" target="_blank">http://mathematik.uni-landau.de/javascript/java2javascript/</a>
+</center>
+</body>
+</HTML>

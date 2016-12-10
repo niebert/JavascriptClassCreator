@@ -1,0 +1,291 @@
+<HTML>
+<HEAD>
+   <TITLE>Export My-Export-Type</TITLE>
+<!--
+#################################################################
+#         Exporter: My-Export-Type
+#     for Software: My Software
+#                
+# Author of Class:      My Name                    
+# email:                mymail@example.com                 
+# created               20.10.2014             
+# last modifications    20.10.2014             
+# GNU Public License - OpenSource
+# created with JavaScript generator_exporter.html
+//#################################################################
+-->
+<script language="javascript">
+
+function createCode()  {
+	//var vHashID = new Array("EXPORTER","SOFTWARE","AUTHOR","EMAIL","BGCOLOR","LOOPDEF");
+	var vTemplateID = new Array("TPL1");
+    var vHashID = new Array("EMAIL","COMMENT","DATE");
+	var vVariables = loadVariables(vHashID);
+	vVariables["DATE"] = getDateString();
+	vVariables["FILENAME"] = document.fCreator.tFILENAME.value;
+	//##_LOOP_CALL_##
+	// vVariables["LOOP_OUTPUT"] = createLoopString("LOOPDEF");
+	var vInput    = getInputCode(vTemplateID);
+	vOutput = replaceVariables(vInput,vVariables);
+
+	document.fCreator.tOutput.value = vOutput;	
+	//alert("Call createCode() in eporter4code.html:29");
+	alert("Code generated successfully!\nCopy code and save in file "+vVariables["FILENAME"]+"\n");
+
+}
+
+
+function getInputCode(pHashID)  {
+	var vInput = "";
+	var vTemplates = loadVariables(pHashID);
+	for (var iTemplateID in vTemplates) {
+		vInput += vTemplates[iTemplateID];
+	}
+	//alert("My-Export-Type:377\nvInput=\n"+vInput);
+	return vInput;
+}
+
+
+function loadVariables(pHashID)  {
+	var vVariables = new Array(); 
+	var vEval = "";
+	for (var i=0; i<pHashID.length; i++) {
+    	vEval = "vVariables[\""+pHashID[i]+"\"] = document.fCreator.t"+pHashID[i]+".value";
+    	eval(vEval);
+    	if (!vVariables[pHashID[i]]) {
+    		alert("ERROR: Input for '"+pHashID[i]+"' undefined!\ngenerate_exporter.html:92")
+    	}
+	}
+	return vVariables;
+}
+
+
+function replaceStringReverse(pString,pReplace,pSearch)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	return replaceString(pString,pSearch,pReplace);
+}
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (!pString) {
+		alert("replaceString()-Call - pString not defined!");
+	} else if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDateString() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+function saveVariables(pVariables)  {
+	var vEval = "";
+	for (var iHashID in pVariables) {
+		vEval = "document.fCreator.t"+iHashID+".value = pVariables[\""+iHashID+"\"]";
+    	eval(vEval);
+	}
+}
+
+function replaceVariables(pOutput,pVariables)  {
+	//-------------------------------
+	for (var iHashID in pVariables) {
+		//pOutput = replaceString(pOutput,"##_"+iHashID+"_##",pVariables[iHashID]);
+		pOutput = replaceString(pOutput,"___"+iHashID+"___",pVariables[iHashID]);
+
+	}
+	return pOutput
+}
+
+function onLoad_Form_Replace() {
+	var vHashID = new Array("TPL1","LOOP1","LOOP2");
+    var vTemplates = loadVariables(vHashID);
+    var vVariables = new Array();
+    vVariables["TEXTAREA"] = "TEXTAREA";
+	for (var iTemplateID in vTemplates) {
+		vTemplates[iTemplateID] = replaceVariables(vTemplates[iTemplateID],vVariables);
+	};
+	if (document.fCreator.tDATE) {
+		document.fCreator.tDATE.value = getDateString();
+	};
+	saveVariables(vTemplates);
+}
+
+function createLoopString(pLOOP_ID) {
+	var vContent = "";
+	var vLoopVars = new Array("V_VAR_NAME","V_TITLE","V_DEFAULT_VALUE","V_INPUT_TYPE","V_SIZE");	
+    var vLoopArray = getLoopArray(pLOOP_ID,vLoopVars);
+    for (var i=0; i<vLoopArray.length; i++) {
+    	vContent += replaceLoopTemplate(vLoopVars,vLoopArray[i]);
+    	//alert("createLoopString():133\n"+vContent);
+    }
+	return vContent;
+}
+
+function getLoopArray(pLOOP_ID,pLoopVars)  {
+	// pLoopVars = new Array("V_VAR_NAME","V_TITLE","V_DEFAULT_VALUE","V_INPUT_TYPE","V_SIZE");	
+    // pLOOP_ID = "LOOP1"
+    var vLoopArray = new Array();
+	var vEval = "";
+	var vLoopDef = "";
+	vEval = "vLoopDef = document.fCreator.t"+pLOOP_ID+".value";
+	eval(vEval);
+	//alert("generate_exporter.html:143\nvEval='"+vEval+"'\nLOOPDEF="+vLoopDef);
+	if (vLoopDef) {
+		var vLineSplit = vLoopDef.split("\n");
+		for (var i=0; i<vLineSplit.length; i++) {
+			var vLoopRecord = vLineSplit[i].split("|");
+			//check if vLoopRecord has length>0
+			vTestString = vLoopRecord[0].replace(/\s/g,"");
+			if (vTestString.length > 0) {
+				var k = vLoopRecord.length;
+				vLoopArray.push(vLoopRecord);
+			}
+		}
+	} else {
+		vLoopArray.push(pArrayHashID);
+	}
+	return vLoopArray;
+}
+
+function replaceLoopTemplate(pLoopVars,pLoopRecord) {
+	var vEval = "";
+	var vLoopHash = new Array();
+	var iMax = pLoopVars.length;
+	for (var i=0; i<iMax; i++) {
+    	vEval = "vLoopHash[\""+pLoopVars[i]+"\"] = '"+pLoopRecord[i]+"'";
+    	eval(vEval);
+    	//alert("generate_exporter.html:168\n"+vEval);
+	};
+	var vTempate = document.fCreator.tLOOP1.value;
+	if (vLoopHash["V_INPUT_TYPE"]) {
+		if (vLoopHash["V_INPUT_TYPE"].toUpperCase() == "TEXTAREA") {
+			vTempate = document.fCreator.tLOOP2.value;
+		};
+	} else {
+		alert("V_INPUT_TYPE is undefined")
+	};
+	vTempate = replaceVariables(vTempate,vLoopHash);
+
+	return vTempate;
+
+}
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>My-Export-Type</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
+</a>
+<hr>
+</center>
+<form name="fCreator">
+<input type="hidden" name="tLOOPDEF" Value="">
+<center>
+<table border=1 bgcolor="#EEEEEE">
+	<tr>
+		<td colspan="2" align="center">
+    <b> Generated Code:</b>
+<input type="button" name="bCreator2" Value="  Create Code  " onclick="createCode()">
+<b>Filename:</b>
+<input type=text name="tFILENAME" value="output.html" size="20"> 
+<br/>
+ <TEXTAREA name="tOutput" cols="120" rows="10">
+</TEXTAREA> 
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+<input type="button" name="bCreator1" Value="   Create Code   " onclick="createCode()"><br>
+Copy the code above and save the generated Code into the filename with an editor.<br>
+Use e.g. Notepad (Win), Textwrangler (Mac), kate (Linux)  
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>e-Mail:</b> 
+		</td>
+		<td>
+		  <input type=text name="tEMAIL" value="mymail@example.com" size="25"> 
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>Comment:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tCOMMENT" cols="70" rows="8">
+Enter Comment here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>Date:</b> 
+		</td>
+		<td>
+		  <input type=text name="tDATE" value="---" size="12"> 
+		</td>
+	</tr>
+
+<table>
+</center>
+<hr/>
+
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>TPL1</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tTPL1" cols="125" rows="3">
+I wrote an e-Mail to ___EMAIL___ with the following Comments ___COMMENT___ at the date ___DATE___.
+
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>LOOP1</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tLOOP1" cols="125" rows="3">
+
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>LOOP2</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tLOOP2" cols="125" rows="3">
+
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+ <SCRIPT LANGUAGE="JavaScript">
+    onLoad_Form_Replace();
+ </SCRIPT>
+</form>
+</body>
+</HTML>

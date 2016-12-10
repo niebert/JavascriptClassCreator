@@ -1,0 +1,523 @@
+<HTML>
+<HEAD>
+   <TITLE>Export Save QNode</TITLE>
+<!--
+#################################################################
+#         Exporter: Save QNode
+#     for Software: SDAPScreator
+#         Filename: saveqnode.html
+#                
+# Author of Class:      Engelbert Niehaus                    
+# email:                mymail@example.com                 
+# created               21.10.2014             
+# last modifications    21.10.2014             
+# GNU Public License - OpenSource
+# created with JavaScript generator_exporter.html
+#################################################################
+-->
+<script language="javascript">
+
+function createCode()  {
+	//var vHashID = new Array("EXPORTER","SOFTWARE","AUTHOR","EMAIL","BGCOLOR","LOOPDEF");
+	var vTemplateID = new Array("TPL1");
+    var vHashID = new Array("AUTHOR","EMAIL","DATE","QNODE_VARIABLES","QNODE_OPTIONS","HTMLTEMPLATE","HTMLOPTION","LATEXTEMPLATE","LATEXOPTION","XMLTEMPLATE","XMLOPTION");
+	var vVariables = loadVariables(vHashID);
+	vVariables["DATE"] = getDateString();
+	vVariables["FILENAME"] = document.fCreator.tFILENAME.value;
+	//##_LOOP_CALL_##
+	// vVariables["LOOP_OUTPUT"] = createLoopString("LOOPDEF");
+	var vInput    = getInputCode(vTemplateID);
+	vOutput = replaceVariables(vInput,vVariables);
+
+	document.fCreator.tOutput.value = vOutput;	
+	//alert("Call createCode() in saveqnode.html:29");
+	alert("Code generated successfully!\nCopy code and save in file "+vVariables["FILENAME"]+"\n");
+
+}
+
+
+function getInputCode(pHashID)  {
+	var vInput = "";
+	var vTemplates = loadTemplates(pHashID);
+	for (var iTemplateID in vTemplates) {
+		vInput += vTemplates[iTemplateID];
+	}
+	alert("getnputQNode:377\nvInput=\n"+vInput);
+	return vInput;
+}
+
+
+function loadTemplates(pHashID)  {
+	var vTemplates = new Array();
+	var vEval = "";
+	for (var i=0; i<pHashID.length; i++) {
+		getFormContent(vTemplates,pHashID[i]);
+	}
+	return vTemplates;
+}
+
+function getFormContent(pHashArray,pID) {
+	vEval = "pHashArray[\""+pID+"\"] = document.fCreator.t"+pID+".value";
+	eval(vEval);
+	if (!pHashArray[pID]) {
+		alert("ERROR: Input for '"+pID+"' undefined!\nsaveqnode.html:75")
+	}
+}
+
+function loadVariables(pHashID)  {
+	var vVariables = new Array();
+	var vEval = "";
+	for (var i=0; i<pHashID.length; i++) {
+		getFormContent(vVariables,pHashID[i]);
+	}
+	if (top.vSDAPScreator) {
+		top.vSDAPScreator.updateQNodeVariables(vVariables);
+	}
+	return vVariables;
+}
+
+
+function replaceStringReverse(pString,pReplace,pSearch)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	return replaceString(pString,pSearch,pReplace);
+}
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (!pString) {
+		alert("replaceString()-Call - pString not defined!\nsaveqnode.html:112");
+	} else if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDateString() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+function saveVariables(pVariables)  {
+	var vEval = "";
+	for (var iHashID in pVariables) {
+		//vEval = "document.fCreator.t"+iHashID+".value = pVariables[\""+iHashID+"\"]";
+    	vEval = "if (document.fCreator.t"+iHashID+") document.fCreator.t"+iHashID+".value = pVariables[\""+iHashID+"\"]";
+		eval(vEval);
+	}
+}
+
+function replaceVariables(pOutput,pVariables)  {
+	//-------------------------------
+	for (var iHashID in pVariables) {
+		//pOutput = replaceString(pOutput,"##_"+iHashID+"_##",pVariables[iHashID]);
+		pOutput = replaceString(pOutput,"___"+iHashID+"___",pVariables[iHashID]);
+
+	}
+	return pOutput
+}
+
+function onLoad_Form_Replace() {
+	var vHashID = new Array("TPL1","LOOP1","LOOP2");
+    var vTemplates = loadTemplates(vHashID);
+    var vVariables = new Array();
+    vVariables["TEXTAREA"] = "TEXTAREA";
+	for (var iTemplateID in vTemplates) {
+		vTemplates[iTemplateID] = replaceVariables(vTemplates[iTemplateID],vVariables);
+	};
+	if (document.fCreator.tDATE) {
+		document.fCreator.tDATE.value = getDateString();
+	};
+	saveVariables(vTemplates);
+}
+
+function createLoopString(pLOOP_ID) {
+	var vContent = "";
+	var vLoopVars = new Array("V_VAR_NAME","V_TITLE","V_DEFAULT_VALUE","V_INPUT_TYPE","V_SIZE");	
+    var vLoopArray = getLoopArray(pLOOP_ID,vLoopVars);
+    for (var i=0; i<vLoopArray.length; i++) {
+    	vContent += replaceLoopTemplate(vLoopVars,vLoopArray[i]);
+    	//alert("createLoopString():133\n"+vContent);
+    }
+	return vContent;
+}
+
+function getLoopArray(pLOOP_ID,pLoopVars)  {
+	// pLoopVars = new Array("V_VAR_NAME","V_TITLE","V_DEFAULT_VALUE","V_INPUT_TYPE","V_SIZE");	
+    // pLOOP_ID = "LOOP1"
+    var vLoopArray = new Array();
+	var vEval = "";
+	var vLoopDef = "";
+	vEval = "vLoopDef = document.fCreator.t"+pLOOP_ID+".value";
+	eval(vEval);
+	//alert("generate_exporter.html:143\nvEval='"+vEval+"'\nLOOPDEF="+vLoopDef);
+	if (vLoopDef) {
+		var vLineSplit = vLoopDef.split("\n");
+		for (var i=0; i<vLineSplit.length; i++) {
+			var vLoopRecord = vLineSplit[i].split("|");
+			//check if vLoopRecord has length>0
+			vTestString = vLoopRecord[0].replace(/\s/g,"");
+			if (vTestString.length > 0) {
+				var k = vLoopRecord.length;
+				vLoopArray.push(vLoopRecord);
+			}
+		}
+	} else {
+		vLoopArray.push(pArrayHashID);
+	}
+	return vLoopArray;
+}
+
+function replaceLoopTemplate(pLoopVars,pLoopRecord) {
+	var vEval = "";
+	var vLoopHash = new Array();
+	var iMax = pLoopVars.length;
+	for (var i=0; i<iMax; i++) {
+    	vEval = "vLoopHash[\""+pLoopVars[i]+"\"] = '"+pLoopRecord[i]+"'";
+    	eval(vEval);
+    	//alert("generate_exporter.html:168\n"+vEval);
+	};
+	var vTempate = document.fCreator.tLOOP1.value;
+	if (vLoopHash["V_INPUT_TYPE"]) {
+		if (vLoopHash["V_INPUT_TYPE"].toUpperCase() == "TEXTAREA") {
+			vTempate = document.fCreator.tLOOP2.value;
+		};
+	} else {
+		alert("V_INPUT_TYPE is undefined\nsaveqnode.html:323")
+	};
+	vTempate = replaceVariables(vTempate,vLoopHash);
+
+	return vTempate;
+
+}
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>Save QNode</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
+</a>
+<hr>
+</center>
+<form name="fCreator">
+<input type="hidden" name="tLOOPDEF" Value="">
+<center>
+<table border=1 bgcolor="#EEEEEE">
+	<tr>
+		<td colspan="2" align="center">
+    <b> Generated Code:</b>
+<input type="button" name="bCreator2" Value="  Create Code  " onclick="createCode()">
+<b>Filename:</b>
+<input type=text name="tFILENAME" value="output.html" size="20"> 
+<br/>
+ <TEXTAREA name="tOutput" cols="120" rows="10">
+</TEXTAREA> 
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2" align="center">
+<input type="button" name="bCreator1" Value="   Create Code   " onclick="createCode()"><br>
+Copy the code above and save the generated Code into the filename with an editor.<br>
+Use e.g. Notepad (Win), Textwrangler (Mac), kate (Linux)  
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>Author of QNode:</b> 
+		</td>
+		<td>
+		  <input type=text name="tAUTHOR" value="mymail@example.com" size="45"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>e-Mail:</b> 
+		</td>
+		<td>
+		  <input type=text name="tEMAIL" value="mymail@example.com" size="25"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+		   <b>Date:</b> 
+		</td>
+		<td>
+		  <input type=text name="tDATE" value="23.10.2014" size="12"> 
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>QNode-Variables:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tQNODE_VARIABLES" cols="70" rows="10">
+Enter Variables here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>QNode-Options:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tQNODE_OPTIONS" cols="70" rows="6">
+Enter Options here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>HTML-Template:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tHTMLTEMPLATE" cols="70" rows="8">
+Enter HTML-Template here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>HTML-Option:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tHTMLOPTION" cols="70" rows="4">
+Enter HTML-Option here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>LaTeX-Template:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tLATEXTEMPLATE" cols="70" rows="8">
+Enter LaTeX-Template here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>LaTeX-Option:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tLATEXOPTION" cols="70" rows="4">
+Enter LaTeX-Option here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>XML-Template:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tXMLTEMPLATE" cols="70" rows="8">
+Enter XML-Template here
+</TEXTAREA>
+		</td>
+	</tr>
+	<tr>
+		<td valign="top">
+		   <b>XML-Template:</b> 
+		</td>
+		<td>
+<TEXTAREA name="tXMLOPTION" cols="70" rows="4">
+Enter XML-Option here
+</TEXTAREA>
+		</td>
+	</tr>
+
+<table>
+</center>
+<hr/>
+
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<br/><br/><br/><br/><br/>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>TPL1</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tTPL1" cols="125" rows="3">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>QNode File</title>
+
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=utf8">
+</head>
+<body bgcolor="#eeeeee">
+<!--- import Javascript Library qnodeloader.js --->
+<SCRIPT LANGUAGE="JavaScript" SRC="../library/qnodeloader.js">
+</SCRIPT>
+<br>
+<br>
+<center>
+<table border="1">
+  <tbody>
+    <tr bgcolor="#eeeeee">
+      <td>
+      <table border="0">
+        <tbody>
+          <tr bgcolor="#eeeeee">
+            <td><br>
+            </td>
+            <td>
+            <center><br>
+            <br>
+            <font size="+2" face="Arial,Helvetica">
+            <b>Load 
+	<script language="JavaScript1.2">
+   	//----------------------------------------------------	
+         document.write(extractName(document.location.href).toUpperCase());
+	//----------------------------------------------------	
+    </script>
+            QNode<br></b> </font>
+  	<script language="JavaScript1.2">
+   	//----------------------------------------------------
+   		 document.write(getQNode_Filename());
+	//----------------------------------------------------	
+    </script>
+                        <font size="+1" face="Arial,Helvetica">
+              <!-- action="#" -->
+	   			<form name="fInputForm"  onsubmit="document.location.href='showquestionnaire.html'">
+					<input type=button name="Import" value="Import QNode" onclick="importQNodeAlert()"> 
+<!--------------------------------------------------------------------------------------------->
+					QNode-Type: <input type=text name="QNodeType" value="myqnode"> 
+<!--------------------------------------------------------------------------------------------->
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>Variables for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tVariables" cols="95" rows="6" >
+___QNODE_VARIABLES___
+</___TEXTAREA___><hr/>
+<!--------------------------------------------------------------------------------------------->
+					<b>Options for QNode</b> (Option-Text|Option Value)<br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tOptions" cols="95" rows="6" >
+___QNODE_OPTIONS__
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>						
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>TEMPLATES</b>
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>HTML-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tHTMLTemplate" cols="95" rows="6" >
+___HTMLTEMPLATE___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+				<br/><b>HTML-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tHTMLOption" cols="95" rows="3" >
+___HTMLOPTION___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+		<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+		<b>LaTeX-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tLatexTemplate" cols="95" rows="6" >
+___LATEXTEMPLATE___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+				<br/><b>Latex-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tLatexOption" cols="95" rows="3" >
+___LATEXOPTION___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+		<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+		<b>XML-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tXMLTemplate" cols="95" rows="6" >
+___XMLTEMPLATE___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+		<br/><b>XML-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<___TEXTAREA___ name="tXMLOption" cols="95" rows="3" >
+___XMLOPTION___
+</___TEXTAREA___>
+<!--------------------------------------------------------------------------------------------->
+		    	</form>
+            </font>
+            </center>
+            <center>
+            <p></p>
+            </center>
+            <br>
+            </td>
+            <td>&nbsp;&nbsp;
+<!--- inner input table ---></td>
+          </tr>
+        </tbody>
+      </table>
+<!--- outer table ---> </td>
+    </tr>
+  </tbody>
+</table>
+<script language="JavaScript1.2">
+	//----------------------------------------------------	
+    postprocessQNode()
+    //----------------------------------------------------	
+</script>
+
+
+<font size="2" face="Arial,Helvetica"><b>It is recommended to use the Browser Firefox with this Application. It is necessary to enable Javascript.</font>
+</center>
+</body>
+</html>
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>LOOP1</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tLOOP1" cols="125" rows="3">
+
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+<hr/><b>LOOP2</b><br/>
+<!---------------------------------------------------------------------------->
+<TEXTAREA name="tLOOP2" cols="125" rows="3">
+
+</TEXTAREA>
+<!---------------------------------------------------------------------------->
+ <SCRIPT LANGUAGE="JavaScript">
+    onLoad_Form_Replace();
+ </SCRIPT>
+</form>
+</body>
+</HTML>

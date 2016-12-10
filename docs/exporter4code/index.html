@@ -1,0 +1,653 @@
+<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
+
+<HTML>
+<HEAD>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <!-- meta http-equiv="Content-Type" content="text/html; charset=utf8" -->
+   <meta http-equiv="author" content="Engelbert Niehaus">
+   <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
+   <meta http-equiv="content-language" content="de">
+   <meta http-equiv="desktop-type" content="tasks">
+
+<script language="javascript">
+//#################################################################
+//# Javascript Code Generator
+//# GNU Public License V3 - OpenSource
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//# 2012 University Koblenz-Landau
+//#################################################################
+
+function replaceStringReverse(pString,pReplace,pSearch)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	return replaceString(pString,pSearch,pReplace);
+}
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDate() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+
+function createIndexHTML()  {
+	var vString = "";
+	var vDate 			= getDate();
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vAuthor     	= document.fCreator.tAuthor.value;
+	var vEMail      	= document.fCreator.tEMail.value;
+	var vHeader     	= document.fCreator.tHeader.value;
+	var vTail     		= document.fCreator.tTail.value;
+	var vBackgroundColor= document.fCreator.tBackgroundColor.value;
+	var vLibTemplate    = document.fCreator.tLibTemplate.value;
+	var vLibraries 	    = document.fCreator.tLibraries.value;
+	var vLibraryArray   = vLibraries.split(/\n/);
+    var vButtons 	    = document.fCreator.tButtons.value;
+	var vButtonArray    = vButtons.split(/\n/);
+    var vOutput = vHeader;
+	var vLibImport = "";
+	for (var i=0; i<vLibraryArray.length; i++) {
+	    vLibImport = vLibTemplate;
+	    vLibraryArray[i] = vLibraryArray[i].replace(/\s/,"");
+		vLibImport = replaceString(vLibImport,"___LIBRARY___","library/"+vLibraryArray[i].toLowerCase()+".js");
+		vLibImport = replaceString(vLibImport,"___CLASS___",vLibraryArray[i]);
+		if (vLibraryArray[i] != "") {
+		   vOutput += vLibImport
+		}
+	};
+	vOutput += "<!----Create Objects------------------------->\n";
+	vOutput += "<SCRIPT LANGUAGE=\"JavaScript\">\n";
+	vOutput += "function ___SOFTWARE___() {\n";
+	for (var i=0; i<vLibraryArray.length; i++) {
+		if (vLibraryArray[i] != "") {
+		    vOutput += "\tthis.a"+vLibraryArray[i]+" = new "+vLibraryArray[i]+"();\n";
+        }
+	};
+	var vButtonCall = "";
+	var vButtonLink = "";
+	var vFunctionDef = "";
+	for (var i=0; i<vButtonArray.length; i++) {
+	    vButtonLink = vButtonArray[i].replace(/\s/g,"");
+		vButtonLink = vButtonLink.replace(/\t/g,"");
+	    vButtonCall = vButtonArray[i].replace(/\s/g,"_");
+		vButtonCall = vButtonCall.replace(/\t/g,"");
+		if (vButtonLink != "") {
+		   vOutput += "\tthis."+vButtonCall+" = "+vButtonCall+"____SOFTWARE___;\n";
+		   vFunctionDef += "\nfunction "+vButtonCall+"____SOFTWARE___() {\n";
+		   vFunctionDef += "\treturn \""+vButtonCall+"____SOFTWARE___()\";\n";
+		   vFunctionDef += "}\n";
+		}
+	};
+	vOutput += "}\n\n";
+	vOutput +=  vFunctionDef+"\n";
+	vOutput += "var v___SOFTWARE___ = new ___SOFTWARE___();\n";
+	vOutput += "</"+"SCRIPT>\n";
+	vOutput += vTail;
+	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
+	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
+	vOutput = replaceString(vOutput,"___SOFTWARE___",vSoftware);
+	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
+	vOutput = replaceString(vOutput,"___DATE___",vDate);
+    vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
+    document.fCreator.tOutput.value = vOutput;	
+}
+
+function createMenuHTML()  {
+	var vString = "";
+	var vDate 			= getDate();
+	var vSoftware 		= "Menu - "+document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vAuthor     	= document.fCreator.tAuthor.value;
+	var vEMail      	= document.fCreator.tEMail.value;
+	var vHeader     	= document.fCreator.tMenuHeader.value;
+	var vTail     		= document.fCreator.tMenuTail.value;
+	var vBackgroundColor= document.fCreator.tBackgroundColor.value;
+	var vButtonTemplate = document.fCreator.tButtonTemplate.value;
+	var vButtons 	    = document.fCreator.tButtons.value;
+	var vButtonArray    = vButtons.split(/\n/);
+    var vOutput = vHeader;
+    var vButtonHTML = "";
+	var vButtonLink = "";
+	for (var i=0; i<vButtonArray.length; i++) {
+	    vButtonHTML = vButtonTemplate;
+	    vButtonLink = vButtonArray[i].replace(/\s/g,"");
+		vButtonLink = vButtonLink.replace(/\t/g,"");
+		vButtonLink = vButtonLink.toLowerCase()
+		vButtonHTML = replaceString(vButtonHTML,"___BUTTONLINK___",vButtonLink+".html");
+		vButtonHTML = replaceString(vButtonHTML,"___BUTTON___",vButtonArray[i]);
+		if (vButtonLink != "") {
+		   vOutput += vButtonHTML+"\n";
+		}
+	};
+	vOutput += vTail;
+	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
+	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
+	vOutput = replaceString(vOutput,"___SOFTWARE___",vSoftware);
+	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
+	vOutput = replaceString(vOutput,"___DATE___",vDate);
+    vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
+    document.fCreator.tOutput.value = vOutput;	
+}
+
+function createButtonHTML(pButton,pButtonLink)  {
+	var vString = "";
+	var vDate 			= getDate();
+	var vSoftware 		= pButton +" - "+document.fCreator.tSoftware.value;
+	var vSoftwareCall 	= "v"+document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vAuthor     	= document.fCreator.tAuthor.value;
+	var vEMail      	= document.fCreator.tEMail.value;
+	var vHeader     	= document.fCreator.tMenuHeader.value;
+	var vTail     		= document.fCreator.tMenuTail.value;
+	var vBackgroundColor= document.fCreator.tBackgroundColor.value;
+	var vButtonTemplate = document.fCreator.tButtonTemplate.value;
+	var vFrameTemplate  = document.fCreator.tFrameTemplate.value;
+	var vButtons 	    = document.fCreator.tButtons.value;
+	var vButtonArray    = vButtons.split(/\n/);
+    var vOutput = vHeader;
+   //-----
+	vOutput += "<!---Button: "+pButton+" ------- Button Link: "+pButtonLink+".html ----->\n";
+	vOutput += "<h1>"+pButton+"</h1>\n";
+	var vButtonCall = pButton.replace(/\s/g,"_")+"()";
+	vOutput += vFrameTemplate;
+	vOutput += vTail;
+	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
+	vOutput = replaceString(vOutput,"___BUTTONCALL___",vButtonCall);
+	vOutput = replaceString(vOutput,"___SOFTWARECALL___",vSoftwareCall);
+	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
+	vOutput = replaceString(vOutput,"___SOFTWARE___",vSoftware);
+	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
+	vOutput = replaceString(vOutput,"___DATE___",vDate);
+    vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
+    document.fCreator.tOutput.value = vOutput;	
+}
+
+
+function createEmptyHTML()  {
+	var vString = "";
+	var vDate 			= getDate();
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vAuthor     	= document.fCreator.tAuthor.value;
+	var vEMail      	= document.fCreator.tEMail.value;
+	var vHeader     	= document.fCreator.tEmpty.value;
+	var vBackgroundColor= document.fCreator.tBackgroundColor.value;
+	var vOutput = vHeader;
+   //-----
+	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
+	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
+	vOutput = replaceString(vOutput,"___SOFTWARE___",vSoftware);
+	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
+	vOutput = replaceString(vOutput,"___DATE___",vDate);
+    vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
+    document.fCreator.tOutput.value = vOutput;	
+}
+
+
+function step1() {
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	createIndexHTML();
+    alert("STEP 1: Create a Folder '/"+vFolderName+"' and\n"+
+          "create '/"+vFolderName+"/index.html' with the generated HTML Code!");
+}
+
+function step2() {
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vLibraries 	    = document.fCreator.tLibraries.value;
+	var vLibraryArray   = vLibraries.split(/\n/);
+    var vOutput = "";
+	for (var i=0; i<vLibraryArray.length; i++) {
+	    vLibraryArray[i] = vLibraryArray[i].replace(/\s/,"");
+		if (vLibraryArray[i] != "") {
+		    vOutput += "\n     "+  vLibraryArray[i].toLowerCase() + ".js" 
+        }
+	}  
+    alert("STEP 2: Create a Folder '/"+vFolderName+"/library/' and\n"
+         +"copy the following Javascript Class Files into folder:"
+         + vOutput);
+}
+
+function step3() {
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+    createMenuHTML();
+    alert("STEP 3: Create a Folder '/"+vFolderName+"/frames/' and\n"+
+          "create '/"+vFolderName+"/frames/menu.html' with the generated HTML Code!");
+}
+
+function step4() {
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+	var vButtons 	    = document.fCreator.tButtons.value;
+	var vButtonArray    = vButtons.split(/\n/);
+    var pPromptText="STEP 4: Create for all Buttons a HTML-File.\n"+
+	                "Please enter the Number of Button:\n"
+	var vButtonLink = "";
+	var vNr = 0;
+	for (var i=0; i<vButtonArray.length; i++) {
+	    vButtonLink = vButtonArray[i].replace(/\s/,"");
+		vButtonLink = vButtonLink.replace(/\t/g,"");
+		if (vButtonLink != "") {
+		   vNr += 1;
+		   pPromptText += "\n   ("+vNr+") "+vButtonArray[i];
+		}
+   };
+   var vSelectedButton = "";
+   var vSelectedButtonLink = "";
+   var vIndex = prompt(pPromptText,"");
+   //vIndex = vIndex.replace(/\s/,"");
+   //alert("vIndex="+vIndex);
+   vNr=0;
+   for (var i=0; i<vButtonArray.length; i++) {
+	    vButtonLink = vButtonArray[i].replace(/\s/,"");
+		vButtonLink = vButtonLink.replace(/\t/g,"");
+		vButtonLink = vButtonLink.toLowerCase()
+		if (vButtonLink != "") {
+		   vNr += 1;
+		   vCheck= ""+vNr;
+		   //alert("'"+vCheck+ "' == '"+vIndex+"'");
+		   if (vCheck == vIndex) {
+		       vSelectedButton =  vButtonArray[i];
+		       vSelectedButtonLink = vButtonLink;
+		   }
+		}
+   };
+   //alert("Selected Button="+vSelectedButton);
+   createButtonHTML(vSelectedButton,vSelectedButtonLink);
+   //alert("STEP 4: Create a File '/"+vFolderName+"/frames/'and\n"+
+   //       "create '/"+vFolderName+"/frames/menu.html' with the generated HTML Code!");
+}
+
+function step5() {
+	var vSoftware 		= document.fCreator.tSoftware.value;
+	var vFolderName    	= vSoftware.toLowerCase()+"/";
+	vFolderName         = replaceString(vFolderName," ","_");
+    createEmptyHTML();
+    alert("STEP 5: Copy the generated HTML code of an empty frame and\n"+
+          "create file '/"+vFolderName+"/frames/empty.html' with the generated HTML Code!");
+}
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+
+  <meta name="GENERATOR" content="Mozilla/4.7 [en] (WinNT; I) [Netscape]">
+  <title>Javascript HTML Frame Generator</title>
+
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>Javascript HTML Frame Generator</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
+</a>
+<hr>
+<b>Create Classes with 
+			<a href="../classgenerator/index.html" target="_blank">Javascript Class Creator</a> 
+			or
+			<a href="../java2javascript/index.html" target="_blank">Java to Javascript Class Creator</a> 
+</b>
+<hr>			
+</center>
+<form name="fCreator">
+<table border=1 bgcolor="#A9BCF5">
+	<tr>
+		<td colspan=2>
+		<table border=0 bgcolor="#A9BCF5">
+		<tr>
+		<td>
+		<input type="button" name="bStep1" value=" Step1 " onclick="step1()"> </td> <td>Create Main Folder	
+		</td>
+		<td>
+		<input type="button" name="bStep2" value=" Step2 " onclick="step2()"> </td> <td>Copy Libraries		
+		</td>
+		<td>
+		<input type="button" name="bStep3" value=" Step3 " onclick="step3()"> </td> <td>Create left Menu		
+		</td>
+		</tr><tr>
+		<td>
+		<input type="button" name="bStep4" value=" Step4 " onclick="step4()"> </td> <td>Create Frames for Buttons in Menu		
+		</td>
+		<td>
+		<input type="button" name="bStep4" value=" Step5 " onclick="step5()"> </td> <td>Create Empty Frame		
+		</td>
+		</tr>
+		</table>
+		</td>
+    <tr>
+    </tr>
+		<td>
+		<b>Software Name:</b> <input type=text name="tSoftware" value="MySoftware"> <br/> Used for comments in HTML-Sources.
+		</td>
+		<td>
+		<b>Background Color:</b> 
+		<select name="tBackgroundColor" size="1">
+          <option value="#FFFFFF">white</option>
+          <option value="#EEEEEE" selected>grey</option>
+          <option value="blue">blue</option>
+          <option value="red">red</option>
+          <option value="green">green</option>
+          <option value="yellow">yellow</option>
+        </select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+		<b>Author:</b> <input type=text name="tAuthor" value="My Name"> 
+		</td>
+		<td>
+		<b>e-Mail Author:</b> <input type=text name="tEMail" value="mymail@example.com"> 
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<b>Used Classes:</b> 
+			<br/>
+			<textarea name="tLibraries" cols="60" rows="10">
+MyClass1
+MyClass2
+MyClass3
+</textarea>
+		</td>
+		<td>
+			<b>Buttons</b><br/>
+			<textarea name="tButtons" cols="60" rows="10">
+Edit Risk
+Display Risk
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+		<!-- input type="button" name="bCreatorButton" value=" Create Javascript Class " onclick="createJSClass()" --->
+ 		<b>Generated HTML Source Code</b><br/>
+			<textarea name="tOutput" cols="125" rows="20">
+			</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+	<hr/>
+	The following text areas define templates for the JavaScript Class Generation. If want to use 
+	differente templates for the javascript class generator, just download the file and edit the HTML 
+	source code. Use your Browser to save the html-file to your local filesystem.
+	It is pure HTML with the javascript functions included in the file. So it will be easy to modify
+	the source code according to your requirements and constraints.
+	<hr/>
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
+ 		<b>HTML Header</b><br/>
+<!---------------------------------------------------------------------------->
+			<textarea name="tHeader" cols="125" rows="3">
+<HTML>
+  <HEAD>
+     <TITLE>
+	    ___SOFTWARE___
+     </TITLE>
+<!-- 
+################################################# 
+# ___SOFTWARE___  								
+# Javascript Software Package  				 
+# email: ___EMAIL___		
+# created               ___DATE___
+# last modifications    ___DATE___
+# Author:  ___AUTHOR___
+# GNU Public License 
+################################################# 
+-->
+  <META http-equiv="Content-Type" content="text/html; charset=utf8">
+
+</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+ 		<b>Javascript Library Import</b><br/>
+			<textarea name="tLibTemplate" cols="125" rows="3">
+<!-----IMPORT OF LIBRARY FOR CLASS: ___CLASS___ ---------------->
+<SCRIPT LANGUAGE="JavaScript" SRC="___LIBRARY___">
+</SCRIPT>
+</textarea>
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+ 		<b>Main Frame Template</b><br/>
+			<textarea name="tHTMLmain" cols="125" rows="3">
+	//--------------------------------------
+	</textarea>
+		</td>
+	</tr>	
+	<tr>
+		<td colspan=2 align="center">
+ 		<b>Tail HTML File</b><br/>
+			<textarea name="tTail" cols="125" rows="3">
+
+<SCRIPT LANGUAGE="JavaScript1.2">
+<!-- Begin Hiding
+function removeParameters(pURL)
+//######### if the URL "pURL" contains a parameter, then the parameter after the "?"
+//######### will be removed, e.g. "mypath/navigator.html?objectset=documentation/object_set.html"
+//######### was converted into "mypath/navigator.html"
+//######### IE 4.0 problem local variables are internally handle as global variables
+//######### Problems appear, when calling two different functions recursive
+{
+        var vN = pURL.lastIndexOf("?");
+        var lvURL = pURL;
+        if (vN >= 0)
+                lvURL = pURL.substring(0, vN);
+	return lvURL;
+}
+
+function extractParameters(pURL)
+//######### if the URL "pURL" contains a parameter, then the parameters after the "?"
+//######### will be extracte, e.g. "mypath/navigator.html?objectset=documentation/object_set.html"
+//######### will return into "?objectset=documentation/object_set.html"
+//######### IE 4.0 problem local variables are internally handle as global variables
+//######### Problems appear, when calling two different functions recursive
+{
+        var vN = pURL.lastIndexOf("?");
+        var lvParameter = "";
+        if (vN >= 0) {
+                lvParameter = pURL.substring(vN,pURL.length);
+        		//alert("lvParameter="+lvParameter);
+        };
+		return lvParameter;
+}
+
+function extractPath(pURL)
+//###### "documentation/technischedoc/startnavigator.html?parameters..."
+//###### "documentation/technischedoc/startnavigator.html"  remove parameters
+//###### "documentation/technischedoc"                      extract path
+{
+	//###### pURL conatins a last symbol which is NOT the Slash "/"
+        var vN=0;
+        top.vDomainPrefix = '';
+		var lvURL = removeParameters(pURL);
+        vN = lvURL.lastIndexOf("/");
+        if (vN >= 0)
+                lvURL = lvURL.substring(0, vN);
+        if (navigator.appName.indexOf("pera")>0) {
+        	vN = lvURL.lastIndexOf("ile://localhost");
+        	if (vN >= 0) {
+                lvURL = lvURL.substring(16, lvURL.length);
+                top.vDomainPrefix = "file://localhost";
+        	};
+        	vN = lvURL.lastIndexOf("ile://");
+        	if (vN >= 0) {
+            	    lvURL = lvURL.substring(7, lvURL.length);
+                	top.vDomainPrefix = "file://";
+        	}
+        };
+    //alert("cstring.js:116 - extractPath() = "+lvURL);
+	return lvURL;
+}
+//-----------------------------------------------------------------------------------------
+	var vBasicPath = extractPath(document.location.href) + "/frames/";
+	// alert("vBasicPath = "+vBasicPath)
+	setTimeout("top.menu.document.href=top.vBasicPath+'menue.html'",1000);
+//-----------------------------------------------------------------------------------------
+// End Hiding -->
+</SCRIPT>
+</head>
+  <frameset cols="180,*" bordercolor="#4444AA">
+      <frame src="frames/menu.html" name="menu" scrolling="AUTO">
+      <frame src="frames/empty.html" name="main" scrolling="AUTO">
+   </frameset>
+<noframes><body bgcolor="___BACKGROUNDCOLOR___"  onLoad="alert('Browser cannot display FRAMES')">
+
+If you can see this text, your browser is not able to display frames.
+Use e.g. <a href="http://www.mozilla.org">Mozilla Firefox</a>
+
+</body></noframes>
+</html>
+	</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+<!---------------------------------------------------------------------------->
+ 		<b>Empty File</b><br/>
+<!---------------------------------------------------------------------------->
+	<textarea name="tEmpty" cols="125" rows="3">
+<HTML>
+<HEAD>
+   <TITLE>Empty Frame - ___SOFTWARE___</TITLE>
+<!-- 
+################################################# 
+# ___SOFTWARE___ - Empty Frame 						
+# Javascript Software Package  				 
+# email: ___EMAIL___		
+# created               ___DATE___
+# last modifications    ___DATE___
+# Author:  ___AUTHOR___
+# GNU Public License 
+################################################# 
+-->
+   <META http-equiv="Content-Type" content="text/html; charset=utf8">
+</HEAD>
+<BODY bgcolor="___BACKGROUNDCOLOR___">
+<!--- Empty Frame --->
+</BODY>
+</HTML>
+	</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+<!---------------------------------------------------------------------------->
+ 		<b>Menu Header</b><br/>
+<!---------------------------------------------------------------------------->
+	<textarea name="tMenuHeader" cols="125" rows="3">
+<HTML>
+<HEAD>
+   <TITLE>___SOFTWARE___</TITLE>
+<!-- 
+################################################# 
+# ___SOFTWARE___						
+# Javascript Software Package  				 
+# email: ___EMAIL___		
+# created               ___DATE___
+# last modifications    ___DATE___
+# Author:  ___AUTHOR___
+# GNU Public License 
+################################################# 
+-->
+  <META http-equiv="Content-Type" content="text/html; charset=utf8">
+</HEAD>
+<BODY bgcolor="___BACKGROUNDCOLOR___">
+<center>
+<font face="Arial,Helvetica">
+</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+<!---------------------------------------------------------------------------->
+ 		<b>Button Template</b><br/>
+<!---------------------------------------------------------------------------->
+	<textarea name="tButtonTemplate" cols="125" rows="3">
+<!-------BUTTON: ___BUTTON___ ---- LINK: ___BUTTONLINK___ ------------------->
+<form name="form___BUTTON___" action="___BUTTONLINK___"  target="main">
+	<input type="submit" value="___BUTTON___">
+</form>
+	</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>
+	<tr>
+		<td colspan=2 align="center">
+<!---------------------------------------------------------------------------->
+ 		<b>Menu Tail</b><br/>
+<!---------------------------------------------------------------------------->
+	<textarea name="tMenuTail" cols="125" rows="3">
+</font>
+</center>
+</BODY>
+</HTML>	
+	</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>	
+		<tr>
+		<td colspan=2 align="center">
+<!---------------------------------------------------------------------------->
+ 		<b>Frame Template</b><br/>
+<!---------------------------------------------------------------------------->
+	<textarea name="tFrameTemplate" cols="125" rows="3">
+ <SCRIPT LANGUAGE="JavaScript">
+    document.write(top.___SOFTWARECALL___.___BUTTONCALL___)
+ </SCRIPT>
+	</textarea>
+<!---------------------------------------------------------------------------->
+		</td>
+	</tr>	
+</table>
+</form>
+<center>
+Javascript Class Generator was developed 2013 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de" target="_bank">University Koblenz-Landau</a> <br/> 
+<br/>
+<a href="http://mathematik.uni-landau.de/javascript/classgenerator/" target="_blank">http://mathematik.uni-landau.de/javascript/classgenerator/</a>
+</center>
+</body>
+</HTML>

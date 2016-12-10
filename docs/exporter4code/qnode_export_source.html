@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+  <title>QNode File</title>
+
+  <meta http-equiv="Content-Type"
+ content="text/html; charset=utf8">
+</head>
+<body bgcolor="#eeeeee">
+<!--- import Javascript Library qnodeloader.js --->
+<SCRIPT LANGUAGE="JavaScript" SRC="../library/qnodeloader.js">
+</SCRIPT>
+<br>
+<br>
+<center>
+<table border="1">
+  <tbody>
+    <tr bgcolor="#eeeeee">
+      <td>
+      <table border="0">
+        <tbody>
+          <tr bgcolor="#eeeeee">
+            <td><br>
+            </td>
+            <td>
+            <center><br>
+            <br>
+            <font size="+2" face="Arial,Helvetica">
+            <b>Load 
+	<script language="JavaScript1.2">
+   	//----------------------------------------------------	
+         document.write(extractName(document.location.href).toUpperCase());
+	//----------------------------------------------------	
+    </script>
+            QNode<br></b> </font>
+  	<script language="JavaScript1.2">
+   	//----------------------------------------------------
+   		 document.write(getQNode_Filename());
+	//----------------------------------------------------	
+    </script>
+                        <font size="+1" face="Arial,Helvetica">
+              <!-- action="#" -->
+	   			<form name="fInputForm"  onsubmit="document.location.href='showquestionnaire.html'">
+					<input type=button name="Import" value="Import QNode" onclick="importQNodeAlert()"> 
+<!--------------------------------------------------------------------------------------------->
+					QNode-Type: <input type=text name="QNodeType" value="myqnode"> 
+<!--------------------------------------------------------------------------------------------->
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>Variables for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tVariables" cols="95" rows="6" >
+___QNODE_VARIABLES___
+</TEXTAREA><hr/>
+<!--------------------------------------------------------------------------------------------->
+					<b>Options for QNode</b> (Option-Text|Option Value)<br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tOptions" cols="95" rows="6" >
+___QNODE_OPTIONS___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>			
+			<br/>						
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>TEMPLATES</b>
+			<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+			<b>HTML-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tHTMLTemplate" cols="95" rows="6" >
+___HTMLTEMPLATE___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+				<br/><b>HTML-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tHTMLOption" cols="95" rows="3" >
+___HTMLOPTION___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+		<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+		<b>LaTeX-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tLatexTemplate" cols="95" rows="6" >
+___LATEXTEMPLATE___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+				<br/><b>Latex-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tLatexOption" cols="95" rows="3" >
+___LATEXOPTION___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+		<hr noshade style=" color:black; height:5px; text-align:left; border:1px solid blue;">
+		<b>XML-Template for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tXMLTemplate" cols="95" rows="6" >
+___XMLTEMPLATE___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+		<br/><b>XML-Option for QNode</b><br/>
+<!--------------------------------------------------------------------------------------------->
+<TEXTAREA name="tXMLOption" cols="95" rows="3" >
+___XMLOPTION___
+</TEXTAREA>
+<!--------------------------------------------------------------------------------------------->
+		    	</form>
+            </font>
+            </center>
+            <center>
+            <p></p>
+            </center>
+            <br>
+            </td>
+            <td>&nbsp;&nbsp;
+<!--- inner input table ---></td>
+          </tr>
+        </tbody>
+      </table>
+<!--- outer table ---> </td>
+    </tr>
+  </tbody>
+</table>
+<script language="JavaScript1.2">
+	//----------------------------------------------------	
+    postprocessQNode()
+    //----------------------------------------------------	
+</script>
+
+
+<font size="2" face="Arial,Helvetica"><b>It is recommended to use the Browser Firefox with this Application. It is necessary to enable Javascript.</font>
+</center>
+</body>
+</html>

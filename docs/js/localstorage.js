@@ -1,3 +1,46 @@
+
+function loadLocalDB(pDBName) {
+  var vJSONDB = null;
+  if (typeof(Storage) != "undefined") {
+    // Store
+    if (typeof(localStorage.getItem(pDBName)) != undefined) {
+      console.log("JSON-DB '"+pDBName+"' loaded from Local Storage");
+      var vJSONstring = localStorage.getItem(pDBName);
+      vJSONDB = JSON.parse(vJSONstring);
+    } else {
+      console.log("JSON-DB '"+pDBName+"' is undefined in Local Storage");
+    };
+  }	 else {
+    console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
+  };
+  return vJSONDB;
+};
+
+function saveLocalDB(pDBName,pJSONDB) {
+  var vError = "";
+  if (typeof(Storage) != "undefined") {
+    // Store
+    if (typeof(pJSONDB) != undefined) {
+      console.log("JSON-DB '"+pDBName+"' is defined, JSONDB in  Local Storage");
+      if (pJSONDB) {
+        console.log("pJSONDB '"+pDBName+"' is saved to Local Storage");
+        localStorage.setItem(pDBName,JSON.stringify(pJSONDB));
+      } else {
+        vError = "pJSONDB DOM-Node is NOT defined";
+        console.log(vError);
+      }
+    } else {
+      vError = "pJSONDB is undefined";
+      console.log(vError);
+    }
+  }	 else {
+    vError = "WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...";
+    console.log(vError);
+  };
+  return vError;
+
+};
+
 function handleOfflineJSONDB(pQueryHash) {
 	var vDBName = pQueryHash["app_database"];
 	vJSONDB_Offline = loadOfflineDB(vDBName);
@@ -157,7 +200,7 @@ function compare_Offline_Online_DB() {
 
 function loadOfflineDB(pDBName) {
 	var vJSONDB_Offline = loadLocalDB("OFFLINE_"+pDBName);
-	check_Local_Init();
+	//check_Local_Init();
 	return vJSONDB_Offline;
 }
 
@@ -169,7 +212,24 @@ function saveOfflineDB(pDBName,pJSONDB_Offline) {
 	pJSONDB_Offline["LastSyncLine"] = vLastSyncLine; //syncing will start at the same last records
 };
 
-function loadLocalDB(pDBName) {
+
+function getJSONDB_Local_Default() {
+	vJSONDB_Offline["DBlines"] = [];
+	vJSONDB_Offline["DBsubmitted"] = []; //Boolean Array showing that data was submitted by App
+	vJSONDB_Offline["DBsynced"] = []; //Boolean Array showing that data is already in Online DB
+	vJSONDB_Offline["LastSyncLine"] = -1;
+	if (vJSONDB["DBformat"]) {
+		vJSONDB_Offline["DBformat"] = vJSONDB["DBformat"].slice();
+		//vJSONDB_Offline["DBtitles"] = vJSONDB["DBtitles"];
+	} else {
+		console.log("Init of vJSONDB_Offline failed, due to no DBformat definition of vJSONDB.");
+		alert("No Database is loaded please go online to download DB format once for working OFFLINE.")
+		//vJSONDB_Init["DBformat"] = ["email","username","geolocation","sampledate"];
+	};
+};
+
+
+function X_loadLocalDB(pDBName) {
   var vJSONDB = {};
   if (typeof(Storage) != "undefined") {
     // Store
@@ -185,24 +245,9 @@ function loadLocalDB(pDBName) {
   };
   return vJSONDB;
 
-}
+};
 
-function getJSONDB_Local_Default() {
-	vJSONDB_Offline["DBlines"] = [];
-	vJSONDB_Offline["DBsubmitted"] = []; //Boolean Array showing that data was submitted by App
-	vJSONDB_Offline["DBsynced"] = []; //Boolean Array showing that data is already in Online DB
-	vJSONDB_Offline["LastSyncLine"] = -1;
-	if (vJSONDB["DBformat"]) {
-		vJSONDB_Offline["DBformat"] = vJSONDB["DBformat"].slice();
-		//vJSONDB_Offline["DBtitles"] = vJSONDB["DBtitles"];
-	} else {
-		console.log("Init of vJSONDB_Offline failed, due to no DBformat definition of vJSONDB.");
-		alert("No Database is loaded please go online to download DB format once for working OFFLINE.")
-		//vJSONDB_Init["DBformat"] = ["email","username","geolocation","sampledate"];
-	};
-}
-
-function saveLocalDB(pDBName,pJSONDB) {
+function X_saveLocalDB(pDBName,pJSONDB) {
   if (typeof(Storage) != "undefined") {
     // Store
     if (typeof(pJSONDB) != undefined) {
@@ -242,5 +287,44 @@ function loadLocalVar(pKey) {
     };
   }	 else {
     console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
-  }
+  };
+	return vReturn;
+};
+
+
+function saveDOM2LocalStorage() {
+     //localStorage.setItem("lastname", "Smith");
+    // Retrieve
+    //document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+    //alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		var vNode = document.getElementById(vID);
+		if (vNode) {
+			//alert(vID+"="+vNode.value);
+			localStorage.setItem(vID,vNode.value);
+		};
+	};
+};
+
+function loadLocalStorage2DOM() {
+	//alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		var vValue = localStorage.getItem(vID);
+		if (vValue) {
+			var vNode = document.getElementById(vID);
+			vNode.value = vValue;
+		} else {
+			//alert("vID="+vID+" is undefined");
+		};
+	};
+};
+
+function clearLocalStorage4DOM() {
+	//alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		localStorage.removeItem(vID);
+	};
 }

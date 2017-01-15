@@ -457,6 +457,24 @@ function getName4SepChar(pChar,pLine) {
   return pLine
 };
 
+function getMethodHash() {
+  var vMethods    	  = document.fCreator.tMethods.value;
+  vMethods = removeEmptyLines(vMethods);
+  var vMethodArray    = vMethods.split(/\n/);
+  var vLine = "";
+  var vName = "";
+  var vRetHash = {};
+  for (var i = 0; i < vMethodArray.length; i++) {
+      vName = getName4Method(vMethodArray[i]);
+      if (vName != "") {
+        vRetHash[vName] = vMethodArray[i];
+        //console.log("getMethodHash() "+vName+" = " + vMethodArray[i]);
+      };
+  };
+  return vRetHash;
+
+};
+
 function getMethodNameArray() {
   var vMethods    	  = document.fCreator.tMethods.value;
   vMethods = removeEmptyLines(vMethods);
@@ -501,7 +519,8 @@ function getMethodParamHash() {
     vPos = vLine.indexOf("(");
     if (vPos>0) {
       vID = vLine.substr(0,vPos-1);
-      vValue =  vLine.substr(vPos+1,vLine.length);
+      vID = reduceVarName(vID);
+      vValue =  vLine.substr(vPos,vLine.length);
       vRetHash[vID] = vValue;
     };
   };

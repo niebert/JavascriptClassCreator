@@ -96,10 +96,11 @@ function selectJSMethods() {
   //get SELECT MethodName value
   var vMethodName = getValueDOM("sMethodList");
   // set MethodName Input Window
-  document.fCreator.tMethodName.value = vMethodName;
+  var vMethodHash = getMethodHash();
   //load method code from  vJSON_JS if exists
   //and write method code to TEXTAREA
   loadMethodJSON(vMethodName);
+  document.fCreator.tMethodName.value = vMethodHash[vMethodName];
   saveJSON2LocalStorage();
 };
 

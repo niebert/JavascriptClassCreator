@@ -16,9 +16,10 @@ function createMethodSelect() {
   var vArray = getMethodNameArray();
   var vOptions = createOptions(vArray);
   write2innerHTML("sMethodList",vOptions);
+  var vMethHash = getMethodHash();
   var vMethCodeHash = vClassJSON["MethodCode"];
   var vMethCommentHash = vClassJSON["MethodComment"];
-  write2value("tMethodName",vArray[0]);
+  write2value("tMethodName",vMethHash[vArray[0]]);
   write2value("tMethodCode",vMethCodeHash[vArray[0]]);
   write2value("tMethodComment",vMethCommentHash[vArray[0]]);
 };

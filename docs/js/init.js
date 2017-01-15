@@ -106,5 +106,5 @@ function initFormClass(pClass) {
   updateForm2JSON(pClass); // jsondb.js:157
   createAttribTypeSelect();
   createAttribSelect();
-  createMethodSelect();
+  createMethodSelect(); //dom.js:13
 }

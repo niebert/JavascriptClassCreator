@@ -63,8 +63,10 @@ function  updateMethodsJS() {
   console.log("updateMethodsJS()-Call undefined");
 };
 
-function updateJSAttributes() {
+function updateJSAttribs() {
   updateForm2AttribJSON();
+  createAttribTypeSelect();
+  createAttribSelect();
 };
 
 function updateJSMethods() {
@@ -72,7 +74,7 @@ function updateJSMethods() {
   vMethodArray = checkJSMethods(vMethodArray);
   // load tMethods definitions and create the options of the SELECT Box
   console.log("Update JS Methods");
-  var vOptions =createOptions(vMethodArray);
+  var vOptions = createOptions(vMethodArray);
   var vMethodName = document.fCreator.tMethodName.value;
   var vMethodsTextarea = document.fCreator.tMethods.value;
   if (vMethodsTextarea.indexOf(vMethodName)>=0) {
@@ -99,6 +101,20 @@ function loadAttribJSON (pAttribName) {
     console.log("loadAttribJSON() Call - Attrib Name undefined");
   };
 };
+
+function saveAttribEdit() {
+  saveAttribJSON();
+  var vOut = "";
+  var vCR = "";
+  var vAttHash = vClassJSON["AttribDefault"];
+  for (var iName in vAttHash) {
+    if (vAttHash.hasOwnProperty(iName)) {
+      vOut += vCR + iName + " = " + vAttHash[iName];
+      vCR = "\n";
+    };
+  };
+  write2value("tAttributes",vOut);
+}
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
   var vAttribName     = pAttName    || document.fCreator.tAttribName.value    || "";

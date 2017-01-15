@@ -95,10 +95,10 @@ function existsBasicClass(pClass) {
 function createClassJS(pClass) {
   var vClassExists = existsClassJS(pClass);
   if (vClassExists) {
-    alert("Class '"+pClass+"' already exists!");
+    //alert("Class '"+pClass+"' already exists!");
     console.log("Class '"+pClass+"' already exists!");
   } else {
-    console.log("Create Class '"+pClass+"' - createClassJS()-Call");
+    console.log("createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' - createClassJS()-Call");
     checkClassList(pClass);
     vClassJSON = vJSON_JS["ClassList"][pClass];
     for (var i = 0; i < vDOM_ID.length; i++) {
@@ -592,6 +592,10 @@ function clearForm4Class(pClassName) {
     write2value(vDOM_ID[i],"");
   };
   write2value("tClassname",pClassName);
+};
+function X_updateForm2Class(pClassName) {
+  console.log("updateForm2Class('"+pClassName+"')-Call");
+  updateForm2JSON(pClassName);
 };
 
 function updateForm2Class(pClassName) {

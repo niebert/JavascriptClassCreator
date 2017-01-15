@@ -4,16 +4,22 @@
 function selectClass() {
   var vCurrentClass = getValueDOM("tClassname");
   var vClass = getValueDOM("sClassList");
-  console.log("selectClass()-Call");
+  console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
   updateForm2Class(vCurrentClass);
-  if (vJSON_JS[vClass]) {
+  if (vJSON_JS["ClassList"][vClass]) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
+    vClassJSON = vJSON_JS["ClassList"][vClass];
   } else {
-    console.log("clearForm4Class()-Call");
-    clearForm4Class();
-    createClassJS(vClass); // if necessary
-    fillForm4Class(vClass);
+    console.log("selectClass()-Call: Undefined Class '"+vClass+"' - use old class '"+vCurrentClass+"'.");
+    vClass = vCurrentClass;
+    vClassJSON = vJSON_JS["ClassList"][vClass];
   };
+  clearForm4Class();
+  createClassJS(vClass); // if necessary
+  fillForm4Class(vClass);
+  createAttribTypeSelect();
+  createAttribSelect();
+  createMethodSelect();
 };
 
 function fillForm4Class(pClassName) {

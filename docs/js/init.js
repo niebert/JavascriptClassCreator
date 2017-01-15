@@ -89,7 +89,7 @@ function initFormClass(pClass) {
   var vSuperClass = getValueDOM("tSuperClassname");
   if (vSuperClass && vSuperClass != "") {
     initClassJS(vSuperClass);
-  }
+  };
   updateForm2JSON(pClass); // jsondb.js:157
   createAttribTypeSelect();
   createAttribSelect();

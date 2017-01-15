@@ -1,27 +1,16 @@
 
-
-function initCodeCreator() {
-  // if Local Storage is supported by Browser try to Load JSON DB with Classes
-  if (typeof(Storage) != "undefined") {
-     //alert("Local Storage");
-      loadLocalStorage2DOM();
-      var vJSONDB = loadLocalDB("vJSON_JS");
-      if (vJSONDB) {
-        console.log("JSON Database exists in Local Storage");
-      } else {
-        initClass4Form();
-        console.log("Read Class from Form and add to vJSON_JS");
-      };
+function createCode4JSON_JS(pJSONDB) {
+  if (pJSONDB) {
+    console.log("Create JSON Code from vJSON_JS");
+    document.fCreator.tJSONDB.value = getCode4JSON_JS(pJSONDB);
   } else {
-      write2innerHTML("result","Sorry, your browser does not support Web Storage...");
-      initClass4Form();
-  };
+    console.log("createCode4JSON_JS()-Call Error pJSONDB undefined");
+  }
+}
 
-  updateClassSelector();
-  var vSelectedClass = document.fCreator.sClassList.value;
-  initClassJS(vSelectedClass);
+function getCode4JSON_JS(pJSONDB) {
+  return JSON.stringify(pJSONDB, null, 4);
 };
-
 
 function createCode4Class() {
 	var vString = "";

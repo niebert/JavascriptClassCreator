@@ -1,12 +1,190 @@
+function loadLocalStorage(pType,pVar) {
+  var vLS="load";
+  var vRet = undefined;
+  var vParLog = "\""+pType+"\"" || "";
+  var vType = pType || "all";
+  switch (vType) {
+    case "all":
+      loadLocalStorage("dom");
+      loadLocalStorage("json");
+    break;
+    case "dom":
+      loadLocalStorage2DOM();
+    break;
+    case "json":
+      if (pVar) {
+        var vDBName = pPar;
+        if (localStorage.getItem(vDBName) === null) {
+          console.log("JSON Database '"+vDBName+"' was undefined in LocalStorage!");
+          vRet = undefined;
+        } else {
+          vRet = loadLocalDB(vDBName); // pVar is the DBname
+          console.log("DB '"+vDBName+"' loaded!");
+        }
+      } else {
+        vDBName = "vJSON_JS";
+        vRet = loadLocalDB(vDBName);
+        console.log("DB '"+vDBName+"' load call finished!");
+    };
+    break;
+    case "var":
+      if (pVar) {
+        vParLog += ",pVar"
+        if (localStorage.getItem(pVar) === null) {
+          console.log("Variable '"+pVar+"' was undefined in LocalStorage!");
+          vRet = undefined;
+        } else {
+          vRet = localStorage.getItem(pVar);
+        }
+      } else {
+        console.log("WARNING: call "+vLS+"LocalStorage - Type='var' - Parameter pVar undefined");
+      };
+    break;
+    default:
+      console.log("WARNING: call "+vLS+"LocalStorage - Type='"+pType+"' undefined");
+  };
+  console.log("Call: "+vLS+"LocalStorage("+vParLog+") done");
+  return vRet;
+};
+
+function saveLocalStorage(pType,pVar,pContent) {
+  var vLS="save";
+  var vParLog = "\""+pType+"\"" || "";
+  var vType = pType || "all";
+  switch (vType) {
+    case "all":
+      saveLocalStorage("dom");
+      saveLocalStorage("json");
+    break;
+    case "dom":
+      saveDOM2LocalStorage();
+    break;
+    case "json":
+      var vContent = pContent ||  getCode4JSON_JS(vJSON_JS);
+      if (pVar) {  // pVar is the DBname
+        vParLog += ",pVar"
+        vRet = saveLocalDB(pVar,pContent);
+      } else {
+        vParLog += ",vJSON_JS"
+        vRet = saveLocalDB("vJSON_JS",pContent);
+      };
+      console.log("CALL: "+vLS+"LocalStorage('"+pType+"'"+vParLog+")");
+  break;
+    case "var":
+      if (pVar) {
+        console.log("Save Variable '"+pPar+"' to LocalStorage");
+        localStorage.setItem(pVar,pContent);
+      } else {
+        console.log("WARNING: call "+vLS+"LocalStorage - Type='var' - Parameter pVar undefined");
+      };
+    break;
+    default:
+      console.log("WARNING: call "+vLS+"LocalStorage - Type='"+pType+"' undefined");
+  };
+  console.log("Call: "+vLS+"LocalStorage("+vParLog+") done");
+};
+
+function clearLocalStorage(pType,pVar) {
+  var vLS="clear";
+  var vParLog = "\""+pType+"\"" || "";
+  var vType = pType || "all";
+  switch (vType) {
+    case "all":
+      clearLocalStorage("dom");
+      clearLocalStorage("json");
+    break;
+    case "dom":
+      clearLocalStorage4DOM();
+    break;
+    case "json":
+      if (pVar) {  // pVar is the DBname
+        vParLog += ",pVar"
+        localStorage.removeItem(pVar);
+      } else {
+        vParLog += ",vJSON_JS"
+        localStorage.removeItem("vJSON_JS");
+      };
+    break;
+    case "var":
+      if (pVar) {
+        localStorage.removeItem(pVar);
+      } else {
+        console.log("WARNING: call "+vLS+"LocalStorage - Type='var' - Parameter pVar undefined");
+      };
+    break;
+    default:
+      console.log("WARNING: call "+vLS+"LocalStorage - Type='"+pType+"' undefined");
+  };
+  console.log("Call: "+vLS+"LocalStorage("+vParLog+")");
+}
+
+function saveDOM2LocalStorage() {
+     //localStorage.setItem("lastname", "Smith");
+    // Retrieve
+    //document.getElementById("result").innerHTML = localStorage.getItem("lastname");
+    //alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		var vNode = document.getElementById(vID);
+		if (vNode) {
+			//alert(vID+"="+vNode.value);
+			localStorage.setItem(vID,vNode.value);
+		};
+	};
+};
+
+function loadLocalStorage2DOM() {
+	//alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		var vValue = localStorage.getItem(vID);
+		if (vValue) {
+			var vNode = document.getElementById(vID);
+			vNode.value = vValue;
+		} else {
+			console.log("loadLocalStorage2DOM()-Call: vID="+vID+" is undefined");
+		};
+	};
+};
+
+function clearLocalStorage4DOM() {
+	//alert("vDOM_ID.length="+vDOM_ID.length);
+	for (var i=0;i < vDOM_ID.length; i++ ) {
+		var vID = vDOM_ID[i];
+		localStorage.removeItem(vID);
+	};
+}
+
+function initLocalDB(pDBName,pJSONDB) {
+  var vDB = pJSONDB;
+  if (!vDB) {
+    eval("vDB = "+pDBName);
+  };
+  if (vDB) {
+    console.log("initLocalDB('"+pDBName+"') called - init tag "+Date.now());
+    vDB["_init_date_"] = getDate();
+    vDB["_init_tag_"] = Date.now();
+    saveLocalDB(pDBName,vDB)
+  } else {
+    console.log("DB '"+pDBName+"' is undefined");
+  };
+  return vDB;
+};
 
 function loadLocalDB(pDBName) {
   var vJSONDB = null;
   if (typeof(Storage) != "undefined") {
     // Store
     if (typeof(localStorage.getItem(pDBName)) != undefined) {
-      console.log("JSON-DB '"+pDBName+"' loaded from Local Storage");
+      console.log("JSON-DB '"+pDBName+"' try loading from Local Storage");
       var vJSONstring = localStorage.getItem(pDBName);
-      vJSONDB = JSON.parse(vJSONstring);
+      if (!vJSONstring) {
+        //vJSONDB = initLocalDB(pDBName);
+        console.log("JSON-DB '"+pDBName+"' does not exist in Local Storage");
+      } else {
+        console.log("Parse JSON String of '"+pDBName+"'");
+        vJSONDB = JSON.parse(vJSONstring);
+      };
     } else {
       console.log("JSON-DB '"+pDBName+"' is undefined in Local Storage");
     };
@@ -23,7 +201,7 @@ function saveLocalDB(pDBName,pJSONDB) {
     if (typeof(pJSONDB) != undefined) {
       console.log("JSON-DB '"+pDBName+"' is defined, JSONDB in  Local Storage");
       if (pJSONDB) {
-        console.log("pJSONDB '"+pDBName+"' is saved to Local Storage");
+        console.log("JSON-DB '"+pDBName+"' is saved to Local Storage");
         localStorage.setItem(pDBName,JSON.stringify(pJSONDB));
       } else {
         vError = "pJSONDB DOM-Node is NOT defined";
@@ -41,6 +219,9 @@ function saveLocalDB(pDBName,pJSONDB) {
 
 };
 
+//---------------------------------------------------
+//-------------UNUSED FUNCTION-----------------------
+//---------------------------------------------------
 function handleOfflineJSONDB(pQueryHash) {
 	var vDBName = pQueryHash["app_database"];
 	vJSONDB_Offline = loadOfflineDB(vDBName);
@@ -290,41 +471,3 @@ function loadLocalVar(pKey) {
   };
 	return vReturn;
 };
-
-
-function saveDOM2LocalStorage() {
-     //localStorage.setItem("lastname", "Smith");
-    // Retrieve
-    //document.getElementById("result").innerHTML = localStorage.getItem("lastname");
-    //alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		var vNode = document.getElementById(vID);
-		if (vNode) {
-			//alert(vID+"="+vNode.value);
-			localStorage.setItem(vID,vNode.value);
-		};
-	};
-};
-
-function loadLocalStorage2DOM() {
-	//alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		var vValue = localStorage.getItem(vID);
-		if (vValue) {
-			var vNode = document.getElementById(vID);
-			vNode.value = vValue;
-		} else {
-			//alert("vID="+vID+" is undefined");
-		};
-	};
-};
-
-function clearLocalStorage4DOM() {
-	//alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		localStorage.removeItem(vID);
-	};
-}

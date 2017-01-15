@@ -34,6 +34,8 @@ function reduceVarName(pName) {
   return pName.replace(/[^A-Za-z0-9_]/g,"");
 };
 
+
+
 function encodeURL(pURL) {
   return encodeURI(pURL);
 };

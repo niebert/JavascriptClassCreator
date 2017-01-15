@@ -5,9 +5,23 @@
    <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
    <meta http-equiv="content-language" content="de">
    <meta http-equiv="desktop-type" content="tasks">
+   <script language="javascript">
+
+   var vSelectedClass = "Undefined";
+
+   var vJSON_JS   = {};
+   var vClassJSON = {};
+   // Contains the JSON File for a specific class
+
+   // Contains all the ID that correspond between the ClassJSON["tClassname"]
+   var vDOM_ID = new Array();
+   var vTYPE_ID = new Array();
+
+   </script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
    <script language="javascript" src="js/date.js"></script>
+   <script language="javascript" src="js/dom.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
@@ -15,37 +29,7 @@
    <script language="javascript" src="js/sort.js"></script>
    <script language="javascript" src="js/string.js"></script>
    <script language="javascript" src="js/writedom.js"></script>
-<script language="javascript">
-//#################################################################
-//# Javascript Code Generator
-//# GNU Public License V3 - OpenSource
-//# created with JavaScript Class Generator by Engelbert Niehaus
-//# 2012 University Koblenz-Landau
-//#################################################################
-//var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
-var vSelectedClass = "Undefined";
-
-var vJSON_JS   = {};
-var vClassJSON = {};
-// Contains the JSON File for a specific class
-
-var vDOM_ID = new Array();
-vDOM_ID.push("tClassname");
-vDOM_ID.push("tSuperClassname");
-vDOM_ID.push("tAuthor");
-vDOM_ID.push("tEMail");
-vDOM_ID.push("tAttributes");
-vDOM_ID.push("tMethods");
-vDOM_ID.push("tMethodName");
-vDOM_ID.push("tMethodComment");
-vDOM_ID.push("sSelectMethod");
-vDOM_ID.push("tArrayLoop");
-vDOM_ID.push("tMethodLoop");
-vDOM_ID.push("tClassList");
-//vDOM_ID.push("");
-
-
-</script>
+   <script language="javascript" src="js/init.js"></script>
 
 
   <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
@@ -61,22 +45,32 @@ vDOM_ID.push("tClassList");
 <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
 <br>
 <form name="fCreator">
-<input type="button" onclick="saveDOM2LocalStorage()" value="Save Local Storage">
+<input type="button" onclick="saveLocalStorage('all')" value="Save Local Storage">
 ---
-<input type="button" onclick="clearLocalStorage4DOM()" value="Clear Local Storage">
----
-<b>Class:</b>
-<select id="sClassList" name="sClassList" onchange="selectClass()">
-  <option>UndefClass</option>
-</select>
+<input type="button" onclick="clearLocalStorage('all')" value="Clear Local Storage">
 <br>
 <table bgcolor="#A9BCF5" border="1">
-	<tbody><tr>
+	<tbody>
+    <tr>
+      <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+          <font size="+2">
+            <b>
+              Class Select
+              <select id="sClassList" name="sClassList" onchange="selectClass()">
+                <option>UndefClass</option>
+              </select>
+            </b>
+          </font>
+  		</td>
+    </tr>
+    <tr>
 		<td>
-		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="EProof__QID__" type="text">
+		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text">
+    <b>Create:</b>
+    <button id="bCreateNewClass" onclick="createNewClass()">New</button>
 		</td>
 		<td>
-		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="" type="text"> <br>leave empty if this class does not inherit from a super class.
+		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text"> <br>leave empty if this class does not inherit from a super class.
 		</td>
 	</tr>
 	<!-- <tr>
@@ -97,42 +91,83 @@ vDOM_ID.push("tClassList");
 	<tr>
 		<td>
 			<b>Attributes</b><br>
-			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10">aTreeXML = null
-aRootID = "TREEXML"
-aRootDOM = document.getElementById(this.aRootID)
-aDOMIDs = new Array("MYID1","MYID2","OTHERID1")			</textarea>
+			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10">aParent = null
+aName = "domvar"
+aDOM = null</textarea>
 		</td>
 		<td>
 			<b>Methods</b>
       <input name="bUpdateMethods" value=" Update Methods " onclick="updateJSMethods()" type="button">
       <br>
-			<textarea name="tMethods" id="tMethods" cols="60" rows="10">load_IMathAS()
-load_LS()
-save_LS()
-parseXML()
+			<textarea name="tMethods" id="tMethods" cols="60" rows="10">init(pParent)
+create()
+link2dom()
+load()
+save(pContent)
 			</textarea>
-		</td>
-	</tr>
+    </td>
+  </tr>
   <tr>
+    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+        <font size="+2"><b>Attribute Definition</b></font>
+		</td>
+  </tr>
+    <tr>
+      <td colspan="2" align="center">
+      <b>Select Attribute</a>
+      <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
+        <option>
+          undefined_attrib_list
+        </option>
+      </select>
+      <b>Select Type:</b>
+      <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()">
+        <option>
+          BasicClasses
+        </option>
+        <option>
+          Classes
+        </option>
+      </select>
+      <!--
+      <input name="bSetAttribType" value=" Set Type " onclick="setAttribType4Select()" type="button">
+      -->
+    <br>
+      Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" >
+      <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
+      = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" >
+      Type:
+      <input id="tAttribType" name="tAttriType" type="text" size="25" value="" >
+    <br>
+        Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" >
+        <input name="bSaveAttribDef" value=" Save " onclick="saveForm2ClassJSON()" type="button">
+      </td>
+	</tr>
+</tr>
+  <tr>
+    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+      <font size="+2"><b>Method Definition</b></font>
+  </td>
+</tr>
+<tr>
 		<td colspan="2" align="center">
-    <select id="sSelectMethod" name="sSelectMethod" onchange="selectJSMethods()">
+    <b>Method:</b> <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()">
       <option>
-        load_LS()
-      </option>
-      <option>
-        save_LS()
-      </option>
-      <option>
-        parseXML()
+        undefined_method()
       </option>
     </select>
     <input id="tMethodName" name="tMethodName" type="text" size="48" value="myMethod(pID)" readonly="readonly">
-    <input name="bSelectMethod" value=" Select Method " onclick="selectJSMethods()" type="button" style="display:none">
-    <br>
+    <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button">
+    <hr>
      <b>Method Comment</b><br>
-       <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5">    </textarea>
-  	<br>
-    <b>Method Source Code</b>
+       <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5" onchange="updateForm2MethodComment()">  </textarea>
+     </td>
+   </tr>
+   <tr>
+   		<td colspan="2" align="center">
+    <b>Method Source Code:</b>
+    <br>
+    <b>Loop Calls:</b>
     <input id="tArrayLoop" name="tArrayLoop" type="text" size="40" value="myArray">
     <input id="tMethodLoop" name="tMethodLoop" type="text" size="48" value="myLoopMethod(pID)">
     <select id="sArrayType" name="sArrayType" >
@@ -149,16 +184,22 @@ parseXML()
 		</td>
 	</tr>
   <tr>
+    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+        <font size="+2"><b>Javascript Code</b></font>
+		</td>
+  </tr>
+  <tr>
 		<td colspan="2" align="center">
-		<input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
- 		<b>Javascript Source Code</b><br>
+      <b>Generate Code:</b>
+    <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
+    <hr>
 			<textarea name="tOutput" id="tOutput" cols="125" rows="20">			</textarea>
 		</td>
 	</tr>
 	<tr>
 		<td colspan="2" align="center">
-        <b>Template Loop Hash</b>
-        <input name="bUpdateClasses" value=" Update Classe " onclick="updateClasses()" type="button">
+        <b>List of defined Classes</b>
+        <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
         <br>
         <textarea id="tClassList" name="tClassList" cols="45" rows="5">DOMVar
 Matrix
@@ -167,10 +208,39 @@ MatrixColumn
 
 		</td>
 	</tr>
+  <tr>
+		<td colspan="2" align="center">
+        <b>List of Basic Classes</b>
+        <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
+        <br>
+        <textarea id="tBasicClassList" name="tBasicClassList" cols="45" rows="5">Boolean = false
+String = ""
+Array = []
+Hash = {}</textarea>
+      <textarea style="display:none" id="X_tBasicClassList" name="X_tBasicClassList" cols="45" rows="5">Undefined_Basic_Class</textarea>
+    </td>
+	</tr>
+</tr>
+  <tr>
+    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+      <font size="+2"><b>JSON Code</b></font>
+  </td>
+</tr>
+<tr>
+		<td colspan="2" align="center">
+      <b>Generate Code:</b>
+    <input name="bCreatorButton" value=" Create JSON Code " onclick="createCode4JSON_JS(vJSON_JS)" type="button">
+    <hr>
+      <b>JSON Database</b><br>
+      <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10">
+      </textarea>
+		</td>
+	</tr>
 </tbody></table>
 </center>
 
-<div id="htmlStorage">
+
+<div id="htmlStorage" hidden="hidden">
   <h2>HTML Storage</h2>
   The following text areas define templates for the JavaScript Class Generation. If want to use
   differente templates for the javascript class generator, just download the file and edit the HTML
@@ -188,8 +258,10 @@ MatrixColumn
 //# email:                ___EMAIL___
 //# created               ___DATE___
 //# last modifications    ___DATE___
-//# GNU Public License - OpenSource
+//# GNU Public License V3 - OpenSource
+//#
 //# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
 //#################################################################
 
 //---------------------------------------------------------------------
@@ -205,20 +277,27 @@ MatrixColumn
 //---------------------------------------------------------------------
 // If you want to access the attributes of ___CLASSNAME___, use
 // the attribute name with a leading "this." in the definition of method of ___CLASSNAME___, e.g.
-// this.myattrib3 = "Hello World";
+// this.aName = "Hello World";
 //---------------------------------------------------------------------
-//----Methodes---------------------------------------------------------
+//----External Methods-------------------------------------------------
 //---------------------------------------------------------------------
-// In the definition of the methods of  '___CLASSNAME___'
-// the function name is extended with '____CLASSNAME___'.
+// In general methods of class '___CLASSNAME___' are defined with
+//    this.my_method = function (pPar1,pPar2)
+// An external definition of methods for '___CLASSNAME___'
+// use the method's name and extend it with '____CLASSNAME___'.
+//    function my_method_____CLASSNAME___(pPar1,pPar2)
 // This is done to avoid name space conflicts, if you overwrite a
 // method 'my_method()' that was inherited from a superclass 'MySuperClass' e.g.
 //   SuperClass: MySuperClass.my_method()
-//   Class:       ___CLASSNAME___.my_method()
+//   Class:      ___CLASSNAME___.my_method()
 // The method definitions are as follows
 //   function my_method____CLASSNAME___(...) { .....
 // and
 //   function my_method_MySuperClass(...) { .....
+
+// With the following line '____CLASSNAME___' inherits from '___SUPERCLASS___'
+// ____CLASSNAME___.prototype = new ___SUPERCLASS___();
+// This line could substitute the super class
 
 function ___CLASSNAME___ () {
 ___SUPERCLASS___
@@ -234,11 +313,11 @@ ___ATTRIBUTES___
     </textarea>
   <hr>
   <b>Inherit from SuperClass</b><br>
-   <textarea name="tSuperClass" cols="125" rows="3">	//--------------------------------------
-//---Super Class------------------------
-this.SuperClass = ___SUPERCLASSNAME___;
-this.SuperClass();
-//--------------------------------------
+   <textarea name="tSuperClass" cols="125" rows="3">    //--------------------------------------
+      //---Super Class------------------------
+      this.SuperClass = ___SUPERCLASSNAME___;
+      this.SuperClass();
+      //--------------------------------------
 </textarea>
 <hr>
 <b>Class Tail</b><br>
@@ -292,10 +371,6 @@ ___METHODCODE___
       ___LOOPARRAY___[vKey].___LOOPMETHOD___;
     };
   </textarea>
-  <hr>
-    <b>JSON Database</b><br>
-    <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10">
-    </textarea>
 </div>
 <div id="result" style="color:red">
 </div>
@@ -303,6 +378,7 @@ ___METHODCODE___
 <center>
 <script>
   initCodeCreator();
+  createCode4JSON_JS(vJSON_JS);
 </script>
 Javascript Class Generator was developed 2012-16 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
 <br>

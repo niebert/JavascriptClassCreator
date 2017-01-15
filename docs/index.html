@@ -67,7 +67,7 @@
 		<td>
 		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text">
     <b>Create:</b>
-    <button id="bCreateNewClass" onclick="createNewClass()">New</button>
+    <button id="bCreateNewClass" onclick="createNewClass();return false">New</button>
 		</td>
 		<td>
 		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text"> <br>leave empty if this class does not inherit from a super class.
@@ -137,10 +137,10 @@ save(pContent)
       <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
       = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" >
       Type:
-      <input id="tAttribType" name="tAttriType" type="text" size="25" value="" >
+      <input id="tAttribType" name="tAttribType" type="text" size="25" value="" >
     <br>
         Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" >
-        <input name="bSaveAttribDef" value=" Save " onclick="saveForm2ClassJSON()" type="button">
+        <input name="bSaveAttribDef" value=" Save " onclick="saveAttribJSON()" type="button">
       </td>
 	</tr>
 </tr>
@@ -156,8 +156,10 @@ save(pContent)
         undefined_method()
       </option>
     </select>
+    <b>Method Call:</b>
     <input id="tMethodName" name="tMethodName" type="text" size="48" value="myMethod(pID)" readonly="readonly">
-    <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button">
+    <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
+    <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
     <hr>
      <b>Method Comment</b><br>
        <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5" onchange="updateForm2MethodComment()">  </textarea>

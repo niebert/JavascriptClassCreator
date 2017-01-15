@@ -11,13 +11,13 @@ function createNewClass() {
   var vSuccess = false;
   if (vNewClassName != null) {
     write2value("tClassname", vNewClassName);
-    vSuccess = createClassJS(vNewClassName);
-    if (vSuccess) {
+    vFailed = createClassJS(vNewClassName);
+    if (vFailed) {
+      alert("Create New Class ["+vNewClassName+"] was NOT successful. Class already exists!");
+    } else {
       append2value("tClassList", "\n"+vNewClassName);
       updateClasses();
       updateJSON2Form(vNewClassName);
-    } else {
-      alert("Create New Class ["+vNewClassName+"] was NOT successful!");
     }
   } else {
     console.log("Create new Classes cancelled!");
@@ -230,14 +230,18 @@ function createNewAttribJS() {
   if (existsAttribForm(vName)) {
     alert("Attribute '"+vName+"' already exists!\nPlease change name of attribute!");
   } else {
-    var vType = getValueDOM("sAttribTypeList");
+    //var vType = getValueDOM("sAttribTypeList");
+    var vType = getValueDOM("tAttribType");
+    var vValue = getValueDOM("tAttribDefault");
+    var vComment = getValueDOM("tAttribComment");
     if (!vType) {
       console.log("Select of Atttribute Type is undefined");
       vType = "Object";
     } else {
       console.log("Select of Atttribute Type '"+vType+"'");
-    }
-    createNewAttributeForm(vName,vType);
+    };
+
+    createNewAttributeForm(vName,vType,vValue,vComment);
     updateAttributesJS();
   }
 };
@@ -254,8 +258,20 @@ function createClassDefaultHash() {
     return vClassDefHash;
 };
 
+function createNewAttributeForm(pName,pType,pValue,pComment) {
+    var vAttrDef = pName + " = " + pValue;
+    var vAttributes = document.fCreator.tAttributes;
+    var vAttribs = reduceVarName(vAttributes.value);
+    if (vAttribs == "") {
+      vAttributes.value = vAttrDef;
+    } else {
+      vAttributes.value += "\n"+vAttrDef;
+    };
+    saveAttribJSON(pName,pType,pValue,pComment);
+    updateForm2JSON(getValueDOM("tClassname"));
+};
 
-function createNewAttributeForm(pName,pType) {
+function X_createNewAttributeForm(pName,pType,pValue) {
     var vAttrDef = pName+ " = ";
     if (isBasicClass(pType)) {
       var vClassDefHash = getBasicClassHash();

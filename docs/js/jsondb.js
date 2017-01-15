@@ -91,13 +91,11 @@ function loadAttribJSON (pAttribName) {
   };
 };
 
-function saveAttribJSON(pAttribName) {
-  var vAttribName = document.fCreator.tAttribName.value;
-  vAttribName = pAttribName || vAttribName;
-  vAttribName = getAttribName(vAttribName);
-  var vAttribType     = document.fCreator.sAttribTypeList.value || "";
-  var vAttribDefault  = document.fCreator.tAttribDefault.value || "";
-  var vAttribComment  = document.fCreator.tAttribComment.value || "";
+function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
+  var vAttribName     = pAttName || document.fCreator.tAttribName.value  || "";
+  var vAttribType     = pAttType || document.fCreator.tAttribType.value || "";
+  var vAttribDefault  = pAttDefault || document.fCreator.tAttribDefault.value || "";
+  var vAttribComment  = pAttComment || document.fCreator.tAttribComment.value || "";
   if (vAttribName != "") {
     checkClassJSON(vClassJSON);
     vClassJSON["AttribType"][vAttribName] = vAttribType;

@@ -17,6 +17,18 @@ vDOM_ID.push("tAttributes");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("tMethods");
 vTYPE_ID.push("Textarea");
+vDOM_ID.push("sAttribList");
+vTYPE_ID.push("Select");
+vDOM_ID.push("tAttribName");
+vTYPE_ID.push("String");
+vDOM_ID.push("tAttribType");
+vTYPE_ID.push("String");
+vDOM_ID.push("tAttribComment");
+vTYPE_ID.push("String");
+vDOM_ID.push("sAttribDefault");
+vTYPE_ID.push("String");
+vDOM_ID.push("sAttribTypeList");
+vTYPE_ID.push("Select");
 vDOM_ID.push("tMethodName");
 vTYPE_ID.push("String");
 vDOM_ID.push("tMethodComment");
@@ -57,6 +69,7 @@ function initCodeCreator() {
   //document.fCreator.sClassList.value;
   initClassJS(vSelectedClass);
   updateClasses();
+  vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
   //initLocalDB("vJSON_JS",pJSONDB)
 };
 

@@ -90,10 +90,14 @@
 	</tr>
 	<tr>
 		<td>
-			<b>Attributes</b><br>
-			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10">aParent = null
+			<b>Attributes</b>
+      <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateJSAttribs()" type="button">
+      <br>
+			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="">aParent = 1.2353
 aName = "domvar"
-aDOM = null</textarea>
+aDOM = null
+aCount = 0
+aLength = 23.5</textarea>
 		</td>
 		<td>
 			<b>Methods</b>
@@ -157,7 +161,7 @@ save(pContent)
       </option>
     </select>
     <b>Method Call:</b>
-    <input id="tMethodName" name="tMethodName" type="text" size="48" value="myMethod(pID)" readonly="readonly">
+    <input id="tMethodName" name="tMethodName" type="text" size="48" value="">
     <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
     <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
     <hr>
@@ -217,6 +221,8 @@ MatrixColumn
         <br>
         <textarea id="tBasicClassList" name="tBasicClassList" cols="45" rows="5">Boolean = false
 String = ""
+Integer = 0
+Float = 0.0
 Array = []
 Hash = {}</textarea>
       <textarea style="display:none" id="X_tBasicClassList" name="X_tBasicClassList" cols="45" rows="5">Undefined_Basic_Class</textarea>
@@ -297,9 +303,9 @@ Hash = {}</textarea>
 // and
 //   function my_method_MySuperClass(...) { .....
 
-// With the following line '____CLASSNAME___' inherits from '___SUPERCLASS___'
-// ____CLASSNAME___.prototype = new ___SUPERCLASS___();
-// This line could substitute the super class
+// With the following line '___CLASSNAME___' inherits from '___SUPERCLASSNAME___'
+// ___CLASSNAME___.prototype = new ___SUPERCLASSNAME___();
+// This line could substitute the super class call in the following constructor
 
 function ___CLASSNAME___ () {
 ___SUPERCLASS___

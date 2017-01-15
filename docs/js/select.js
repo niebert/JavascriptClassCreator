@@ -8,12 +8,12 @@ function selectClass() {
   updateForm2Class(vCurrentClass);
   if (vJSON_JS["ClassList"][vClass]) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
-    vClassJSON = vJSON_JS["ClassList"][vClass];
   } else {
     console.log("selectClass()-Call: Undefined Class '"+vClass+"' - use old class '"+vCurrentClass+"'.");
     vClass = vCurrentClass;
-    vClassJSON = vJSON_JS["ClassList"][vClass];
   };
+  vJSON_JS["SelectedClass"] = vClass;
+  vClassJSON = vJSON_JS["ClassList"][vClass];
   clearForm4Class();
   createClassJS(vClass); // if necessary
   fillForm4Class(vClass);
@@ -72,22 +72,19 @@ function selectJSAttribs() {
   //get SELECT AttribName value
   var vAttribName = getValueDOM("sAttribList");
   console.log("selectJSAttribs() - AttribName='"+vAttribName+"'");
-  // set MethodName Input Window
-  document.fCreator.tAttribName.value = vAttribName;
-  //vClassJSON.AttribList[vAttribName]
-  var vAttArr = ["AttribComment","AttribTypeList","AttribDefault"];
   var vID = "";
   var vValue = "";
+  var vAttArr = ["AttribComment","AttribType","AttribDefault"];
   for (var i = 0; i < vAttArr.length; i++) {
     vID = vAttArr[i];
-    document.getElementById("t"+vAttArr[i])
-  }
-  var vType = vClassJSON["AttribType"][vAttribName];
-  var vParam = vClassJSON["AttribDefault"][vAttribName];
-  var vComment = vClassJSON["AttribComment"][vAttribName];
+    vValue = vClassJSON[vID][vAttribName] || "Undefined vClassJSON['"+vID+"']['"+vAttribName+"']";
+    console.log("["+vID+"]='"+vValue+"'");
+    write2value("t"+vID,vValue)
+  };
+  write2value("tAttribName",vAttribName);
+  write2value("sAttribTypeList",vClassJSON["AttribType"][vAttribName]);
   //load method code from  vJSON_JS if exists
-  //and write method code to TEXTAREA
-  loadAttribJSON(vAttribName);
+  //loadAttribJSON(vAttribName);
   saveJSON2LocalStorage();
 }
 

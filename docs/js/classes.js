@@ -163,6 +163,7 @@ function getMethodComment(pMethodWithParams) {
 
 function getMethodCode(pMethodWithParams) {
   var vMethodName = getMethodName(pMethodWithParams);
+  //return vClassJSON["MethodCode"][vMethodName] || "undefined Code '"+pMethodWithParams+"'";
   return vClassJSON["MethodCode"][vMethodName] || "";
 };
 
@@ -246,7 +247,19 @@ function createNewAttribJS() {
   }
 };
 
-
+function createNewMethodJS() {
+  // get name of Attributes
+  var vName = document.fCreator.tMethodName.value;
+  if (existsMethodForm(vName)) {
+    alert("Method '"+vName+"' already exists!\nPlease change name of method!");
+  } else {
+    //var vType = getValueDOM("sAttribTypeList");
+    var vMethodCode = getValueDOM("tMethodCode");
+    var vMethodComment = getValueDOM("tMethodComment");
+    createNewMethodForm(vName,vType,vValue,vComment);
+    updateMethodsJS();
+  }
+};
 function createClassDefaultHash() {
     var vClassArray = getClassArray();
     var vClassDefHash = getBasicClassHash();
@@ -320,6 +333,57 @@ function getAttribNameArray() {
   };
   return vAttribArray;
 };
+
+function getAttribTypeHash(pAttHash) {
+  var vTypeHash = {};
+  for (var iName in pAttHash) {
+    if (pAttHash.hasOwnProperty(iName)) {
+      vTypeHash[iName] = determineAttType(pAttHash[iName]);
+      console.log("Type of '"+iName+"' is '"+vTypeHash[iName]+"'");
+    }
+  };
+  return vTypeHash;
+};
+
+function getAttribCommentHash(pAttHash) {
+  var vHash = {};
+  for (var iName in pAttHash) {
+    if (pAttHash.hasOwnProperty(iName)) {
+      vHash[iName] = "";
+      vHash[iName] = "Comment '" +iName + "' Type: "+ determineAttType(pAttHash[iName]+"");
+    }
+  }
+  return vHash;
+};
+
+function determineAttType(pValue) {
+  var vType = "";
+  var vValue = pValue.replace(/^[\s\t\n]+/g,"");
+  if (vValue.indexOf("\"")==0) {
+    vType = "String";
+  } else if (vValue.indexOf("'")==0) {
+    vType = "String";
+  } else if (vValue.indexOf("{")==0) {
+    vType = "Hash";
+  } else if (vValue.indexOf("[")==0) {
+    vType = "Array";
+  } else if (vValue.indexOf("true")==0) {
+    vType = "Boolean";
+  } else if (vValue.indexOf("false")==0) {
+    vType = "Boolean";
+  } else if (vValue.match(/^new[\s\t]+/)) {
+    vValue  = vValue.replace(/^new[\s\t]+/,"");
+    var vPos = vValue.indexOf("(");
+    if (vPos > 0) {
+      vType = reduceVarName(vValue.substr(0,vPos-1));
+    };
+  } else if (vValue.match(/^[0-9]+$/)) {
+     vType = "Integer";
+   } else if (vValue.match(/^[0-9]+\.?[0-9]*$/)) {
+      vType = "Float";
+   };
+  return vType;
+}
 
 function getAttribDefaultHash() {
   var vAttrib 	= document.fCreator.tAttributes.value;
@@ -471,7 +535,8 @@ function getString2ClassArray(pString) {
 }
 
 function removeEmptyLines(pString) {
-  return pString.replace(/^[\s\t]*[\r\n]/gm,"");
+  pString = pString.replace(/^[\s\t]*[\r\n]/gm,"");
+  return pString.replace(/\n[\s\t]*$/gm,"");
 };
 
 

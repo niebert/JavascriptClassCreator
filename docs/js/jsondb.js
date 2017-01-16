@@ -70,17 +70,20 @@ function updateJSAttribs() {
 };
 
 function updateJSMethods() {
+  var vMethodNameArr = getMethodNameArray();
   var vMethodArray    = getMethodArray();
   vMethodArray = checkJSMethods(vMethodArray);
   // load tMethods definitions and create the options of the SELECT Box
   console.log("Update JS Methods");
-  var vOptions = createOptions(vMethodArray);
-  var vMethodName = document.fCreator.tMethodName.value;
-  var vMethodsTextarea = document.fCreator.tMethods.value;
-  if (vMethodsTextarea.indexOf(vMethodName)>=0) {
-    console.log("Keep old Method in display");
-  } else {
-    loadMethodJSON(vMethodArray[0]);
+  var vOptions = createOptions4Array(vMethodNameArr);
+  var vMethodCall = document.fCreator.tMethodName.value;
+  var vMethodName = getMethodName(vMethodCall);
+  if (vMethodName != "") {
+    if (vMethodArray[vMethodName]) {
+      loadMethodJSON(vMethodNameArray[0]);
+    } else {
+      console.log("updateJSMethods()-Call  '"+vMethodName+"' undefined in MethodArray");
+    }
   };
   // id="sMethodList" of Select Box
   write2innerHTML("sMethodList",vOptions);

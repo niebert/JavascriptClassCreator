@@ -1,11 +1,11 @@
-function createOptions(pArray) {
+function createOptions4Array(pArray) {
   var vOptions = "";
   if (pArray) {
     for (var i = 0; i < pArray.length; i++) {
         vOptions +="<option>"+pArray[i]+"</option>\n";
     };
   } else {
-    console.log("ERROR: createOptions()-Call pArray undefined");
+    console.log("ERROR: createOptions4Array()-Call pArray undefined");
   }
   return vOptions;
 };
@@ -14,7 +14,7 @@ function createMethodSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createMethodSelect()-Call");
   var vArray = getMethodNameArray();
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sMethodList",vOptions);
   var vMethHash = getMethodHash();
   var vMethCodeHash = vClassJSON["MethodCode"];
@@ -30,7 +30,7 @@ function createAttribSelect() {
   var vAttDefaultHash = getAttribDefaultHash();
   var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
   console.log("createAttribSelect()-Call: vArray[0]="+vArray[0]);
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribList",vOptions);
   write2value("tAttribName",vArray[0]);
   write2value("tAttribDefault",vAttDefaultHash[vArray[0]]);
@@ -49,7 +49,7 @@ function saveForm2ClassJSON() {
     write2value(vDOM_ID[i],"");
   };
   var vArray = getAttribNameArray();
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribList",vOptions)
 };
 
@@ -57,7 +57,7 @@ function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createAttribTypeSelect()-Call");
   var vArray = getClassTypeArray(); //classes.js 418
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
   var vName = vArray[0];
   if (vArray.length>0) {
@@ -71,7 +71,7 @@ function createClassSelect(pArray) {
   // get all Methods in JSON Database of all Classes
   console.log("createClassSelect()-Call");
   var vArray = pArray || getClassArray();
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
 };
 
@@ -79,7 +79,7 @@ function createClassTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createClassSelect()-Call");
   var vArray = getClassTypeArray();  //classes.js 418
-  var vOptions = createOptions(vArray);
+  var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
 };
 

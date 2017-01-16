@@ -249,17 +249,29 @@ function createNewAttribJS() {
 
 function createNewMethodJS() {
   // get name of Attributes
-  var vName = document.fCreator.tMethodName.value;
+  var vMethCall = getValueDOM("tMethodName");
+  var vName = getName4Method(vMethCall);
   if (existsMethodForm(vName)) {
     alert("Method '"+vName+"' already exists!\nPlease change name of method!");
+    //var vMethHash = getMethodHash();
+    //vMethHash[vName] = vMethCall;
   } else {
     //var vType = getValueDOM("sAttribTypeList");
-    var vMethodCode = getValueDOM("tMethodCode");
-    var vMethodComment = getValueDOM("tMethodComment");
-    createNewMethodForm(vName,vType,vValue,vComment);
+    vClassJSON["MethodCode"][vName] = "";
+    vClassJSON["MethodComment"][vName] = "";
+    var vMethodList = getValueDOM("tMethods");
+    vMethodList = removeEmptyLines(vMethodList);
+    var vCR = "\n";
+    if (reduceVarName(vMethodList) == "") {
+      vCR = "";
+    };
+    vMethodList += vCR + vMethCall;
+    write2value("tMethods",vMethodList);
+    createMethodSelect(); //dom.js:13
     updateMethodsJS();
   }
 };
+
 function createClassDefaultHash() {
     var vClassArray = getClassArray();
     var vClassDefHash = getBasicClassHash();
@@ -305,6 +317,16 @@ function existsAttribForm(pName) {
   var vAttribHash = getAttribDefaultHash();
   var vRet = false;
   if (vAttribHash[pName]) {
+    vRet = true
+  };
+  return vRet;
+}
+
+function existsMethodForm(pName) {
+  console.log("existsMethodForm('"+pName+"')");
+  var vMethHash = getMethodHash();
+  var vRet = false;
+  if (vMethHash[pName]) {
     vRet = true
   };
   return vRet;
@@ -681,7 +703,7 @@ function updateClasses() {
       };
     };
   };
-  var vOptions = createOptions(vOptionArray);
+  var vOptions = createOptions4Array(vOptionArray);
   write2value("sClassList",vOptions);
   write2value("tClassList",vOptionArray.join("\n"));
 };

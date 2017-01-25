@@ -173,8 +173,8 @@ function getAttributes4Class() {
 	//return  vAttribArray;
   return getAttribArray();
 };
-function updateAttributeDefinition(pAttribName,pNewDefinition) {
-  var vAttHash = getAttribDefaultHash();
+function updateAttributeDefinition(pAttribName,pNewDefinition,pClass) {
+  var vAttHash = getAttribDefaultHash(pClass);
   replaceAttributeDefinition(vAttHash,pAttribName,pNewDefinition);
   var vAttArr = convertHash2Array(vAttHash)
 };
@@ -210,7 +210,8 @@ function replaceAttributeDefinition(pAttHash,pAttribName,pNewDefinition) {
 };
 
 function isAttribNameDefined(pAttribName) {
-  var vAttHash = getAttribDefaultHash();
+  var vClass = getValueDOM("tClassname");
+  var vAttHash = getAttribDefaultHash(vClass);
   if (vAttHash.hasOwnProperty(pAttribName)) {
     return true;
   } else {
@@ -241,7 +242,6 @@ function createNewAttribJS() {
     } else {
       console.log("Select of Atttribute Type '"+vType+"'");
     };
-
     createNewAttributeForm(vName,vType,vValue,vComment);
     updateAttributesJS();
   }
@@ -314,7 +314,8 @@ function X_createNewAttributeForm(pName,pType,pValue) {
 };
 
 function existsAttribForm(pName) {
-  var vAttribHash = getAttribDefaultHash();
+  var vClass = getValueDOM("tClassname");
+  var vAttribHash = getAttribDefaultHash(vClass);
   var vRet = false;
   if (vAttribHash[pName]) {
     vRet = true
@@ -333,7 +334,7 @@ function existsMethodForm(pName) {
 }
 
 function getAttribNameArray() {
-  console.log("Call: getAttribNameArray()");
+  console.log("Call: getAttribNameArray() parse Attributes from Form");
   var vAttrib 	= document.fCreator.tAttributes.value;
   //alert(vAttrib);
   vAttrib = removeEmptyLines(vAttrib);
@@ -372,11 +373,34 @@ function getAttribCommentHash(pAttHash) {
   for (var iName in pAttHash) {
     if (pAttHash.hasOwnProperty(iName)) {
       vHash[iName] = "";
-      vHash[iName] = "Comment '" +iName + "' Type: "+ determineAttType(pAttHash[iName]+"");
-    }
-  }
+      vHash[iName] = getComment4Attrib(iName,pAttHash[iName]);
+    };
+  };
   return vHash;
 };
+
+function updateAttribType4Form() {
+  var vDefault = getValueDOM("tAttribDefault");
+  var vType = determineAttType(vDefault);
+  write2value("tAttribType",vType);
+}
+
+function updateAttribTypeComment4Form() {
+  var vName = getValueDOM("tAttribName");
+  var vDefault = getValueDOM("tAttribDefault");
+  if (existsAttribForm(vName)) {
+    console.log("updateAttribTypeComment4Form() - Variable exisits - no update of Attritbute Type and Comment");
+  } else {
+    var vComment = getComment4Attrib(vName,vDefault);
+    var vType = determineAttType(vDefault);
+    write2value("tAttribType",vType);
+    write2value("tAttribComment",vComment);
+  }
+}
+
+function getComment4Attrib(pName,pValue) {
+  return "Comment '" +pName + "' Type: "+ determineAttType(pValue)+" ";
+}
 
 function determineAttType(pValue) {
   var vType = "";
@@ -397,7 +421,7 @@ function determineAttType(pValue) {
     vValue  = vValue.replace(/^new[\s\t]+/,"");
     var vPos = vValue.indexOf("(");
     if (vPos > 0) {
-      vType = reduceVarName(vValue.substr(0,vPos-1));
+      vType = reduceVarName(vValue.substr(0,vPos));
     };
   } else if (vValue.match(/^[0-9]+$/)) {
      vType = "Integer";
@@ -407,8 +431,9 @@ function determineAttType(pValue) {
   return vType;
 }
 
-function getAttribDefaultHash() {
-  var vAttrib 	= document.fCreator.tAttributes.value;
+function getAttribDefaultHash(pAttributes) {
+  // pAttributes is an optional String for creating the Hash from
+  var vAttrib = pAttributes || getValueDOM("tAttributes");
   vAttrib = removeEmptyLines(vAttrib);
   var vAttribArray    = vAttrib.split(/\n/);
   var vLine = "";
@@ -709,11 +734,11 @@ function updateClasses() {
 };
 
 function clearForm4Class(pClassName) {
-  //var vClassname = pClassName || getValueDOM("tClassname");
+  var vClassName = pClassName || ""; //getValueDOM("tClassname");
   for (var i = 0; i < vDOM_ID.length; i++) {
     write2value(vDOM_ID[i],"");
   };
-  write2value("tClassname",pClassName);
+  write2value("tClassname",vClassName);
 };
 function X_updateForm2Class(pClassName) {
   console.log("updateForm2Class('"+pClassName+"')-Call");

@@ -15,8 +15,9 @@ function selectClass() {
   vJSON_JS["SelectedClass"] = vClass;
   vClassJSON = vJSON_JS["ClassList"][vClass];
   clearForm4Class();
-  createClassJS(vClass); // if necessary
+  createCode4JSON_JS(vJSON_JS);
   fillForm4Class(vClass);
+  createClassJS(vClass); // if necessary
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect();

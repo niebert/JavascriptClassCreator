@@ -1,5 +1,5 @@
-<!DOCTYPE html PUBLIC "-//w3c//dtd html 4.0 transitional//en">
-<html><head>
+<html>
+  <head>
    <meta http-equiv="content-type" content="text/html; charset=WINDOWS-1252" >
    <meta http-equiv="author" content="Engelbert Niehaus">
    <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
@@ -35,218 +35,265 @@
   <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
   <meta name="generator" content="Bluefish 2.2.2" >
-  <title>Javascript DOM Class Generator</title>
+  <link href="jquery/jquery-ui.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="css/jqueryinit.css">
+<title>Javascript DOM Class Generator</title>
 
 </head>
 
-<body style="font-family:Arial,Verdana; font-size:12pt; color:black" bgcolor="white">
+<body  bgcolor="white">
 <center><h1>Javascript DOM Class Generator</h1>
 <a href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3</a> <hr>
 <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
-<br>
 <form name="fCreator">
-<input type="button" onclick="saveLocalStorage('all')" value="Save Local Storage">
----
-<input type="button" onclick="clearLocalStorage('all')" value="Clear Local Storage">
 <br>
-<table bgcolor="#A9BCF5" border="1">
-	<tbody>
+<div id="tabs">
+	<ul>
+    <li><a href="#tabs-0">Main</a></li>
+    <li><a href="#tabs-1">Class</a></li>
+		<li><a href="#tabs-2">Attributes</a></li>
+    <li><a href="#tabs-3">Methods</a></li>
+    <li><a href="#tabs-4">Code</a></li>
+    <li><a href="#tabs-5">JSON</a></li>
+	</ul>
+  <!-- MAIN -->
+  <div id="tabs-0">
+    <table bgcolor="#A9BCF5" border="1" width="80%">
+      <tbody>
+        <tr>
+          <td  colspan="2" align="center" bgcolor="#C0C0C0"  align="center">
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
+</td></tr>
     <tr>
-      <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-          <font size="+2">
-            <b>
-              Class Select
-              <select id="sClassList" name="sClassList" onchange="selectClass()">
-                <option>UndefClass</option>
-              </select>
-            </b>
-          </font>
-  		</td>
-    </tr>
-    <tr>
-		<td>
-		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text">
-    <b>Create:</b>
-    <button id="bCreateNewClass" onclick="createNewClass();return false">New</button>
-		</td>
-		<td>
-		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text"> <br>leave empty if this class does not inherit from a super class.
-		</td>
-	</tr>
-	<!-- <tr>
-		<td colspan=2 align="center">
-		<b>DOM Type:</b> <input name="tDOMType" value="DIV" type="text">
-		<b>DOM Display:</b> <input name="tDOMDisplay" value="DOMDISPLAY" type="text">
-		<b>DOM Edit:</b> <input name="tDOMEdit" value="DOMEDIT" type="text">
-		</td>
-	</tr> -->
-	<tr>
-		<td>
-		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text">
-		</td>
-		<td>
-		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text">
-		</td>
-	</tr>
-	<tr>
-		<td>
-			<b>Attributes</b>
-      <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateJSAttribs()" type="button">
-      <br>
-			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="">aParent = 1.2353
-aName = "domvar"
-aDOM = null
-aCount = 0
-aLength = 23.5</textarea>
-		</td>
-		<td>
-			<b>Methods</b>
-      <input name="bUpdateMethods" value=" Update Methods " onclick="updateJSMethods()" type="button">
-      <br>
-			<textarea name="tMethods" id="tMethods" cols="60" rows="10">init(pParent)
-create()
-link2dom()
-load()
-save(pContent)
-			</textarea>
-    </td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-        <font size="+2"><b>Attribute Definition</b></font>
-		</td>
-  </tr>
-    <tr>
-      <td colspan="2" align="center">
-      <b>Select Attribute</a>
-      <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
-        <option>
-          undefined_attrib_list
-        </option>
-      </select>
-      <b>Select Type:</b>
-      <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()">
-        <option>
-          BasicClasses
-        </option>
-        <option>
-          Classes
-        </option>
-      </select>
-      <!--
-      <input name="bSetAttribType" value=" Set Type " onclick="setAttribType4Select()" type="button">
-      -->
-    <br>
-      Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" >
-      <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
-      = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" >
-      Type:
-      <input id="tAttribType" name="tAttribType" type="text" size="25" value="" >
-    <br>
-        Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" >
-        <input name="bSaveAttribDef" value=" Save " onclick="saveAttribEdit()" type="button">
-      </td>
-	</tr>
-</tr>
-  <tr>
-    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-      <font size="+2"><b>Method Definition</b></font>
-  </td>
-</tr>
-<tr>
-		<td colspan="2" align="center">
-    <b>Method:</b> <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()">
-      <option>
-        undefined_method()
-      </option>
-    </select>
-    <b>Method Call:</b>
-    <input id="tMethodName" name="tMethodName" type="text" size="48" value="">
-    <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
-    <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
-    <hr>
-     <b>Method Comment</b><br>
-       <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5" onchange="updateForm2MethodComment()">  </textarea>
-     </td>
-   </tr>
-   <tr>
-   		<td colspan="2" align="center">
-    <b>Method Source Code:</b>
-    <br>
-    <b>Loop Calls:</b>
-    <input id="tArrayLoop" name="tArrayLoop" type="text" size="40" value="myArray">
-    <input id="tMethodLoop" name="tMethodLoop" type="text" size="48" value="myLoopMethod(pID)">
-    <select id="sArrayType" name="sArrayType" >
-      <option>
-        Array
-      </option>
-      <option>
-        Hash
-      </option>
-    </select>
-    <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
-    <br>
-			<textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15">    </textarea>
-		</td>
-	</tr>
-  <tr>
-    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-        <font size="+2"><b>Javascript Code</b></font>
-		</td>
-  </tr>
-  <tr>
-		<td colspan="2" align="center">
-      <b>Generate Code:</b>
-    <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
-    <hr>
-			<textarea name="tOutput" id="tOutput" cols="125" rows="20">			</textarea>
-		</td>
-	</tr>
-	<tr>
-		<td colspan="2" align="center">
-        <b>List of defined Classes</b>
-        <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
-        <br>
-        <textarea id="tClassList" name="tClassList" cols="45" rows="5">DOMVar
-Matrix
-MatrixColumn
-        </textarea>
+  		<td colspan="2" align="center">
+          <b>List of defined Classes</b>
+          <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
+          <br>
+          <textarea id="tClassList" name="tClassList" cols="45" rows="5" style="font-family: monospace">DOMVar
+  Matrix
+  MatrixColumn
+          </textarea>
 
-		</td>
-	</tr>
-  <tr>
-		<td colspan="2" align="center">
-        <b>List of Basic Classes</b>
-        <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
-        <br>
-        <textarea id="tBasicClassList" name="tBasicClassList" cols="45" rows="5">Boolean = false
+  		</td>
+  	</tr>
+    <tr>
+  		<td colspan="2" align="center">
+          <b>List of Basic Classes</b>
+          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
+          <br>
+          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="5" style="font-family: monospace">Boolean = false
 String = ""
 Integer = 0
 Float = 0.0
 Array = []
 Hash = {}</textarea>
-      <textarea style="display:none" id="X_tBasicClassList" name="X_tBasicClassList" cols="45" rows="5">Undefined_Basic_Class</textarea>
-    </td>
-	</tr>
+</td>
 </tr>
-  <tr>
-    <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-      <font size="+2"><b>JSON Code</b></font>
-  </td>
-</tr>
-<tr>
-		<td colspan="2" align="center">
-      <b>Generate Code:</b>
-    <input name="bCreatorButton" value=" Create JSON Code " onclick="createCode4JSON_JS(vJSON_JS)" type="button">
-    <hr>
-      <b>JSON Database</b><br>
-      <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10">
-      </textarea>
-		</td>
-	</tr>
-</tbody></table>
-</center>
-
+</tbody>
+</table>
+</div>
+<!-- CLASS -->
+  <div id="tabs-1" class="tabmenu">
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+              <font size="+2">
+                <b>
+                  Class Select
+                  <select id="sClassList" name="sClassList" onchange="selectClass()">
+                    <option>UndefClass</option>
+                  </select>
+                </b>
+              </font>
+      		</td>
+        </tr>
+        <tr>
+    		<td>
+    		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace">
+        <b>Create:</b>
+        <button id="bCreateNewClass" onclick="createNewClass();return false">New</button>
+    		</td>
+    		<td>
+    		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace">
+        <br>leave empty if this class does not inherit from a super class.
+    		</td>
+    	</tr>
+    	<!-- <tr>
+    		<td colspan=2 align="center">
+    		<b>DOM Type:</b> <input name="tDOMType" value="DIV" type="text">
+    		<b>DOM Display:</b> <input name="tDOMDisplay" value="DOMDISPLAY" type="text">
+    		<b>DOM Edit:</b> <input name="tDOMEdit" value="DOMEDIT" type="text">
+    		</td>
+    	</tr> -->
+    	<tr>
+    		<td>
+    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace">
+    		</td>
+    		<td>
+    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace">
+    		</td>
+    	</tr>
+    	<tr>
+    		<td>
+    			<b>Attributes</b>
+          <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateForm2AttribJSON()" type="button">
+          <br>
+    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace">aParent = 1.2353
+aName = "domvar"
+aDOM = null
+aCount = 0
+aLength = 23.5</textarea>
+    		</td>
+    		<td>
+    			<b>Methods</b>
+          <input name="bUpdateMethods" value=" Update Methods " onclick="updateJSMethods()" type="button">
+          <br>
+    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pParent)
+create()
+link2dom()
+load()
+save(pContent)
+    			</textarea>
+        </td>
+      </tr>
+    </tbody>
+    </table>
+  </div>
+  <!-- ATTRIBUTES -->
+  <div id="tabs-2"  class="tabmenu">
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+              <font size="+2"><b>Attribute Definition</b></font>
+      		</td>
+        </tr>
+          <tr>
+            <td colspan="2" align="center">
+            <b>Select Attribute</b>
+            <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
+              <option>
+                undefined_attrib_list
+              </option>
+            </select>
+            <b>Select Type:</b>
+            <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()">
+              <option>
+                BasicClasses
+              </option>
+              <option>
+                Classes
+              </option>
+            </select>
+            <!--
+            <input name="bSetAttribType" value=" Set Type " onclick="setAttribType4Select()" type="button">
+            -->
+          <br>
+            Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
+            <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
+            = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" onchange="updateAttribType4Form()" style="font-family: monospace">
+            Type:
+            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace">
+          <br>
+              Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace">
+              <input name="bSaveAttribDef" value=" Save " onclick="saveAttribEdit()" type="button">
+            </td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- METHOD -->
+  <div id="tabs-3"  class="tabmenu">
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+            <font size="+2"><b>Method Definition</b></font>
+        </td>
+      </tr>
+      <tr>
+      		<td colspan="2" align="center">
+          <b>Method:</b> <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()">
+            <option>
+              undefined_method()
+            </option>
+          </select>
+          <b>Method Call:</b>
+          <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
+          <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
+          <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
+          <hr>
+           <b>Method Comment</b><br>
+             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5" onchange="updateForm2MethodComment()" style="font-family: monospace">  </textarea>
+           </td>
+         </tr>
+         <tr>
+         		<td colspan="2" align="center">
+          <b>Method Source Code:</b>
+          <br>
+          <b>Loop Calls:</b>
+          <input id="tArrayLoop" name="tArrayLoop" type="text" size="40" value="myArray" style="font-family: monospace">
+          <input id="tMethodLoop" name="tMethodLoop" type="text" size="48" value="myLoopMethod(pID)" style="font-family: monospace">
+          <select id="sArrayType" name="sArrayType" >
+            <option>
+              Array
+            </option>
+            <option>
+              Hash
+            </option>
+          </select>
+          <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
+          <br>
+      			<textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace">    </textarea>
+      		</td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+  <!-- CODE -->
+  <div id="tabs-4" class="tabmenu" style="background-color:red">
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+              <font size="+2"><b>Javascript Code</b></font>
+      		</td>
+        </tr>
+        <tr>
+      		<td colspan="2" align="center">
+            <b>Generate Code:</b>
+          <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
+          <hr>
+      			<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace">			</textarea>
+      		</td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+  <div id="tabs-5" class="tabmenu">
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+            <font size="+2"><b>JSON Code</b></font>
+        </td>
+      </tr>
+      <tr>
+      		<td colspan="2" align="center">
+            <b>Generate Code:</b>
+          <input name="bCreatorButton" value=" Create JSON Code " onclick="createCode4JSON_JS(vJSON_JS)" type="button">
+          <hr>
+            <b>JSON Database</b><br>
+            <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace">
+            </textarea>
+      		</td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 <div id="htmlStorage" hidden="hidden">
   <h2>HTML Storage</h2>
@@ -383,14 +430,21 @@ ___METHODCODE___
 <div id="result" style="color:red">
 </div>
 </form>
-<center>
-<script>
-  initCodeCreator();
-  createCode4JSON_JS(vJSON_JS);
-</script>
-Javascript Class Generator was developed 2012-16 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
-<br>
-<a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
 </center>
 
-</body></html>
+<center>
+  <script>
+    initCodeCreator();
+    createCode4JSON_JS(vJSON_JS);
+  </script>
+  <script src="jquery/external/jquery/jquery.js"></script>
+  <script src="jquery/jquery-ui.js"></script>
+  <script src="js/jqueryinit.js"></script>
+
+  Javascript Class Generator was developed 2012-16 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
+  <br>
+  <a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
+</center>
+
+</body>
+</html>

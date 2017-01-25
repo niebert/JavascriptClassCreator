@@ -117,6 +117,7 @@ function saveAttribEdit() {
     };
   };
   write2value("tAttributes",vOut);
+  createAttribSelect(vOut);
 }
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
@@ -186,17 +187,22 @@ function updateForm2MethodComment() {
 function updateForm2MethodNameParam() {
   console.log("updateForm2MethodNameParam()-Call");
 };
+
 function updateJSON2Form(pClass) {
-  console.log("updateJSON2Form('"+pClass+"')");
   var vClass = pClass || getSelectedClass();
+  console.log("updateJSON2Form('"+vClass+"')");
   // Set Selected with vClassJSON
-  vClassJSON = vJSON_JS["ClassList"][pClass];
+  vClassJSON = vJSON_JS["ClassList"][vClass];
   // updates form content in DOM with Class content
   for (var i = 0; i < vDOM_ID.length; i++) {
      write2value(vDOM_ID[i],vClassJSON[vDOM_ID[i]]);
   };
   // load the defined Attribute from Form
-  var vAttHash = getAttribDefaultHash();
+  // updateForm2MissingJSON(pClass);
+};
+
+function updateForm2MissingJSON(pClass) {
+  var vAttHash = getAttribDefaultHash(pClass);
   vClassJSON["AttribDefault"] = vAttHash;
   // Define Hash in Attribute Hash if undefined
   defineHashIfUndefined(vAttHash,"AttribType");
@@ -208,12 +214,12 @@ function updateJSON2Form(pClass) {
   };
   defineHashIfUndefined(vMethHash,"MethodCode");
   defineHashIfUndefined(vMethHash,"MethodComment");
-};
+}
 
 function updateForm2AttribJSON(pClass) {
   console.log("updateForm2AttribJSON('"+pClass+"')");
   var vClass = pClass || getSelectedClass();
-  var vAttHash = getAttribDefaultHash();
+  var vAttHash = getAttribDefaultHash(vClass);
   vClassJSON["AttribDefault"] = vAttHash;
   var vAttTypeHash = getAttribTypeHash(vAttHash); // classes.js:336
   // Define Hash in Attribute Hash if undefined

@@ -25,20 +25,21 @@ function createMethodSelect() {
 };
 
 
-function createAttribSelect() {
+function createAttribSelect(pAttributesTA) { // TA=TextArea
+  var vClass = getValueDOM("tClassname");
   var vArray = getAttribNameArray();
-  var vAttDefaultHash = getAttribDefaultHash();
+  var vAttDefaultHash = getAttribDefaultHash(vClass);
   var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
   console.log("createAttribSelect()-Call: vArray[0]="+vArray[0]);
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribList",vOptions);
-  write2value("tAttribName",vArray[0]);
-  write2value("tAttribDefault",vAttDefaultHash[vArray[0]]);
-  write2value("tAttribComment",vAttCommentHash[vArray[0]]);
+  write2value("tAttribName",vArray[0] || "");
+  write2value("tAttribDefault",vAttDefaultHash[vArray[0]] || "");
+  write2value("tAttribComment",vAttCommentHash[vArray[0]] || "");
 };
 
 function getSelectedClass() {
-  return getValueDOM("sClassList") || document.fCreator.tClassname.value || "UndefClass";
+  return getValueDOM("tClassname") || getValueDOM("sClassList") || "UndefClass";
 };
 
 function saveForm2ClassJSON() {
@@ -59,10 +60,11 @@ function createAttribTypeSelect() {
   var vArray = getClassTypeArray(); //classes.js 418
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
-  var vName = vArray[0];
+  var vName =  "";
   if (vArray.length>0) {
-    write2value("tAttribName",vName);
+    vName = vArray[0];
   };
+  write2value("tAttribName",vName);
   var vAttribHash = getAttribDefaultHash();
   write2value("tAttribDefault",vAttribHash[vName]);
 };

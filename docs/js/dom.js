@@ -19,18 +19,18 @@ function createMethodSelect() {
   var vMethHash = getMethodHash();
   var vMethCodeHash = vClassJSON["MethodCode"];
   var vMethCommentHash = vClassJSON["MethodComment"];
-  write2value("tMethodName",vMethHash[vArray[0]]);
-  write2value("tMethodCode",vMethCodeHash[vArray[0]]);
-  write2value("tMethodComment",vMethCommentHash[vArray[0]]);
+  write2value("tMethodName",vMethHash[vArray[0]] || "");
+  write2value("tMethodCode",vMethCodeHash[vArray[0]] || "");
+  write2value("tMethodComment",vMethCommentHash[vArray[0]] || "");
 };
 
 
-function createAttribSelect(pAttributesTA) { // TA=TextArea
+function createAttribSelect() { // TA=TextArea
   var vClass = getValueDOM("tClassname");
   var vArray = getAttribNameArray();
-  var vAttDefaultHash = getAttribDefaultHash(vClass);
+  var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
   var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
-  console.log("createAttribSelect()-Call: vArray[0]="+vArray[0]);
+  console.log("createAttribSelect()-Call: vArray[0]="+(vArray[0] || ""));
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribList",vOptions);
   write2value("tAttribName",vArray[0] || "");
@@ -41,6 +41,11 @@ function createAttribSelect(pAttributesTA) { // TA=TextArea
 function getSelectedClass() {
   return getValueDOM("tClassname") || getValueDOM("sClassList") || "UndefClass";
 };
+
+function getSelectedClassJSON(pClassName) {
+  var vSelectedClass = pClassName || getSelectedClass();
+  return vJSON_JS["ClassList"][vSelectedClass];
+}
 
 function saveForm2ClassJSON() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
@@ -65,7 +70,7 @@ function createAttribTypeSelect() {
     vName = vArray[0];
   };
   write2value("tAttribName",vName);
-  var vAttribHash = getAttribDefaultHash();
+  var vAttribHash = getForm2AttribDefaultHash(); //classes.js:484
   write2value("tAttribDefault",vAttribHash[vName]);
 };
 
@@ -73,6 +78,7 @@ function createClassSelect(pArray) {
   // get all Methods in JSON Database of all Classes
   console.log("createClassSelect()-Call");
   var vArray = pArray || getClassArray();
+  vArray.sort();
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
 };

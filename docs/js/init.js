@@ -25,7 +25,7 @@ vDOM_ID.push("tAttribType");
 vTYPE_ID.push("String");
 vDOM_ID.push("tAttribComment");
 vTYPE_ID.push("String");
-vDOM_ID.push("sAttribDefault");
+vDOM_ID.push("tAttribDefault");
 vTYPE_ID.push("String");
 vDOM_ID.push("sAttribTypeList");
 vTYPE_ID.push("Select");
@@ -71,6 +71,7 @@ function initCodeCreator() {
   updateClasses();
   vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
   //initLocalDB("vJSON_JS",pJSONDB)
+  write2innerHTML("titleClassName",getValueDOM("tClassname"));
 };
 
 function initFormClassList() {

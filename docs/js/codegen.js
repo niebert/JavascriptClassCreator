@@ -12,6 +12,20 @@ function getCode4JSON_JS(pJSONDB) {
   return JSON.stringify(pJSONDB, null, 4);
 };
 
+function exportMainHTML() {
+  var vHTML = getMainHTML();
+  write2value("tMainHTML",vHTML);
+}
+
+function getMainHTML() {
+    var vHTML = getValueDOM("tTplHTML");
+    // insert Library Import or Library SCRIPT-Tags with Code
+
+    // Insert Generated Pages
+
+    return vHTML;
+}
+
 function createCode4Class() {
 	var vString = "";
 	var vDate 			= getDate();

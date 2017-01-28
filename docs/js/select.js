@@ -21,6 +21,10 @@ function selectClass() {
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect();
+  var vClassName = getValueDOM("tClassname");
+  write2innerHTML("titleClassName",vClassName);
+  write2value("sClassList",vClassName);
+  $( "#tabClass" ).trigger( "click" );
 };
 
 function fillForm4Class(pClassName) {
@@ -68,8 +72,16 @@ function selectJSAttribType() {
   saveJSON2LocalStorage();
 };
 
+function getClassJSON(pClassName) {
+  var vClassName = pClassName || getValueDOM("tClassname");
+  console.log("getClassJSON('"+vClassName+"')");
+  return vJSON_JS["ClassList"][vClassName];
+}
+
 function selectJSAttribs() {
+  getClassJSON();
   saveAttribJSON();
+  vClassJSON = getClassJSON();
   //get SELECT AttribName value
   var vAttribName = getValueDOM("sAttribList");
   console.log("selectJSAttribs() - AttribName='"+vAttribName+"'");
@@ -78,7 +90,7 @@ function selectJSAttribs() {
   var vAttArr = ["AttribComment","AttribType","AttribDefault"];
   for (var i = 0; i < vAttArr.length; i++) {
     vID = vAttArr[i];
-    vValue = vClassJSON[vID][vAttribName] || "Undefined vClassJSON['"+vID+"']['"+vAttribName+"']";
+    vValue = vClassJSON[vID][vAttribName] || " " || "Undefined vClassJSON['"+vID+"']['"+vAttribName+"']";
     console.log("["+vID+"]='"+vValue+"'");
     write2value("t"+vID,vValue)
   };

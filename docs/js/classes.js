@@ -14,16 +14,49 @@ function createNewClass() {
     vFailed = createClassJS(vNewClassName);
     if (vFailed) {
       alert("Create New Class ["+vNewClassName+"] was NOT successful. Class already exists!");
+      selectClass(vNewClassName);
     } else {
-      append2value("tClassList", "\n"+vNewClassName);
+      var vClassArr = getClassArray();
+      vClassArr.push(vNewClassName);
+      write2value("tClassList", vClassArr.join("\n"));
+      updateClassSelector();
       updateClasses();
       updateJSON2Form(vNewClassName);
+      vSuccess = true;
+      //document.location.href = "#tabs-1";
+      $( "#tabClass" ).trigger( "click" );
     }
   } else {
     console.log("Create new Classes cancelled!");
   };
   return vSuccess;
 };
+
+function renameClassForm() {
+    var vOldClassName = vJSON_JS["SelectedClass"];
+    var vNewClassName = getValueDOM("tClassname");
+    console.log("Rename: Clas '"+vOldClassName+"' to '"+vNewClassName+"'");
+    if (vOldClassName != vNewClassName) {
+      //check if new ClassName exists
+      if (!existsClassJS(vNewClassName)) {
+        // rename Selected ClassName
+        vJSON_JS["SelectedClass"] = vNewClassName;
+        // rename Class
+        var vClasses = vJSON_JS["ClassList"];
+        vClasses[vNewClassName] = vJSON_JS["ClassList"][vOldClassName];
+        vClasses[vOldClassName] = undefined;
+        // update Class Select
+        //write2value("tClassList",vClassString);
+        updateJSON2ClassString();
+        createClassSelect();
+        console.log("Rename ClassName from '"+vOldClassName+"' to '"+vNewClassName+"' was successful");
+      } else {
+        alert("WARNING: ClassName '"+vNewClassName+"' already exists, rename operation cancelled!")
+      };
+    } else {
+      alert("WARNING: ClassName  '"+vNewClassName+"' unchanged!");
+    }
+}
 
 function initClassJS(pClass) {
   if (!pClass) {
@@ -174,7 +207,7 @@ function getAttributes4Class() {
   return getAttribArray();
 };
 function updateAttributeDefinition(pAttribName,pNewDefinition,pClass) {
-  var vAttHash = getAttribDefaultHash(pClass);
+  var vAttHash = getForm2AttribDefaultHash(pClass); //classes.js:484
   replaceAttributeDefinition(vAttHash,pAttribName,pNewDefinition);
   var vAttArr = convertHash2Array(vAttHash)
 };
@@ -211,7 +244,7 @@ function replaceAttributeDefinition(pAttHash,pAttribName,pNewDefinition) {
 
 function isAttribNameDefined(pAttribName) {
   var vClass = getValueDOM("tClassname");
-  var vAttHash = getAttribDefaultHash(vClass);
+  var vAttHash = getJSON2AttribDefaultHash(vClass);
   if (vAttHash.hasOwnProperty(pAttribName)) {
     return true;
   } else {
@@ -228,8 +261,11 @@ function getAttribArray() {
 
 function createNewAttribJS() {
   // get name of Attributes
-  var vName = document.fCreator.tAttribName.value;
-  if (existsAttribForm(vName)) {
+  var vName = getValueDOM("tAttribName");
+  if (reduceVarName(vName) == "") {
+    alert("Please enter the Name of the Variable!");
+    console.log("ERROR: Name Variable undefined - createNewAttribJS()");
+  } else if (existsAttribForm(vName)) {
     alert("Attribute '"+vName+"' already exists!\nPlease change name of attribute!");
   } else {
     //var vType = getValueDOM("sAttribTypeList");
@@ -243,7 +279,7 @@ function createNewAttribJS() {
       console.log("Select of Atttribute Type '"+vType+"'");
     };
     createNewAttributeForm(vName,vType,vValue,vComment);
-    updateAttributesJS();
+    updateAttributesJS(); //jsondb.js:57 no code in function body
   }
 };
 
@@ -315,7 +351,7 @@ function X_createNewAttributeForm(pName,pType,pValue) {
 
 function existsAttribForm(pName) {
   var vClass = getValueDOM("tClassname");
-  var vAttribHash = getAttribDefaultHash(vClass);
+  var vAttribHash = getForm2AttribDefaultHash(vClass); //classes.js:484
   var vRet = false;
   if (vAttribHash[pName]) {
     vRet = true
@@ -348,7 +384,7 @@ function getAttribNameArray() {
     vFound = vLine.indexOf("=");
     if (vFound > 0) {
       //console.log("'=' found in Line '"+vLine+"'");
-      vAttribArray[i] = vLine.substr(0,vFound-1);
+      vAttribArray[i] = reduceVarName(vLine.substr(0,vFound));
       console.log("New Setting vAttribArray[i]="+vAttribArray[i]);
     } else {
       console.log("'=' was not found '"+vAttribArray[i]+"' is undefined");
@@ -431,8 +467,36 @@ function determineAttType(pValue) {
   return vType;
 }
 
+function getJSON2AttribDefaultHash(pClassName) {
+    var vHash = null;
+    if (vJSON_JS["ClassList"]) {
+      if (vJSON_JS["ClassList"][pClassName]) {
+        vHash = vJSON_JS["ClassList"][pClassName]["AttribDefault"];
+      } else {
+        console.log("getJSON2AttribDefaultHash() - vJSON_JS['ClassList']['"+pClassName+"'] does not exist!");
+      }
+    } else {
+      console.log("getJSON2AttribDefaultHash() - vJSON_JS['ClassList'] does not exist!");
+    };
+    return vHash;
+};
+
+function getForm2AttribDefaultHash(pClassName) {
+  var vClassName = pClassName || getValueDOM("tClassname");
+  var vClassNameForm = getValueDOM("tClassname");
+  var vAttributes = getValueDOM("tAttributes");
+  var vHash = {};
+  if (pClassName && (vClassName == vClassNameForm)) {
+    vHash = getAttribDefaultHash(vAttributes);
+  } else {
+    console.log("ERROR: vClassName='"+vClassName+"' differs form current classname '"+vClassNameForm+"'");
+  };
+  return vHash;
+}
+
 function getAttribDefaultHash(pAttributes) {
   // pAttributes is an optional String for creating the Hash from
+  console.log("getAttribDefaultHash(pAttributes) pAttributes='"+pAttributes+"'");
   var vAttrib = pAttributes || getValueDOM("tAttributes");
   vAttrib = removeEmptyLines(vAttrib);
   var vAttribArray    = vAttrib.split(/\n/);
@@ -445,7 +509,7 @@ function getAttribDefaultHash(pAttributes) {
     vLine = vAttribArray[i];
     vFound = vLine.indexOf("=");
     if (vFound > 0) {
-      vVar = reduceVarName(vLine.substr(0,vFound))
+      vVar = reduceVarName(vLine.substr(0,vFound+1))
       vValue = vLine.substr(vFound+1,vLine.length);
       if (vVar != "") {
         vAttribHash[vVar] = vValue;
@@ -574,9 +638,33 @@ function getMethodParamHash() {
   return vRetHash;
 };
 
+function updateJSON2ClassString() {
+  var vClassString = getJSON2ClassString();
+  vClassString = sortStringLines(vClassString);
+  write2value("tClassList",vClassString);
+};
+
+function getJSON2ClassString() {
+  var vClassList = vJSON_JS["ClassList"];
+  var vClassString = "";
+  var vCR = "";
+  for (var iClassName in vClassList) {
+    if (vClassList[iClassName]) {
+      if (reduceVarName(iClassName) != "") {
+        vClassString += vCR + iClassName;
+        vCR = "\n";
+      } else {
+        console.log("getJSON2ClassString() - iClassName='"+iClassName+"' empty after reduceVarName()-Call!");
+      }
+    } else {
+      console.log("getJSON2ClassString() - iClassName='"+iClassName+"' undefined!");
+    }
+  };
+  return vClassString;
+}
 
 function getClassArray() {
-  var vClassString = document.fCreator.tClassList.value;
+  var vClassString = getValueDOM("tClassList");
   return getString2ClassArray(vClassString);
 }
 
@@ -601,8 +689,13 @@ function getString2ClassArray(pString) {
 }
 
 function removeEmptyLines(pString) {
+  //remove Empty Lines with CR at end
   pString = pString.replace(/^[\s\t]*[\r\n]/gm,"");
-  return pString.replace(/\n[\s\t]*$/gm,"");
+  //remove Empty Lines with CR at beginning
+  pString = pString.replace(/\n[\s\t]*$/gm,"");
+  // if remaining string is an empty line replace with ""
+  pString = pString.replace(/^[\s\t]*$/gm,"");
+  return pString
 };
 
 
@@ -654,7 +747,7 @@ function getBasicClassArray() {
 };
 
 function getBasicClassHash() {
-  var vClassList = document.fCreator.tBasicClassList.value;
+  var vClassList = getValueDOM("tBasicClassList");
   var vClassArray = vClassList.split(/\n/);
   var vClassHash = {};
   var vVar;
@@ -690,7 +783,7 @@ function X_splitAtEqual(pString) {
 }
 
 function updateBasicClasses() {
-  var vClassList = document.fCreator.tBasicClassList.value;
+  var vClassList = getValueDOM("tBasicClassList");
   var vClassArray = vClassList.split(/\n/);
   var vClassHash = {};
   var vVar;
@@ -712,7 +805,8 @@ function updateClasses() {
   // empty line in tClassList
   updateBasicClasses();
   vJSON_JS["BasicClasses"] = getBasicClassHash();
-  var vClassList = document.fCreator.tClassList.value;
+  var vClassList = getValueDOM("tClassList");
+  // document.fCreator.tClassList.value;
   var vClassArray = vClassList.split(/\n/);
   var vOptionArray = [];
   //var vClassHash = {};
@@ -731,6 +825,7 @@ function updateClasses() {
   var vOptions = createOptions4Array(vOptionArray);
   write2value("sClassList",vOptions);
   write2value("tClassList",vOptionArray.join("\n"));
+  updateClassSelector();
 };
 
 function clearForm4Class(pClassName) {

@@ -1,3 +1,8 @@
+function sortStringLines(pString) {
+	var vStringArr = pString.split("\n");
+	vStringArr.sort();
+	return vStringArr.join("\n");
+}
 
 function replaceStringReverse(pString,pReplace,pSearch)
 //###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"

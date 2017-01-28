@@ -37,24 +37,34 @@
   <meta name="generator" content="Bluefish 2.2.2" >
   <link href="jquery/jquery-ui.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/jqueryinit.css">
-<title>Javascript DOM Class Generator</title>
+<title>Javascript Class Generator</title>
 
 </head>
 
 <body  bgcolor="white">
-<center><h1>Javascript DOM Class Generator</h1>
-<a href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3</a> <hr>
-<b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
-<form name="fCreator">
+<center>
+  <form name="fCreator">
+  <font size="+3">Javascript Class Generator</font><br>
+      <font size="+2">
+        <b>Class:</b> <font color="blue" id="titleClassName">ClassName</font>
+      </font>
+    <br>
+      <b>
+      Select
+      <select id="sClassList" name="sClassList" onchange="selectClass()">
+        <option>UndefClass</option>
+      </select>
+    </b>
+  </font>
 <br>
 <div id="tabs">
 	<ul>
-    <li><a href="#tabs-0">Main</a></li>
-    <li><a href="#tabs-1">Class</a></li>
-		<li><a href="#tabs-2">Attributes</a></li>
-    <li><a href="#tabs-3">Methods</a></li>
-    <li><a href="#tabs-4">Code</a></li>
-    <li><a href="#tabs-5">JSON</a></li>
+    <li><a id="tabMain" href="#tabs-0">Main</a></li>
+    <li><a id="tabClass" href="#tabs-1">Class</a></li>
+		<li><a id="tabAttributes" href="#tabs-2">Attributes</a></li>
+    <li><a id="tabMethods" href="#tabs-3">Methods</a></li>
+    <li><a id="tabCode" href="#tabs-4">Code</a></li>
+    <li><a id="tabJSON" href="#tabs-5">JSON</a></li>
 	</ul>
   <!-- MAIN -->
   <div id="tabs-0">
@@ -66,29 +76,42 @@
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
 </td></tr>
     <tr>
-  		<td colspan="2" align="center">
+  		<td colspan="1" align="center">
           <b>List of defined Classes</b>
           <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
           <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="5" style="font-family: monospace">DOMVar
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar
   Matrix
   MatrixColumn
           </textarea>
-
   		</td>
-  	</tr>
-    <tr>
-  		<td colspan="2" align="center">
+  	<!-- </tr>
+    <tr> -->
+  		<td colspan="1" align="center">
           <b>List of Basic Classes</b>
           <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
           <br>
-          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="5" style="font-family: monospace">Boolean = false
+          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace">Boolean = false
 String = ""
 Integer = 0
 Float = 0.0
 Array = []
 Hash = {}</textarea>
 </td>
+</tr>
+<tr>
+  <td colspan="2"  align="center">
+  <!-- td  align="center" -->
+    <b>Create:</b>
+    <button id="bCreateNewClassMain" onclick="createNewClass();return false">New Class</button>
+    <button id="bExportMainHTML" onclick="exportMainHTML();return false">Export HTML</button>
+  </td>
+</tr>
+<tr>
+  <td colspan="2" align="center">
+    <b>HTML Page:</b><br>
+    <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10"></textarea>
+  </td>
 </tr>
 </tbody>
 </table>
@@ -101,10 +124,7 @@ Hash = {}</textarea>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
               <font size="+2">
                 <b>
-                  Class Select
-                  <select id="sClassList" name="sClassList" onchange="selectClass()">
-                    <option>UndefClass</option>
-                  </select>
+                  Class Definition
                 </b>
               </font>
       		</td>
@@ -112,8 +132,8 @@ Hash = {}</textarea>
         <tr>
     		<td>
     		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace">
-        <b>Create:</b>
-        <button id="bCreateNewClass" onclick="createNewClass();return false">New</button>
+        <b>Update:</b>
+        <button id="bRenameClass" onclick="renameClassForm();return false">Rename</button>
     		</td>
     		<td>
     		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace">
@@ -297,14 +317,25 @@ save(pContent)
 
 <div id="htmlStorage" hidden="hidden">
   <h2>HTML Storage</h2>
-  The following text areas define templates for the JavaScript Class Generation. If want to use
+  The following text areas define templates for HTML and the JavaScript Class Generation. If want to use
   differente templates for the javascript class generator, just download the file and edit the HTML
   source code. Use your Browser to save the html-file to your local filesystem.
   It is pure HTML with the javascript functions included in the file. So it will be easy to modify
   the source code according to your requirements and constraints.
   <hr>
+  <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;html&gt;
+    &lt;head&gt;
+      &lt;title&gt;App LSAC&lt;/title&gt;
+___LIBRARIES___
+    &lt;/head&gt;
+    &lt;body&gt;
+___PAGES___
+    &lt;/body&gt;
+&lt;/html&gt;
+  </teaxtarea>
+
   <b>Class Header</b><br>
-    <textarea name="tHeader" cols="125" rows="10">//#################################################################
+    <textarea id="tHeader" name="tHeader" cols="125" rows="10">//#################################################################
 //# Javascript Class: ___CLASSNAME___()
 //#       SuperClass: ___SUPERCLASSNAME___
 //#   Class Filename: ___CLASSFILENAME___
@@ -368,7 +399,7 @@ ___ATTRIBUTES___
     </textarea>
   <hr>
   <b>Inherit from SuperClass</b><br>
-   <textarea name="tSuperClass" cols="125" rows="3">    //--------------------------------------
+   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">    //--------------------------------------
       //---Super Class------------------------
       this.SuperClass = ___SUPERCLASSNAME___;
       this.SuperClass();
@@ -376,7 +407,7 @@ ___ATTRIBUTES___
 </textarea>
 <hr>
 <b>Class Tail</b><br>
-  <textarea name="tClassTail" cols="125" rows="3">
+  <textarea id="tClassTail" name="tClassTail" cols="125" rows="3">
 }
 //-------------------------------------------
 //---End Definition of Class-----------------
@@ -385,7 +416,7 @@ ___ATTRIBUTES___
 </textarea>
 <hr>
   <b>Method Header</b><br>
-    <textarea name="tMethodHeader" cols="125" rows="10">
+    <textarea id="tMethodHeader" name="tMethodHeader" cols="125" rows="10">
 
 //#################################################################
 //# Method: ___METHODNAME___()
@@ -441,9 +472,14 @@ ___METHODCODE___
   <script src="jquery/jquery-ui.js"></script>
   <script src="js/jqueryinit.js"></script>
 
+ <hr>
+  <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
+ <br>
   Javascript Class Generator was developed 2012-16 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
   <br>
   <a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
+ <br>
+  <a href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3</a>
 </center>
 
 </body>

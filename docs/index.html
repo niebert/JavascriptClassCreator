@@ -22,6 +22,7 @@
    <script language="javascript" src="js/codegen.js"></script>
    <script language="javascript" src="js/date.js"></script>
    <script language="javascript" src="js/dom.js"></script>
+   <script language="javascript" src="js/iframe.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
@@ -67,7 +68,7 @@
     <li><a id="tabJSON" href="#tabs-5">JSON</a></li>
 	</ul>
   <!-- MAIN -->
-  <div id="tabs-0">
+  <div id="tabs-0" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="80%">
       <tbody>
         <tr>
@@ -110,14 +111,16 @@ Hash = {}</textarea>
 <tr>
   <td colspan="2" align="center">
     <b>HTML Page:</b><br>
-    <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10"></textarea>
+    <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
+    <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
+
   </td>
 </tr>
 </tbody>
 </table>
 </div>
 <!-- CLASS -->
-  <div id="tabs-1" class="tabmenu">
+  <div id="tabs-1" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1">
       <tbody>
         <tr>
@@ -182,8 +185,8 @@ save(pContent)
     </table>
   </div>
   <!-- ATTRIBUTES -->
-  <div id="tabs-2"  class="tabmenu">
-    <table bgcolor="#A9BCF5" border="1">
+  <div id="tabs-2"  class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="90%">
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
@@ -195,7 +198,6 @@ save(pContent)
             <b>Select Attribute</b>
             <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
               <option>
-                undefined_attrib_list
               </option>
             </select>
             <b>Select Type:</b>
@@ -225,7 +227,7 @@ save(pContent)
     </table>
   </div>
   <!-- METHOD -->
-  <div id="tabs-3"  class="tabmenu">
+  <div id="tabs-3"  class="tabmenu" style="background-color:#f2f2f2" >
     <table bgcolor="#A9BCF5" border="1">
       <tbody>
         <tr>
@@ -237,11 +239,11 @@ save(pContent)
       		<td colspan="2" align="center">
           <b>Method:</b> <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()">
             <option>
-              undefined_method()
             </option>
           </select>
           <b>Method Call:</b>
           <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
+          <input id name="bSaveMethodDef" value="Save" onclick="saveMethodCallJS()" type="button">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
           <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
           <hr>
@@ -251,11 +253,11 @@ save(pContent)
          </tr>
          <tr>
          		<td colspan="2" align="center">
-          <b>Method Source Code:</b>
+          <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
           <br>
           <b>Loop Calls:</b>
-          <input id="tArrayLoop" name="tArrayLoop" type="text" size="40" value="myArray" style="font-family: monospace">
-          <input id="tMethodLoop" name="tMethodLoop" type="text" size="48" value="myLoopMethod(pID)" style="font-family: monospace">
+          <input id="tArrayLoop" name="tArrayLoop" type="text" size="20" value="myArray" style="font-family: monospace">
+          <input id="tMethodLoop" name="tMethodLoop" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace">
           <select id="sArrayType" name="sArrayType" >
             <option>
               Array
@@ -266,15 +268,16 @@ save(pContent)
           </select>
           <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
           <br>
-      			<textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace">    </textarea>
+            <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
+	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none">    </textarea>
       		</td>
       	</tr>
       </tbody>
     </table>
   </div>
   <!-- CODE -->
-  <div id="tabs-4" class="tabmenu" style="background-color:red">
-    <table bgcolor="#A9BCF5" border="1">
+  <div id="tabs-4" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="95%">
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
@@ -286,14 +289,15 @@ save(pContent)
             <b>Generate Code:</b>
           <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
           <hr>
-      			<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace">			</textarea>
+          <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
+        	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
       		</td>
       	</tr>
       </tbody>
     </table>
   </div>
-  <div id="tabs-5" class="tabmenu">
-    <table bgcolor="#A9BCF5" border="1">
+  <div id="tabs-5" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1"  width="90%">
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
@@ -306,7 +310,8 @@ save(pContent)
           <input name="bCreatorButton" value=" Create JSON Code " onclick="createCode4JSON_JS(vJSON_JS)" type="button">
           <hr>
             <b>JSON Database</b><br>
-            <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace">
+            <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
+          <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
             </textarea>
       		</td>
       	</tr>
@@ -332,7 +337,7 @@ ___LIBRARIES___
 ___PAGES___
     &lt;/body&gt;
 &lt;/html&gt;
-  </teaxtarea>
+  </textarea>
 
   <b>Class Header</b><br>
     <textarea id="tHeader" name="tHeader" cols="125" rows="10">//#################################################################

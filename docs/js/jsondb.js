@@ -70,18 +70,21 @@ function updateJSAttribs() {
 };
 
 function updateJSMethods() {
-  var vMethodNameArr = getMethodNameArray();
-  var vMethodArray    = getMethodArray();
+  var vMethodNameArr   = getMethodNameArray();
+  var vMethodHash      = getMethodHash();
+  var vMethodNameArray = getMethodNameArray();
+  var vMethodArray     = getMethodArray();
   vMethodArray = checkJSMethods(vMethodArray);
   // load tMethods definitions and create the options of the SELECT Box
   console.log("Update JS Methods");
   var vOptions = createOptions4Array(vMethodNameArr);
-  var vMethodCall = document.fCreator.tMethodName.value;
+  var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   if (vMethodName != "") {
-    if (vMethodArray[vMethodName]) {
-      loadMethodJSON(vMethodNameArray[0]);
+    if (vMethodHash[vMethodName]) {
+      loadMethodJSON(vMethodName);
     } else {
+      loadMethodJSON(vMethodNameArray[0]);
       console.log("updateJSMethods()-Call  '"+vMethodName+"' undefined in MethodArray");
     }
   };
@@ -90,15 +93,15 @@ function updateJSMethods() {
 };
 
 function loadAttribJSON (pAttribName) {
-  var vAttribName = document.fCreator.tAttribName.value;
+  var vAttribName = getValueDOM("tAttribName");
   vAttribName = pAttribName || vAttribName;
-  document.fCreator.tAttribName.value = vAttribName;
+  write2value("tAttribName",vAttribName);
   vAttribName = getAttribName(vAttribName); //without Parameters
   if (vAttribName != "") {
     console.log("loadAttribJSON() Call - Attribute '"+vAttribName+"' defined");
-    document.fCreator.sAttribTypeList.value = vClassJSON["AttribType"][vAttribName] || "";
-    document.fCreator.tAttribDefault.value  = vClassJSON["AttribDefault"][vAttribName] || "";
-    document.fCreator.tAttribComment.value  = vClassJSON["AttribComment"][vAttribName] || "";
+    write2value("sAttribTypeList", vClassJSON["AttribType"][vAttribName] || "");
+    write2value("tAttribDefault",  vClassJSON["AttribDefault"][vAttribName] || "");
+    write2value("tAttribComment",  vClassJSON["AttribComment"][vAttribName] || "");
   } else {
     alert("loadAttribJSON() Call - Attrib Name undefined");
     console.log("loadAttribJSON() Call - Attrib Name undefined");
@@ -140,17 +143,49 @@ function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
 function loadMethodJSON (pMethodName) {
   var vMethodName = getValueDOM("tMethodName");
   vMethodName = pMethodName || vMethodName;
-  write2value("tMethodName",vMethodName);
+  var vMethodHash = getMethodHash();
+  var vMethodCall = vMethodHash[vMethodName] || pMethodName + "(???)";
+  write2value("tMethodName",vMethodCall);
+  write2innerHTML("titleMethodName",vMethodCall);
   vMethodName = getMethodName(vMethodName); //without Parameters
   if (vMethodName != "") {
     console.log("loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
-    write2value("tMethodCode",vClassJSON["MethodCode"][vMethodName] || "");
+    write2editor("MethodCode",vClassJSON["MethodCode"][vMethodName] || "");
     write2value("tMethodComment",vClassJSON["MethodComment"][vMethodName] || "");
   } else {
     alert("loadMethodJSON() Call - Method Name undefined");
     console.log("loadMethodJSON() Call - Method Name undefined");
   };
 };
+
+
+function saveMethodCallJS() {
+  var vMethodCall = getValueDOM("tMethodName");
+  var vMethodName = getMethodName(vMethodCall);
+  var vMethodHash = getMethodHash();
+  var vMethodCode    = getEditorValue("iMethodCode");
+  var vMethodComment = getValueDOM("tMethodComment");
+  if (vMethodName != "") {
+    if (vMethodHash[vMethodName]) {
+      vMethodHash[vMethodName] = vMethodCall;
+      write2JSON("tMethods",convertHash2String(vMethodHash));
+      vClassJSON = getClassJSON();
+      vClassJSON["MethodCode"][vMethodName] = vMethodCode;
+      vClassJSON["MethodComment"][vMethodName] = vMethodComment;
+      updateJSMethods();
+    } else {
+      console.log("saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
+      createNewMethodJS();
+    }
+  };
+}
+
+function write2JSON(pID,pValue) {
+  console.log("write2JSON('"+pID+"',pValue)-Call");
+  vClassJSON = getClassJSON();
+  vClassJSON[pID] = pValue;
+  write2value(pID,pValue);
+}
 
 function saveMethodJSON(pMethodName) {
   var vMethodName = getValueDOM("tMethodName");
@@ -241,7 +276,7 @@ function updateForm2MethodJSON(pClass) {
   var vMethHash = {};
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = "";
-    vMethHash[vMethArr[i]] = "Code for " + vMethArr[i];
+    vMethHash[vMethArr[i]] = "// Code for " + vMethArr[i];
   };
   defineHashIfUndefined(vMethHash,"MethodCode");
   for (var i = 0; i < vMethArr.length; i++) {

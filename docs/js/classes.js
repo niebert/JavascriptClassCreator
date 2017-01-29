@@ -44,7 +44,7 @@ function renameClassForm() {
         // rename Class
         var vClasses = vJSON_JS["ClassList"];
         vClasses[vNewClassName] = vJSON_JS["ClassList"][vOldClassName];
-        vClasses[vOldClassName] = undefined;
+        delete vClasses[vOldClassName];
         // update Class Select
         //write2value("tClassList",vClassString);
         updateJSON2ClassString();
@@ -221,6 +221,11 @@ function convertAttributeHash2Array(pHash) {
   };
   return vRetArr;
 };
+
+function convertHash2String(pHash) {
+  var vArr = convertHash2Array(pHash);
+  return vArr.join("\n");
+}
 
 
 function convertHash2Array(pHash) {
@@ -543,7 +548,7 @@ function getAttribDefaultArray() {
 }
 
 function getMethodArray() {
-  var vMethods    	  = document.fCreator.tMethods.value;
+  var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
 	return vMethodArray;
@@ -569,7 +574,7 @@ function getName4SepChar(pChar,pLine) {
 };
 
 function getMethodHash() {
-  var vMethods    	  = document.fCreator.tMethods.value;
+  var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
   var vLine = "";
@@ -583,11 +588,10 @@ function getMethodHash() {
       };
   };
   return vRetHash;
-
 };
 
 function getMethodNameArray() {
-  var vMethods    	  = document.fCreator.tMethods.value;
+  var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
   var vLine = "";
@@ -602,7 +606,7 @@ function getMethodNameArray() {
 };
 
 function getMethodParamArray() {
-  var vMethods    	  = document.fCreator.tMethods.value;
+  var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
   var vLine = "";
@@ -616,7 +620,7 @@ function getMethodParamArray() {
 };
 
 function getMethodParamHash() {
-  var vMethods    	  = document.fCreator.tMethods.value;
+  var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
   var vRetHash = {};

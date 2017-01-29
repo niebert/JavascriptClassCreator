@@ -8,6 +8,10 @@ The code is stored in the docs/ folder, because the settings of the repository f
 * https://niebert.github.com/JavascriptClassCreator
 All the repositories in "niebert" are mainly designed for rapid prototyping, exploring features or as demos for a final sound implementation.
 
-## ToDo 
+## ToDo
 * implement createNewMethodJS() in jsondb.js  which adds a new method definition to tMethods
 * updating an Attribute does not work in saveAttribJSON() call without parameters in jsondb.js:94
+
+
+## Acknowledgement
+* Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)

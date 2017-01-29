@@ -2,7 +2,8 @@
 function createCode4JSON_JS(pJSONDB) {
   if (pJSONDB) {
     console.log("Create JSON Code from vJSON_JS");
-    document.fCreator.tJSONDB.value = getCode4JSON_JS(pJSONDB);
+    write2editor("JSONDB",getCode4JSON_JS(pJSONDB));
+    //document.fCreator.tJSONDB.value = getCode4JSON_JS(pJSONDB);
   } else {
     console.log("createCode4JSON_JS()-Call Error pJSONDB undefined");
   }
@@ -14,7 +15,8 @@ function getCode4JSON_JS(pJSONDB) {
 
 function exportMainHTML() {
   var vHTML = getMainHTML();
-  write2value("tMainHTML",vHTML);
+  //write2value("tMainHTML",vHTML);
+  write2editor("MainHTML",vHTML);
 }
 
 function getMainHTML() {
@@ -106,6 +108,6 @@ function createCode4Class() {
 	};
 	vOutput += vClassTail;
 	vOutput = replaceString(vOutput,"___CLASSNAME___",vClassname);
-	document.fCreator.tOutput.value = vOutput;
+  write2editor("Output",vOutput);
 	alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vClassFile+"'!");
 };

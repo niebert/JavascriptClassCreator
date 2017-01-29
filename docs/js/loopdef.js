@@ -15,5 +15,9 @@ function appendLoopDefinition() {
   // Replace MethodCall
   var vMethodName = getValueDOM("tMethodLoop");
   vTemplate = replaceString(vTemplate,"___LOOPMETHOD___",vMethodName);
-  document.fCreator.tMethodCode.value +="\n"+vTemplate;
+  var vEditor = getIFrameEditor("iMethodCode");
+  vEditor.insert("\n"+vTemplate);
+  var vOutput = getEditorValue("iMethodCode");
+  write2value("tMethodCode",vOutput);
+  //document.fCreator.tMethodCode.value +="\n"+vTemplate;
 };

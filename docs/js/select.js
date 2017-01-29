@@ -113,7 +113,8 @@ function selectJSMethods() {
   //load method code from  vJSON_JS if exists
   //and write method code to TEXTAREA
   loadMethodJSON(vMethodName);
-  document.fCreator.tMethodName.value = vMethodHash[vMethodName];
+  write2value("tMethodName",vMethodHash[vMethodName]);
+  write2value("titleMethodName",vMethodHash[vMethodName]);
   saveJSON2LocalStorage();
 };
 

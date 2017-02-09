@@ -82,7 +82,18 @@ function createClassSelect(pArray) {
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
+  write2innerHTML("sClassCode",vOptions)
 };
+
+function createDatabaseSelect(pArray) {
+  // Create a Select for all Databases
+  console.log("createDatabaseSelect()-Call");
+  var vArray = pArray || getDatabaseArray();
+  vArray.sort();
+  var vOptions = createOptions4Array(vArray);
+  write2innerHTML("sDatabases",vOptions)
+};
+
 
 function createClassTypeSelect() {
   // get all Methods in JSON Database of all Classes
@@ -96,3 +107,8 @@ function createMethodSelect4JSON() {
   // get all Methods in JSON Database of all Classes
   console.log("createMethodSelect()-Call");
 };
+
+function writeClassTitle(pClassName) {
+  write2innerHTML("titleClassName",pClassName);
+  write2innerHTML("codeClassName",pClassName);
+}

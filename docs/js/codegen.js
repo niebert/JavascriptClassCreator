@@ -1,4 +1,9 @@
 
+function createProjectJSON() {
+  hide("bSaveJSON");
+  createCode4JSON_JS(vJSON_JS);
+}
+
 function createCode4JSON_JS(pJSONDB) {
   if (pJSONDB) {
     console.log("Create JSON Code from vJSON_JS");
@@ -19,12 +24,70 @@ function exportMainHTML() {
   write2editor("MainHTML",vHTML);
 }
 
+function getLibrariesHTML() {
+  var vOut = "";
+  vOut += getGlobalLibrariesHTML()+"\n";
+  vOut += getClassLibrariesHTML();
+  return vOut;
+}
+
+function getGlobalLibrariesHTML() {
+  var vSCRIPT = getValueDOM("tTplSCRIPT");
+  var vArrJS = getGlobalLibArray();
+  var vOut = "      <!-- JavaScript Libraries -->\n";
+  for (var i = 0; i < vArrJS.length; i++) {
+    vOut += replaceString(vSCRIPT,"___LIBERARY___","js/"+vArrJS[i]+".js");
+  };
+  return vOut;
+}
+
+function getClassLibrariesHTML() {
+  var vSCRIPT = getValueDOM("tTplSCRIPT");
+  var vArrJS = getDatabaseArray();
+  var vOut = "      <!-- Classes Javscript-Libs -->\n";
+  var vCList = vJSON_JS["ClassList"];
+  var vLibName = "";
+  for (var iClass in vCList) {
+    if (vCList.hasOwnProperty(iClass)) {
+      vLibName = iClass.toLowerCase();
+      vOut += replaceString(vSCRIPT,"___LIBERARY___","js/"+vLibName+".js");
+    }
+  };
+  return vOut;
+}
+
+function getPagesHTML() {
+  var vPAGE   = getValueDOM("tTplPAGE");
+  var vBUTTON = getValueDOM("tTplBUTTON");
+  var vQUIT   = getValueDOM("tTplQUIT");
+  var vOut = "";
+  var vOutPage = "";
+  var vPageList = getPageListArray();
+  var vPL = null;
+  for (var i = 0; i < vPageList.length; i++) {
+    vPL = vPageList[i];
+    //vOutPage = replaceString(vPAGE,"___LIBERARY___","--")
+  }
+  return vOut;
+}
+
+function getDatabasesHTML() {
+  var vSCRIPT = getValueDOM("tTplSCRIPT");
+  var vArrDB = getDatabaseArray();
+  var vOut = "      <!-- JSON Databases -->\n";
+  for (var i = 0; i < vArrDB.length; i++) {
+    vOut += replaceString(vSCRIPT,"___LIBERARY___","db/"+vArrDB[i]+".js");
+  };
+  return vOut;
+}
+
+
 function getMainHTML() {
-    var vHTML = getValueDOM("tTplHTML");
+    var vHTML   = getValueDOM("tTplHTML");
     // insert Library Import or Library SCRIPT-Tags with Code
-
+    vHTML = replaceString(vHTML,"___LIBRARIES___",getDatabasesHTML()+"\n"+getLibrariesHTML());
     // Insert Generated Pages
-
+    vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML()+"\n");
     return vHTML;
 }
 

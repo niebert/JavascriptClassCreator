@@ -1,0 +1,733 @@
+
+
+<!DOCTYPE html>
+<html manifest="disapp.appcache">
+   <!-- html -->
+   <head>
+      <meta charset="iso-8859-1">
+      <title>Submit Data</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+      <link href="css/ios_inspired.css" rel="stylesheet" />
+      <script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
+      <script type="text/javascript" src="js/login.js"></script>
+      <script type="text/javascript" src="js/fullscreen.js"></script>
+      <script type="text/javascript" src="js/fuzzycontrol.js"></script>
+      <script type="text/javascript" src="js/fuzzymain.js"></script>
+      <script type="text/javascript" src="js/fuzzylayer.js"></script>
+      <script type="text/javascript" src="js/jsondb.js"></script>
+      <script type="text/javascript" src="js/geolocation.js"></script>
+      <script type="text/javascript" src="js/htmlrequest.js"></script>
+      <script type="text/javascript" src="js/localstorage.js"></script>
+      <script type="text/javascript" src="js/mathcode.js"></script>
+      <script type="text/javascript" src="js/navigate.js"></script>
+      <script type="text/javascript" src="js/openwin.js"></script>
+      <script type="text/javascript" src="js/settings.js"></script>
+      <script type="text/javascript" src="js/showhide.js"></script>
+      <script type="text/javascript" src="js/string.js"></script>
+      <script type="text/javascript" src="js/syncserver.js"></script>
+      <script type="text/javascript" src="js/urlgen.js"></script>
+      <script type="text/javascript" src="js/writedom.js"></script>
+      <!-- Database JSON File -->
+      <script type="text/javascript" src="db/dbdisapp.js"></script>
+      <script type="text/javascript" src="db/dblocalsurvey.js"></script>
+      <script type="text/javascript" src="db/dbresponse.js"></script>
+      <script type="text/javascript" src="db/dbfeedback.js"></script>
+      <script>
+         //------------BEGIN iOS-Inspired------------
+         // all dialog buttons should close their parent dialog
+         $(".ui-dialog button").live("click", function() {
+         	$("[data-role='dialog']").dialog("close");
+         });
+         $(document).on("mobileinit", function(){
+           $.mobile.defaultPageTransition = "slide";
+         });
+         //--------------END iOS-Inspired------------
+        </script>
+        <script>
+        //-----INIT DisApp -----
+            var vDebug = 0;
+            initResponseDB();
+      </script>
+      <script src="js/jquery.mobile-1.2.0.min.js"></script>
+      <link href="css/ios_post.css" rel="stylesheet" />
+   </head>
+   <body class="bodyui">
+
+    <!--
+    =============================================
+             WELCOME SCREEN
+    =============================================
+     -->
+
+    <div data-role="page" id="pWelcome">
+        <div data-role="header" data-position="fixed">
+            <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+           <h1>Welcome</h1>
+           <a href="#" onclick="if (quitApp()) window.close();" data-theme="c">Quit</a>
+      </div>
+        <!-- /header -->
+      <div data-role="content">
+        <h1>Welcome to DisApp</h1>
+        <b>Disapp</b> will give you an idea of the risk of catching dengue while at home,
+        based on your answers to the 5 questions you will be asked at the beginning.
+        <b>Disapp</b> will also give you some practical suggestions of
+        how to bring down your risk for catching dengue while you are at home.
+        Finally, please fill out the feedback form at the end so we can make
+        <b>Disapp</b> even better for everyone! Thank you for using <b>Disapp</b>!
+        <table width="95%" cellspacing="10px">
+          <tr>
+            <td>
+                <b>Online:</b>
+            </td>
+            <td>
+                <div id="tdOnlineMode">
+                ???
+                </div>
+              </td>
+            <td>
+              <select name="sOnlineMode" id="sOnlineMode" data-role="X_slider" onchange="selectOnlineMode(this.value)">
+                <option value="-"></option>
+                <option value="no">set Offline</option>
+                <option value="yes">set Online</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td  colspan="2">
+              <button onclick="gotoPageJQ('Disclaimer');return false"> Disclaimer </button>
+            </td>
+            <td>
+              <button onclick="checkDisclaimer4Submit();return false">Questionnaire</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+    <!--
+    =============================================
+             HOME
+    =============================================
+     -->
+
+   <div data-role="page" id="pHome">
+      <div data-role="header" data-position="fixed">
+         <!-- <a href="javascript:window.close()" data-theme="a">Close</a> -->
+         <a href="#" onclick="gotoPageJQ('Welcome');return false" data-theme="a">Welcome</a>
+         <h1>Home - DisApp</h1>
+         <a href="#" onclick="if (quitApp()) window.close();" data-theme="c">Quit</a>
+      </div>
+      <!-- /header -->
+     <div data-role="content">
+
+       <p>Welcome to the DisApp. Feel free to have a look around and report and bugs to the <a href="https://github.com/niebert/DisApp/issues" target="_blank">GitHub issues page</a>.</p>
+
+       <ul data-role="listview" data-inset="true">
+         <li><a href="#" onclick="gotoSubmitForm('app');return false">Submit Observation</a></li>
+         <!-- <li><a href="#pSubmitData" onclick="gotoSubmitQuestionnaire()">Submit Observation</a></li> -->
+         <li><a href="#" onclick="gotoSubmitForm('response');return false">Ways to Stop Dengue</a></li>
+         <li><a href="#" onclick="gotoSubmitForm('feedback');return false">DisApp Feedback</a></li>
+         <li><a href="#" onclick="gotoPageJQ('CollectedData');return false" >Collected Data</a></li>
+         <li id="MenuMaplocation"><a href="javascript:openWinHTML('map4location.html','wMapLocation');return false">Show Map Location</a></li>
+         <li><a href="#" onclick="gotoPageJQ('Settings');return false" >Settings</a></li>
+         <li><a href="#" onclick="gotoPageJQ('Acknowledgements');return false">Acknowledgements</a></li>
+         <!--
+         <li><a href="#pThankYou">Thank you</a></li>
+          -->
+       </ul>
+       <p>Please use Firefox for App (<a href="https://www.mozilla.org" target="_blank">Firefox-Homepage</a>)</p>
+
+       <!-- p>Press key [F] to enter Fullscreen Mode</p -->
+
+       <br />
+       <button class="ui-btn-plain" onclick="if (quitApp()) window.close();">Quit App</button>
+       <!-- quitApp() defined in navigate.js -->
+     <br />
+
+
+     </div>
+   </div>
+   <!--
+   =============================================
+            SUBMIT DATA
+   =============================================
+    -->
+
+   <div data-role="page" id="pSubmitData">
+       <div data-role="header" data-position="fixed">
+         <a href="#"  onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+          <h1>Submit Data</h1>
+          <a href="#" onclick="processForm('app');return false" data-theme="a">Submit</a>
+
+          <!--
+          <a href="#" onclick="clearQuest('app');return false" data-theme="a">Clear</a>
+        -->
+         </div>
+       <!-- /header -->
+       <div data-role="content">
+          <script  type="text/javascript">
+                printHeader("app");
+           </script>
+             <ul  id="ulJSONDB" data-role='listview' data-inset='true'>
+               <li>
+                 <div id="vNavQuestAPP" >
+                   <table width="100%">
+                     <tr  align="center">
+                       <td id="footerAPPprev">
+                         <button id="bPreviousAPP" onclick="gotoPreviousQuestion('app');return false" data-theme="c">&lt;&lt;</button>
+                       </td>
+                       <td id="footerAPPcount">
+                         [1]
+                       </td>
+                       <td id="footerAPPnext">
+                         <button id="bNextAPP" onclick="gotoNextQuestion('app');return false" data-theme="c">&gt;&gt;</button>
+                       </td>
+                     </tr>
+                   </table>
+                 </div>
+              </li>
+                <script  type="text/javascript">
+                   printAllQuestions();
+                </script>
+                <li>
+                  <input type="button" id="bSubmitOK" name="bSubmitOK" value='   Submit   ' onclick="processForm('app');return false">
+                </li>
+              </ul>
+             <!-- input type="button" name=bOK value='   Save   ' -->
+          <br />
+          <label id="app_errormsg" style="color:red"></label>
+
+          <!-- SUBMIT BUTTON Qestionnaire -->
+
+       </div>
+       <!-- /ui-body wrapper -->
+    </div>
+
+    <!--
+    =============================================
+           OFFLINE DATA
+    =============================================
+     -->
+
+   <div data-role="page" id="pLocalStorageDB">
+      <div data-role="header" data-position="fixed">
+          <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+           <h1>Local Storage </h1>
+           <a href="#" onclick="if (quitApp()) window.close();" data-theme="c">Quit</a>
+        </div>
+      <!-- /header -->
+      <div data-role="content">
+        <h1>Offline Data:</h1>
+
+     </div>
+   </div>
+
+     <!--
+     =============================================
+            DISCLAIMER
+     =============================================
+      -->
+       <div data-role="page" id="pDisclaimer">
+         <div data-role="header" data-position="fixed">
+            <a href="#"  onclick="gotoPageJQ('Welcome');return false"  data-theme="a">Welcome</a>
+            <h1>Disclaimer</h1>
+            <a href="#"  onclick="gotoPageJQ('Home');return false"  data-theme="a">Home</a>
+         </div>
+         <!-- /header -->
+         <div data-role="content">
+           <h3>Disclaimer and Terms of Use:</h3>
+                  <b>Disapp</b> is purely meant as a free educational tool
+                 to teach users about dengue risk and how to reduce it.
+                 It is not meant to diagnose dengue infection or
+                 to be a substitute for qualified medical advice.
+                 No guarantee is made as to the accuracy of the provided risk estimate
+                 and the developers are not liable in any way for any issues that may arise
+                 from your use of <b>Disapp</b>. The collected data will be submitted
+                 to the following server.
+                 <table width="100%">
+                   <tr>
+                     <td>
+                       <b>Server:</b>
+                     </td>
+                      <td>
+                        <div id="disclaimer_submiturl" style="display:none"></div>
+                        <input type='text' id='save_submiturl' name="submiturl" value='---' readonly="readonly">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <b>Database:</b>
+                      </td>
+                      <td>
+                        <div id="disclaimer_database" name="datbase" style="display:none"></div>
+                        <input type='text' id='save_database' name="database"  value='---' readonly="readonly">
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <b>Connect Status:</b>
+                      </td>
+                      <td>
+                        <div id="OffOnlineTag"> ??? </div>
+                      </td>
+                    </tr>
+                 </table>
+          <!-- SLIDER ACCEPT TERMS OF USER -->
+            <div data-role="fieldcontain">
+              <table cellspacing="10px">
+                <tr>
+                  <td>
+                    <label for="slider">I accept the above disclaimer and terms of use:</label>
+                  </td>
+                  <td>
+                    <select name="sDisclaimer" id="sDisclaimer" data-role="slider" onchange="saveLocalVar(this.id,this.value)">
+                       <option value="no">NO</option>
+                       <option value="yes">YES</option>
+                    </select>
+                  </td>
+                </tr>
+              </table>
+              <button onclick="checkDisclaimer4Submit();return false"> Submit Data </button>
+            </div> <!-- fieldcontain -->
+          </div> <!-- content -->
+      </div>
+
+      <!--
+      =============================================
+               RESPONSE
+      =============================================
+       -->
+
+       <div data-role="page" id="pResponse">
+          <div data-role="header" data-position="fixed">
+            <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+             <h1>Risk Response</h1>
+          </div>
+          <!-- /header -->
+          <div data-role="content">
+            <h1>Risk Response:</h1>
+            <h3>Your calculated RISK is:</h3>
+            <center>
+              <h2 id="valDefuzzyRiskA" style="color:red">
+                  Risk undefined?
+              </h2>
+           </center>
+          <hr>
+           <table bgcolor="white" cellspacing="10px">
+             <tr>
+               <td>
+                 &nbsp;
+               </td>
+               <td>
+                 <b>Disapp</b> has calculated your risk about dengue risk and how to reduce it.
+                 It is not meant to diagnose dengue infection or
+                 to be a substitute for qualified medical advice.
+                 No guarantee is made as to the accuracy of the provided risk estimate
+                 and the developers are not liable in any way for any issues that may arise
+                 from your use of <b>Disapp</b>.
+            	  </td>
+                <td>
+                 &nbsp;
+               </td>
+              </tr>
+            </table>
+            <button id="bResponseOptions" onclick="gotoPageJQ('ResponseOptions');return false">Response Options</button>
+          </div>
+        </div>
+        <!--
+        =============================================
+                 RESPONSE OPTIONS
+        =============================================
+         -->
+
+       <div data-role="page" id="pResponseOptions">
+          <div data-role="header" data-position="fixed">
+            <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+              <h1>Response Options</h1>
+            <a href="#" onclick="processForm('response');return false" data-theme="a">Submit</a>
+
+              <!--
+              <a href="#" onclick="gotoPageJQ('Response')" data-theme="a">Back</a>
+            -->
+          </div>
+          <!-- /header -->
+         <div  data-role="content">
+           <script  type="text/javascript">
+                 printHeader("response");
+            </script>
+            <ul  id="ulResponseDB" data-role='listview' data-inset='true'>
+
+              <li>
+                <div id="vNavQuestRESPONSE" >
+                  <table width="100%">
+                    <tr  align="center">
+                      <td id="footerRESPONSEprev">
+                        <button id="bPreviousRESPONSE" onclick="gotoPreviousQuestion('response');return false" data-theme="c">&lt;&lt;</button>
+                      </td>
+                      <td id="footerRESPONSEcount">
+                        [1]
+                      </td>
+                      <td id="footerRESPONSEnext">
+                        <button id="bNextRESPONSE" onclick="gotoNextQuestion('response');return false" data-theme="c">&gt;&gt;</button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+             </li>
+                  <script  type="text/javascript">
+                    printAllResponses();
+                 </script>
+              <li>
+                <button id="bResponseForm" onclick="processForm('response');return false">Submit Response</button>
+              </li>
+           </ul>
+           <label id="response_errormsg" style="color:red"></label>
+         </div>
+
+       </div>
+      <!--
+     =============================================
+              RISK MITIGATION
+     =============================================
+      -->
+
+    <div data-role="page" id="pRiskMitigation">
+       <div data-role="header" data-position="fixed">
+         <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+        <h1>Risk Mitigation</h1>
+        <a href="#" onclick="gotoPageJQ('ResponseOptions');return false" data-theme="a">Response</a>
+       </div>
+       <!-- /header -->
+      <div data-role="content">
+        <h1>Risk Mitigation Response:</h1>
+        <h3>Your calculated risk <u>including</u> Risk Mitigation is:</h3>
+        <center>  <!-- RISK WITH MITIGATION -->
+          <h2>
+            <div id="valDefuzzyResponse" style="color:red">
+             Reponse is undefined until questionnaire submitted!
+           </div>
+          </h2>
+       </center>
+       <h3>Your calculated risk <u>without Risk Mitigation</u> is:</h3>
+       <center> <!-- RISK WITHOUT MITIGATION -->
+         <h2>
+           <div id="valDefuzzyRiskB" style="color:red">
+             Risk is undefined until questionnaire submitted!
+          </div>
+         </h2>
+      </center>
+       <table bgcolor="white" cellspacing="10px" width="95%">
+          <tr>
+            <td>
+             <button id="bFeedback" onclick="gotoPageJQ('SubmitFeedback');return false"> Provide Feedback </button>
+           </td>
+           <td>
+            <button id="bHome" onclick="gotoPageJQ('Home');return false"> Home </button>
+          </td>
+         </tr>
+        </table>
+
+      </div>
+   </div>
+   <!--
+   =============================================
+            FEEDBACK for APP
+   =============================================
+    -->
+
+   <div data-role="page" id="pSubmitFeedback">
+     <div data-role="header" data-position="fixed">
+       <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+       <h1>Send Feedback</h1>
+       <a href="#" onclick="processForm('feedback');return false" data-theme="a">Submit</a>
+<!--
+        <a href="#" onclick="quitApp()" data-theme="c">Quit</a>
+      -->
+       </div>
+     <!-- /header -->
+    <div data-role="content">
+      <script  type="text/javascript">
+            printHeader("feedback");
+       </script>
+      <ul id="ulFeedbackDB" data-role='listview' data-inset='true'>
+        <li>
+          <div id="vNavQuestFEEDBACK" >
+            <table width="100%">
+              <tr  align="center">
+                <td id="footerFEEDBACKprev">
+                  <button id="bPreviousFEEDBACK" onclick="gotoPreviousQuestion('feedback');return false" data-theme="c">&lt;&lt;</button>
+                </td>
+                <td id="footerFEEDBACKcount">
+                  [1]
+                </td>
+                <td id="footerFEEDBACKnext">
+                  <button id="bNextFEEDBACK" onclick="gotoNextQuestion('feedback');return false" data-theme="c">&gt;&gt;</button>
+                </td>
+              </tr>
+            </table>
+          </div>
+       </li>
+          <script  type="text/javascript">
+            printAllFeedback();
+         </script>
+         <li>
+           <button id="bFeedbackForm" onclick="processForm('feedback');return false">Submit Feedback</button>
+        </li>
+      </ul>
+      <br>
+      <label id="feedback_errormsg" style="color:red"></label>
+    </div>
+   </div>
+   <!--
+   =============================================
+            WAIT FOR SERVER
+   =============================================
+    -->
+   <div data-role="page" id="pWait">
+
+     <div data-role="header" data-position="fixed">
+       <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+       <h1>Connect</h1>
+     </div><!-- /header -->
+
+     <div data-role="content">
+         <h1>Connect to Server:</h1>
+         <h2>Try to submit data to server<br>Please wait ...</h2>
+     </div>
+
+   </div>
+   <!--
+   =============================================
+            Settings
+   =============================================
+    -->
+   <div data-role="page" id="pSettings">
+
+    <div data-role="header" data-position="fixed">
+      <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+      <h1>Settings:</h1>
+    </div><!-- /header -->
+
+    <div data-role="content">
+
+      Database: <input type="text" name="database" id="settings_database" onchange="updateSetting('name',this.value)" value="undefined.db" />
+      <br />
+      Usergroup: <input type="text" name="usergroup" id="settings_usergroup" onchange="updateSetting('usergroup',this.value)" value="undefined usergroup" />
+      <br />
+      My e-Mail: <input type="text" name="email" id="settings_email" onchange="updateSetting('email',this.value)" value="undefined e-mail" />
+      <br />
+      <!-- DB Access View Password: <input type="settings_password" id="app_viewpwd" value="unknown"/> -->
+
+      <br />
+      Submit URL: <input type="text" id="settings_submiturl"  onchange="updateSetting('submiturl',this.value)" value="http://www.example.com/appdb.cgi"/>
+
+    </div> <!-- content -->
+
+  </div> <!-- page -->
+
+  <!--
+  =============================================
+           THANk YOU
+  =============================================
+   -->
+  <div data-role="page" id="pThankYou">
+
+   <div data-role="header" data-position="fixed">
+     <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+     <h1>Connect</h1>
+     <a href="#" onclick="if (quitApp()) window.close();" data-theme="c">Quit</a>
+   </div><!-- /header -->
+
+   <div data-role="content">
+       <h1>Thank You:</h1>
+       <h2>Thank you very much for the submission of feefback.<br>
+         Improvements of DisApp will be shared with you ...
+       </h2>
+   </div>
+
+  </div>
+
+       <!--
+       =============================================
+                ACKNOWLEDEGMENT
+       =============================================
+        -->
+
+       <div data-role="page" id="pAcknowledgements" data-theme="b">
+
+       	<div data-role="header" data-position="fixed">
+          <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+           		<h1>Acknowledgements</h1>
+       		<!-- <a href="#" data-rel="back">Back</a> -->
+       	</div><!-- /header -->
+
+       	<div data-role="content">
+       		<ul>
+            <li>
+       				<b>iOS-Inspired jQuery Mobile theme</b> by Tait Brown. Resources at <a href="https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme" target="_blank">GitHub page</a>.
+       			</li>
+            <li>
+       				<b>Ajit N. Babu</b> for Work flow development
+       			</li>
+            <li>
+       				<b>Jitendra Shah</b> for Backend Development
+       			</li>
+            <li>
+       				<b>Suray Shah</b> for Backend Development
+       			</li>
+            <li>
+       				<b>Christo Augustine</b> for Frontend Development
+       			</li>
+            <li>
+              <b>Hanish</b> for Python Backend Development
+            </li>
+              <li>
+              <b>Chandana Unnithan</b> for Project Management Support
+            </li>
+            <li>
+       				<b>Joerg Rapp</b> Spatial Analysis
+       			</li>
+       			<li>
+       				<b>Biju Soman</b> for Public Health Support in Pilot Region
+       			</li>
+       			<li>
+       				Joseph Wain for iOS style Icons  <a href="http://www.glyphish.com" target="_blank">glyphish.com</a>. Licensed under the <a href="http://creativecommons.org/licenses/by/3.0/us/" target="_blank">Creative Commons Attribution 3.0 United States License</a>.
+       			</li>
+       		</ul>
+
+       	</div>
+
+       </div>  <!-- /page -->
+
+     <!--
+     =============================================
+             COLLECTED DATA QUESTIONNAIRE
+     =============================================
+      -->
+     <div data-role="page" id="pCollectedData">
+
+     	<div data-role="header" data-position="fixed">
+        <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+     	  <h1>Database</h1>
+     	</div><!-- /header -->
+
+     	<div data-role="content">
+        <h2>Display Database Selector:</h2>
+
+        <table cellspacing="10px" bgcolor="white" width="100%">
+          <tr>
+            <td colspan="2">
+              <select id="sDisplayTypeDB">
+                <option value="app" selected>
+                  Risk Questionnaire
+                </option>
+                <option value="response">
+                  Risk Mitigation / Protect
+                </option>
+                <option value="feedback">
+                  Feedback
+                </option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="slider">Unsubmitted Record ONLY:</label>
+            </td>
+            <td>
+              <select name="sUnsubmittedONLY" id="sUnsubmittedONLY" data-role="slider" onchange="saveLocalVar(this.id,this.value);">
+                <option value="yes" selected>YES</option>
+                <option value="no">NO</option>
+              </select>
+            </td>
+          </tr>
+        </table>
+        <button class="ui-btn-plain" onclick="displayCollectedData();return false">Display DB</button>
+        <!-- displayCollectedData() is defined in navigate.js -->
+     	</div>
+
+     </div>
+     <!--
+     =============================================
+              DISPLAY LIST OF RECORD
+     =============================================
+      -->
+     <div data-role="page" id="pDisplayListDB">
+
+      <div data-role="header" data-position="fixed">
+        <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+        <h1>Display DB List</h1>
+        <a href="#" onclick="gotoPageJQ('CollectedData');return false" data-theme="a">Collected Data</a>
+      </div><!-- /header -->
+
+      <div data-role="content">
+        <h3 id="h1SPACER">&nbsp;</h3>
+
+        <div id="divTitleListDB">
+          divTitleListDB
+        </div>
+
+        <p>
+          <div id="divListDB" data-role="listview">
+          </div>
+        </p>
+      </div>
+
+     <!--
+     =============================================
+              DISPLAY RECORD
+     =============================================
+      -->
+     <div data-role="page" id="pDisplayRecord">
+
+      <div data-role="header" data-position="fixed">
+        <a href="#" onclick="gotoPageJQ('Home');return false" data-theme="a">Home</a>
+      <h1>Display Record</h1>
+        <a href="#" onclick="gotoPageJQ('CollectedData');return false" data-theme="a">Collected Data</a>
+      </div><!-- /header -->
+
+      <div data-role="content">
+        <script  type="text/javascript">
+      	  createDisplayFormJSON();
+      		fillContentRecordDB(0);
+      	</script>
+
+
+      </div>
+
+     </div>
+
+
+
+
+      <!--
+      =============================================
+               END OF PAGES
+      =============================================
+       -->
+      <div id="divJSCALL"></div>
+      <div id="iFrameContainer" style="display:none">
+        <iframe id="iLoader" src="loader/setonline.html" width="90%" height="100" name="iLoader"></iframe>
+      </div>
+      <!--
+      =============================================
+               END OF CONTAINER
+      =============================================
+       -->
+    <script type="text/javascript">
+         var vDebug = 0;
+         var vLoaderURL = "";
+         var vQueryHash = readQueryParams();
+         if (vQueryHash["app_database"] == "localsurvey.db") {
+           vJSONDB = vLocalSurveyDB;
+         };
+         var vOnlineMode = false;
+         var vLocalDB = {};
+         initDisApp();
+         var vFuzzyControl = new FuzzyControl();
+         vFuzzyControl.init(document);
+         checkOnlineMode();
+      </script>
+   </body>
+</html>

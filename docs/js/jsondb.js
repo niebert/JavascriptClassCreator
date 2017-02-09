@@ -47,12 +47,19 @@ function loadClassJSON() {
 };
 
 function saveClassJSON() {
-  var vClass 	= document.fCreator.tClassname.value;
+  console.log("saveClassJSON()-Call");
+  var vClass 	= getValueDOM("tClassname");
   for (var i = 0; i < vDOM_ID.length; i++) {
     vJSON_JS[vClass][vDOM_ID[i]] = getValueDOM(vDOM_ID[i]);
   };
   saveLocalDB("vJSON_JS",vJSON_JS);
 };
+
+function updateFormID2JSON(pID) {
+  var vClass 	= getValueDOM("tClassname");
+  console.log("updateFormID2JSON('"+pID+"')-Call with Classname: '"+vClass+"'");
+  vJSON_JS["ClassList"][vClass][pID] = getValueDOM(pID);
+}
 
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();

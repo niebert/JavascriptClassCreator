@@ -16,6 +16,7 @@
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = new Array();
    var vTYPE_ID = new Array();
+   var vPageRecord = ["page-id","page-title","page-type","parent-id"];
 
    </script>
    <script language="javascript" src="js/classes.js"></script>
@@ -26,6 +27,7 @@
    <script language="javascript" src="js/jsondb.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
+   <script language="javascript" src="js/pages.js"></script>
    <script language="javascript" src="js/select.js"></script>
    <script language="javascript" src="js/sort.js"></script>
    <script language="javascript" src="js/string.js"></script>
@@ -56,11 +58,11 @@
         <option>UndefClass</option>
       </select>
     </b>
-  </font>
 <br>
 <div id="tabs">
 	<ul>
-    <li><a id="tabMain" href="#tabs-0">Main</a></li>
+    <li><a id="tabMain" href="#tabs-0">Files/Classes</a></li>
+    <li><a id="tabHTML" href="#tabs-HTML">HTML</a></li>
     <li><a id="tabClass" href="#tabs-1">Class</a></li>
 		<li><a id="tabAttributes" href="#tabs-2">Attributes</a></li>
     <li><a id="tabMethods" href="#tabs-3">Methods</a></li>
@@ -72,7 +74,7 @@
     <table bgcolor="#A9BCF5" border="1" width="80%">
       <tbody>
         <tr>
-          <td  colspan="2" align="center" bgcolor="#C0C0C0"  align="center">
+          <td  colspan="2" align="center" bgcolor="#C0C0C0">
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
 </td></tr>
@@ -101,16 +103,80 @@ Hash = {}</textarea>
 </td>
 </tr>
 <tr>
-  <td colspan="2"  align="center">
-  <!-- td  align="center" -->
+  <td align="center">
+    <b>JSON Databases</b>
+    <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
+    <br>
+    <textarea name="tDatabases" id="tDatabases" cols="45" rows="10" onchange="" style="font-family: monospace">db_mydata.js
+db_disapp.js</textarea>
+    </td>
+    <td align="center">
+      <b>Global Libaries</b>
+      <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateJSLibraries()" type="button">
+      <br>
+      <textarea name="tLibraries" id="tLibraries" cols="45" rows="10" style="font-family: monospace">string.js
+localstorage.js
+writedom.js</textarea>
+    </td>
+  </tr>
+  </tbody>
+</table>
+</div>
+<div id="tabs-HTML" class="tabmenu" style="background-color:#f2f2f2">
+  <table bgcolor="#A9BCF5" border="1" width="80%">
+    <tbody>
+      <tr>
+        <td  colspan="2" bgcolor="#C0C0C0" align="center">
+          <font size="+2">
+            <b>
+              HTML Pages
+            </b>
+          </font>
+        </td>
+      </tr>
+<tr>
+<td align="center">
+  <b>App Pages</b>
+  <input name="bUpdatePages" value=" Update Pages " onclick="updateFormID2JSON('tPages')" type="button">
+  <br>
+  <b>Format:</b>
+  <tt id="labelPageRecord">page-id|page-title|page-type|parent-id</tt>
+  <br>
+  <textarea name="tPages" id="tPages" cols="60" rows="9" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
+home|Home|MenuPage|
+setting|Settings|OptionsPage|home
+save|Save|SaveDialog|home
+quit|Quit App|ConfirmPage|home
+</textarea>
+</td>
+<td align="center">
+  <b>Page Types</b>
+  <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateForm2PagesJSON();return false" type="button">
+  <br>
+  <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="10" style="font-family: monospace">DefaultPage
+MenuPage
+OptionsPage
+ConfirmPage
+  </textarea>
+</td>
+</tr>
+<tr>
+  <td  align="center">
     <b>Create:</b>
-    <button id="bCreateNewClassMain" onclick="createNewClass();return false">New Class</button>
-    <button id="bExportMainHTML" onclick="exportMainHTML();return false">Export HTML</button>
+    <button id="bCreateNewPage" onclick="createNewPage();return false">New Page</button>
+  </td>
+  <td  align="center">
+    <b>Create:</b>
+    <button id="bCreateNewPageType" onclick="createNewPageType();return false">New Page Type</button>
   </td>
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>HTML Page:</b><br>
+    <b>HTML Page:</b> <select id="sPageHTML" name="sPageHTML">
+      <option>My Page</option>
+    </select>
+    <input type="button" id="bExportMainHTML" onclick="exportMainHTML();return false" value="Export HTML">
+    <br>
     <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
     <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
 
@@ -181,7 +247,7 @@ save(pContent)
     			</textarea>
         </td>
       </tr>
-    </tbody>
+        </tbody>
     </table>
   </div>
   <!-- ATTRIBUTES -->
@@ -259,12 +325,8 @@ save(pContent)
           <input id="tArrayLoop" name="tArrayLoop" type="text" size="20" value="myArray" style="font-family: monospace">
           <input id="tMethodLoop" name="tMethodLoop" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace">
           <select id="sArrayType" name="sArrayType" >
-            <option>
-              Array
-            </option>
-            <option>
-              Hash
-            </option>
+            <option>Array</option>
+            <option>Hash</option>
           </select>
           <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
           <br>
@@ -286,8 +348,12 @@ save(pContent)
         </tr>
         <tr>
       		<td colspan="2" align="center">
-            <b>Generate Code:</b>
+            <b>Generate Code for </b> <font color="blue" id="codeClassName">ClassName</font>
           <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
+          <b>Select Class:</b>
+          <select id="sClassCode" name="sClassCode" onchange="selectClassCode()">
+            <option>UndefClass</option>
+          </select>
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
@@ -306,8 +372,15 @@ save(pContent)
       </tr>
       <tr>
       		<td colspan="2" align="center">
+            <b>
+            Select JSON Database
+            <select id="sDatabases" name="sDatabases" onchange="selectDatase()">
+              <option>UndefDB</option>
+            </select>
+          </b>
+
             <b>Generate Code:</b>
-          <input name="bCreatorButton" value=" Create JSON Code " onclick="createCode4JSON_JS(vJSON_JS)" type="button">
+          <input name="bCreatorButton" value=" Create Project JSON" onclick="createProjectJSON()" type="button">
           <hr>
             <b>JSON Database</b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
@@ -331,14 +404,102 @@ save(pContent)
   <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;html&gt;
     &lt;head&gt;
       &lt;title&gt;App LSAC&lt;/title&gt;
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"&gt;
+      &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
+      &lt;link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" /&gt;
+      &lt;link href="css/ios_inspired.css" rel="stylesheet" /&gt;
+
 ___LIBRARIES___
-    &lt;/head&gt;
+
+      &lt;script&gt;
+        //------------BEGIN iOS-Inspired------------
+         // all dialog buttons should close their parent dialog
+         $(".ui-dialog button\").live("click", function() {
+           $("[data-role='dialog']").dialog("close");
+          });
+          $(document).on("mobileinit", function(){
+             $.mobile.defaultPageTransition = "slide";
+           });
+         //--------------END iOS-Inspired------------
+      &lt;/script&gt;
+      &lt;script&gt;
+         //-----INIT DisApp -----
+          var vDebug = 0;
+          var vApp = new App();
+       &lt;/script&gt;
+       &lt;script src="js/jquery.mobile-1.2.0.min.js"&gt;&lt;/script&gt;
+       &lt;link href="css/ios_post.css" rel="stylesheet" /&gt;
+     &lt;/head&gt;
     &lt;body&gt;
+
+&lt;!--
+=============================================
+         BEGIN OF PAGES
+=============================================
+--&gt;
+
 ___PAGES___
+
+&lt;!--
+=============================================
+     END OF PAGES / BEGIN iFRAME JSCALL
+=============================================
+ --&gt;
+    &lt;div id="divJSCALL"&gt;&lt;/div&gt;
+    &lt;div id="iFrameContainer" style="display:none"&gt;
+      &lt;iframe id="iLoader" src="loader/setonline.html" width="90%" height="100" name="iLoader"&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
+&lt;!--
+=============================================
+         END OF iFRAME JSCALL
+=============================================
+ --&gt;
+    &lt;script type="text/javascript"&gt;
+       var vQueryHash = readQueryParams();
+       var vOnlineMode = false;
+       var vApp = new App();
+       vApp.init(document,vQueryHash);
+       checkOnlineMode();
+      &lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;
   </textarea>
+  <hr>
+<b>Script Import</b><br>
+<textarea id="tTplSCRIPT" name="tTplSCRIPT" cols="125" rows="2">
+      &lt;script type="text/javascript" src="___LIBERARY___"&gt;&lt;/script&gt;
+</textarea>
 
+  <hr>
+<b>App Page</b><br>
+  <textarea id="tTplPAGE" name="tTplPAGE" cols="125" rows="10">
+     &lt;div data-role="page" id="___PAGE_ID___">
+         &lt;div data-role="header" data-position="fixed">
+           ___BUTTON_LEFT___
+            &lt;h1>___PAGE_TITLE___&lt;/h1&gt;
+           ___BUTTON_RIGHT___
+       &lt;/div&gt;
+         &lt;!-- /header --&gt;
+       &lt;div data-role="content"&gt;
+          ___PAGE_CONTENT___
+       &lt;/div&gt;
+    &lt;!-- /page ID: ___PAGE_ID___ --&gt;
+    &lt;/div&gt;
+</textarea>
+
+<hr>
+<b>Header Button</b><br>
+<textarea id="tTplBUTTON" name="tTplBUTTON" cols="125" rows="2">
+       &lt;!-- header button: '___BUTTON_TEXT___' --&gt;
+       &lt;a href="#" onclick="gotoPageJQ('___PAGE_ID___');return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
+</textarea>
+<hr>
+<b>Quit Button</b><br>
+<textarea id="tTplQUIT" name="tTplQUIT" cols="125" rows="2">
+       &lt;a href="#" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+</textarea>
+
+<hr>
   <b>Class Header</b><br>
     <textarea id="tHeader" name="tHeader" cols="125" rows="10">//#################################################################
 //# Javascript Class: ___CLASSNAME___()

@@ -137,6 +137,8 @@ function createClassJS(pClass) {
     for (var i = 0; i < vDOM_ID.length; i++) {
       vClassJSON[vDOM_ID[i]] = "";
     };
+    vClassJSON["Page"] = {};
+    vClassJSON["PageType"] = {};
     vClassJSON["tClassname"] = pClass;
     vClassJSON["tEMail"] = getValueDOM("tEMail");
     vClassJSON["tAuthor"] = getValueDOM("tAuthor");
@@ -268,7 +270,7 @@ function createNewAttribJS() {
   // get name of Attributes
   var vName = getValueDOM("tAttribName");
   if (reduceVarName(vName) == "") {
-    alert("Please enter the Name of the Variable!");
+    alert("ERROR: Name of Attribute is undefined.\nPlease enter the Name of the Variable!");
     console.log("ERROR: Name Variable undefined - createNewAttribJS()");
   } else if (existsAttribForm(vName)) {
     alert("Attribute '"+vName+"' already exists!\nPlease change name of attribute!");
@@ -278,12 +280,19 @@ function createNewAttribJS() {
     var vValue = getValueDOM("tAttribDefault");
     var vComment = getValueDOM("tAttribComment");
     if (!vType) {
-      console.log("Select of Atttribute Type is undefined");
+      console.log("Select for '"+vName+"' Atttribute Type is undefined");
       vType = "Object";
     } else {
-      console.log("Select of Atttribute Type '"+vType+"'");
+      console.log("Attribute '"+vName+"' has Type '"+vType+"'");
     };
-    createNewAttributeForm(vName,vType,vValue,vComment);
+    if (vValue && (vValue.replace(/[\s\t]/g,"") != "")) {
+      console.log("Default Value of Atttribute '"+vName+"' is defined with value '"+vValue+"'");
+    } else {
+      vValue = "null";
+      console.log("Default Value of Atttribute '"+vName+"' was NOT defined, set to '"+vValue+"'");
+    };
+    var vSuccess = createNewAttributeForm(vName,vType,vValue,vComment);
+    alert("")
     updateAttributesJS(); //jsondb.js:57 no code in function body
   }
 };
@@ -325,8 +334,12 @@ function createClassDefaultHash() {
 };
 
 function createNewAttributeForm(pName,pType,pValue,pComment) {
+    console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"')");
     var vAttrDef = pName + " = " + pValue;
     var vAttributes = document.fCreator.tAttributes;
+    //var vAttribs = reduceVarName(vAttributes.value);
+    var vAttribs = reduceVarName(vAttributes.value);
+    getValueDOM("tAttributes");
     var vAttribs = reduceVarName(vAttributes.value);
     if (vAttribs == "") {
       vAttributes.value = vAttrDef;
@@ -671,6 +684,7 @@ function getClassArray() {
   var vClassString = getValueDOM("tClassList");
   return getString2ClassArray(vClassString);
 }
+
 
 function getClassTypeArray() {
   var vClassString = document.fCreator.tClassList.value;

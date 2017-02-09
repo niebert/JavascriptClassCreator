@@ -1,9 +1,15 @@
 // This library performs the actions on select events
 // Options are created in dom.js
+function selectClassCode() {
+  var vClass = getValueDOM("sClassCode");
+  console.log("selectClassCode('"+vClass+"')-Call");
+  selectClass(pClass);
+  createCode4Class();
+}
 
-function selectClass() {
+function selectClass(pClass) {
   var vCurrentClass = getValueDOM("tClassname");
-  var vClass = getValueDOM("sClassList");
+  var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
   updateForm2Class(vCurrentClass);
   if (vJSON_JS["ClassList"][vClass]) {
@@ -22,7 +28,7 @@ function selectClass() {
   createAttribSelect();
   createMethodSelect();
   var vClassName = getValueDOM("tClassname");
-  write2innerHTML("titleClassName",vClassName);
+  writeClassTitle(vClassName);
   write2value("sClassList",vClassName);
   $( "#tabClass" ).trigger( "click" );
 };
@@ -101,6 +107,17 @@ function selectJSAttribs() {
   saveJSON2LocalStorage();
 }
 
+function selectDatabase() {
+  show("bSaveJSON");
+  var vDB = getValueDOM("sDatabase");
+  var vValue = vJSON_JS["DatabaseList"][vDB];
+  setEditorValue("iJSON",vValue)
+}
+
+function saveDatabaseJSON() {
+  var vDB = getValueDOM("sDatabase");
+
+}
 
 function selectJSMethods() {
   //alert("Select Method");
@@ -120,4 +137,14 @@ function selectJSMethods() {
 
 function updateClassSelector() {
   createClassSelect();
+}
+
+function updateDatabaseSelector() {
+  createDatabaseSelect();
+}
+
+function updateSelectors() {
+  createClassSelect();
+  createDatabaseSelect();
+  writeClassTitle(getValueDOM("tClassname"));
 }

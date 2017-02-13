@@ -4,11 +4,25 @@ function write2editor(pID,pValue) {
 };
 
 function getIFrameDocument(pIFrameName) {
-  return document.getElementById(pIFrameName).contentWindow.document;
+  var vIFrame = document.getElementById(pIFrameName);
+  var vDoc = null;
+  if (vIFrame) {
+    vDoc = vIFrame.contentWindow.document;
+  } else {
+    console.log("getIFrameDocument('"+pIFrameName+"') iFrame UNDEFINED");
+  };
+  return vDoc;
 };
 
 function getIFrameWindow(pIFrameName) {
-  return document.getElementById(pIFrameName).contentWindow;
+  var vIFrame = document.getElementById(pIFrameName);
+  var vWin = null;
+  if (vIFrame) {
+    vWin = vIFrame.contentWindow;
+  } else {
+    console.log("getIFrameWindow('"+pIFrameName+"') iFrame UNDEFINED");
+  };
+  return vWin;
 };
 
 function getIFrameEditor(pIFrameName) {
@@ -52,3 +66,35 @@ function getEditorValue(pIFrameName) {
   };
   return vReturn;
 };
+
+function X_readFile(pFileName) {
+    var vContent = null;
+    $.ajax({
+            url : "tpl/test.txt",
+            dataType: "text",
+            success : function (data) {
+                //$(".text").html(data);
+                vContent = data;
+            }
+        });
+    return vContent;
+};
+
+function readFile(pFile) {
+    var vContent = null;
+    var rawFile = new XMLHttpRequest();
+    rawFile.open("GET", pFile, false);
+    rawFile.onreadystatechange = function ()
+    {
+        if(rawFile.readyState === 4)
+        {
+            if(rawFile.status === 200 || rawFile.status == 0)
+            {
+                vContent = rawFile.responseText;
+                alert(vContent);
+            }
+        }
+    }
+    rawFile.send(null);
+    return vContent;
+}

@@ -14,9 +14,12 @@
    // Contains the JSON File for a specific class
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
-   var vDOM_ID = new Array();
-   var vTYPE_ID = new Array();
+   var vDOM_ID = [];
+   var vTYPE_ID = [];
+   var vDOM_Global = [];
    var vPageRecord = ["page-id","page-title","page-type","parent-id"];
+   var vPageTypeRecord = ["page-type","button-id1","button-id2","template"];
+   var vButtonRecord = ["button-id","button-html"];
 
    </script>
    <script language="javascript" src="js/classes.js"></script>
@@ -140,9 +143,9 @@ writedom.js</textarea>
   <input name="bUpdatePages" value=" Update Pages " onclick="updateFormID2JSON('tPages')" type="button">
   <br>
   <b>Format:</b>
-  <tt id="labelPageRecord">page-id|page-title|page-type|parent-id</tt>
+  <tt id="labelPageRecord">-</tt>
   <br>
-  <textarea name="tPages" id="tPages" cols="60" rows="9" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
+  <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
 home|Home|MenuPage|
 setting|Settings|OptionsPage|home
 save|Save|SaveDialog|home
@@ -153,10 +156,27 @@ quit|Quit App|ConfirmPage|home
   <b>Page Types</b>
   <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateForm2PagesJSON();return false" type="button">
   <br>
-  <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="10" style="font-family: monospace">DefaultPage
-MenuPage
-OptionsPage
-ConfirmPage
+  <b>Format:</b>
+  <tt id="labelPageTypeRecord">-</tt>
+  <br>
+  Page-ID can be replaced by Button-ID
+  <br>
+  <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">DefaultPage|home|
+MenuPage|welcome|QUIT
+OptionsPage|home|save
+ConfirmPage|home|OK
+  </textarea>
+</td>
+</tr>
+<tr>
+<td colspan="2" align="center">
+  <b>Buttons</b>
+  <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
+  -- <b>Format:</b>
+  <tt id="labelButtonRecord">-</tt>
+  <br>
+  <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+OK|&lt;a href="#" id="saveconfirm" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
   </textarea>
 </td>
 </tr>
@@ -172,14 +192,24 @@ ConfirmPage
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>HTML Page:</b> <select id="sPageHTML" name="sPageHTML">
-      <option>My Page</option>
+    <b>App Page:</b> <select id="sPageHTML" name="sPageHTML">
+      <option>home</option>
     </select>
-    <input type="button" id="bExportMainHTML" onclick="exportMainHTML();return false" value="Export HTML">
+    <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
     <br>
-    <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
-    <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
-
+    <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
+    <iframe id="iPageHTML"  src="ace/edithtml.html" width="90%" height="100"></iframe>
+  </td>
+</tr>
+<tr>
+  <td colspan="2" align="center">
+    <b>Page Type:</b> <select id="sPageTypeHTML" name="sPageTypeHTML">
+      <option>DefaultPage</option>
+    </select>
+    <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
+    <br>
+    <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
+    <iframe id="iPageHTML"  src="ace/edithtml.html" width="90%" height="100"></iframe>
   </td>
 </tr>
 </tbody>
@@ -266,26 +296,39 @@ save(pContent)
               <option>
               </option>
             </select>
-            <b>Select Type:</b>
-            <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()">
-              <option>
-                BasicClasses
-              </option>
-              <option>
-                Classes
-              </option>
-            </select>
-            <!--
+                      <!--
             <input name="bSetAttribType" value=" Set Type " onclick="setAttribType4Select()" type="button">
             -->
-          <br>
-            Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
+          </td>
+          </tr>
+            <tr>
+              <td colspan="2" align="center">
+              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
             <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
             = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" onchange="updateAttribType4Form()" style="font-family: monospace">
-            Type:
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            Attribute Type/Class:
             <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace">
-          <br>
-              Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace">
+          </td>
+        <td align="center">
+          <b>Select Type:</b>
+          <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()">
+            <option>
+              BasicClasses
+            </option>
+            <option>
+              Classes
+            </option>
+          </select>
+  </td>
+    </tr>
+    </tr>
+      <tr>
+        <td colspan="2" align="center">
+          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace">
               <input name="bSaveAttribDef" value=" Save " onclick="saveAttribEdit()" type="button">
             </td>
       	</tr>
@@ -351,14 +394,27 @@ save(pContent)
             <b>Generate Code for </b> <font color="blue" id="codeClassName">ClassName</font>
           <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
           <b>Select Class:</b>
-          <select id="sClassCode" name="sClassCode" onchange="selectClassCode()">
+          <select id="sClassCode" name="sClassCode" onchange="selectClass_do(this.value)">
             <option>UndefClass</option>
           </select>
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
       		</td>
-      	</tr>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+              <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML">
+                <option>app.html</option>
+                <option>index.html</option>
+              </select>
+              <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
+              <br>
+              <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
+              <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
+
+            </td>
+         </tr>
       </tbody>
     </table>
   </div>

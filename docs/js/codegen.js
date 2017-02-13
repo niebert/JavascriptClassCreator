@@ -1,6 +1,6 @@
 
 function createProjectJSON() {
-  hide("bSaveJSON");
+  //hide("bSaveJSON");
   createCode4JSON_JS(vJSON_JS);
 }
 
@@ -18,10 +18,39 @@ function getCode4JSON_JS(pJSONDB) {
   return JSON.stringify(pJSONDB, null, 4);
 };
 
+function exportHTML() {
+  var vFile = getValueDOM("sFileHTML");
+  switch (vFile) {
+    case "index.html":
+      exportIndexHTML();
+      break;
+    case "app.html":
+      exportMainHTML();
+      break;
+    default:
+      exportMainHTML();
+  };
+}
+
+function exportIndexHTML() {
+  var vHTML = readFile("tpl/index.html");
+  write2editor("MainHTML",vHTML);
+}
+
+
 function exportMainHTML() {
   var vHTML = getMainHTML();
   //write2value("tMainHTML",vHTML);
   write2editor("MainHTML",vHTML);
+};
+
+function getMainHTML() {
+    var vHTML   = getValueDOM("tTplHTML");
+    // insert Library Import or Library SCRIPT-Tags with Code
+    vHTML = replaceString(vHTML,"___LIBRARIES___",getDatabasesHTML()+"\n"+getLibrariesHTML());
+    // Insert Generated Pages
+    vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML()+"\n");
+    return vHTML;
 }
 
 function getLibrariesHTML() {
@@ -57,17 +86,31 @@ function getClassLibrariesHTML() {
 }
 
 function getPagesHTML() {
-  var vPAGE   = getValueDOM("tTplPAGE");
+  var vOut = "";
+  var vPageList = getPageListArray();
+  for (var i = 0; i < vPageList.length; i++) {
+    // vPageList[i]; is a Hash with the following IDs
+    //var vPageRecord = ["page-id","page-title","page-type","parent-id"];
+   vOut += createPageHTML(vPageList[i]);
+  }
+  return vOut;
+}
+
+function createPageHTML(pPageHash) {
+  var vOut = "";
+  // pPageHash has the following IDs
+  //var vPageRecord = ["page-id","page-title","page-type","parent-id"];
+  var vPageType = vJSON_JS["PageType"];
+  var vPageContent = vJSON_JS["PageContent"];
+  var vPageTpl = vPageType["page-type"];
+  if (vPageTpl) {
+    console.log("createPageHTML('"+pPageHash["page-id"]+"') PageType='"+pPageHash["page-type"]+"' is defined");
+  } else {
+    console.log("createPageHTML('"+pPageHash["page-id"]+"') PageType='"+pPageHash["page-type"]+"' UNDEFINED - use DEFAULT");
+    vPageTpl = getValueDOM("tTplPAGE");
+  };
   var vBUTTON = getValueDOM("tTplBUTTON");
   var vQUIT   = getValueDOM("tTplQUIT");
-  var vOut = "";
-  var vOutPage = "";
-  var vPageList = getPageListArray();
-  var vPL = null;
-  for (var i = 0; i < vPageList.length; i++) {
-    vPL = vPageList[i];
-    //vOutPage = replaceString(vPAGE,"___LIBERARY___","--")
-  }
   return vOut;
 }
 
@@ -79,16 +122,6 @@ function getDatabasesHTML() {
     vOut += replaceString(vSCRIPT,"___LIBERARY___","db/"+vArrDB[i]+".js");
   };
   return vOut;
-}
-
-
-function getMainHTML() {
-    var vHTML   = getValueDOM("tTplHTML");
-    // insert Library Import or Library SCRIPT-Tags with Code
-    vHTML = replaceString(vHTML,"___LIBRARIES___",getDatabasesHTML()+"\n"+getLibrariesHTML());
-    // Insert Generated Pages
-    vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML()+"\n");
-    return vHTML;
 }
 
 function createCode4Class() {

@@ -85,13 +85,44 @@ function createClassSelect(pArray) {
   write2innerHTML("sClassCode",vOptions)
 };
 
+function getArray4HashID(pHash) {
+  var vHash = pHash || {};
+  var vArray = [];
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vArray.push(iID)
+    }
+  };
+  return vArray
+};
+
+function createPageSelect(pArray) {
+  // get all Methods in JSON Database of all Classes
+  console.log("createPageSelect()-Call");
+  var vArray = getArray4HashID(vJSON_JS["PageList"]);
+  vArray.sort();
+  var vOptions = createOptions4Array(vArray);
+  write2innerHTML("sPageHTML",vOptions)
+};
+
+function createPageTypeSelect(pArray) {
+  // get all Methods in JSON Database of all Classes
+  console.log("createPageTypeSelect()-Call");
+  var vArray = getArray4HashID(vJSON_JS["PageType"]);
+  vArray.sort();
+  var vOptions = createOptions4Array(vArray);
+  write2innerHTML("sPageTypeHTML",vOptions);
+  var vContent = vJSON_JS["PageType"][vArray[0]]["content"]
+  setEditorValue("iPageTypeHTML",vContent);
+};
+
 function createDatabaseSelect(pArray) {
   // Create a Select for all Databases
   console.log("createDatabaseSelect()-Call");
   var vArray = pArray || getDatabaseArray();
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sDatabases",vOptions)
+  write2innerHTML("sDatabases",vOptions);
 };
 
 

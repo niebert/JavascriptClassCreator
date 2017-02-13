@@ -4,15 +4,12 @@
 //# created with JavaScript Class Generator by Engelbert Niehaus
 //# 2012 University Koblenz-Landau
 //#################################################################
+vDOM_Global.push("tPages");
+vDOM_Global.push("tPageTypes");
+vDOM_Global.push("tLibraries");
+vDOM_Global.push("tDatabases");
+//-------------------------------
 //var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
-vDOM_ID.push("tPages");
-vTYPE_ID.push("Textarea");
-vDOM_ID.push("tPageTypes");
-vTYPE_ID.push("Textarea");
-vDOM_ID.push("tLibraries");
-vTYPE_ID.push("Textarea");
-vDOM_ID.push("tDatabases");
-vTYPE_ID.push("Textarea");
 vDOM_ID.push("tClassname");
 vTYPE_ID.push("String");
 vDOM_ID.push("tSuperClassname");
@@ -69,6 +66,8 @@ function initCodeCreator() {
         initFormClassList();
         initFormDatabaseList();
         initFormSelectors();
+        initFormButtonList();
+        initFormPageType();
         initFormPageList();
         console.log("Read Class from Form and add to vJSON_JS");
       };
@@ -82,10 +81,15 @@ function initCodeCreator() {
   vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
   //initLocalDB("vJSON_JS",pJSONDB)
   initLabelsHTML();
+  setClassSelectorDefault(vSelectedClass)
+  //setTimeout('alert(readFile("tpl/test.txt"))',5000);
 };
 
 function initLabelsHTML() {
-  write2innerHTML("labPageRecord",vPageRecord.join(" | "));
+  var vSep = " | ";
+  write2innerHTML("labelPageRecord",vPageRecord.join(vSep));
+  write2innerHTML("labelPageTypeRecord",vPageTypeRecord.join(vSep));
+  write2innerHTML("labelButtonRecord",vButtonRecord.join(vSep));
 };
 
 function initFormClassList() {
@@ -96,19 +100,116 @@ function initFormClassList() {
    };
 };
 
+function initFormButtonList() {
+  console.log("initFormButtonList()");
+   var vArr = getButtonArray(); //read from tClassList in  classes.js 413
+   for (var i = 0; i < vArr.length; i++) {
+     console.log("Call: initButtonJS() for ID='"+vArr[i]["button-id"]+"'");
+     //alert("ID='"+vArr[i]["button-id"]+"'");
+     initButtonJS(vArr[i]);
+   };
+};
+
+function initButtonJS(pButtonHash) {
+  if (!pButtonHash) {
+    console.log("Call: initButtonJS(pButtonHash) with pButtonHash undefined");
+  } else {
+      var vButtonID = reduceVarName(pButtonHash["button-id"]);
+      console.log("initButtonJS(pButtonHash)-Call for ID='"+vButtonID+"'");
+      initButtonJS_do(pButtonHash)
+  }
+};
+
+function initButtonJS_do(pButtonHash) {
+  console.log("initButtonJS_do() ID:'"+pButtonHash["button-id"]+"'");
+  var vButtonID = reduceVarName(pButtonHash["button-id"]);
+  if (vButtonID == "") {
+    console.log("initButtonJS()-Call: Button-ID undefined");
+  } else {
+    if (!top.vJSON_JS) {
+      var vError = "WARNING: initButtonJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+      console.log(vError);
+      top.vJSON_JS = {};
+    } else {
+      console.log("JSON Database 'vJSON_JS' exists.");
+    };
+    if (top.vJSON_JS["ButtonList"]) {
+      console.log("vJSON_JS['ButtonList'] exists");
+    } else {
+      top.vJSON_JS["ButtonList"] = {};
+      console.log("vJSON_JS['ButtonList'] created");
+    };
+    if (top.vJSON_JS["ButtonList"][vButtonID]) {
+      console.log("Button '"+vButtonID+"' exists in JSON DB");
+    } else {
+      console.log("initButtonJS_do(pButtonHash)-Call for ID='"+vButtonID+"'");
+      top.createButtonJS(pButtonHash);
+      console.log("Button '"+vButtonID+"' created and updated from HTML Form with default values");
+    };
+  };
+}
+
+
+
 function initFormPageList() {
-  console.log("initFormPageList()");
-   var vPageArr = getPageListArray(); //read from tPages in  classes.js 413
+   console.log("initFormPageList()");
+   var vPageArr = getPageListArray(); //read from tPages in  pageses.js 413
    for (var i = 0; i < vPageArr.length; i++) {
      initPageJS(vPageArr[i]);
    };
 };
 
+function initFormPageType() {
+   console.log("initFormPageType()");
+   var vPageArr = getPageTypeArray(); //read from tPageTypes in  pages.js 413
+   for (var i = 0; i < vPageArr.length; i++) {
+     initPageTypeJS(vPageArr[i]);
+   };
+};
+
+function initPageTypeJS(pPageTypeHash) {
+  if (!pPageTypeHash) {
+    console.log("Call: initPageTypeJS(pClass) with pPageHash undefined");
+  } else {
+      initPageTypeJS_do(pPageTypeHash)
+  }
+};
+
+function initPageTypeJS_do(pPageTypeHash) {
+  var pPageType = reduceVarName(pPageTypeHash["page-type"]);
+  if (pPageType == "") {
+    console.log("initPageTypeJS()-Call: Page-ID undefined");
+  } else {
+    if (!top.vJSON_JS) {
+      var vError = "WARNING: initPageTypeJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+      console.log(vError);
+      top.vJSON_JS = {};
+    } else {
+      console.log("JSON Database 'vJSON_JS' exists.");
+    };
+    top.vJSON_JS["SelectedPage"] = pPageType;
+    if (top.vJSON_JS["PageType"]) {
+      console.log("vJSON_JS['PageType'] exists");
+    } else {
+      top.vJSON_JS["PageType"] = {};
+      console.log("vJSON_JS['PageType'] created");
+    };
+    if (top.vJSON_JS["PageType"][pPageType]) {
+      console.log("Page '"+pPageType+"' exists in JSON DB");
+    } else {
+      top.createPageTypeJS(pPageType);
+      console.log("Page '"+pPageType+"' created and updated from HTML Form with default values");
+    };
+  };
+}
+
+
 function initPageJS(pPageHash) {
   if (!pPageHash) {
-    console.log("Call: initPageJS(pClass) with pPageHash undefined");
+    console.log("Call: initPageJS(pPageHash) with pPageHash undefined");
   } else {
-      initPageJS_do(pPageHash)
+    console.log("initPageJS(pPageHash) Type: "+typeof(pPageHash));
+    initPageJS_do(pPageHash)
   }
 };
 
@@ -118,7 +219,7 @@ function initPageJS_do(pPageHash) {
     console.log("initPageJS()-Call: Page-ID undefined");
   } else {
     if (!top.vJSON_JS) {
-      var vError = "WARNING: initPageJS() [Pagees.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+      var vError = "WARNING: initPageJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
       console.log(vError);
       top.vJSON_JS = {};
     } else {

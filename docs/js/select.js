@@ -6,8 +6,12 @@ function selectClassCode() {
   selectClass(pClass);
   createCode4Class();
 }
-
 function selectClass(pClass) {
+  selectClass_do(pClass);
+  $( "#tabClass" ).trigger( "click" );
+}
+
+function selectClass_do(pClass) {
   var vCurrentClass = getValueDOM("tClassname");
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
@@ -29,10 +33,13 @@ function selectClass(pClass) {
   createMethodSelect();
   var vClassName = getValueDOM("tClassname");
   writeClassTitle(vClassName);
-  write2value("sClassList",vClassName);
-  $( "#tabClass" ).trigger( "click" );
+  setClassSelectorDefault(vClassName);
 };
 
+function setClassSelectorDefault(pClassName) {
+  write2value("sClassList",pClassName);
+  write2value("sClassCode",pClassName);
+};
 function fillForm4Class(pClassName) {
   console.log("fillForm4Class('"+pClassName+"')");
   updateJSON2Form(pClassName);
@@ -146,5 +153,7 @@ function updateDatabaseSelector() {
 function updateSelectors() {
   createClassSelect();
   createDatabaseSelect();
+  createPageSelect();
+  createPageTypeSelect();
   writeClassTitle(getValueDOM("tClassname"));
 }

@@ -115,6 +115,37 @@ function loadAttribJSON (pAttribName) {
   };
 };
 
+function save3LevelID2JSON(pListID,pHashID,pID,pValue) {
+    console.log("save3LevelID2JSON('"+pListID+"','"+pHashID+"','"+pID+"',pValue)");
+    if (vJSON_JS[pListID]) {
+      if (vJSON_JS[pListID][pHashID]) {
+        if (vJSON_JS[pListID][pHashID][pID]) {
+            vJSON_JS[pListID][pHashID][pID] = pValue;
+        } else {
+          console.log("vJSON_JS['"+pListID+"']['"+pHashID+"']['"+pID+"'] was undefined!");
+        };
+      } else {
+        console.log("vJSON_JS['"+pListID+"']['"+pHashID+"'] was undefined!");
+      };
+    } else {
+      console.log("vJSON_JS['"+pListID+"'] was undefined!");
+    };
+};
+
+function save2LevelID2JSON(pListID,pID,pValue) {
+    console.log("save2LevelID2JSON('"+pListID+"','"+pID+"',pValue)");
+    if (vJSON_JS[pListID]) {
+      if (vJSON_JS[pListID][pID]) {
+        vJSON_JS[pListID][pID] = pValue;
+      } else {
+        console.log("vJSON_JS['"+pListID+"']['"+pID+"'] was undefined!");
+      };
+    } else {
+      console.log("vJSON_JS['"+pListID+"'] was undefined!");
+    };
+};
+
+
 function saveAttribEdit() {
   saveAttribJSON();
   var vOut = "";

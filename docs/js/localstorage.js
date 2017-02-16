@@ -409,44 +409,6 @@ function getJSONDB_Local_Default() {
 	};
 };
 
-
-function X_loadLocalDB(pDBName) {
-  var vJSONDB = {};
-  if (typeof(Storage) != "undefined") {
-    // Store
-    if (typeof(localStorage.getItem(pDBName)) != undefined) {
-      console.log("JSON-DB '"+pDBName+"' loaded from Local Storage");
-      var vJSONstring = localStorage.getItem(pDBName);
-      vJSONDB = JSON.parse(vJSONstring);
-    } else {
-      console.log("JSON-DB '"+pDBName+"' is undefined in Local Storage");
-    };
-  }	 else {
-    console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
-  };
-  return vJSONDB;
-
-};
-
-function X_saveLocalDB(pDBName,pJSONDB) {
-  if (typeof(Storage) != "undefined") {
-    // Store
-    if (typeof(pJSONDB) != undefined) {
-      console.log("JSON-DB '"+pDBName+"' is defined, JSONDB in  Local Storage");
-      if (pJSONDB) {
-        console.log("pJSONDB '"+pDBName+"' is saved to Local Storage");
-        localStorage.setItem(pDBName,JSON.stringify(pJSONDB));
-      } else {
-        console.log("pJSONDB DOM-Node is NOT defined");
-      }
-    } else {
-      console.log("pJSONDB is undefined");
-    };
-  }	 else {
-    console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
-  }
-}
-
 function saveLocalVar(pKey,pValue) {
  if (typeof(Storage) != "undefined") {
     // Store

@@ -19,8 +19,8 @@
    var vDOM_Global = [];
    var vPageRecord = ["page-id","page-title","page-type","parent-id"];
    var vPageTypeRecord = ["page-type","button-id1","button-id2","template"];
-   var vButtonRecord = ["button-id","button-html"];
-
+   var vButtonRecord = ["button-id","button-html","counter"];
+   var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    </script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
@@ -175,41 +175,74 @@ ConfirmPage|home|OK
   -- <b>Format:</b>
   <tt id="labelButtonRecord">-</tt>
   <br>
-  <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
-OK|&lt;a href="#" id="saveconfirm" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
+  <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" "b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
   </textarea>
 </td>
 </tr>
 <tr>
-  <td  align="center">
-    <b>Create:</b>
-    <button id="bCreateNewPage" onclick="createNewPage();return false">New Page</button>
-  </td>
-  <td  align="center">
-    <b>Create:</b>
-    <button id="bCreateNewPageType" onclick="createNewPageType();return false">New Page Type</button>
+  <td  colspan="2" bgcolor="#C0C0C0" align="center">
+    <font size="+2">
+      <b>
+        Edit Pages
+      </b>
+    </font>
   </td>
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>App Page:</b> <select id="sPageHTML" name="sPageHTML">
+    <b>App Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
       <option>home</option>
     </select>
+    <br>
+    <b>ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace"  style="display:none">
+    <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
+    <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
+      <option>DefaultPage</option>
+    </select>
+
     <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
     <br>
     <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
-    <iframe id="iPageHTML"  src="ace/edithtml.html" width="90%" height="100"></iframe>
+    <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
+  </td>
+</tr>
+<tr>
+  <td  colspan="2" bgcolor="#C0C0C0" align="center">
+    <font size="+2">
+      <b>
+        Edit Page Types
+      </b>
+    </font>
   </td>
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>Page Type:</b> <select id="sPageTypeHTML" name="sPageTypeHTML">
+    <b>Page Type:</b>
+    <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
       <option>DefaultPage</option>
     </select>
-    <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
+    <br>
+    <b>ID:</b>
+    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace" style="display:none">
+    <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
+    <b>Parent Page ID:</b>
+    <select id="sParentPage" name="sParentPage">
+      <option>home</option>
+    </select>  <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
+    <br>
+    <b>Button Left:</b>
+    <select id="sButtonLeft" name="sButtonLeft">
+      <option>QUIT</option>
+    </select>
+    <b>Button Left:</b>
+    <select id="sButtonRight" name="sButtonRight">
+      <option>OK</option>
+    </select>
+
     <br>
     <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
-    <iframe id="iPageHTML"  src="ace/edithtml.html" width="90%" height="100"></iframe>
+    <iframe id="iPageTypeHTML"  src="ace/editpagetype.html" width="90%" height="100"></iframe>
   </td>
 </tr>
 </tbody>
@@ -392,11 +425,11 @@ save(pContent)
         <tr>
       		<td colspan="2" align="center">
             <b>Generate Code for </b> <font color="blue" id="codeClassName">ClassName</font>
-          <input name="bCreatorButton" value=" Create Javascript Class " onclick="createCode4Class()" type="button">
           <b>Select Class:</b>
           <select id="sClassCode" name="sClassCode" onchange="selectClass_do(this.value)">
             <option>UndefClass</option>
           </select>
+          <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
@@ -430,7 +463,7 @@ save(pContent)
       		<td colspan="2" align="center">
             <b>
             Select JSON Database
-            <select id="sDatabases" name="sDatabases" onchange="selectDatase()">
+            <select id="sDatabases" name="sDatabases" onchange="selectDatabase()">
               <option>UndefDB</option>
             </select>
           </b>
@@ -529,6 +562,7 @@ ___PAGES___
   <hr>
 <b>App Page</b><br>
   <textarea id="tTplPAGE" name="tTplPAGE" cols="125" rows="10">
+     &lt;!-- Page: ___PAGE_ID___     Page Type: ___PAGE_TYPE_ID___ --&gt;
      &lt;div data-role="page" id="___PAGE_ID___">
          &lt;div data-role="header" data-position="fixed">
            ___BUTTON_LEFT___
@@ -547,12 +581,18 @@ ___PAGES___
 <b>Header Button</b><br>
 <textarea id="tTplBUTTON" name="tTplBUTTON" cols="125" rows="2">
        &lt;!-- header button: '___BUTTON_TEXT___' --&gt;
-       &lt;a href="#" onclick="gotoPageJQ('___PAGE_ID___');return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
+       &lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="$.mobile.changePage( '#___LINK_PAGE_ID___', { transition: 'slideup', changeHash: false });return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
+</textarea>
+<hr>
+<b>Default Button</b><br>
+<textarea id="tDefaultBUTTON" name="tDefaultBUTTON" cols="125" rows="2">
+       &lt;!-- header button: '___BUTTON_TEXT___' --&gt;
+       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="alert('Click Button ___PAGE_ID___');return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
 </textarea>
 <hr>
 <b>Quit Button</b><br>
 <textarea id="tTplQUIT" name="tTplQUIT" cols="125" rows="2">
-       &lt;a href="#" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 </textarea>
 
 <hr>
@@ -697,7 +737,7 @@ ___METHODCODE___
  <hr>
   <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
  <br>
-  Javascript Class Generator was developed 2012-16 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
+  Javascript Class Generator was developed 2012-17 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
   <br>
   <a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
  <br>

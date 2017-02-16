@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html manifest="disapp.appcache">
+<!-- html -->
+<head>
+	<meta charset="utf-8" />
+	<title>DisApp - Login</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+	<link href="ios_inspired/styles.css" rel="stylesheet" />
+	<script src="js/jquery-1.7.1.min.js"></script>
+	<script>
+		// all dialog buttons should close their parent dialog
+		$(".ui-dialog button").live("click", function() {
+			$("[data-role='dialog']").dialog("close");
+		});
+		$(document).on("mobileinit", function(){
+		  $.mobile.defaultPageTransition = "slide";
+		});
+	</script>
+	<script src="js/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		#footerTabs {
+			background: #FFF -webkit-radial-gradient(circle, #FFF, #dee2e4);
+		}
+		.ui-listview sup {
+			font-size: 0.6em;
+			color: #cc0000;
+		}
+	</style>
+	<!--script src="http://code.jquery.com/jquery-1.7.1.min.js"></script-->
+	<script src="js/fullscreen.js"></script>
+	<script src="js/geolocation.js"></script>
+	<script src="js/openwin.js"></script>
+	<script src="js/localstorage.js"></script>
+	<script src="js/htmlrequest.js"></script>
+	<script src="js/login.js"></script>
+	<script src="js/showhide.js"></script>
+	<script src="js/writedom.js"></script>
+
+	<script src="loader/onlinecheck.js"></script>
+
+</head>
+<body>
+<form method="POST">
+<div data-role="page">
+
+	<div data-role="header" data-position="fixed">
+		<h1>DisApp LOGIN</h1>
+	</div><!-- /header -->
+
+	<div data-role="content">
+		<p>Welcome to the DissApp. Please allow submission of Geolocation in your Browser.</p>
+		<ul data-role="listview" data-inset="true">
+			<li>Switch on GPS:
+				<table border="0" width="100%">
+					<tr>
+						<td>
+							<input type="text" size="12" name="app_geolocation" id="currentGeolocation" value=""/>
+						</td>
+						<td width="20%">
+							<input type="button" id="bGeoCheck" value="Check GPS" onclick="getLoginGeolocation();return false">
+						</td>
+					</tr>
+				</table>
+			</li>
+			<li>Usergroup: <!-- input type="text" size="12" name="app_username" id="app_username" value="demo" /-->
+				<select name="app_usergroup" id="app_usergroup" size="1" onchange="saveLocalStorageValueOK('app_usergroup','User Group')">
+					<option value="citizen">Citizen</option>
+					<option value="student">Student</option>
+					<option value="socialworker">social worker</option>
+					<option value="publichealth">Pubic Health Professional</option>
+					<option value="researcher">Researcher</option>
+				</select>
+			</li>
+			<li>	e-Mail:
+				<table border="0" width="100%">
+					<tr>
+						<td>
+							<input type="text" size="12" name="app_email" id="app_email" value=""/>
+						</td>
+						<td width="10%">
+							<input type="button" id="bSaveURLDB" value="OK" onclick="saveLocalStorageValueOK('app_email','e-Mail')">
+						</td>
+					</tr>
+				</table>
+				<input type="hidden" name="app_database" id="app_database" value="disapp.db">
+			</li>
+			<li >Submit URL:
+				<table border="0" width="100%">
+					<tr>
+						<td>
+							<input type="text" size="12" name="app_submiturl" id="app_submiturl" value=""/>
+						</td>
+						<td width="10%">
+							<input type="button" id="bSaveURLDB" value="OK" onclick="saveLocalStorageValueOK('app_submiturl','Database URL')">
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul>
+		<input type="button" class="ui-btn-plain" value="Submit" onclick="loginDisApp();return false">
+
+		<p>Please use Firefox for App (<a href="https://www.mozilla.org" target="_blank">Firefox-Homepage</a>).
+		Feel free to have a look around and report and bugs to the <a href="https://github.com/niebert/DisApp/issues" target="_blank">GitHub issues page</a>.</p>
+		<br />
+		<label id="errormsg" style="color:red"></label>
+  	<br />
+		<a href="disapp.html" style="display:none">GITHUB-Link Reference disapp.html</a>
+		<a href="loader/callback.html" style="display:none">GITHUB-Link Reference loader/callback.html</a>
+		<a href="loader/setonline.html" style="display:none">GITHUB-Link Reference loader/setonline.html</a>
+		<a href="loader/success.html" style="display:none">GITHUB-Link Reference loader/success.html</a>
+		</div><!-- /ui-body wrapper -->
+</div><!-- /page -->
+</form>
+<script>
+	//setTimeout("checkFullScreen()",400);
+	var IDs = ["app_usergroup","app_email","app_submiturl","app_database"];
+	var vKey = "";
+	var vQueryHash = readQueryParams();
+	for (var i=0;i<IDs.length;i++) {
+		vKey = IDs[i];
+		loadLocalStorageValue(vKey);
+		if (vQueryHash[vKey]) {
+			write2value(vKey,decodeURLparam(vQueryHash[vKey]));
+		};
+   };
+	 document.addEventListener("keydown", function(e) {
+	 if (e.keyCode == 70) {
+		 //Key was F
+		 //enterFullscreen();
+	 }
+ 	}, false);
+</script>
+</body>
+</html>

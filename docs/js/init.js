@@ -83,6 +83,7 @@ function initCodeCreator() {
   initLabelsHTML();
   setClassSelectorDefault(vSelectedClass)
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
+  initEditorContent();
 };
 
 function initLabelsHTML() {

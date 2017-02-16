@@ -43,6 +43,33 @@ function getIFrameEditor(pIFrameName) {
   return vEditor;
 };
 
+function initEditorContent() {
+  console.log("initEditorContent() - Call");
+  writePage2Editor();
+  writePageType2Editor();
+};
+
+function writePage2Editor() {
+  var vID = getValueDOM("sPageHTML");
+  var vValue = "Page '"+vID+"' undefined";
+  if (vJSON_JS["PageContent"] && vJSON_JS["PageContent"][vID]) {
+    vValue = vJSON_JS["PageContent"][vID];
+  };
+  write2value("tPageHTML",vValue);
+  write2value("tPageID",vID);
+}
+
+function writePageType2Editor() {
+  var vID = getValueDOM("sPageTypeHTML");
+  var vValue = "PageType '"+vID+"' undefined";
+  if (vJSON_JS["PageType"] && vJSON_JS["PageType"][vID]) {
+    vValue = vJSON_JS["PageType"][vID]["template"];
+  };
+  //setEditorValue("iPageHTML",vValue);
+  write2value("tPageTypeHTML",vValue);
+  write2value("tPageTypeID",vID);
+}
+
 function setEditorValue(pIFrameName,pValue) {
   var vEditor = getIFrameEditor(pIFrameName);
   //vEditor.setValue(vEditor.getValue(), 1);

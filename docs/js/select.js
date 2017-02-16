@@ -40,6 +40,68 @@ function setClassSelectorDefault(pClassName) {
   write2value("sClassList",pClassName);
   write2value("sClassCode",pClassName);
 };
+
+function selectPageJS(pPageID) {
+  var vPageID = pPageID || getValueDOM("sPageHTML");
+  var vOldPageID = getValueDOM("tPageID"); // old PageID
+  var vOldContent = getValueDOM("tPageHTML");
+  var vContent = getEditorValue("iPageHTML");
+  if (vOldPageID != "") {
+    if (vOldContent != vContent) {
+      console.log("Content of Page CHANGED\nOLD: "+vOldContent+"\nNEW: "+vContent);
+      var vSaveOK = confirm("Content of Page ["+vOldPageID+"] changed.\nDo you want to save the Page Definition?");
+      if (vSaveOK == true) {
+        save2LevelID2JSON("PageContent",vOldPageID,vContent);
+      };
+    } else {
+      console.log("Content of Page unchanged");
+      //setEditorValue("iPageHTML",)
+    };
+  };
+  console.log("selectPageJS()-Call: Current Page ["+vOldPageID+"] - Selected Page '"+vPageID+"'.");
+  if (vJSON_JS["PageContent"] && vJSON_JS["PageContent"][vPageID]) {
+    console.log("Page with ID '"+vPageID+"' exists in selectPageJS()-Call");
+    var vValue = vJSON_JS["PageContent"][vPageID];
+    write2value("tPageHTML",vValue);
+    setEditorValue("iPageHTML",vValue);
+  } else {
+    console.log("selectPageJS()-Call: Undefined Page Content '"+vPageID+"' - use old Page Content '"+vOldPageID+"'.");
+    vPageID = vOldPageID;
+  };
+  vJSON_JS["SelectedPage"] = vPageID;
+  write2value("tPageID",vPageID);
+};
+
+function selectPageTypeJS(pPageTypeID) {
+  var vPageTypeID = pPageTypeID || getValueDOM("sPageTypeHTML");
+  var vOldPageTypeID = getValueDOM("tPageTypeID"); // old PageTypeID
+  var vOldContent = getValueDOM("tPageTypeHTML");
+  var vContent = getEditorValue("iPageTypeHTML");
+  if (vOldPageTypeID != "") {
+    if (vOldContent != vContent) {
+      console.log("Content of PageType CHANGED");
+      var vSaveOK = confirm("Definition of PageType ["+vOldPageTypeID+"] changed.\nDo you want to save the PageType Definition?");
+      if (vSaveOK == true) {
+        save3LevelID2JSON("PageType",vOldPageTypeID,"template",vContent);
+      };
+    } else {
+      console.log("Content of PageType unchanged");
+    };
+  };
+  console.log("selectPageTypeJS()-Call: Current PageType '"+vOldPageTypeID+"' - Selected PageType '"+vPageTypeID+"'.");
+  if (vJSON_JS["PageType"] && vJSON_JS["PageType"][vPageTypeID] && vJSON_JS["PageType"][vPageTypeID]["template"]) {
+    console.log("PageType with ID '"+vPageTypeID+"' exists in selectPageTypeJS()-Call");
+    var vValue = vJSON_JS["PageType"][vPageTypeID]["template"];
+    write2value("tPageTypeHTML",vValue);
+    setEditorValue("iPageTypeHTML",vValue);
+  } else {
+    console.log("selectPageTypeJS()-Call: Undefined PageType Content '"+vPageTypeID+"' - use old PageType Content '"+vOldPageTypeID+"'.");
+    vPageTypeID = vOldPageTypeID;
+  };
+  write2value("tPageTypeID",vPageTypeID);
+};
+
+
 function fillForm4Class(pClassName) {
   console.log("fillForm4Class('"+pClassName+"')");
   updateJSON2Form(pClassName);

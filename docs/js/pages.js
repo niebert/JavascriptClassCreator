@@ -151,7 +151,10 @@ function getPageListHash() {
 
 function createButtonJS(pButtonHash) {
   var vButtonID = reduceVarName(pButtonHash["button-id"]);
-  console.log("createButtonJS(pButtonHash)-Call for ID='"+vButtonID+"'");
+  if ((!pButtonHash["counter"]) || (pButtonHash["counter"] == "")) {
+    pButtonHash["counter"] = 0
+  };
+  console.log("createButtonJS(pButtonHash)-Call for ID='"+vButtonID+"' Button Counter="+pButtonHash["counter"]);
   var vExists = existsButtonJS(vButtonID);
   if (vExists) {
     //alert("Button '"+vButtonID+"' already exists!");
@@ -164,6 +167,37 @@ function createButtonJS(pButtonHash) {
   return vExists;
 };
 
+function createNewPage() {
+  var vHash = {};
+  vHash["title"] = "Page-ID";
+  vHash["init"] = "";
+  var vPageID = prompt4hash(vHash);
+  var vPageType = "";
+  var vSuccess = true
+  if (vHash["success"]) {
+    alert("Create Page cancelled!");
+    vSuccess = false;
+  } else {
+    //if (vPageID == "") {
+    alert("Page-ID undefined!\nCreate Page cancelled!");
+  }
+}
+
+function prompt4hash(pHash) {
+  var vText = prompt("Please enter "+pHash["title"]+"!",pHash["init"]);
+  pHash["success"] = false;
+  if (!vText) {
+    alert(pHash["title"]+" cancelled!");
+    vText = "";
+  } else if (vText == "") {
+    console.log("Content for '"+ pHash["title"]+"' is empty!");
+    //pHash["success"] = true;
+  } else {
+    pHash["success"] = true;
+  };
+  pHash["text"] = vText;
+  return vText;
+}
 
 function createPageJS(pPageHash) {
   var vPageID = reduceVarName(pPageHash["page-id"]);
@@ -302,6 +336,7 @@ function getDefaultPageTypeContent(pPageType) {
     default:
 
   };
+  vOut = replaceString(vOut,"___PAGE_TYPE_ID___",pPageType);
   return vOut;
 };
 
@@ -344,6 +379,22 @@ function existsButtonJS(pButtonID) {
   };
   return vReturn
 };
+
+function savePageHTML() {
+  var vID = getValueDOM("sPageHTML");
+  console.log("savePageHTML() - Page ["+vID+"]");
+  save2LevelID2JSON("PageContent",vID,getEditorValue("iPageHTML"));
+  saveJSON2LocalStorage("json");
+  alert("Page ['"+vID+"'] saved!");
+}
+
+function savePageTypeHTML() {
+  var vID = getValueDOM("sPageTypeHTML");
+  console.log("savePageTypeHTML() - Page Type ["+vID+"]");
+  save2LevelID2JSON("PageType",vID,"template",getEditorValue("iPageTypeHTML"));
+  saveJSON2LocalStorage("json");
+  alert("Page Type ['"+vID+"'] saved!");
+}
 
 function existsPageJS(pPageID) {
   if (!pPageID) {

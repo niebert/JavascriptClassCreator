@@ -11,6 +11,11 @@ All the repositories in "niebert" are mainly designed for rapid prototyping, exp
 ## ToDo
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for the generated Javascript Classes
+* BUG: Select Page does not set parent-id and page-title
+* BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
+* BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
+* IMPROVE: add blank selection option to DB selector
+* IMPROVE: remove JSON Code Generator from init in index.html
 
 
 ## Acknowledgement

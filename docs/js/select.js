@@ -180,12 +180,12 @@ function selectDatabase() {
   //show("bSaveJSON");
   var vDB = getValueDOM("sDatabase");
   var vContent = vJSON_JS["DatabaseList"][vDB];
-  setEditorValue("iJSON",vContent);
+  setEditorValue("iJSONDB",vContent);
 }
 
 function saveDatabaseJSON() {
   var vDB = getValueDOM("sDatabase");
-  var vContent = getEditorValue("iJSON");
+  var vContent = getEditorValue("iJSONDB");
   vJSON_JS["DatabaseList"][vDB] = vContent;
 }
 

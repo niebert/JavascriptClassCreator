@@ -96,7 +96,7 @@ function getArray4HashID(pHash) {
   return vArray
 };
 
-function createPageSelect(pArray) {
+function createPageSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createPageSelect()-Call");
   var vArray = getArray4HashID(vJSON_JS["PageList"]);
@@ -106,10 +106,10 @@ function createPageSelect(pArray) {
   var vFirstEmpty = [""];
   vArray = vFirstEmpty.concat(vArray);
   vOptions = createOptions4Array(vArray);
-  write2innerHTML("sParentPage",vOptions);  
+  write2innerHTML("sParentPage",vOptions);
 };
 
-function createPageTypeSelect(pArray) {
+function createPageTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createPageTypeSelect()-Call");
   var vArray = getArray4HashID(vJSON_JS["PageType"]);

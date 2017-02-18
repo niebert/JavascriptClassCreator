@@ -66,6 +66,8 @@ function getPageListArray() {
    var vArr = getTextareaArray("tPages");
    for (var i = 0; i < vArr.length; i++) {
      var vHash = getPageLine2Hash(vArr[i]);
+     var vPageTypeID = vHash["page-type"];
+     if (vJSON_JS[""])
      vPageArr.push(vHash);
    };
    return vPageArr;
@@ -119,7 +121,7 @@ function updateForm2DatabasesJSON() {
   var vDBHash = {};
   var vDB = "";
   for (var i = 0; i < vNameDB.length; i++) {
-    vDB = vNameDB[i]
+    vDB = vNameDB[i];
     vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || "// Database: db/"+vDB+".js";
   };
   vJSON_JS["DatabaseList"] =  vDBHash
@@ -218,7 +220,7 @@ function createNewPage() {
     } else {
       vJSON_JS["PageList"][vNewPageID] = vNewPageHash;
       write2value("tPageList", getPageListString());
-      updatePageSelector();
+      createPageSelect();
       //updatePages();
       //updateJSON2Form(vNewPageName);
       vSuccess = true;
@@ -230,8 +232,58 @@ function createNewPage() {
     console.log("Create new Page cancelled!\n"+vErrorMSG);
   };
   return vSuccess;
+};
 
+function createNewPageType() {
+  console.log("Click New - create a new class after prompt");
+  //var vNewPageName = prompt("Please enter name of new Page", "");
+  var vPageTypeID = getValueDOM("tPageTypeID");
+  var vLeftButtonID  = getValueDOM("sButtonLeft");
+  var vRightButtonID = getValueDOM("sButtonRight");
+  var vTemplate = getEditorValue("iPageTypeHTML");
+  var vErrorMSG = "";
+  var vSuccess = false;
+  var vCount = 0;
+  if (vPageTypeID == "") {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") PageTypeID is undefined!"
+  };
+  if (vLeftButtonID == vRightButtonID) {
+    if (vLeftButtonID != "") {
+      vCount++;
+      vErrorMSG = "\n("+vCount+")  ID for Left and Right Button in Header ["+vRightButtonID+"] can not be equal!"
+    }
+  };
+  if (vErrorMSG == "") {
+    //write2value("tPageID", vNewPageName);
+    var vNewPageHash = {
+      "page-type":  vPageTypeID,
+      "button-id1": vLeftButtonID,
+      "button-id2": vRightButtonID,
+      "template":   vTemplate
+    };
+    vFailed = createPageTypeJS(vNewPageHash);
+    //vFailed == true means Page exists,
+    if (vFailed) {
+      alert("Create New Type Page ["+vPageTypeID+"] was NOT successful. Page Type already exists!");
+      selectPageTypeJS(vPageTypeID);
+    } else {
+      vJSON_JS["PageType"][vPageTypeID] = vNewPageHash;
+      write2value("tPageType", getPageTypeString());
+      createPageTypeSelect();
+      //updatePages();
+      //updateJSON2Form(vNewPageName);
+      vSuccess = true;
+      //$( "#tabClass" ).trigger( "click" );
+    };
+  } else {
+    vErrorMSG = "ERROR Create New Type Page:"+vErrorMSG;
+    alert(vErrorMSG);
+    console.log("Create new Type Page cancelled!\n"+vErrorMSG);
+  };
+  return vSuccess;
 }
+
 
 function getPageListString() {
   var vHash = vJSON_JS["PageList"];
@@ -252,20 +304,23 @@ function getPageListString() {
   return vOut;
 }
 
-function X_createNewPage() {
-  var vHash = {};
-  vHash["title"] = "Page-ID";
-  vHash["init"] = "";
-  var vPageID = prompt4hash(vHash);
-  var vPageType = "";
-  var vSuccess = true
-  if (vHash["success"]) {
-    alert("Create Page cancelled!");
-    vSuccess = false;
-  } else {
-    //if (vPageID == "") {
-    alert("Page-ID undefined!\nCreate Page cancelled!");
-  }
+function getPageTypeString() {
+  var vHash = vJSON_JS["PageType"];
+  var vOut = "";
+  var vCR = "";
+  var vSep = "";
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vOut += vCR;
+      vSep = "";
+      for (var i = 0; i < vPageTypeRecord.length; i++) {
+        vOut += vSep+vHash[iID][vPageTypeRecord[i]];
+        vSep = "|";
+      }
+      vCR = "\n";
+    };
+  };
+  return vOut;
 }
 
 function prompt4hash(pHash) {

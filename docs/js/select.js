@@ -177,15 +177,16 @@ function selectJSAttribs() {
 }
 
 function selectDatabase() {
-  show("bSaveJSON");
+  //show("bSaveJSON");
   var vDB = getValueDOM("sDatabase");
-  var vValue = vJSON_JS["DatabaseList"][vDB];
-  setEditorValue("iJSON",vValue)
+  var vContent = vJSON_JS["DatabaseList"][vDB];
+  setEditorValue("iJSON",vContent);
 }
 
 function saveDatabaseJSON() {
   var vDB = getValueDOM("sDatabase");
-
+  var vContent = getEditorValue("iJSON");
+  vJSON_JS["DatabaseList"][vDB] = vContent;
 }
 
 function selectJSMethods() {

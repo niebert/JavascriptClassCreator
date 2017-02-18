@@ -154,7 +154,7 @@ function initButtonJS_do(pButtonHash) {
 
 function initFormPageList() {
    console.log("initFormPageList()");
-   var vPageArr = getPageListArray(); //read from tPages in  pageses.js 413
+   var vPageArr = getPageListArray(); //read from tPages in  pages.js 413
    for (var i = 0; i < vPageArr.length; i++) {
      initPageJS(vPageArr[i]);
    };

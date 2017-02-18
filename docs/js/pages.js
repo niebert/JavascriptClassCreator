@@ -31,8 +31,19 @@ function getDatabaseArray() {
 function getPageTypeArray() {
   var vArr = getTextareaArray("tPageTypes");
   var vPageTypeArray = [];
+  var vPT1Hash = null;
+  var vID = "";
   for (var i = 0; i < vArr.length; i++) {
-    vPageTypeArray.push(getPageTypeLine2Hash(vArr[i]))
+    vPT1Hash = getPageTypeLine2Hash(vArr[i]);
+    // insert the template definition of PageType if exists in vJSON_JS
+    // else insert a defaulttemplate
+    vID = vPT1Hash["page-type"];
+    if (vJSON_JS["PageType"] && vJSON_JS["PageType"][vID]) {
+      vPT1Hash["template"] = vJSON_JS["PageType"][vID]["template"];
+    } else {
+      vPT1Hash["template"] = getDefaultPageTypeContent(vID);
+    };
+    vPageTypeArray.push(vPT1Hash);
   };
   return vPageTypeArray
 };
@@ -43,6 +54,7 @@ function getPageTypeHash() {
   var vID = "";
   for (var i = 0; i < vArr.length; i++) {
     vID = vArr[i]["page-type"];
+    // vArr[i] is a PageType-Hash with the IDs vPageTypeRecord in index.html
     vPageTypeHash[vID] = vArr[i];
   };
   return vPageTypeHash
@@ -143,6 +155,7 @@ function getPageListHash() {
   for (var i = 0; i < vPageArr.length; i++) {
     vPageID = vPageArr[i]["page-id"];
     console.log("getPageHash() - Page ["+vPageID+"]");
+    // vPageArr[i] is a Hash with the IDs vPageRecord create with getPageLine2Hash(pLine)
     vPageHash[vPageID] = vPageArr[i];
     //vPageHash[vPageID]["page-content"] = "Content for Page ["+vPageID+"]";
   };
@@ -168,6 +181,78 @@ function createButtonJS(pButtonHash) {
 };
 
 function createNewPage() {
+  console.log("Click New - create a new class after prompt");
+  //var vNewPageName = prompt("Please enter name of new Page", "");
+  var vNewPageID = getValueDOM("tPageID");
+  var vNewPageTitle = getValueDOM("tPageTitle");
+  var vNewPageType  = getValueDOM("sPageType4Page");
+  var vParentPageID = getValueDOM("sParentPage");
+  var vErrorMSG = "";
+  var vSuccess = false;
+  var vCount = 0;
+  if (vNewPageID == "") {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") PageID is undefined!"
+  };
+  if (vNewPageID == vParentPageID) {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") Parent Page ID ["+vParentPageID+"] can not be equal PageID!"
+  };
+  if (vNewPageTitle == "") {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") Title of Page ["+vNewPageID+"] is undefined!"
+  };
+  if (vErrorMSG == "") {
+    //write2value("tPageID", vNewPageName);
+    var vNewPageHash = {
+      "page-id":vNewPageID,
+      "page-title": vNewPageTitle,
+      "page-type": vNewPageType,
+      "parent-id": vParentPageID
+    };
+    vFailed = createPageJS(vNewPageHash);
+    //vFailed == true means Page exists,
+    if (vFailed) {
+      alert("Create New Page ["+vNewPageID+"] was NOT successful. Page already exists!");
+      selectPageJS(vNewPageID);
+    } else {
+      vJSON_JS["PageList"][vNewPageID] = vNewPageHash;
+      write2value("tPageList", getPageListString());
+      updatePageSelector();
+      //updatePages();
+      //updateJSON2Form(vNewPageName);
+      vSuccess = true;
+      //$( "#tabClass" ).trigger( "click" );
+    };
+  } else {
+    vErrorMSG = "ERROR Create New Page:"+vErrorMSG;
+    alert(vErrorMSG);
+    console.log("Create new Page cancelled!\n"+vErrorMSG);
+  };
+  return vSuccess;
+
+}
+
+function getPageListString() {
+  var vHash = vJSON_JS["PageList"];
+  var vOut = "";
+  var vCR = "";
+  var vSep = "";
+  for (var iPageID in vHash) {
+    if (vHash.hasOwnProperty(iPageID)) {
+      vOut += vCR;
+      vSep = "";
+      for (var i = 0; i < vPageRecord.length; i++) {
+        vOut += vSep+vHash[iPageID][vPageRecord[i]];
+        vSep = "|";
+      }
+      vCR = "\n";
+    };
+  };
+  return vOut;
+}
+
+function X_createNewPage() {
   var vHash = {};
   vHash["title"] = "Page-ID";
   vHash["init"] = "";
@@ -187,7 +272,7 @@ function prompt4hash(pHash) {
   var vText = prompt("Please enter "+pHash["title"]+"!",pHash["init"]);
   pHash["success"] = false;
   if (!vText) {
-    alert(pHash["title"]+" cancelled!");
+    console.log(pHash["title"]+" cancelled!");
     vText = "";
   } else if (vText == "") {
     console.log("Content for '"+ pHash["title"]+"' is empty!");

@@ -55,6 +55,16 @@ function saveClassJSON() {
   saveLocalDB("vJSON_JS",vJSON_JS);
 };
 
+function updateFormPages2JSON() {
+  vJSON_JS["PageList"] = getPageListHash();
+  createPageSelect();
+};
+
+function updateFormPageTypes2JSON() {
+  vJSON_JS["PageType"] = getPageTypeHash();
+  createPageTypeSelect();
+};
+
 function updateFormID2JSON(pID) {
   var vClass 	= getValueDOM("tClassname");
   console.log("updateFormID2JSON('"+pID+"')-Call with Classname: '"+vClass+"'");

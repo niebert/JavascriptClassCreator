@@ -140,7 +140,7 @@ writedom.js</textarea>
 <tr>
 <td align="center">
   <b>App Pages</b>
-  <input name="bUpdatePages" value=" Update Pages " onclick="updateFormID2JSON('tPages')" type="button">
+  <input name="bUpdatePages" value=" Update Pages " onclick="updateFormPages2JSON()" type="button">
   <br>
   <b>Format:</b>
   <tt id="labelPageRecord">-</tt>
@@ -154,7 +154,7 @@ quit|Quit App|ConfirmPage|home
 </td>
 <td align="center">
   <b>Page Types</b>
-  <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateForm2PagesJSON();return false" type="button">
+  <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
   <br>
   <b>Format:</b>
   <tt id="labelPageTypeRecord">-</tt>
@@ -175,7 +175,8 @@ ConfirmPage|home|OK
   -- <b>Format:</b>
   <tt id="labelButtonRecord">-</tt>
   <br>
-  <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" "b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+
+<textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" "b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
   </textarea>
 </td>
@@ -191,16 +192,22 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>App Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
+    <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
       <option>home</option>
     </select>
     <br>
-    <b>ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace"  style="display:none">
+    <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace">
     <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
     <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
       <option>DefaultPage</option>
     </select>
-
+    <br>
+    <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
+    <b>Parent Page ID:</b>
+    <select id="sParentPage" name="sParentPage">
+      <option>home</option>
+    </select>
+    <br>
     <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
     <br>
     <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
@@ -218,18 +225,15 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
 </tr>
 <tr>
   <td colspan="2" align="center">
-    <b>Page Type:</b>
+    <b>Select Page Type:</b>
     <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
       <option>DefaultPage</option>
     </select>
     <br>
-    <b>ID:</b>
-    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace" style="display:none">
+    <b>Type-ID:</b>
+    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace">
     <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
-    <b>Parent Page ID:</b>
-    <select id="sParentPage" name="sParentPage">
-      <option>home</option>
-    </select>  <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
+    <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
     <br>
     <b>Button Left:</b>
     <select id="sButtonLeft" name="sButtonLeft">

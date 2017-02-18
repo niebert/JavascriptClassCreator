@@ -102,7 +102,11 @@ function createPageSelect(pArray) {
   var vArray = getArray4HashID(vJSON_JS["PageList"]);
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sPageHTML",vOptions)
+  write2innerHTML("sPageHTML",vOptions);
+  var vFirstEmpty = [""];
+  vArray = vFirstEmpty.concat(vArray);
+  vOptions = createOptions4Array(vArray);
+  write2innerHTML("sParentPage",vOptions);  
 };
 
 function createPageTypeSelect(pArray) {

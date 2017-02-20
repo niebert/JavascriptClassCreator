@@ -46,6 +46,9 @@ function selectPageJS(pPageID) {
   var vOldPageID = getValueDOM("tPageID"); // old PageID
   var vOldContent = getValueDOM("tPageHTML");
   var vContent = getEditorValue("iPageHTML");
+  var vPageHash = {
+
+  };
   if (vOldPageID != "") {
     if (vOldContent != vContent) {
       console.log("Content of Page CHANGED\nOLD: "+vOldContent+"\nNEW: "+vContent);
@@ -64,6 +67,10 @@ function selectPageJS(pPageID) {
     var vValue = vJSON_JS["PageContent"][vPageID];
     write2value("tPageHTML",vValue);
     setEditorValue("iPageHTML",vValue);
+    var vSelHash = vJSON_JS["PageList"][vPageID];
+    //write2value("sPageHTML",vPageID);
+    write2value("sParentPage",vSelHash["parent-id"]);
+    write2value("tPageTitle",vSelHash["page-title"]);
   } else {
     console.log("selectPageJS()-Call: Undefined Page Content '"+vPageID+"' - use old Page Content '"+vOldPageID+"'.");
     vPageID = vOldPageID;
@@ -91,9 +98,11 @@ function selectPageTypeJS(pPageTypeID) {
   console.log("selectPageTypeJS()-Call: Current PageType '"+vOldPageTypeID+"' - Selected PageType '"+vPageTypeID+"'.");
   if (vJSON_JS["PageType"] && vJSON_JS["PageType"][vPageTypeID] && vJSON_JS["PageType"][vPageTypeID]["template"]) {
     console.log("PageType with ID '"+vPageTypeID+"' exists in selectPageTypeJS()-Call");
-    var vValue = vJSON_JS["PageType"][vPageTypeID]["template"];
-    write2value("tPageTypeHTML",vValue);
-    setEditorValue("iPageTypeHTML",vValue);
+    var vSelHash = vJSON_JS["PageType"][vPageTypeID];
+    var vValue = vSelHash["template"];
+    write2value("tPageTypeHTML",vSelHash["template"]);
+    write2value("sButtonLeft",vSelHash["button-id1"]);
+    write2right("sButtonRight",vSelHash["button-id2"]);
   } else {
     console.log("selectPageTypeJS()-Call: Undefined PageType Content '"+vPageTypeID+"' - use old PageType Content '"+vOldPageTypeID+"'.");
     vPageTypeID = vOldPageTypeID;
@@ -178,13 +187,18 @@ function selectJSAttribs() {
 
 function selectDatabase() {
   //show("bSaveJSON");
-  var vDB = getValueDOM("sDatabase");
-  var vContent = vJSON_JS["DatabaseList"][vDB];
+  var vDB = getValueDOM("sDatabases");
+  var vContent = "";
+  if (vJSON_JS["DatabaseList"][vDB]) {
+    vContent = vJSON_JS["DatabaseList"][vDB];
+  } else {
+    alert("Database ["+vDB+"] does not exist in call of selectDatabase()");
+  };
   setEditorValue("iJSONDB",vContent);
-}
+};
 
 function saveDatabaseJSON() {
-  var vDB = getValueDOM("sDatabase");
+  var vDB = getValueDOM("sDatabases");
   var vContent = getEditorValue("iJSONDB");
   vJSON_JS["DatabaseList"][vDB] = vContent;
 }

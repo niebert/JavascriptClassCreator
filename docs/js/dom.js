@@ -125,7 +125,9 @@ function createDatabaseSelect(pArray) {
   console.log("createDatabaseSelect()-Call");
   var vArray = pArray || getDatabaseArray();
   vArray.sort();
-  var vOptions = createOptions4Array(vArray);
+  var vEmptySel = [""];
+  var vArrayEmptySel = vEmptySel.concat(vArray);
+  var vOptions = createOptions4Array(vArrayEmptySel);
   write2innerHTML("sDatabases",vOptions);
 };
 

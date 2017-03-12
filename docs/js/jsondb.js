@@ -220,6 +220,7 @@ function saveMethodCallJS() {
       vClassJSON = getClassJSON();
       vClassJSON["MethodCode"][vMethodName] = vMethodCode;
       vClassJSON["MethodComment"][vMethodName] = vMethodComment;
+      vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
       updateJSMethods();
     } else {
       console.log("saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
@@ -236,8 +237,8 @@ function write2JSON(pID,pValue) {
 }
 
 function saveMethodJSON(pMethodName) {
-  var vMethodName = getValueDOM("tMethodName");
-  vMethodName = pMethodName || vMethodName;
+  var vMethodCall = getValueDOM("tMethodName");
+  vMethodName = pMethodName || vMethodCall;
   vMethodName = getMethodName(vMethodName);
   var vMethodCode     = getValueDOM("tMethodCode");
   var vMethodComment  = getValueDOM("tMethodComment");
@@ -245,6 +246,7 @@ function saveMethodJSON(pMethodName) {
     checkClassJSON(vClassJSON);
     vClassJSON["MethodCode"][vMethodName] = vMethodCode;
     vClassJSON["MethodComment"][vMethodName] = vMethodComment;
+    vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
   } else {
     console.log("saveMethodJSON() Call - Method Name undefined");
   };
@@ -267,10 +269,16 @@ function checkClassJSON(pClassJSON) {
 
 function updateForm2MethodComment() {
   console.log("updateForm2MethodComment()-Call");
+  var vMethodCall = getValueDOM("tMethodName");
+  var vMethodName = getMethodName(vMethodCall);
+  vClassJSON["MethodComment"][vMethodName] = vMethodComment;
 };
 
 function updateForm2MethodNameParam() {
   console.log("updateForm2MethodNameParam()-Call");
+  var vMethodCall = getValueDOM("tMethodName");
+  var vMethodName = getMethodName(vMethodCall);
+  vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
 };
 
 function updateJSON2Form(pClass) {
@@ -283,7 +291,39 @@ function updateJSON2Form(pClass) {
      write2value(vDOM_ID[i],vClassJSON[vDOM_ID[i]]);
   };
   // load the defined Attribute from Form
+  updateJSON2FormVariable(vClass,"tAttributes");
   // updateForm2MissingJSON(pClass);
+};
+
+function updateJSON2FormVariable(pClass,pVarname) {
+  var vOut = "";
+  var vCR = "";
+  if (pVarname) {
+    switch (pVarname) {
+      case "tAttributes":
+        var vHash = vJSON_JS["ClassList"]["AttribDefault"];
+        for (var iID in vHash) {
+          if (vHash.hasOwnProperty(iID)) {
+            vOut += vCR+ iID + " = "+vHash[iID];
+          };
+        };
+        write2value(pVarname,vOut);
+      break;
+      case "tMethods":
+      var vHash = vJSON_JS["ClassList"]["MethodParameter"];
+      for (var iID in vHash) {
+        if (vHash.hasOwnProperty(iID)) {
+          vOut += vCR+ iID + "("+vHash[iID]+")";
+        };
+      };
+      write2value(pVarname,vOut);
+      break;
+      default:
+       console.log("WARNING: updateJSON2FormVariable(pVarname) -  for pVarname no case in switch");
+    }
+  } else {
+      console.log("ERROR: updateJSON2FormVariable(pVarname) - pVarname undefined");
+  }
 };
 
 function updateForm2MissingJSON(pClass) {
@@ -312,6 +352,7 @@ function updateForm2AttribJSON(pClass) {
   var vAttTypeHash = getAttribTypeHash(vAttHash); // classes.js:336
   // Define Hash in Attribute Hash if undefined
   defineHashIfUndefined(vAttTypeHash,"AttribType");
+  defineHashIfEmpty(vAttTypeHash,"AttribType");
   var vAttCommentHash = getAttribCommentHash(vAttHash); // classes.js:356
   defineHashIfUndefined(vAttCommentHash,"AttribComment");
   createAttribSelect();
@@ -321,7 +362,23 @@ function updateForm2MethodJSON(pClass) {
   console.log("updateForm2MethodJSON('"+pClass+"')");
   var vClass = pClass || getSelectedClass();
   var vMethArr = getMethodNameArray(); //classes.js:275
+  var vMethCallArr = getMethodArray(); //classes.js:598
+  var vParam = "";
+  var vCall = "";
+  var vMethName = "";
   var vMethHash = {};
+  for (var i = 0; i < vMethArr.length; i++) {
+    vMethHash[vMethArr[i]] = "";
+  };
+  for (var vCall in vMethCallArr) {
+    if (vMethCallArr.hasOwnProperty(vCall)) {
+      vCall = vMethCallArr[vCall];
+      vMethName = getMethodName(vCall);
+      vParam = getMethodParameter4Call(vCall);
+      vMethHash[vMethName] = vParam;
+    };
+  };
+  defineHashIfUndefined(vMethHash,"MethodParameter");
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = "";
     vMethHash[vMethArr[i]] = "// Code for " + vMethArr[i];
@@ -353,9 +410,23 @@ function defineHashIfUndefined(pHash,pHashListID) {
   for (var iAttName in pHash) {
     if (vClassJSON[pHashListID][iAttName]) {
         //vClassJSON[pHashListID][iAttName];
-        console.log(pHashListID+"."+iAttName+" defined");
+        console.log(pHashListID+"['"+iAttName+"'] defined");
     } else {
-      console.log(pHashListID+"."+iAttName+" undefined set to '"+pHash[iAttName]+"'");
+      console.log(pHashListID+"['"+iAttName+"'] undefined set to '"+pHash[iAttName]+"'");
+      vClassJSON[pHashListID][iAttName] = pHash[iAttName];
+    };
+  };
+};
+
+function defineHashIfEmpty(pHash,pHashListID) {
+  vClassJSON = getClassJSON();
+  defineHashIfUndefined(pHash,pHashListID);
+  for (var iAttName in pHash) {
+    if (vClassJSON[pHashListID][iAttName] != "") {
+        //vClassJSON[pHashListID][iAttName];
+        console.log(pHashListID+"['"+iAttName+"'] defined");
+    } else {
+      console.log(pHashListID+"['"+iAttName+"']='' - Set to '"+pHash[iAttName]+"'");
       vClassJSON[pHashListID][iAttName] = pHash[iAttName];
     };
   };

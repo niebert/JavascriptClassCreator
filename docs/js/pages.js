@@ -62,13 +62,19 @@ function getPageTypeHash() {
 
 function getPageListArray() {
    //var vPageRecord = ["page-id","page-title","page-type","parent-id"];
+   var vPageID = "";
+   var vPageTypeID = "";
    var vPageArr = [];
    var vArr = getTextareaArray("tPages");
    for (var i = 0; i < vArr.length; i++) {
      var vHash = getPageLine2Hash(vArr[i]);
-     var vPageTypeID = vHash["page-type"];
-     if (vJSON_JS[""])
-     vPageArr.push(vHash);
+     vPageID = vHash["page-id"];
+     vPageTypeID = vHash["page-type"];
+     if (vPageID && (vPageID != "")) {
+       vPageArr.push(vHash);
+     } else {
+       console.log("getPageListArray()-Call: vPageID undefined!");
+     }
    };
    return vPageArr;
 };

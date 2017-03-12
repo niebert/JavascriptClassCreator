@@ -52,7 +52,9 @@ function initEditorContent() {
 function writePage2Editor() {
   var vID = getValueDOM("sPageHTML");
   var vValue = "Page '"+vID+"' undefined";
-  if (vJSON_JS["PageContent"] && vJSON_JS["PageContent"][vID]) {
+  if (reduceVarName(vID) == "") {
+    vValue = "";
+  } else if (vJSON_JS["PageContent"] && vJSON_JS["PageContent"][vID]) {
     vValue = vJSON_JS["PageContent"][vID];
   };
   write2value("tPageHTML",vValue);

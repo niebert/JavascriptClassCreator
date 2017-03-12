@@ -65,10 +65,10 @@ function initCodeCreator() {
         initFormClass(vSelectedClass);
         initFormClassList();
         initFormDatabaseList();
-        initFormSelectors();
         initFormButtonList();
         initFormPageType();
         initFormPageList();
+        initFormSelectors();
         console.log("Read Class from Form and add to vJSON_JS");
       };
   } else {
@@ -153,8 +153,8 @@ function initButtonJS_do(pButtonHash) {
 
 
 function initFormPageList() {
-   console.log("initFormPageList()");
    var vPageArr = getPageListArray(); //read from tPages in  pages.js 413
+   console.log("initFormPageList() with "+vPageArr.length+" Pages");
    for (var i = 0; i < vPageArr.length; i++) {
      initPageJS(vPageArr[i]);
    };
@@ -290,6 +290,7 @@ function initDatabaseJS_do(pDatabase) {
 function initFormSelectors() {
   // get current ClassName
   initClassSelector();
+  initPageSelector();
 };
 
 function initClassSelector() {
@@ -306,6 +307,22 @@ function initClassSelector() {
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
   createClassSelect(vClassArr);
+};
+
+function initPageSelector() {
+  var vPageArr = [];
+  var vPageList = vJSON_JS["PageList"];
+  for (var iPage in vPageList) {
+    if (vPageList.hasOwnProperty(iPage)) {
+      vPageArr.push(iPage);
+    };
+  };
+  //PageList update
+  //document.fCreator.tPageList += "\n"+vPage;
+  write2value("tPageList",vPageArr.join("\n"));
+  //var vPage = getValueDOM("tPagename");
+  //initPageJS(vPage);
+  createPageSelect(vPageArr);
 };
 
 function initDatabaseSelector() {

@@ -147,6 +147,7 @@ function createClassJS(pClass) {
     vClassJSON["AttribType"] = {};
     vClassJSON["AttribDefault"] = {};
     vClassJSON["AttribComment"] = {};
+    vClassJSON["MethodParameter"] = {};
     vClassJSON["MethodCode"] = {};
     vClassJSON["MethodComment"] = {};
   };
@@ -194,6 +195,11 @@ function getMethodName(pMethodWithParams) {
 function getMethodComment(pMethodWithParams) {
   var vMethodName = getMethodName(pMethodWithParams);
   return vClassJSON["MethodComment"][vMethodName] || "";
+};
+
+function getMethodParameter(pMethodWithParams) {
+  var vMethodName = getMethodName(pMethodWithParams);
+  return vClassJSON["MethodParameter"][vMethodName] || "";
 };
 
 function getMethodCode(pMethodWithParams) {
@@ -266,9 +272,9 @@ function getAttribArray() {
   return vAttribArray;
 }
 
-function createNewAttribJS() {
+function createNewAttribJS(pName) {
   // get name of Attributes
-  var vName = getValueDOM("tAttribName");
+  var vName = pName || getValueDOM("tAttribName");
   if (reduceVarName(vName) == "") {
     alert("ERROR: Name of Attribute is undefined.\nPlease enter the Name of the Variable!");
     console.log("ERROR: Name Variable undefined - createNewAttribJS()");
@@ -292,7 +298,7 @@ function createNewAttribJS() {
       console.log("Default Value of Atttribute '"+vName+"' was NOT defined, set to '"+vValue+"'");
     };
     var vSuccess = createNewAttributeForm(vName,vType,vValue,vComment);
-    alert("")
+    //alert("");
     updateAttributesJS(); //jsondb.js:57 no code in function body
   }
 };
@@ -307,6 +313,7 @@ function createNewMethodJS() {
     //vMethHash[vName] = vMethCall;
   } else {
     //var vType = getValueDOM("sAttribTypeList");
+    vClassJSON["MethodParameter"][vName] = getMethodParameter4Call(vMethCall);
     vClassJSON["MethodCode"][vName] = "";
     vClassJSON["MethodComment"][vName] = "";
     var vMethodList = getValueDOM("tMethods");
@@ -321,6 +328,34 @@ function createNewMethodJS() {
     updateMethodsJS();
   }
 };
+
+function getMethodParameter4Call(pMethCall) {
+  var vParam = "";
+  var vErrorCount = 0;
+  if (pMethCall) {
+    var vOpenBracketPos = pMethCall.indexOf("(");
+     if (vOpenBracketPos > 0) {
+       var vCloseBracketPos = pMethCall.lastIndexOf(")");
+       if (vCloseBracketPos > 0) {
+         if (vOpenBracketPos < vCloseBracketPos) {
+           console.log("check '"+pMethCall+"' is well defined!");
+           vParam = pMethCall.substring(vOpenBracketPos+1,vCloseBracketPos);
+         } else {
+           console.log("Closing Bracket before opening Bracket in '"+pMethCall+"'");
+         };
+       } else {
+         vErrorCount++;
+         console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethCall);
+       };
+     } else {
+       vErrorCount++;
+       console.log("ERROR: Method definition error!\n No opening bracket!\n"+pMethCall);
+     }
+  } else {
+    console.log("ERROR: pMethCall in getMethodParameter4Call(pMethCall) undefined!");
+  }
+  return vParam;
+}
 
 function createClassDefaultHash() {
     var vClassArray = getClassArray();
@@ -417,7 +452,7 @@ function getAttribTypeHash(pAttHash) {
     if (pAttHash.hasOwnProperty(iName)) {
       vTypeHash[iName] = determineAttType(pAttHash[iName]);
       console.log("Type of '"+iName+"' is '"+vTypeHash[iName]+"'");
-    }
+    };
   };
   return vTypeHash;
 };

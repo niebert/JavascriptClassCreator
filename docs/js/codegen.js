@@ -1,5 +1,14 @@
+function compressCode4Class() {
+  console.log("compressCode4Class()");
+  displayCompress();
+  // var vCompCode = compressCodeJS();
+  // console.log("compressed length="+vCompCode.length);
+  // setEditorValue("iOutput",vCompCode);
+};
+
 function compressCodeJS() {
-  var vCode = getEditorValue("iJSONDB");
+  var vCode = getEditorValue("iOutput");
+  console.log("compressCodeJS() length="+vCode.length);
   var vCodeTree = UglifyJS.parse(vCode);
   vCodeTree.figure_out_scope();
   var vCompressorOptions = {
@@ -227,7 +236,57 @@ function getDatabasesHTML() {
     vOut += replaceString(vSCRIPT,"___LIBERARY___","db/"+vArrDB[i]+".js");
   };
   return vOut;
-}
+};
+
+function parameterHasClassDef(pPar) {
+  var vRet = null;
+  if (pPar) {
+    vRet = pPar.match(/\s*:\s*[A-Za-z][A-Za-z0-9_]+\s*^/g);
+    //console.log("parameterHasClassDef(pPar) TRUE");
+    vRet = true;
+  } else {
+    //console.log("parameterHasClassDef(pPar) FALSE");
+    vRet = false;
+  };
+  return vRet;
+};
+
+function edit2JSparams(pEditParams) {
+  var vParArr = pEditParams.split(",");
+  var vParOut = [];
+  var vParam = "";
+  for (var i = 0; i < vParArr.length; i++) {
+    var vClass4Param = parameterHasClassDef(vParArr[i]);
+    if (vClass4Param) {
+      vParam = vParArr[i].substring(0,vParArr[i].lastIndexOf(":"));
+      vParOut.push(vParam);
+      console.log("parameterHasClassDef('"+vParArr[i]+"') TRUE '"+vParam+"'");
+    } else {
+      vParOut.push(vParArr[i]);
+      console.log("parameterHasClassDef('"+vParArr[i]+"') FALSE ");
+    };
+  };
+  return vParOut.join(",");
+};
+
+function displayCompress() {
+    if (vWinCompress != null) {
+      if (vWinCompress.close) {
+        vWinCompress.close();
+      };
+    };
+    vWinCompress = window.open("uglify/index.html","wCOMP"+Date.now(),"width=900,height=600");
+};
+
+
+function displayUML() {
+    if (vWinUML != null) {
+      if (vWinUML.close) {
+        vWinUML.close();
+      };
+    };
+    vWinUML = window.open("uml/index.html","wUML","width=900,height=600");
+};
 
 function createCode4Class() {
 	var vString = "";
@@ -280,7 +339,8 @@ function createCode4Class() {
 	vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribConstructor);
 	vOutput = replaceString(vOutput,"___METHODS___",vMethodConstructor);
 	var vMethodname = "";
-	var vMethodAllParamters = "";
+  var vMethodAllParams = "";
+  var vMethodParamsClass = "";
 	for (var i=0; i<vMethodArray.length; i++) {
 		vMethod = vMethodHeader;
 		var vOpenBracketPos = vMethodArray[i].indexOf("(");
@@ -290,11 +350,25 @@ function createCode4Class() {
 			if (vCloseBracketPos<0) {
 				alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
 			} else {
-				vMethodAllParamters = vSplitArray[1].substring(0,vCloseBracketPos);
+				vMethodParamsClass = vSplitArray[1].substring(0,vCloseBracketPos);
+        vMethodAllParams = edit2JSparams(vMethodParamsClass);
 			};
-			vMethod = replaceString(vMethod,"___METHODCALL___",vMethodArray[i]);
-			vMethod = replaceString(vMethod,"___METHODNAME___",vSplitArray[0]);
-			vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParamters);
+      var vMethName = vSplitArray[0];
+      var vReturn = vJSON_JS["ClassList"][vClassname]["MethodReturn"][vMethName];
+      var vReturnColon = "";
+      var vReturnComment = "";
+      if (vReturn != "") {
+        vReturnColon = ":"+vReturn;
+        vReturnComment = "Return: "+vReturn;
+      };
+      var vParArr = vMethodParamsClass.split(",");
+      var vParameterComment = vParArr.join("\n//#    ");
+      vMethod = replaceString(vMethod,"___METHODDEF___",vMethodArray[i]);
+      vMethod = replaceString(vMethod,"___METHODCALL___",vMethName+"("+vMethodAllParams+")");
+      vMethod = replaceString(vMethod,"___METHODNAME___",vMethName);
+      vMethod = replaceString(vMethod,"___RETURNCOMMENT___",vReturnComment);
+			vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
+      vMethod = replaceString(vMethod,"___PARAMETERDEF___",vParameterComment);
       var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vSplitArray[0]+"' do?";
       vMethodComment     = replaceString(vMethodComment,"\n","\n//#    ");
       vMethod = replaceString(vMethod,"___METHODCOMMENT___",vMethodComment);

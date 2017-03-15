@@ -45,7 +45,11 @@ function getSelectedClass() {
 
 function getSelectedClassJSON(pClassName) {
   var vSelectedClass = pClassName || getSelectedClass();
-  return vJSON_JS["ClassList"][vSelectedClass];
+  var vRetClassJSON = {};
+  if (vJSON_JS["ClassList"] && vJSON_JS["ClassList"][vSelectedClass]) {
+    vRetClassJSON = vJSON_JS["ClassList"][vSelectedClass]
+  };
+  return vRetClassJSON;
 }
 
 function saveForm2ClassJSON() {
@@ -63,7 +67,7 @@ function saveForm2ClassJSON() {
 function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createAttribTypeSelect()-Call");
-  var vArray = getClassTypeArray(); //classes.js 418
+  var vArray = getAllClassesArray(); //classes.js 418
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
   var vName =  "";
@@ -91,7 +95,7 @@ function getArray4HashID(pHash) {
   for (var iID in vHash) {
     if (vHash.hasOwnProperty(iID)) {
       vArray.push(iID)
-    }
+    };
   };
   return vArray
 };
@@ -135,7 +139,7 @@ function createDatabaseSelect(pArray) {
 function createClassTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createClassSelect()-Call");
-  var vArray = getClassTypeArray();  //classes.js 418
+  var vArray = getAllClassesArray();  //classes.js 418
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
 };

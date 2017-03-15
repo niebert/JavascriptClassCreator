@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>UglifyJS: Online JavaScript minifier</title>
+	<!--
+		Wrapper created by Dan Wolff (danwolff.se)
+		This wrapper is in the public domain. Attribution not required but appreciated.
+
+		UglifyJS is released under the BSD license, copyright Mihai Bazon.
+		For more information, see https://github.com/mishoo/UglifyJS2/.
+	 -->
+
+		<link rel="stylesheet" href="css/uglifyjs.css">
+</head>
+
+<body class="s-input s-output s-output">
+<h2>UglifyJS: Online JavaScript minifier - <a id="header-link" style="color:blue">[?]</a></h2>
+<br>
+<div class="header" style="padding-left: 20px">
+	<b>Class:</b> <tt id="hClassName" style=" font-size-adjust: 0.90;color:red">MyClass</tt>
+	<br>
+	<button class="btn-main pull-right" id="btn-comp"  tabindex="1" onclick="compressCloseWin()">Close</button>
+	<button class="btn-main pull-right" id="btn-go" tabindex="1" styleX="display:none">Minify</button>
+	<button id="btn-options" tabindex="2">Options</button>
+	<label><input id="cb-as-i-type" checked="checked" type="checkbox"> As I type</label>
+</div>
+
+<div class="content">
+	<div class="col i i-input">
+<textarea id="in" rows="15" cols="80" spellcheck="false" tabindex="1" autofocus="" style="white-space: pre;word-wrap: normal;overflow-x: scroll;">// Your code goes here
+</textarea>
+
+<script>
+
+function getWinOpener() {
+  var vWinOpener = window.opener;
+  return vWinOpener;
+};
+
+var vWinOpener = getWinOpener();
+
+function loadInputCode() {
+	var vInputCode = "//lost connection to parent window of JavascriptClassGenerator";
+	var vClassName = "UndefinedClass";
+	if (typeof vWinOpener === "undefined") {
+		console.log("wWinOpener undefined - connection lost");
+	} else {
+		console.log("Parent Editor Content of 'iOutput' loaded");
+		vInputCode = vWinOpener.getEditorValue("iOutput");
+		vClassName = vWinOpener.getValueDOM("tClassname");
+	};
+	document.getElementById("in").value = vInputCode;
+	document.getElementById("hClassName").innerHTML = vClassName;
+	console.log("loadInputCode() of Class: '"+vClassName+"'");
+};
+
+loadInputCode();
+
+
+
+</script>
+
+		</div>
+
+	<div class="col i i-options">
+<textarea id="options" rows="15" cols="80" spellcheck="false" tabindex="1">// Documentation of the options is available at https://github.com/mishoo/UglifyJS2
+{
+  parse: {
+    strict: false
+  },
+  compress: {
+    sequences     : true,
+    properties    : true,
+    dead_code     : true,
+    drop_debugger : true,
+    unsafe        : true,
+    unsafe_comps  : true,
+    conditionals  : true,
+    comparisons   : true,
+    evaluate      : true,
+    booleans      : true,
+    loops         : true,
+    unused        : true,
+    hoist_funs    : true,
+    hoist_vars    : false,
+    if_return     : true,
+    join_vars     : true,
+    cascade       : true,
+    side_effects  : true,
+    negate_iife   : true,
+    screw_ie8     : false,
+
+    warnings      : true,
+    global_defs   : {}
+  },
+  output: {
+    indent_start  : 0,
+    indent_level  : 4,
+    quote_keys    : false,
+    space_colon   : true,
+    ascii_only    : false,
+    inline_script : true,
+    width         : 80,
+    max_line_len  : 32000,
+    beautify      : true,
+    source_map    : null,
+    bracketize    : false,
+    semicolons    : true,
+    comments      : /@license|@preserve|^!/,
+    preserve_line : false,
+    screw_ie8     : false
+  }
+}
+</textarea>
+		<div class="tools">
+			<button class="btn-main" id="btn-options-save" tabindex="2">Save</button>
+			<button id="btn-options-reset" tabindex="2">Use defaults</button>
+		</div>
+	</div>
+
+	<div class="col i i-info">
+		<p>
+			<strong>UglifyJS</strong> is an excellent tool to help you minify your JavaScript!
+			It's a tried and tested tool, used by libraries such as jQuery.</p>
+
+		<p>
+			This is a simple wrapper for the browser around the minifier;
+			the hard work is done by <a href="http://lisperator.net/" target="_blank">Mihai Bazon</a>.
+			If you need an automated solution, I suggest checking out the
+			<a href="https://github.com/mishoo/UglifyJS2" target="_blank">source code</a>, intended for Node.JS.</p>
+
+		<p>
+			If you want to fork this project ort help improve this tool? It's on <a href="https://github.com/Skalman/UglifyJS-online" target="_blank">Github</a>.</p>
+
+		<p><small>
+			This wrapper for the browser was created by <a href="http://danwolff.se/" target="_blank">Dan Wolff</a>.</small></p>
+
+	</div>
+
+	<div class="col i i-output">
+		<p>
+			The minified output (<span id="stats">921 bytes, saved 59.23%</span>)</p>
+		<textarea id="out" spellcheck="false" tabindex="3"></textarea>
+	</div>
+
+	<div class="col i i-error">
+		<pre id="error"></pre>
+	</div>
+</div>
+
+<script src="js/utils.js"></script>
+<script src="js/ast.js"></script>
+<script src="js/parse.js"></script>
+<script src="js/transform.js"></script>
+<script src="js/scope.js"></script>
+<script src="js/output.js"></script>
+<script src="js/compress.js"></script>
+<!-- The following aren't needed: sourcemap.js, mozilla-ast.js -->
+
+<script src="js/init.js"></script>
+
+<script>
+//alert("Onclick="+document.getElementById("btn-go").onclick)
+function updateParentContent() {
+	document.getElementById("btn-go").onclick();
+	var vCompCode = document.getElementById("out").value || "undefined code";
+	if (typeof vWinOpener === "undefined") {
+		console.log("wWinOpener undefined - connection lost");
+	} else {
+		vWinOpener.setEditorValue("iOutput",vCompCode);
+	};
+};
+
+function compressCloseWin() {
+	updateParentContent();
+	window.close();
+}
+</script>
+
+</body></html>

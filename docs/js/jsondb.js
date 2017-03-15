@@ -157,6 +157,7 @@ function save2LevelID2JSON(pListID,pID,pValue) {
 
 
 function saveAttribEdit() {
+  vClassJSON = getSelectedClassJSON();
   saveAttribJSON();
   var vOut = "";
   var vCR = "";
@@ -221,6 +222,7 @@ function saveMethodCallJS() {
       vClassJSON["MethodCode"][vMethodName] = vMethodCode;
       vClassJSON["MethodComment"][vMethodName] = vMethodComment;
       vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
+      vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
       updateJSMethods();
     } else {
       console.log("saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
@@ -237,6 +239,7 @@ function write2JSON(pID,pValue) {
 }
 
 function saveMethodJSON(pMethodName) {
+  vClassJSON = getSelectedClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   vMethodName = pMethodName || vMethodCall;
   vMethodName = getMethodName(vMethodName);
@@ -247,6 +250,7 @@ function saveMethodJSON(pMethodName) {
     vClassJSON["MethodCode"][vMethodName] = vMethodCode;
     vClassJSON["MethodComment"][vMethodName] = vMethodComment;
     vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
+    vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
   } else {
     console.log("saveMethodJSON() Call - Method Name undefined");
   };
@@ -279,6 +283,7 @@ function updateForm2MethodNameParam() {
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
+  vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
 };
 
 function updateJSON2Form(pClass) {
@@ -296,33 +301,60 @@ function updateJSON2Form(pClass) {
 };
 
 function updateJSON2FormVariable(pClass,pVarname) {
+  console.log("updateJSON2FormVariable('"+pClass+"','"+pVarname+"')");
+  var vOut = getString4JSONVariable(pClass,pVarname);
+  switch (pVarname) {
+    case "tAttributes":
+      write2value(pVarname,vOut);
+    break;
+    case "tMethods":
+      write2value(pVarname,vOut);
+    break;
+    default:
+     console.log("WARNING: updateJSON2FormVariable(pVarname) -  for pVarname no case in switch");
+  }
+};
+
+function getString4JSONVariable(pClass,pVarname) {
+  console.log("getString4JSONVariable('"+pClass+"','"+pVarname+"')");
   var vOut = "";
   var vCR = "";
   if (pVarname) {
     switch (pVarname) {
       case "tAttributes":
-        var vHash = vJSON_JS["ClassList"]["AttribDefault"];
+        var vHash = vJSON_JS["ClassList"][pClass]["AttribDefault"];
+        console.log("switch 'tAttributes'");
         for (var iID in vHash) {
           if (vHash.hasOwnProperty(iID)) {
-            vOut += vCR+ iID + " = "+vHash[iID];
+            vOut += vCR+ iID + " = "+(vHash[iID]).replace(/^\s/g,"");
+            vCR = "\n";
           };
         };
         write2value(pVarname,vOut);
       break;
       case "tMethods":
-      var vHash = vJSON_JS["ClassList"]["MethodParameter"];
-      for (var iID in vHash) {
-        if (vHash.hasOwnProperty(iID)) {
-          vOut += vCR+ iID + "("+vHash[iID]+")";
+        var vHash = vJSON_JS["ClassList"][pClass]["MethodParameter"];
+        console.log("switch 'tMethods'");
+        var vRetHash = vJSON_JS["ClassList"][pClass]["MethodReturn"];
+        for (var iID in vHash) {
+          if (vHash.hasOwnProperty(iID)) {
+            vOut += vCR+ iID + "("+vHash[iID]+")";
+            vCR = "\n";
+          };
+          //Append Return Class if defined
+          if (vRetHash.hasOwnProperty(iID)) {
+            if (vRetHash[iID] != "") {
+              vOut += ":"+vRetHash[iID];
+            };
+          };
         };
-      };
-      write2value(pVarname,vOut);
+        write2value(pVarname,vOut);
       break;
       default:
-       console.log("WARNING: updateJSON2FormVariable(pVarname) -  for pVarname no case in switch");
+       console.log("WARNING: getString4JSONVariable('"+pClass+"','"+pVarname+"') -  for pVarname no case in switch");
     }
   } else {
-      console.log("ERROR: updateJSON2FormVariable(pVarname) - pVarname undefined");
+      console.log("ERROR: updateJSON2FormVariable('"+pClass+"',pVarname) - pVarname undefined");
   }
 };
 
@@ -367,29 +399,52 @@ function updateForm2MethodJSON(pClass) {
   var vCall = "";
   var vMethName = "";
   var vMethHash = {};
+  var vMethReturn = {};
+  //-------- Init Hash with the Default Values--------
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = "";
   };
+  //------ Init undefined Method PARAMTER--------------
   for (var vCall in vMethCallArr) {
     if (vMethCallArr.hasOwnProperty(vCall)) {
       vCall = vMethCallArr[vCall];
       vMethName = getMethodName(vCall);
-      vParam = getMethodParameter4Call(vCall);
-      vMethHash[vMethName] = vParam;
+      vMethHash[vMethName] = getMethodParameter4Call(vCall);
+      vMethReturn[vMethName] = getMethodReturn4Call(vCall);
     };
   };
   defineHashIfUndefined(vMethHash,"MethodParameter");
+  //------ Init undefined Method CODE----------
+  var vReturn = "";
+  var vCode = "";
+  var vClassDef = "";
   for (var i = 0; i < vMethArr.length; i++) {
-    vMethHash[vMethArr[i]] = "";
-    vMethHash[vMethArr[i]] = "// Code for " + vMethArr[i];
+    //vMethHash[vMethArr[i]] = "";
+    vCode = "// Code for " + vMethArr[i];
+    vReturn = vMethReturn[vMethArr[i]];
+    if (vReturn != "") {
+      vReturn = vReturn.replace(/\s/g,"");
+      if (isBasicClass(vReturn)) {
+        var vBasicClassHash = getBasicClassHash();
+        vClassDef = vBasicClassHash[vReturn];
+      } else {
+        vClassDef = "new "+vReturn+"()"
+      };
+      vCode =  "var vRet"+vReturn +" = "+vClassDef+";\n" +vCode+"\n";
+      vCode += "return vRet"+vReturn+";";
+    };
+    vMethHash[vMethArr[i]] = vCode;
   };
   defineHashIfUndefined(vMethHash,"MethodCode");
+  //------ Init undefined Method COMMENTS----------
   for (var i = 0; i < vMethArr.length; i++) {
-    vMethHash[vMethArr[i]] = "";
     vMethHash[vMethArr[i]] = "Comment for " + vMethArr[i];
   };
   defineHashIfUndefined(vMethHash,"MethodComment");
-}
+  //------ Init undefined Method RETURN----------
+  defineHashIfUndefined(vMethReturn,"MethodReturn");
+  //---------------------------------------------
+};
 
 function updateForm2JSON(pClass) {
   console.log("updateForm2JSON('"+pClass+"')");

@@ -14,6 +14,8 @@ vDOM_ID.push("tClassname");
 vTYPE_ID.push("String");
 vDOM_ID.push("tSuperClassname");
 vTYPE_ID.push("String");
+vDOM_ID.push("sClassType");
+vTYPE_ID.push("Select");
 vDOM_ID.push("tAuthor");
 vTYPE_ID.push("String");
 vDOM_ID.push("tEMail");
@@ -63,13 +65,13 @@ function initCodeCreator() {
       } else {
         top.vJSON_JS["init_date"] = getDate();
         initFormClass(vSelectedClass);
+        //console.log("DEBUG 1: "+getValueDOM("tClassList"));
         initFormClassList();
         initFormDatabaseList();
         initFormButtonList();
         initFormPageType();
         initFormPageList();
         initFormSelectors();
-        console.log("Read Class from Form and add to vJSON_JS");
       };
   } else {
       alert("Sorry, your browser does not support Local Storage...");
@@ -95,11 +97,25 @@ function initLabelsHTML() {
 
 function initFormClassList() {
   console.log("initFormClassList()");
-   var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
+  var vClassTypeHash = getClassTypeHash(); //read from tClassList in  classes.js 413
+  top.vJSON_JS["ClassType"] = vClassTypeHash;
+  var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
    for (var i = 0; i < vClassArr.length; i++) {
      initClassJS(vClassArr[i]);
+     setClassType(vClassArr[i],vClassTypeHash[vClassArr[i]]);
    };
 };
+
+function setClassType(pClass,pClassType) {
+  console.log("setClassType('"+pClass+"','"+pClassType+"')");
+  if (existsClassJS(pClass)) {
+    pClassType = reduceVarName(pClassType);
+    vJSON_JS["ClassList"][pClass]["sClassType"] = pClassType;
+    vJSON_JS["ClassType"][pClass] = pClassType;
+  } else {
+    console.log("Class '"+pClass+"' does not exist");
+  }
+}
 
 function initFormButtonList() {
   console.log("initFormButtonList()");
@@ -295,15 +311,24 @@ function initFormSelectors() {
 
 function initClassSelector() {
   var vClassArr = [];
-  var vClassList = vJSON_JS["ClassList"];
+  var vClassTypeArr = [];
+  var vClassList = vJSON_JS["ClassList"] || {};
+  var vClassTypeHash = vJSON_JS["ClassType"] || {};
+  var vTypeDef = "";
   for (var iClass in vClassList) {
     if (vClassList.hasOwnProperty(iClass)) {
       vClassArr.push(iClass);
+      vTypeDef = vClassTypeHash[iClass] || "";
+      if (vTypeDef != "") {
+        vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
+        vTypeDef = " = " + vTypeDef;
+      };
+      vClassTypeArr.push(iClass+vTypeDef);
     };
   };
   //ClassList update
   //document.fCreator.tClassList += "\n"+vClass;
-  write2value("tClassList",vClassArr.join("\n"));
+  write2value("tClassList",vClassTypeArr.join("\n"));
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
   createClassSelect(vClassArr);

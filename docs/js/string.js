@@ -37,6 +37,10 @@ function replaceString(pString,pSearch,pReplace)
 function reduceVarName(pName) {
   // remove all characters exept "_", A-Z, a-z and digits 0-9
 	var vName = "";
+	var vPos = pName.indexOf("=");
+	if (vPos >= 0) {
+		pName = pName.substring(0,vPos);
+	};
 	if (pName) {
 		vName = pName.replace(/[^A-Za-z0-9_]/g,"");
 	} else {

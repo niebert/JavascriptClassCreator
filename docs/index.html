@@ -21,6 +21,8 @@
    var vPageTypeRecord = ["page-type","button-id1","button-id2","template"];
    var vButtonRecord = ["button-id","button-html","counter"];
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
+   var vWinUML = null;
+   var vWinCompress = null;
    </script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
@@ -37,12 +39,12 @@
    <script language="javascript" src="js/writedom.js"></script>
    <script language="javascript" src="js/init.js"></script>
 
-
   <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
 
   <meta name="generator" content="Bluefish 2.2.2" >
   <link href="jquery/jquery-ui.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/jqueryinit.css">
+
 <title>Javascript Class Generator</title>
 
 </head>
@@ -70,6 +72,7 @@
 		<li><a id="tabAttributes" href="#tabs-2">Attributes</a></li>
     <li><a id="tabMethods" href="#tabs-3">Methods</a></li>
     <li><a id="tabCode" href="#tabs-4">Code</a></li>
+    <li><a id="tabUML" href="#tabs-UML">UML</a></li>
     <li><a id="tabJSON" href="#tabs-5">JSON</a></li>
 	</ul>
   <!-- MAIN -->
@@ -86,9 +89,11 @@
           <b>List of defined Classes</b>
           <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
           <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar
-  Matrix
-  MatrixColumn
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar = Blue
+Matrix = Yellow
+MatrixColumn = Red
+App = Abstract
+ListInterface = Interface
           </textarea>
   		</td>
   	<!-- </tr>
@@ -269,8 +274,19 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     		<td>
     		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace">
         <b>Update:</b>
-        <button id="bRenameClass" onclick="renameClassForm();return false">Rename</button>
-    		</td>
+        <button id="bRenameClass" onclick="renameClassForm();return false">Rename</button> <br>
+        <b>UML Type:</b>
+        <select id="sClassType" name="sClassType" onchange="updateForm2JSON(getValueDOM('tClassname'))">
+          <option value="Default"></option>
+          <option value="Blue">Blue Class</option>
+          <option value="Green">Green Class</option>
+          <option value="Yellow">Yellow Class</option>
+          <option value="Brown">Brown Class</option>
+          <option value="Red">Redv</option>
+          <option value="Abstract">Abstract Class</option>
+          <option value="Interface">Interface Class</option>
+        </select>
+	     </td>
     		<td>
     		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace">
         <br>leave empty if this class does not inherit from a super class.
@@ -285,10 +301,10 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     	</tr> -->
     	<tr>
     		<td>
-    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace">
+    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35">
     		</td>
     		<td>
-    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace">
+    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35">
     		</td>
     	</tr>
     	<tr>
@@ -300,17 +316,20 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
 aName = "domvar"
 aDOM = null
 aCount = 0
-aLength = 23.5</textarea>
+aLength = 23.5
+aMatrix = new Matrix()
+aMatCol = new MatrixColumn()
+</textarea>
     		</td>
     		<td>
     			<b>Methods</b>
           <input name="bUpdateMethods" value=" Update Methods " onclick="updateJSMethods()" type="button">
           <br>
-    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pParent)
-create()
-link2dom()
-load()
-save(pContent)
+    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pParent:Window)
+create(pLI:ListInterface)
+link2dom(pVariable:String,pDOMID:Integer):DOMvar
+load(pFileName:String):String
+save(pContent:DOMVar,pMatrix:Matrix)
     			</textarea>
         </td>
       </tr>
@@ -434,6 +453,7 @@ save(pContent)
             <option>UndefClass</option>
           </select>
           <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
+          <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
@@ -455,6 +475,63 @@ save(pContent)
       </tbody>
     </table>
   </div>
+  <!-- UML -->
+  <div id="tabs-UML" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="95%">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+              <font size="+2"><b>UML Diagramm</b></font>
+          </td>
+        </tr>
+        <tr>
+          <td align="left">
+            <b>Generalizations:</b> (inherit Class Attributes and Methods)
+          </td>
+          <td align="left">
+            <select id="sShowGeneralizations" name="sShowGeneralizations">
+              <option value=true selected="selected">YES</option>
+              <option value=false>NO</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td align="left">
+            <b>Aggregations/Compositions:</b>
+          </td>
+          <td align="left">
+            <select id="tShowAggregations" name="tShowAggregations">
+              <option value=true selected="selected">YES</option>
+              <option value=false>NO</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td align="left">
+            <b>Associations:</b> (uni-/bi-directional )
+          </td>
+          <td align="left">
+            <select id="tShowAssociations" name="tShowAssociations">
+              <option value=true selected="selected">YES</option>
+              <option value=false>NO</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+              <b>Display UML Diagram:</b>
+              <!--
+              <iframe id="iDiagramUML"  src="uml/index.html" width="90%" height="200"></iframe>
+            -->
+            <input type="button" id="bDisplayUML" onclick="displayUML();return false" value="Create UML Diagram">
+
+            </td>
+         </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB JSON Export -->
   <div id="tabs-5" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1"  width="90%">
       <tbody>
@@ -617,8 +694,8 @@ ___PAGES___
 //#################################################################
 
 //---------------------------------------------------------------------
-//---Import this Class in HTML-File with
-// &lt;SCRIPT LANGUAGE="JavaScript" SRC="___CLASSFILENAME___"&gt; &lt;/SCRIPT&gt;
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// &lt;SCRIPT LANGUAGE="JavaScript" SRC="js/___CLASSFILENAME___"&gt; &lt;/SCRIPT&gt;
 //---------------------------------------------------------------------
 //---Constructor of Class ___CLASSNAME___()
 // Call the constructor for creating an instance of class ___CLASSNAME___
@@ -665,11 +742,11 @@ ___ATTRIBUTES___
     </textarea>
   <hr>
   <b>Inherit from SuperClass</b><br>
-   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">    //--------------------------------------
-      //---Super Class------------------------
-      this.SuperClass = ___SUPERCLASSNAME___;
-      this.SuperClass();
-      //--------------------------------------
+   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">//--------------------------------------
+    //---Super Class------------------------
+    this.SuperClass = ___SUPERCLASSNAME___;
+    this.SuperClass();
+    //--------------------------------------
 </textarea>
 <hr>
 <b>Class Tail</b><br>
@@ -687,9 +764,11 @@ ___ATTRIBUTES___
 //#################################################################
 //# Method: ___METHODNAME___()
 //#    used in Class: ___CLASSNAME___
+//# Parameter:
+//#    ___PARAMETERDEF___
 //# Comment:
 //#    ___METHODCOMMENT___
-//#
+//# ___RETURNCOMMENT___
 //# created               ___DATE___
 //# last modifications    ___DATE___
 //#################################################################
@@ -697,7 +776,7 @@ ___ATTRIBUTES___
 this.___METHODNAME___ = function (___METHODPARAMETERS___) {
   //----Debugging------------------------------------------
   // The following alert-Command is useful for debugging
-  //alert("___CLASSFILENAME___:___METHODCALL___-Call")
+  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___")
   //----Create Object/Instance of ___CLASSNAME___----
   //    var vMyInstance = new ___CLASSNAME___();
   //    vMyInstance.___METHODCALL___;

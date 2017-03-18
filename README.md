@@ -15,7 +15,7 @@ JavascriptClassCreator facilitates:
 * (Inheritage) edit the SuperClass of Classes
 
 ## ToDo
-* UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...)
+* UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for the generated Javascript Classes
 * BUG: Select Page does not set parent-id and page-title

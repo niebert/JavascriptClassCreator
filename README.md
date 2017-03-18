@@ -8,7 +8,14 @@ The code is stored in the docs/ folder, because the settings of the repository f
 * https://niebert.github.com/JavascriptClassCreator
 All the repositories in "niebert" are mainly designed for rapid prototyping, exploring features or as demos for a final sound implementation.
 
+## UML Diagrams ##
+JavascriptClassCreator facilitates:
+* (Attributes) UML editing of Attrubutes of Classes
+* (Methods) UML editing of Attrubutes of Classes
+* (Inheritage) edit the SuperClass of Classes
+
 ## ToDo
+* UglifyJS can parse the syntactic structure of Javascript code.
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for the generated Javascript Classes
 * BUG: Select Page does not set parent-id and page-title

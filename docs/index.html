@@ -490,8 +490,8 @@ save(pContent:DOMVar,pMatrix:Matrix)
           </td>
           <td align="left">
             <select id="sShowGeneralizations" name="sShowGeneralizations">
-              <option value=true selected="selected">YES</option>
-              <option value=false>NO</option>
+              <option value="show" selected="selected">YES</option>
+              <option value="hide">NO</option>
             </select>
           </td>
         </tr>
@@ -500,10 +500,10 @@ save(pContent:DOMVar,pMatrix:Matrix)
             <b>Aggregations/Compositions:</b>
           </td>
           <td align="left">
-            <select id="tShowAggregations" name="tShowAggregations">
-              <option value=true selected="selected">YES</option>
-              <option value=false>NO</option>
-            </select>
+            <select id="sShowAggregations" name="sShowAggregations">
+              <option value="show" selected="selected">YES</option>
+              <option value="hide">NO</option>
+              </select>
           </td>
         </tr>
         <tr>
@@ -511,9 +511,9 @@ save(pContent:DOMVar,pMatrix:Matrix)
             <b>Associations:</b> (uni-/bi-directional )
           </td>
           <td align="left">
-            <select id="tShowAssociations" name="tShowAssociations">
-              <option value=true selected="selected">YES</option>
-              <option value=false>NO</option>
+            <select id="sShowAssociations" name="sShowAssociations">
+              <option value="show" selected="selected">YES</option>
+              <option value="hide">NO</option>
             </select>
           </td>
         </tr>

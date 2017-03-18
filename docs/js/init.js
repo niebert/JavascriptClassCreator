@@ -8,6 +8,9 @@ vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tLibraries");
 vDOM_Global.push("tDatabases");
+vDOM_Global.push("sShowGeneralizations");
+vDOM_Global.push("sShowAggregations");
+vDOM_Global.push("sShowAssociations");
 //-------------------------------
 //var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
 vDOM_ID.push("tClassname");

@@ -70,11 +70,14 @@ function calcCenteredClassPos() {
   //append class to diagram centered
   console.log("Place ClassUML CENTER");
   //right border - size of Class - offset
-  var vInnerWidth = vSize.width - 2*vOffset.x;
+  var vInnerWidth = vWidth - 2*vOffset.x;
   if (vInnerWidth < vSize.width) {
+    console.log("CENTER: Class-width: "+vSize.width+ " Window-width="+vWidth);
     vLastPos.x = vOffset.x;
   } else {
-    vLastPos.x = vOffset.x + Math.round((vInnerWidth - vSize.width)/2);
+    var vShift = Math.round((vInnerWidth - vSize.width)/2);
+    console.log("CENTER: Class-width: "+vSize.width+ " Shift: "+ vShift +" Window-width="+vWidth);
+    vLastPos.x = vOffset.x + vShift;
   };
   vLastPos.y = vLeft.y;
   vLeft.y = vLeft.y + vSize.height + vOffset.y;
@@ -188,8 +191,9 @@ var vClassColor = {
 
 };
 
-function createClass4UML(pTypeUML,pClassUML) {
+function createClass4UML(pTypeUML,pClassUML,pCentered) {
   console.log("createClass4UML('"+pTypeUML+"','"+pClassUML.name+"')");
+  var vCentered = pCentered || false;
   var vStroke = '#000000';
   var vTextColor = '#000000';
   var vColor = vClassColor[pTypeUML] || vClassColor["Default"];
@@ -209,13 +213,17 @@ function createClass4UML(pTypeUML,pClassUML) {
       vContructor = uml.Class;
   };
   // Generate the UML Class and update the ClassPos
-  return generateClassUML(vContructor,pClassUML,vColor);
+  return generateClassUML(vContructor,pClassUML,vColor,pCentered);
 };
 
-function generateClassUML(pConstructor,pClassUML,pColor) {
+function generateClassUML(pConstructor,pClassUML,pColor,pCentered) {
    var vSize = calcSizeUML(pClassUML.name,pClassUML.attributes,pClassUML.methods);
    vClassPos.lastclass.size = vSize;
-   calcNextClassPos();
+   if (pCentered) {
+     calcCenteredClassPos();
+   } else {
+     calcNextClassPos();
+   };
    var vPosition = vClassPos.lastclass.position;
    var vClassUML = new pConstructor({
        position: vPosition, //{ x:100  , y: 30},

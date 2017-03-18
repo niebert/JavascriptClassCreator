@@ -4,7 +4,6 @@ function getWinOpener() {
   return vWinOpener;
 };
 
-
 function getClassPos() {
   var vClassPosition = {
       "count": 0,
@@ -34,20 +33,76 @@ function getPaperSize(pClassPos) {
   return vSizeHash;
 };
 
+function getSelectedClassName() {
+  var vClassName = "";
+  if (vJSON_JS["SelectedClass"]) {
+    vClassName = vJSON_JS["SelectedClass"];
+  };
+  return vClassName;
+};
+
+function getSelectedClassJSON() {
+  var vSelectedClass = getSelectedClassName();
+  var vRetClassJSON = {};
+  if ((vSelectedClass != "") && vJSON_JS["ClassList"] && vJSON_JS["ClassList"][vSelectedClass]) {
+    vRetClassJSON = vJSON_JS["ClassList"][vSelectedClass]
+  };
+  return vRetClassJSON;
+
+}
 function createAllClasses(pClassList) {
-  var vClassList = pClassList || {};
   var vClasses = {};
+  var vBoolHash = createClassHashBoolean(pClassList);
+  var vSelectedClass = getSelectedClassName();
+  var vSuperClass = "";
+  var vCentered = true;
+  if (vSelectedClass != "") {
+    var vClassJS = getSelectedClassJSON(vSelectedClass);
+    vSuperClass = vClassJS["tSuperClassname"] || "";
+    if (vSuperClass != "") {
+      vClasses[vSuperClass] = createDiagramClass(vSuperClass,vCentered);
+      vBoolHash[vSuperClass] = true;
+    };
+    vClasses[vSelectedClass] = createDiagramClass(vSelectedClass,vCentered);
+    vBoolHash[vSelectedClass] = true;
+  };
+  console.log("Create Selected Class: '"+vSelectedClass+"' with SuperClass='"+vSuperClass+"'");
+
+  vClasses = createMissingClasses(vClasses,pClassList,vBoolHash);
+  return vClasses;
+};
+
+function createMissingClasses(pClasses,pClassList,pBoolHash) {
+  var vBoolHash = pBoolHash || {};
+  var vClassList = pClassList || {};
+  var vClasses = pClasses || {};
+  var vClassExists = false;
+  var vCentered = false;
   for (var iClass in vClassList) {
-    if (vClassList.hasOwnProperty(iClass)) {
-      //get the ClassUML form vJSON_JS of parent window
-      vClassUML = getClassUML(iClass);
-      // determine the UML Type of the Class "Abstract" "Interface" "Red Class", ...
-      vTypeUML = vClassTypeHash[iClass] || "";
-      vClasses[iClass] = createClass4UML(vTypeUML,vClassUML);
+    if (vBoolHash.hasOwnProperty(iClass)) {
+      vClassExists = vBoolHash[iClass];
+    } else {
+      vClassExists = false;
+    };
+    if (vClassExists) {
+      console.log( "Class: '"+iClass+"' exists");
+    } else {
+      console.log( "Class: '"+iClass+"' misssing");
+    }
+    if ((!vClassExists) && (vClassList.hasOwnProperty(iClass))) {
+      vClasses[iClass] = createDiagramClass(iClass,vCentered)
     };
   };
   return vClasses;
 };
+
+function createDiagramClass(pClass,pCentered) {
+  //get the ClassUML form vJSON_JS of parent window
+  var vClassUML = getClassUML(pClass);
+  // determine the UML Type of the Class "Abstract" "Interface" "Red Class", ...
+  var vTypeUML = vClassTypeHash[pClass] || "";
+  return createClass4UML(vTypeUML,vClassUML,pCentered);
+}
 
 function createClassHashBoolean(pClassList) {
   return createClassHashInit(pClassList,false);
@@ -329,10 +384,26 @@ function createAllAssociations() {
   };
 }
 
-function createAllRelations() {
-  createAllGeneralizations();
-  createAllAggregations();
-  createAllAssociations();
+function createAllRelations(pShowGen,pShowAgg,pShowAss) {
+  console.log("createAllRelations('"+pShowGen+"','"+pShowAgg+"','"+pShowAss+"')");
+  if (pShowGen > 0) {
+    console.log("Show GENERALIZATIONS");
+    createAllGeneralizations();
+  } else {
+    console.log("Hide GENERALIZATIONS");
+  };
+  if (pShowAgg > 0) {
+    console.log("Show AGGREGATIONS");
+    createAllAggregations();
+  } else {
+    console.log("Hide AGGREGATIONS");
+  };
+  if (pShowAss > 0) {
+    console.log("Show ASSOCIATIONS");
+    createAllAssociations();
+  } else {
+    console.log("Hide ASSOCIATIONS");
+  };
 };
 
 function setAssCircle() {
@@ -370,9 +441,9 @@ function setAssCircle2Target() {
   });
 };
 //------------------------------------------------------
-  var vShowGeneralization = true;
-  var vShowAggregation = true;
-  var vShowAssociation = true;
+  var vShowGeneralizations = "show";
+  var vShowAggregations = "show";
+  var vShowAssociations = "show";
 
   var graph = new joint.dia.Graph();
 
@@ -385,17 +456,31 @@ function setAssCircle2Target() {
   // vWinOpener is the Window of JavascriptClassGenerator
   var vJSON_JS = {};
   var vClassList = {"Undefined":{"tClassname":"Undefined_Class"}};
+  console.log("Default: GEN="+vShowGeneralizations+" AGG="+vShowAggregations+" ASS="+vShowAssociations);
   try {
     vJSON_JS = vWinOpener.vJSON_JS;
     vClassList = vJSON_JS["ClassList"];
     vWinOpenerDefined = true;
     //---Check UML Display Settings in Parent Window----
-    vShowGeneralization = vWinOpener.getValueDOM("sShowGeneralizations");
-    vShowAggregation = vWinOpener.getValueDOM("vShowAggregation");
-    vShowAssociation = vWinOpener.getValueDOM("vShowAssociation");
+    vShowGeneralizations = vWinOpener.getValueDOM("sShowGeneralizations");
+    vShowAggregations    = vWinOpener.getValueDOM("sShowAggregations");
+    vShowAssociations    = vWinOpener.getValueDOM("sShowAssociations");
   } catch(err) {
       console.log(err.message);
       vWinOpenerDefined = false;
+  };
+  console.log("Form Settings: GEN="+vShowGeneralizations+" AGG="+vShowAggregations+" ASS="+vShowAssociations);
+  var vShowGen = 1;
+  var vShowAgg = 1;
+  var vShowAss = 1;
+  if (vShowGeneralizations == "hide") {
+    vShowGen = 0
+  };
+  if (vShowAggregations == "hide") {
+    vShowAgg = 0
+  };
+  if (vShowAssociations == "hide") {
+    vShowAss = 0
   };
   // The main class database is defined by vJSON_JS
   // map that to local window variable vJSON_JS
@@ -409,7 +494,7 @@ function setAssCircle2Target() {
   var vClassPos = getClassPos()
   // {
   //     "count": 0,
-  //     "width": vSize.width,
+  //     "width": 800,
   //     "offset":{"x":10,"y":50},
   //     "left":{"x":10,"y":10},
   //     "right":{"x":10,"y":10},
@@ -460,7 +545,7 @@ function setAssCircle2Target() {
   var vTargetID = "";
   // create Relations: GENERALIZATION, AGGREGATION, ASSOCIATIONS
   if (vWinOpenerDefined) {
-    createAllRelations();
+    createAllRelations(vShowGen,vShowAgg,vShowAss);
   } else {
     console.log("vWinOpener is undefined - createAllRelations() NOT performed");
   };

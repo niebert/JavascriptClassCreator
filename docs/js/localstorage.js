@@ -60,15 +60,20 @@ function saveLocalStorage(pType,pVar,pContent) {
       saveDOM2LocalStorage();
     break;
     case "json":
-      var vContent = pContent ||  getCode4JSON_JS(vJSON_JS);
+      //saveLocalStorage("json","vJSON_JS")
+      var vContent = "";
       if (pVar) {  // pVar is the DBname
-        vParLog += ",pVar"
-        vRet = saveLocalDB(pVar,pContent);
+        vParLog += ","+pVar;
+        var vEval = "vContent = getCode4JSON_JS("+pVar+")";
+        eval(vEval);
+        vRet = localStorage.setItem(pVar,vContent);
       } else {
-        vParLog += ",vJSON_JS"
-        vRet = saveLocalDB("vJSON_JS",pContent);
+        // vJSON_JS is the default JSONDB
+        vContent = getCode4JSON_JS(vJSON_JS);
+        vParLog += ",'vJSON_JS'";
+        vRet = localStorage.setItem("vJSON_JS",vContent);
       };
-      console.log("CALL: "+vLS+"LocalStorage('"+pType+"'"+vParLog+")");
+      console.log("CALL: "+vLS+"LocalStorage('"+vType+"'"+vParLog+")");
   break;
     case "var":
       if (pVar) {
@@ -117,42 +122,68 @@ function clearLocalStorage(pType,pVar) {
   };
   console.log("Call: "+vLS+"LocalStorage("+vParLog+")");
 }
-
 function saveDOM2LocalStorage() {
+  saveLocalStorage4ArrayID(vDOM_ID);
+  saveLocalStorage4ArrayID(vDOM_Global);
+};
+
+function saveLocalStorage4ArrayID(pArrayID) {
      //localStorage.setItem("lastname", "Smith");
     // Retrieve
     //document.getElementById("result").innerHTML = localStorage.getItem("lastname");
     //alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		var vNode = document.getElementById(vID);
-		if (vNode) {
-			//alert(vID+"="+vNode.value);
-			localStorage.setItem(vID,vNode.value);
-		};
-	};
+  if (pArrayID) {
+    for (var i=0;i < pArrayID.length; i++ ) {
+  		var vID = pArrayID[i];
+  		var vNode = document.getElementById(vID);
+  		if (vNode) {
+  			//alert(vID+"="+vNode.value);
+  			localStorage.setItem(vID,vNode.value);
+  		};
+  	};
+  } else {
+    console.log("saveLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");
+  };
 };
 
 function loadLocalStorage2DOM() {
+  loadLocalStorage4ArrayID(vDOM_ID);
+  loadLocalStorage4ArrayID(vDOM_Global);
+};
+
+function loadLocalStorage4ArrayID(pArrayID) {
 	//alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		var vValue = localStorage.getItem(vID);
-		if (vValue) {
-			var vNode = document.getElementById(vID);
-			vNode.value = vValue;
-		} else {
-			console.log("loadLocalStorage2DOM()-Call: vID="+vID+" is undefined");
-		};
-	};
+  if (pArrayID) {
+    for (var i=0;i < pArrayID.length; i++ ) {
+		    var vID = pArrayID[i];
+		    var vValue = localStorage.getItem(vID);
+		    if (vValue) {
+			       var vNode = document.getElementById(vID);
+			       vNode.value = vValue;
+		    } else {
+			     console.log("loadLocalStorage4ArrayID(pArrayID)-Call: vID="+vID+" is undefined");
+		    };
+	  };
+  } else {
+    console.log("loadLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");
+  };
 };
 
 function clearLocalStorage4DOM() {
+  clearLocalStorage4ArrayID(vDOM_ID);
+  clearLocalStorage4ArrayID(vDOM_Global);
+};
+
+function clearLocalStorage4ArrayID(pArrayID) {
 	//alert("vDOM_ID.length="+vDOM_ID.length);
-	for (var i=0;i < vDOM_ID.length; i++ ) {
-		var vID = vDOM_ID[i];
-		localStorage.removeItem(vID);
-	};
+  if (pArrayID) {
+    for (var i=0;i < pArrayID_ID.length; i++ ) {
+  		var vID = pArrayID[i];
+  		localStorage.removeItem(vID);
+  	};
+  } else {
+    console.log("clearLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");
+  }
 }
 
 function initLocalDB(pDBName,pJSONDB) {
@@ -196,17 +227,14 @@ function loadLocalDB(pDBName) {
 
 function saveLocalDB(pDBName,pJSONDB) {
   var vError = "";
+  var vJSONDB = pJSONDB || vJSON_JS;
   if (typeof(Storage) != "undefined") {
     // Store
-    if (typeof(pJSONDB) != undefined) {
-      console.log("JSON-DB '"+pDBName+"' is defined, JSONDB in  Local Storage");
-      if (pJSONDB) {
-        console.log("JSON-DB '"+pDBName+"' is saved to Local Storage");
-        localStorage.setItem(pDBName,JSON.stringify(pJSONDB));
-      } else {
-        vError = "pJSONDB DOM-Node is NOT defined";
-        console.log(vError);
-      }
+    if (typeof(vJSONDB) != undefined) {
+      console.log("Found JSON-DB '"+pDBName+"' for Saving in Local Storage ");
+      var vStringDB = JSON.stringify(vJSONDB);
+      console.log("JSON-DB '"+pDBName+"' is saved to Local Storage\n"+vStringDB.substring(0,200)+"...");
+      localStorage.setItem(pDBName,vStringDB);
     } else {
       vError = "pJSONDB is undefined";
       console.log(vError);

@@ -89,6 +89,7 @@ function initCodeCreator() {
   setClassSelectorDefault(vSelectedClass)
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   initEditorContent();
+  updateJSON2tClassList();
 };
 
 function initLabelsHTML() {
@@ -122,7 +123,7 @@ function setClassType(pClass,pClassType) {
 
 function initFormButtonList() {
   console.log("initFormButtonList()");
-   var vArr = getButtonArray(); //read from tClassList in  classes.js 413
+   var vArr = getButtonArray(); //read from tButtonList in  classes.js 413
    for (var i = 0; i < vArr.length; i++) {
      console.log("Call: initButtonJS() for ID='"+vArr[i]["button-id"]+"'");
      //alert("ID='"+vArr[i]["button-id"]+"'");

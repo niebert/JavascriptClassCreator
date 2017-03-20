@@ -32,6 +32,27 @@ function createNewClass() {
   return vSuccess;
 };
 
+function updateJSON2tClassList() {
+  write2value("tClassList", createJSON2tClassList());
+};
+
+function createJSON2tClassList() {
+  var vClassTypeArr = vJSON_JS["ClassType"];
+  var vArr= [];
+  var vType = "";
+  for (var iClass in vClassTypeArr) {
+    if (vClassTypeArr.hasOwnProperty(iClass)) {
+      vType = vClassTypeArr[iClass];
+      if (vType == "") {
+        vArr.push(iClass);
+      } else {
+        vArr.push(iClass + " = " + vType)
+      };
+    };
+  };
+  return vArr.join("\n");
+}
+
 function renameClassForm() {
     var vOldClassName = vJSON_JS["SelectedClass"];
     var vNewClassName = getValueDOM("tClassname");
@@ -47,7 +68,7 @@ function renameClassForm() {
         delete vClasses[vOldClassName];
         // update Class Select
         //write2value("tClassList",vClassString);
-        updateJSON2ClassString();
+        updateJSON2tClassList();
         createClassSelect();
         console.log("Rename ClassName from '"+vOldClassName+"' to '"+vNewClassName+"' was successful");
       } else {

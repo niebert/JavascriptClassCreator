@@ -74,6 +74,10 @@ function updateFormID2JSON(pID) {
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
   console.log("updateAttributesJS()-Call called after adding a new Attribute");
+  var vClassJS = getSelectedClassJSON();
+  var vAttName = vClassJS["sAttribList"] || "";
+  //write2value("sAttribList",vAttName);
+  //selectJSAttribs();
 };
 function  updateMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
@@ -188,6 +192,13 @@ function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
   };
 };
 
+function updateJSON2selectAttrib(pClass) {
+  console.log("updateJSON2selectAttrib('"+pClass+"')");
+  var vClassHash = vJSON_JS["ClassList"][pClass];
+  if (vClassHash) {
+    var vAttHash = vClassHash["Att"]
+  }
+}
 
 function loadMethodJSON (pMethodName) {
   var vMethodName = getValueDOM("tMethodName");
@@ -208,7 +219,7 @@ function loadMethodJSON (pMethodName) {
 };
 
 
-function saveMethodCallJS() {
+function saveMethodCallJS(pClass) {
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   var vMethodHash = getMethodHash();
@@ -259,15 +270,19 @@ function saveMethodJSON(pMethodName) {
 function checkClassJSON(pClassJSON) {
   var vClass = pClassJSON || vClassJSON; // Global Variable
   // The function check if all variables in the Class are defined
-  console.log("Check Properties of Class");
-  for (var i = 0; i < vDOM_ID.length; i++) {
-    var vID = vDOM_ID[i];
-    if (vClass.hasOwnProperty(vID)) {
-      //console.log("checkClassJSON() - Class['"+vID+"'] defined");
-    } else {
-      console.log("WARNING: checkClassJSON() - Class['"+vID+"'] undefined");
-      //eval()
+  if (vClass) {
+    console.log("Check Properties of Class");
+    for (var i = 0; i < vDOM_ID.length; i++) {
+      var vID = vDOM_ID[i];
+      if (vClass.hasOwnProperty(vID)) {
+        //console.log("checkClassJSON() - Class['"+vID+"'] defined");
+      } else {
+        console.log("WARNING: checkClassJSON() - Class['"+vID+"'] undefined");
+        //eval()
+      }
     }
+  } else {
+    console.log("ERROR: checkClassJSON(pClassJSON) - pClassJSON is undefined");
   }
 }
 
@@ -288,21 +303,25 @@ function updateForm2MethodNameParam() {
 
 function updateJSON2Form(pClass) {
   var vClass = pClass || getSelectedClass();
+  var vContent = "";
   console.log("updateJSON2Form('"+vClass+"')");
   // Set Selected with vClassJSON
   vClassJSON = vJSON_JS["ClassList"][vClass];
   // updates form content in DOM with Class content
   for (var i = 0; i < vDOM_ID.length; i++) {
-     write2value(vDOM_ID[i],vClassJSON[vDOM_ID[i]]);
+    //vContent = vClassJSON[vDOM_ID[i]] || "";
+    vContent = vClassJSON[vDOM_ID[i]];
+    write2value(vDOM_ID[i],vContent);
   };
   // load the defined Attribute from Form
   updateJSON2FormVariable(vClass,"tAttributes");
+  updateJSON2FormVariable(vClass,"tMethods");
   // updateForm2MissingJSON(pClass);
 };
 
 function updateJSON2FormVariable(pClass,pVarname) {
   console.log("updateJSON2FormVariable('"+pClass+"','"+pVarname+"')");
-  var vOut = getString4JSONVariable(pClass,pVarname);
+  var vOut = getString4JSONVariable(pClass,pVarname) || "";
   switch (pVarname) {
     case "tAttributes":
       write2value(pVarname,vOut);
@@ -330,7 +349,6 @@ function getString4JSONVariable(pClass,pVarname) {
             vCR = "\n";
           };
         };
-        write2value(pVarname,vOut);
       break;
       case "tMethods":
         var vHash = vJSON_JS["ClassList"][pClass]["MethodParameter"];
@@ -348,14 +366,14 @@ function getString4JSONVariable(pClass,pVarname) {
             };
           };
         };
-        write2value(pVarname,vOut);
       break;
       default:
        console.log("WARNING: getString4JSONVariable('"+pClass+"','"+pVarname+"') -  for pVarname no case in switch");
     }
   } else {
-      console.log("ERROR: updateJSON2FormVariable('"+pClass+"',pVarname) - pVarname undefined");
-  }
+      console.log("ERROR: getString4JSONVariable('"+pClass+"',pVarname) - pVarname undefined");
+  };
+  return vOut;
 };
 
 function updateForm2MissingJSON(pClass) {
@@ -378,7 +396,8 @@ function updateForm2MissingJSON(pClass) {
 function updateForm2AttribJSON(pClass) {
   var vClass = pClass || getSelectedClass();
   vClassJSON = getSelectedClassJSON();
-  console.log("updateForm2AttribJSON('"+vClass+"')");
+  var vAttributes = getValueDOM("tAttributes");
+  console.log("updateForm2AttribJSON('"+vClass+"') with Attributes="+vAttributes);
   var vAttHash = getForm2AttribDefaultHash(vClass); //classes.js:484
   vClassJSON["AttribDefault"] = vAttHash;
   var vAttTypeHash = getAttribTypeHash(vAttHash); // classes.js:336
@@ -447,10 +466,11 @@ function updateForm2MethodJSON(pClass) {
 };
 
 function updateForm2JSON(pClass) {
-  console.log("updateForm2JSON('"+pClass+"')");
+  var vAttributes = getValueDOM("tAttributes");
+  console.log("updateForm2JSON('"+pClass+"') with Attributes="+vAttributes);
   var vClass = pClass || getSelectedClass();
   // updates the Class content with form content in DOM
-  createClassJS(pClass);
+  createClassJS(vClass);
   vClassJSON = vJSON_JS["ClassList"][pClass];
   for (var i = 0; i < vDOM_ID.length; i++) {
     vClassJSON[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]);

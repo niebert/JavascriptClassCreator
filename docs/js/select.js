@@ -15,7 +15,7 @@ function selectClass_do(pClass) {
   var vCurrentClass = getValueDOM("tClassname");
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
-  updateForm2Class(vCurrentClass);
+  updateForm2JSON(vCurrentClass);
   if (vJSON_JS["ClassList"][vClass]) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
   } else {
@@ -24,7 +24,9 @@ function selectClass_do(pClass) {
   };
   vJSON_JS["SelectedClass"] = vClass;
   vClassJSON = vJSON_JS["ClassList"][vClass];
-  clearForm4Class();
+  clearForm4Class(vClass);
+  console.log("selectClass()-Call Selected Class: "+getValueDOM("tClassname")+" Attributes="+getValueDOM("tAttributes"));
+  checkInterface4Class(vClass);
   createCode4JSON_JS(vJSON_JS);
   fillForm4Class(vClass);
   createClassJS(vClass); // if necessary
@@ -33,13 +35,120 @@ function selectClass_do(pClass) {
   createMethodSelect();
   var vClassName = getValueDOM("tClassname");
   writeClassTitle(vClassName);
+  updateClassSelectors(vClassName);
   setClassSelectorDefault(vClassName);
 };
+
+function checkInterface4Class(pClassName) {
+  console.log("checkInterface4Class('"+pClassName+"')");
+  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
+  var vSuperClass = vClassJS["tSuperClassname"];
+  var vSuperClassType = vJSON_JS["ClassType"][vSuperClass] || "";
+  if (vSuperClassType == "Interface") {
+    //inherit the attributes of interface
+    inheritAttributesDefinitions(vSuperClass,pClassName);
+    //inherit the method interface
+    inheritMethodsInterface(vSuperClass,pClassName);
+  };
+  if (vSuperClassType == "Abstract") {
+    //inherit the method interface
+    inheritAttributesDefinitions(vSuperClass,pClassName);
+    //inherit the method interface
+    inheritMethodInterface(vSuperClass,pClassName);
+    //inherit the method interface
+    inheritMethodCode(vSuperClass,pClassName);
+  };
+};
+
+function inheritAttributesDefinitions(pSuperClass,pClassName) {
+  console.log("inheritAttributesDefinitions('"+pSuperClass+"','"+pClassName+"')-Call");
+  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
+  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
+
+};
+
+function inheritMethodInterface(pSuperClass,pClassName) {
+  console.log("inheritMethodInterface('"+pSuperClass+"','"+pClassName+"')-Call");
+  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
+  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
+
+};
+
+function inheritMethodCode(pSuperClass,pClassName) {
+  console.log("inheritMethodCode('"+pSuperClass+"','"+pClassName+"')-Call");
+  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
+  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
+
+};
+
+
+
+function selectClassType(pClassName,pValue) {
+  if (vJSON_JS["ClassType"]) {
+    vJSON_JS["ClassType"][pClassName] = pValue;
+    updateJSON2tClassList();
+  } else {
+    console.log("ERROR: selectClassType('"+pClassName+"','"+pValue+"') - vJSON_JS['ClassType'] undefined");
+  };
+  console.log("selectClassType('"+pClassName+"','"+pValue+"') done");
+}
 
 function setClassSelectorDefault(pClassName) {
   write2value("sClassList",pClassName);
   write2value("sClassCode",pClassName);
 };
+
+function updateClassSelectors(pClassName) {
+  updateAttribSelector(pClassName);
+  updateMethodSelector(pClassName);
+};
+
+function updateAttribSelector(pClassName) {
+  var vArr = getAttribNameArrayJSON(pClassName);
+  var vOptions = createOptions4Array(vArr);
+  write2innerHTML("sAttribList",vOptions);
+};
+
+function getAttribNameArrayJSON(pClassName) {
+  var vArr = [];
+  var vClassJS = getClassJSON(pClassName);
+  var vHash = {};
+  if (vClassJS["AttribDefault"]) {
+    vHash = vClassJS["AttribDefault"]
+  } else {
+    console.log("ERROR: getAttribNameArrayJSON('"+pClassName+"') - AttribDefault undefined");
+  };
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vArr.push(iID)
+    }
+  };
+  return vArr;
+}
+
+function updateMethodSelector(pClassName) {
+  var vArr = getMethodNameArrayJSON(pClassName);
+  var vOptions = createOptions4Array(vArr);
+  write2innerHTML("sMethodList",vOptions);
+}
+
+function getMethodNameArrayJSON(pClassName) {
+  var vArr = [];
+  var vClassJS = getClassJSON(pClassName);
+  var vHash = {};
+  if (vClassJS["MethodCode"]) {
+    vHash = vClassJS["MethodCode"]
+  } else {
+    console.log("ERROR: getAttribNameArrayJSON('"+pClassName+"') - MethodCode undefined");
+  };
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vArr.push(iID);
+    }
+  };
+  return vArr;
+};
+
 
 function selectPageJS(pPageID) {
   var vPageID = pPageID || getValueDOM("sPageHTML");
@@ -220,6 +329,9 @@ function selectJSMethods() {
 };
 
 function updateClassSelector() {
+  var vClassJS = getSelectedClassJSON();
+  var vClassType = vClassJS["sClassType"] || "Default";
+  write2value("sClassType",vClassType);
   createClassSelect();
 }
 

@@ -28,6 +28,7 @@
    <script language="javascript" src="js/codegen.js"></script>
    <script language="javascript" src="js/date.js"></script>
    <script language="javascript" src="js/dom.js"></script>
+   <script language="javascript" src="js/file.js"></script>
    <script language="javascript" src="js/iframe.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
@@ -63,6 +64,8 @@
         <option>UndefClass</option>
       </select>
     </b>
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
 <br>
 <div id="tabs">
 	<ul>
@@ -81,9 +84,13 @@
       <tbody>
         <tr>
           <td  colspan="2" align="center" bgcolor="#C0C0C0">
-    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
-    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
-</td></tr>
+            <font size="+2">
+              <b>
+                Files and Classes
+              </b>
+            </font>
+          </td>
+        </tr>
     <tr>
   		<td colspan="1" align="center">
           <b>List of defined Classes</b>
@@ -276,15 +283,15 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
         <b>Update:</b>
         <button id="bRenameClass" onclick="renameClassForm();return false">Rename</button> <br>
         <b>UML Type:</b>
-        <select id="sClassType" name="sClassType" onchange="updateForm2JSON(getValueDOM('tClassname'))">
+        <select id="sClassType" name="sClassType" onchange="selectClassType(getValueDOM('tClassname'),this.value)">
           <option value="Default"></option>
           <option value="Blue">Blue Class</option>
           <option value="Green">Green Class</option>
           <option value="Yellow">Yellow Class</option>
           <option value="Brown">Brown Class</option>
-          <option value="Red">Redv</option>
-          <option value="Abstract">Abstract Class</option>
-          <option value="Interface">Interface Class</option>
+          <option value="Red">Red Class</option>
+          <option value="Abstract">ABSTRACT Class</option>
+          <option value="Interface">INTERFACE Class</option>
         </select>
 	     </td>
     		<td>

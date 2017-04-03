@@ -4,6 +4,8 @@
 //# created with JavaScript Class Generator by Engelbert Niehaus
 //# 2012 University Koblenz-Landau
 //#################################################################
+// DOM_Global Hash is used to store global values in LocalStorage and in vJSON_JS
+// see saveDOM2LocalStorage() in localstorage.js:125
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tLibraries");
@@ -13,12 +15,14 @@ vDOM_Global.push("sShowAggregations");
 vDOM_Global.push("sShowAssociations");
 //-------------------------------
 //var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
+// The following DOM-IDs are used to store for all classes,
 vDOM_ID.push("tClassname");
 vTYPE_ID.push("String");
 vDOM_ID.push("tSuperClassname");
 vTYPE_ID.push("String");
 vDOM_ID.push("sClassType");
-vTYPE_ID.push("Select");
+vTYPE_ID.push("String");
+//vTYPE_ID.push("Select");
 vDOM_ID.push("tAuthor");
 vTYPE_ID.push("String");
 vDOM_ID.push("tEMail");
@@ -28,7 +32,8 @@ vTYPE_ID.push("Textarea");
 vDOM_ID.push("tMethods");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("sAttribList");
-vTYPE_ID.push("Select");
+vTYPE_ID.push("String");
+//vTYPE_ID.push("Select");
 vDOM_ID.push("tAttribName");
 vTYPE_ID.push("String");
 vDOM_ID.push("tAttribType");
@@ -44,7 +49,8 @@ vTYPE_ID.push("String");
 vDOM_ID.push("tMethodComment");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("sMethodList");
-vTYPE_ID.push("Select");
+vTYPE_ID.push("String");
+//vTYPE_ID.push("Select");
 vDOM_ID.push("tArrayLoop");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("tMethodLoop");
@@ -90,6 +96,8 @@ function initCodeCreator() {
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   initEditorContent();
   updateJSON2tClassList();
+  updateClasses(); // reads the tClassList and updates the JSON Classes
+  setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
 };
 
 function initLabelsHTML() {

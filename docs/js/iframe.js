@@ -95,35 +95,3 @@ function getEditorValue(pIFrameName) {
   };
   return vReturn;
 };
-
-function X_readFile(pFileName) {
-    var vContent = null;
-    $.ajax({
-            url : "tpl/test.txt",
-            dataType: "text",
-            success : function (data) {
-                //$(".text").html(data);
-                vContent = data;
-            }
-        });
-    return vContent;
-};
-
-function readFile(pFile) {
-    var vContent = null;
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", pFile, false);
-    rawFile.onreadystatechange = function ()
-    {
-        if(rawFile.readyState === 4)
-        {
-            if(rawFile.status === 200 || rawFile.status == 0)
-            {
-                vContent = rawFile.responseText;
-                alert(vContent);
-            }
-        }
-    }
-    rawFile.send(null);
-    return vContent;
-}

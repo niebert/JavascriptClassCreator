@@ -6,7 +6,8 @@ function getValueDOM(pID) {
   } else {
     vReturn = vNode.value;
     if (!vReturn) {
-      vReturn = getInnerHTML(pID);
+      vReturn = "";
+      //vReturn = getInnerHTML(pID);
     };
   }
   return vReturn;

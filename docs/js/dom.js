@@ -27,16 +27,18 @@ function createMethodSelect() {
 
 
 function createAttribSelect() { // TA=TextArea
+  var vClassJS = getSelectedClassJSON();
   var vClass = getValueDOM("tClassname");
   var vArray = getAttribNameArray();
   var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
   var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
-  console.log("createAttribSelect()-Call: vArray[0]="+(vArray[0] || ""));
+  var vSelectedAtt = vClassJS["sAttribList"] || vArray[0] || "";
+  console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribList",vOptions);
-  write2value("tAttribName",vArray[0] || "");
-  write2value("tAttribDefault",vAttDefaultHash[vArray[0]] || "");
-  write2value("tAttribComment",vAttCommentHash[vArray[0]] || "");
+  write2value("tAttribName",vSelectedAtt);
+  write2value("tAttribDefault",vAttDefaultHash[vSelectedAtt] || "");
+  write2value("tAttribComment",vAttCommentHash[vSelectedAtt] || "");
 };
 
 function getSelectedClass() {
@@ -54,14 +56,19 @@ function getSelectedClassJSON(pClassName) {
 
 function saveForm2ClassJSON() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
-  console.log("saveForm2ClassJSON()-Call");
-  var vClass = getSelectedClass();
+  var vClassName = getSelectedClass();
+  var vClassJS = getSelectedClassJSON();
+  console.log("saveForm2ClassJSON()-Call: vDOM_ID stored in vJSON_JS");
   for (var i = 0; i < vDOM_ID.length; i++) {
-    write2value(vDOM_ID[i],"");
+    vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
   };
-  var vArray = getAttribNameArray();
-  var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sAttribList",vOptions)
+  console.log("saveForm2ClassJSON()-Call: vDOM_Global stored in vJSON_JS");
+  for (var i = 0; i < vDOM_Global.length; i++) {
+    vJSON_JS[vDOM_Global[i]] = getValueDOM(vDOM_Global[i]) || "";
+  };
+  // var vArray = getAttribNameArray();
+  // var vOptions = createOptions4Array(vArray);
+  // write2innerHTML("sAttribList",vOptions)
 };
 
 function createAttribTypeSelect() {

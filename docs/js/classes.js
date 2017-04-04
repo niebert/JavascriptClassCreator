@@ -33,16 +33,51 @@ function createNewClass() {
 };
 
 function updateJSON2tClassList() {
+  // update the Selectors sClassType in vJSON_JS["ClassList"] with ClassTypes defined in tClassList
+  writeClassType2sClassList();
+  // by calling createJSON2tClassList() any missing ClassType-Definitions are written in tClassList
   write2value("tClassList", createJSON2tClassList());
 };
 
 function createJSON2tClassList() {
-  var vClassTypeArr = vJSON_JS["ClassType"];
+  var vClassArr = vJSON_JS["ClassList"];
   var vArr= [];
   var vType = "";
-  for (var iClass in vClassTypeArr) {
-    if (vClassTypeArr.hasOwnProperty(iClass)) {
-      vType = vClassTypeArr[iClass];
+  for (var iClass in vClassArr) {
+    if (vClassArr.hasOwnProperty(iClass)) {
+      vType = vClassArr[iClass]["sClassType"];
+      if (vType == "") {
+        vArr.push(iClass);
+      } else {
+        vArr.push(iClass + " = " + vType)
+      };
+    };
+  };
+  return vArr.join("\n");
+
+};
+
+function writeClassType2sClassList() {
+  var vClassTypeHash = vJSON_JS["ClassType"];
+  var vClassList = vJSON_JS["ClassList"]
+  for (var iClass in vClassTypeHash) {
+    if (vClassTypeHash.hasOwnProperty(iClass)) {
+      if (existsClassJS(iClass)) {
+        vType = vClassList[iClass]["sClassType"] = vClassTypeHash[iClass];
+      } else {
+          console.log("wARNING: writeClassType2sClassList() Class '"+iClass+"' does not exist!");
+      };
+    };
+  };
+};
+
+function createClassTypeString4Hash(pClassTypeHash) {
+  var vClassTypeHash = pClassTypeHash || {}; //vJSON_JS["ClassType"];
+  var vArr= [];
+  var vType = "";
+  for (var iClass in vClassTypeHash) {
+    if (vClassTypeHash.hasOwnProperty(iClass)) {
+      vType = vClassTypeHash[iClass];
       if (vType == "") {
         vArr.push(iClass);
       } else {
@@ -132,9 +167,6 @@ function existsClassJS(pClass) {
       if (vJSON_JS["ClassList"][pClass]) {
         vReturn = true;
         var vClassType = "";
-        if (vJSON_JS["ClassType"][pClass]) {
-          vClassType = vJSON_JS["ClassType"][pClass];
-        };
         console.log("Class '"+pClass+"' (Type: '"+vClassType+"') is a user-defined class.");
       };
     };
@@ -150,6 +182,8 @@ function existsClassJS(pClass) {
   };
   return vReturn
 };
+
+
 
 function existsBasicClass(pClass) {
   var vBasicClassHash = getBasicClassHash();
@@ -199,17 +233,18 @@ function reduceMethodName(pName) {
   return reduceVarName(pName);
 };
 
-function checkClassList(pClass) {
+function checkClassList(pClass,pClassType) {
+  var vClassType = pClassType || "";
   if (vJSON_JS["ClassList"]) {
     console.log("checkClassList('"+pClass+"') created Class in JSON Database");
     vJSON_JS["ClassList"][pClass] = {};
-    vJSON_JS["ClassType"][pClass] = "";
+    setClassTypeJSON(pClass,vClassType);
   } else {
     console.log("checkClassList('"+pClass+"') created (1) ClassList in JSON Database");
     vJSON_JS["ClassList"] = {};
     console.log("checkClassList('"+pClass+"') created (2) Class in JSON Database");
     vJSON_JS["ClassList"][pClass] = {};
-    vJSON_JS["ClassType"][pClass] = "";
+    setClassTypeJSON(pClass,vClassType);
   };
 };
 
@@ -354,6 +389,8 @@ function createNewAttribJS(pName) {
 
 function createNewAttributeForm(pName,pType,pValue,pComment) {
     console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"')");
+    var vClassJS = getSelectedClassJSON();
+    var vClassName = getSelectedClass();
     var vAttrDef = pName + " = " + pValue;
     var vAttributes = document.fCreator.tAttributes;
     //var vAttribs = reduceVarName(vAttributes.value);
@@ -366,7 +403,10 @@ function createNewAttributeForm(pName,pType,pValue,pComment) {
       vAttributes.value += "\n"+vAttrDef;
     };
     saveAttribJSON(pName,pType,pValue,pComment);
-    updateForm2JSON(getValueDOM("tClassname"));
+    //set the Selector "sAttribList" for the Attributes on the tab "Attributes"
+    updateForm2JSON(vClassName);
+    console.log("Set ['sAttribList'] as selected Attribute to '"+pName+"'");
+    vClassJS["sAttribList"] = pName;
 };
 
 function createNewMethodJS() {
@@ -556,7 +596,7 @@ function updateAttribTypeComment4Form() {
 }
 
 function getComment4Attrib(pName,pValue) {
-  return "Comment '" +pName + "' Type: "+ determineAttType(pValue)+" ";
+  return "Attribute: '" +pName + "' Type: '"+ determineAttType(pValue)+"' stores ... ";
 }
 
 function determineAttType(pValue) {
@@ -606,7 +646,8 @@ function getForm2AttribDefaultHash(pClassName) {
   var vClassName = pClassName || getValueDOM("tClassname");
   var vClassNameForm = getValueDOM("tClassname");
   var vAttributes = getValueDOM("tAttributes");
-  console.log("getForm2AttribDefaultHash('"+vClassName+"') with Attributes="+vAttributes);
+  //console.log("getForm2AttribDefaultHash('"+vClassName+"')");
+  //console.log(" pAttributes='"+pAttributes+"'");
   var vHash = {};
   if (vClassName && (vClassName == vClassNameForm)) {
     vHash = getAttribDefaultHash(vAttributes);
@@ -618,7 +659,8 @@ function getForm2AttribDefaultHash(pClassName) {
 
 function getAttribDefaultHash(pAttributes) {
   // pAttributes is an optional String for creating the Hash from
-  console.log("getAttribDefaultHash(pAttributes) pAttributes='"+pAttributes+"'");
+  //console.log("getAttribDefaultHash(pAttributes)");
+  //console.log(" pAttributes='"+pAttributes+"'");
   var vAttrib = pAttributes || getValueDOM("tAttributes");
   vAttrib = removeEmptyLines(vAttrib);
   var vAttribArray    = vAttrib.split(/\n/);
@@ -747,8 +789,36 @@ function getMethodParamArray() {
 
 function getClassTypeJSON(pClass) {
   var vClassType = "";
-  if (vJSON_JS["ClassType"] && vJSON_JS["ClassType"][pClass]) {
-    vClassType = vJSON_JS["ClassType"][pClass];
+  if (pClass == "") {
+    console.log("WARNING: getClassTypeJSON('') Call with empty ClassName");
+  } else {
+    if (vJSON_JS["ClassType"] && vJSON_JS["ClassType"][pClass]) {
+      vClassType = vJSON_JS["ClassType"][pClass];
+    } else {
+      console.log("WARNING: getClassTypeJSON('"+pClass+"') ClassType for Class '"+pClass+"' does not exist in ClassType-Hash");
+    };
+  };
+  return vClassType;
+}
+
+function setClassTypeJSON(pClass,pClassType) {
+  var vClassType = pClassType || "";
+  vClassType = reduceVarName(vClassType)
+  if (pClass == "") {
+    console.log("WARNING: setClassTypeJSON('')-Call with empty ClassName");
+  } else {
+    //---Set the ClassType in the ClassType-Hash
+    if (vJSON_JS["ClassType"] && vJSON_JS["ClassType"][pClass]) {
+      vJSON_JS["ClassType"][pClass] = vClassType;
+    } else {
+      console.log("WARNING: setClassTypeJSON('"+pClass+"','"+vClassType+"') ClassType for Class '"+pClass+"' does not exist in ClassType-Hash");
+    };
+    //---Set the selected ClassType for Class in the Tab Class--
+    if (existsClassJS(pClass)) {
+      vJSON_JS["ClassList"][pClass]["sClassType"] = pClassType;
+    } else {
+      console.log("WARNING: Class '"+pClass+"' does not exist in ClassList");
+    };
   };
   return vClassType;
 }
@@ -997,7 +1067,7 @@ function updateClasses() {
     // extract ClassType "Interface" from Definition "MyClass = Interface" in vClassArray[i]
     vClassType = getClassType4Definition(vClassArray[i]);
     // Set the ClassType in vJSON_JS
-    vJSON_JS["ClassType"][vClassName] = vClassType;
+    setClassTypeJSON(vClassName,vClassType);
     // get the ClassHash from JSON
     vClassHashJSON = vJSON_JS["ClassList"][vClassName];
     if (vClassName != "") {

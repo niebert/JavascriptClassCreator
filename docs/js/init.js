@@ -14,6 +14,24 @@ vDOM_Global.push("sShowGeneralizations");
 vDOM_Global.push("sShowAggregations");
 vDOM_Global.push("sShowAssociations");
 //-------------------------------
+vDOM_TPL.push("tTplHTML"); // template for "app.html" main file
+vDOM_TPL.push("tTplSCRIPT"); // Script Tag for import Javascript Libraries
+vDOM_TPL.push("tTplPAGE");  // Template for a DIV page of app.html (iterate for all pages of App)
+vDOM_TPL.push("tTplBUTTON"); // Definition of Header Buttons of an App, to link between pages
+vDOM_TPL.push("tDefaultBUTTON"); // Default button that must be edited by user, contains an alert as event handler
+vDOM_TPL.push("tTplQUIT"); // Main Quit Button (red) which will close the window
+vDOM_TPL.push("tHeader"); // Class Header for Javascript Classes
+vDOM_TPL.push("tMethodsHeaderTpl"); // Contains the methods header of definitions of methods
+vDOM_TPL.push("tSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
+vDOM_TPL.push("tSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
+vDOM_TPL.push("tClassTail"); // Defines the End of the Class Definition
+vDOM_TPL.push("tMethodHeader"); // Defines the comments before each Method definition
+vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
+vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach
+vDOM_TPL.push("tClassTail"); // Defines the template appended at the end of class definition
+vDOM_TPL.push("tTplLoopHash");
+//vDOM_TPL.push("");
+//-------------------------------
 //var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
 // The following DOM-IDs are used to store for all classes,
 vDOM_ID.push("tClassname");
@@ -95,9 +113,10 @@ function initCodeCreator() {
   setClassSelectorDefault(vSelectedClass)
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   initEditorContent();
-  updateJSON2tClassList();
   updateClasses(); // reads the tClassList and updates the JSON Classes
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
+  updateJSON2tClassList();
+  populateForm2TemplateJSON();
 };
 
 function initLabelsHTML() {
@@ -114,19 +133,13 @@ function initFormClassList() {
   var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
    for (var i = 0; i < vClassArr.length; i++) {
      initClassJS(vClassArr[i]);
-     setClassType(vClassArr[i],vClassTypeHash[vClassArr[i]]);
+     setClassTypeJSON(vClassArr[i],vClassTypeHash[vClassArr[i]]);
    };
 };
 
 function setClassType(pClass,pClassType) {
   console.log("setClassType('"+pClass+"','"+pClassType+"')");
-  if (existsClassJS(pClass)) {
-    pClassType = reduceVarName(pClassType);
-    vJSON_JS["ClassList"][pClass]["sClassType"] = pClassType;
-    vJSON_JS["ClassType"][pClass] = pClassType;
-  } else {
-    console.log("Class '"+pClass+"' does not exist");
-  }
+  setClassTypeJSON(pClass,pClassType);
 }
 
 function initFormButtonList() {

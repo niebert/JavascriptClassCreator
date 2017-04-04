@@ -43,7 +43,7 @@ function checkInterface4Class(pClassName) {
   console.log("checkInterface4Class('"+pClassName+"')");
   var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
   var vSuperClass = vClassJS["tSuperClassname"];
-  var vSuperClassType = vJSON_JS["ClassType"][vSuperClass] || "";
+  var vSuperClassType = getClassTypeJSON(vSuperClass);
   if (vSuperClassType == "Interface") {
     //inherit the attributes of interface
     inheritAttributesDefinitions(vSuperClass,pClassName);
@@ -85,7 +85,7 @@ function inheritMethodCode(pSuperClass,pClassName) {
 
 function selectClassType(pClassName,pValue) {
   if (vJSON_JS["ClassType"]) {
-    vJSON_JS["ClassType"][pClassName] = pValue;
+    setClassTypeJSON(pClassName,pValue);
     updateJSON2tClassList();
   } else {
     console.log("ERROR: selectClassType('"+pClassName+"','"+pValue+"') - vJSON_JS['ClassType'] undefined");

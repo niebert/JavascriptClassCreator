@@ -453,13 +453,6 @@ save(pContent:DOMVar,pMatrix:Matrix)
           <select id="sClassCode" name="sClassCode" onchange="selectClass_do(this.value)">
             <option>UndefClass</option>
           </select>
-          <br>
-          <b>Prototype:</b>
-          <select id="sPrototype" name="sPrototype">
-            <option value="YES">YES</option>
-            <option value="NO">NO</option>
-          </select>
-
           <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
           <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
           <hr>
@@ -755,10 +748,9 @@ ___METHODSPROTOTYPE___
     <hr>
     <b>Methods Header</b><br>
 <textarea id="tMethodsHeaderTpl" name="tMethodsHeaderTpl" cols="125" rows="3">
-
-//---------------------------------------------------------------------
-//---Methods of Class "___CLASSNAME___()" defined as JS functions
-//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    //---Methods of Class "___CLASSNAME___()" defined as JS functions
+    //---------------------------------------------------------------------
 </textarea>
 <hr>
 <b>Method Prefix:</b> <input type="text" id="tMethodPrefix" name="tMethodPrefix" value="this." size="7">
@@ -778,9 +770,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 
 <hr>
 <b>Inherit from SuperClass</b><br>
-   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">
-
-    //--------------------------------------
+   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">//--------------------------------------
     //---Super Class------------------------
     this.SuperClass = ___SUPERCLASSNAME___;
     this.SuperClass();
@@ -789,7 +779,6 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 <hr>
 <b>Class Tail</b><br>
   <textarea id="tClassTail" name="tClassTail" cols="125" rows="3">
-
 //-------------------------------------------
 //---End Definition of Class-----------------
 // JS Class: ___CLASSNAME___

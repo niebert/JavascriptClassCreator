@@ -71,7 +71,7 @@ function exportHTML() {
 }
 
 function exportIndexHTML() {
-  var vHTML = readFile("tpl/index.html");
+  var vHTML = readFileTXT("tpl/index.html");
   write2editor("MainHTML",vHTML);
 }
 
@@ -290,84 +290,122 @@ function displayUML() {
 
 function createCode4Class() {
 	var vString = "";
-	var vDate 			= getDate();
-	var vClassname 		= document.fCreator.tClassname.value;
-	var vClassFile  	= vClassname.toLowerCase()+".js";
-	var vSuperClassname = document.fCreator.tSuperClassname.value;
-	var vAuthor     	= document.fCreator.tAuthor.value;
-	var vEMail      	= document.fCreator.tEMail.value;
-	var vHeader     	= document.fCreator.tHeader.value;
-	var vSuperClass     = document.fCreator.tSuperClass.value;
-	var vMethodHeader   = document.fCreator.tMethodHeader.value;
+  var vClassJS = getClassJSON();
+  var vClassFile  	  = getClassFile4ClassJSON(vClassJS);
+  var vSuperClass     = vClassJS["tSuperClass"];
+	var vMethodHeader   = getValueDOM("tMethodHeader");
+  var vClassTail    	= getValueDOM("tClassTail");
 	//var vAttributes 	= document.fCreator.tAttributes.value;
 	//var vMethods    	= document.fCreator.tMethods.value;
-	var vClassTail    	= document.fCreator.tClassTail.value;
-	var vAttribArray    = getAttribArray();
-  var vMethodArray    = getMethodArray();
+	var vMethodArray    = getMethodArray();
 	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
 	var vMethodConstructor = "	//---Methods----------------------------\n";
-	var vOutput = vHeader;
-	if (vSuperClassname == "") {
-		vSuperClass = "	// no superclass defined\n";
-	};
-	vOutput = replaceString(vOutput,"___AUTHOR___",vAuthor);
-	vOutput = replaceString(vOutput,"___EMAIL___",vEMail);
-	vOutput = replaceString(vOutput,"___SUPERCLASS___",vSuperClass);
-	vOutput = replaceString(vOutput,"___SUPERCLASSNAME___",vSuperClassname);
-	vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
-	vOutput = replaceString(vOutput,"___DATE___",vDate);
-	vMethodHeader = replaceString(vMethodHeader,"___SUPERCLASS___",vSuperClass);
-	vMethodHeader = replaceString(vMethodHeader,"___CLASSNAME___",vClassname);
-	vMethodHeader = replaceString(vMethodHeader,"___CLASSFILENAME___",vClassFile);
-	vMethodHeader = replaceString(vMethodHeader,"___DATE___",vDate);
-	var vMethod = vMethodHeader;
-	//vAttributes = replaceString(vAttributes,"\n","\nthis.");
-	//alert(vAttributes);
-	for (var i=0; i<vAttribArray.length; i++) {
-		//alert(vAttribArray[i]);
-		if (vAttribArray[i].indexOf("=")>0) {
-			vAttribConstructor += "\tthis."+vAttribArray[i]+";\n";
-		};
-	};
-	var vSplitArray;
-	for (var i=0; i<vMethodArray.length; i++) {
-		if (vMethodArray[i].indexOf("(")>0) {
-			vSplitArray = vMethodArray[i].split("(");
-			vMethodConstructor += "\tthis."+vSplitArray[0]+"\t = "+vSplitArray[0]+"_"+vClassname+";\n";
-		};
-	};
-	vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribConstructor);
-	vOutput = replaceString(vOutput,"___METHODS___",vMethodConstructor);
-	var vMethodname = "";
+	var vOutput = getValueDOM("tHeader");
+  vOutput       = replaceCodeMainVars(vOutput);
+	vMethodHeader = replaceCodeMainVars(vMethodHeader);
+  vOutput       = replaceAttributes4Code(vOutput);
+  vOutput       = replaceMethods4Code(vOutput,vMethodHeader);
+	vClassTail    = replaceString(vClassTail,"___CLASSNAME___",vClassJS["tClassname"]);
+	vOutput += vClassTail;
+  write2editor("Output",vOutput);
+	alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vClassFile+"'!");
+};
+
+function getClassFile4ClassJSON(pClassJS) {
+  var vClassname = pClassJS["tClassname"] || "UndefinedClass";
+  return vClassname.toLowerCase()+".js";
+}
+
+function replaceCodeMainVars(pOutput) {
+  var vOutput = pOutput || "undefined code";
+  var vClassJS = getClassJSON();
+  var vClassname 		= vClassJS["tClassname"];
+	var vClassFile  	= getClassFile4ClassJSON(vClassJS);
+  var vSuperClassDef = getValueDOM("tSuperClass");
+  var vSuperClassProtoDef = getValueDOM("tSuperClassProto");
+  if (vClassJS["tSuperClassname"] == "") {
+    vSuperClassDef = "	// no superclass defined\n";
+    vSuperClassProtoDef = "	// no superclass defined\n";
+	} else {
+    if (getValueDOM("sPrototype") == "YES") {
+      vSuperClassDef = "";
+      vMethodDefPrefix = vClassname + ".prototype";
+    } else {
+      vSuperClassProtoDef = "";
+      vMethodDefPrefix = "this";
+    };
+  };
+  vOutput = replaceString(vOutput,"___AUTHOR___",vClassJS["tAuthor"]);
+  vOutput = replaceString(vOutput,"___EMAIL___",vClassJS["tEMail"]);
+  vOutput = replaceString(vOutput,"___SUPERCLASSPROTOTYPE___",vSuperClassProtoDef);
+  vOutput = replaceString(vOutput,"___SUPERCLASS___",vSuperClassDef);
+  vOutput = replaceString(vOutput,"___SUPERCLASSNAME___",vClassJS["tSuperClassname"]);
+  vOutput = replaceString(vOutput,"___CLASSNAME___",vClassJS["tClassname"]);
+  vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
+  vOutput = replaceString(vOutput,"___DATE___",getDate());
+  vOutput = replaceString(vOutput,"___METHODDEFPREFIX___",vMethodDefPrefix);
+  return vOutput;
+};
+
+function replaceAttributes4Code(pOutput) {
+  var vOutput = pOutput || "undefined pOutput";
+  var vAttribArray    = getAttribArray();
+  var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
+  for (var i=0; i<vAttribArray.length; i++) {
+    //alert(vAttribArray[i]);
+    if (vAttribArray[i].indexOf("=")>0) {
+      vAttribConstructor += "\tthis."+vAttribArray[i]+";\n";
+    };
+  };
+  vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribConstructor);
+  return vOutput;
+};
+
+function replaceMethods4Code(pOutput,pMethodHeader) {
+  var vOutput = pOutput || "undefined pOutput";
+  var vClassJS = getClassJSON();
+  var vMethodArray = getMethodArray();
+  var vMethodHeader = pMethodHeader || "undefined MethodHeader";
+  var vMethod = vMethodHeader;
+  var vMethodname = "";
   var vMethodAllParams = "";
   var vMethodParamsClass = "";
-	for (var i=0; i<vMethodArray.length; i++) {
-		vMethod = vMethodHeader;
-		var vOpenBracketPos = vMethodArray[i].indexOf("(");
-		if (vOpenBracketPos >0) {
-			vSplitArray = vMethodArray[i].split("(");
-			var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
-			if (vCloseBracketPos<0) {
-				alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
-			} else {
-				vMethodParamsClass = vSplitArray[1].substring(0,vCloseBracketPos);
+  var vSplitArray;
+  var vOutMeth = getValueDOM("tMethodsHeaderTpl");
+  vOutMeth = replaceString(vOutMeth,"___CLASSNAME___",vClassJS["tClassname"]);
+  for (var i=0; i<vMethodArray.length; i++) {
+    // start with clean MethodHeader Template for each Method Definition
+    vMethod = vMethodHeader;
+    var vOpenBracketPos = vMethodArray[i].indexOf("(");
+    if (vOpenBracketPos >0) {
+      vSplitArray = vMethodArray[i].split("(");
+      var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
+      if (vCloseBracketPos<0) {
+        alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
+      } else {
+        vMethodParamsClass = vSplitArray[1].substring(0,vCloseBracketPos);
         vMethodAllParams = edit2JSparams(vMethodParamsClass);
-			};
+      };
       var vMethName = vSplitArray[0];
-      var vReturn = vJSON_JS["ClassList"][vClassname]["MethodReturn"][vMethName];
+      var vReturn = vClassJS["MethodReturn"][vMethName];
       var vReturnColon = "";
       var vReturnComment = "";
       if (vReturn != "") {
         vReturnColon = ":"+vReturn;
         vReturnComment = "Return: "+vReturn;
       };
+      //----- Parameter Comments lines -----
       var vParArr = vMethodParamsClass.split(",");
-      var vParameterComment = vParArr.join("\n//#    ");
+      var vCommentPrefix = "//";
+      var vCommentBoxPrefix = "#";
+      var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix+"    ";
+      var vParameterComment = vParArr.join(vComPrefix);
+      //---- Replace all Method specific variable in MethodHeader ----
       vMethod = replaceString(vMethod,"___METHODDEF___",vMethodArray[i]);
       vMethod = replaceString(vMethod,"___METHODCALL___",vMethName+"("+vMethodAllParams+")");
       vMethod = replaceString(vMethod,"___METHODNAME___",vMethName);
       vMethod = replaceString(vMethod,"___RETURNCOMMENT___",vReturnComment);
-			vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
+      vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
       vMethod = replaceString(vMethod,"___PARAMETERDEF___",vParameterComment);
       var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vSplitArray[0]+"' do?";
       vMethodComment     = replaceString(vMethodComment,"\n","\n//#    ");
@@ -375,14 +413,70 @@ function createCode4Class() {
       var vMethodCode = getMethodCode(vMethodArray[i]) || "//----------- INSERT YOUR CODE HERE ---------------";
       vMethodCode = "\t"+replaceString(vMethodCode,"\n","\n\t");
       vMethod = replaceString(vMethod,"___METHODCODE___",vMethodCode);
-      vOutput += vMethod;
-			//vSplitArray = vMethodArray[i].split("(");
-		} else {
-			//alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
-		}
+      vOutMeth += vMethod;
+      //vSplitArray = vMethodArray[i].split("(");
+    } else {
+      //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
+    }
+  };
+  if (getValueDOM("sPrototype") == "YES") {
+    console.log("Methods are defined with Prototype approach");
+    vOutput = replaceString(vOutput,"___METHODSPROTOTYPE___",vOutMeth);
+    vOutput = replaceString(vOutput,"___METHODS___","");
+  } else {
+    console.log("Methods are NOT defined with Prototype approach");
+    var vArr = vOutMeth.split("\n");
+    vOutMeth = vArr.join("\n\t");
+    vOutput = replaceString(vOutput,"___METHODS___",vOutMeth);
+    vOutput = replaceString(vOutput,"___METHODSPROTOTYPE___","");
+  };
+  return vOutput;
+};
+
+
+function createLinkedMethodDefinitions() {
+  var vMethodArray = getMethodArray();
+  var vSplitArray;
+  var vMethodConstructor = "	//---Methods----------------------------\n";
+	for (var i=0; i<vMethodArray.length; i++) {
+		if (vMethodArray[i].indexOf("(")>0) {
+			vSplitArray = vMethodArray[i].split("(");
+			vMethodConstructor += "\tthis."+vSplitArray[0]+"\t = "+vSplitArray[0]+"_"+vClassname+";\n";
+		};
 	};
-	vOutput += vClassTail;
-	vOutput = replaceString(vOutput,"___CLASSNAME___",vClassname);
-  write2editor("Output",vOutput);
-	alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vClassFile+"'!");
+
+};
+
+function exportTemplateJSON() {
+  //var vOut = getCode4JSON_JS(vJSON_TPL);
+  createCode4JSON_JS(vJSON_TPL)
+};
+
+function updateTemplatesJSON2Form() {
+  // vDOM_TPL is an array of DOM-IDs for textareas to read and write from
+  // vJSON_TPL is a hash for DOM-IDs containing the template as text
+  var vID = "";
+  for (var i = 0; i < vDOM_TPL.length; i++) {
+    vID = vDOM_TPL[i]
+    if (vJSON_TPL.hasOwnProperty(vID)) {
+      write2value(vID,vJSON_TPL[vID])
+    } else {
+      console.log("vJSON_TPL['"+vID+"'] as Template undefined");
+    }
+  }
+};
+
+function populateForm2TemplateJSON() {
+  // vDOM_TPL is an array of DOM-IDs for textareas to read and write from
+  // vJSON_TPL is a hash for DOM-IDs containing the template as text
+  var vID = "";
+  for (var i = 0; i < vDOM_TPL.length; i++) {
+    vID = vDOM_TPL[i];
+    if (vJSON_TPL.hasOwnProperty(vID)) {
+      console.log("vJSON_TPL['"+vID+"'] as Template already defined");
+    } else {
+      vJSON_TPL[vID] = getValueDOM(vID);
+      console.log("vJSON_TPL['"+vID+"'] set Template by textarea content in HTML from DOM");
+    };
+  };
 };

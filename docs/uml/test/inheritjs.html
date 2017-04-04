@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+//-- Adapted from Source: https://www.w3schools.com/js/tryit.asp?filename=tryjs_object_prototype1
+//-- See http://phrogz.net/js/classes/OOPinJS2.html for further information 
+function Person(first, last, age, eye) {
+    this.firstName = first;
+    this.lastName = last;
+    this.age = age;
+    this.eyeColor = eye;
+    //this.getOlder = function () {this.age +=1};
+}
+Person.prototype.getOlder = function () {this.age +=1};
+
+var myFather = new Person("John", "Doe", 50, "blue");
+var myMother = new Person("Sally", "Rally", 48, "green");
+
+Persom.prototype.getOlder = function () {this.age +=2};
+
+//myFather.getOlder = function () {this.age +=2};
+myMother.getOlder();
+document.getElementById("demo").innerHTML =
+"My father is " + myFather.age + ". My mother is " + myMother.age;
+</script>
+
+</body>
+</html>

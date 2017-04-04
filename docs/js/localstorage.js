@@ -3,6 +3,7 @@ function loadLocalStorage(pType,pVar) {
   var vRet = undefined;
   var vParLog = "\""+pType+"\"" || "";
   var vType = pType || "all";
+  console.log("loadLocalStorage('"+vType+"','"+(pVar || "")+"')-Call");
   switch (vType) {
     case "all":
       loadLocalStorage("dom");
@@ -51,6 +52,7 @@ function saveLocalStorage(pType,pVar,pContent) {
   var vLS="save";
   var vParLog = "\""+pType+"\"" || "";
   var vType = pType || "all";
+  console.log("saveLocalStorage('"+vType+"','"+(pVar || "")+"',pContent)-Call");
   switch (vType) {
     case "all":
       saveLocalStorage("dom");
@@ -93,6 +95,7 @@ function clearLocalStorage(pType,pVar) {
   var vLS="clear";
   var vParLog = "\""+pType+"\"" || "";
   var vType = pType || "all";
+  console.log("clearLocalStorage('"+vType+"','"+(pVar || "")+"')-Call");
   switch (vType) {
     case "all":
       clearLocalStorage("dom");
@@ -175,11 +178,16 @@ function clearLocalStorage4DOM() {
 };
 
 function clearLocalStorage4ArrayID(pArrayID) {
-	//alert("vDOM_ID.length="+vDOM_ID.length);
+	//alert("pArrayID.length="+pArrayID.length);
   if (pArrayID) {
-    for (var i=0;i < pArrayID_ID.length; i++ ) {
+    for (var i=0;i < pArrayID.length; i++ ) {
   		var vID = pArrayID[i];
-  		localStorage.removeItem(vID);
+      if (localStorage.getItem(vID) === null) {
+        console.log("WARNING: Variable '"+vID+"' was undefined in LocalStorage!\nclearLocalStorage4ArrayID()-Call:186");
+        vRet = undefined;
+      } else {
+        localStorage.removeItem(vID);
+      }
   	};
   } else {
     console.log("clearLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");

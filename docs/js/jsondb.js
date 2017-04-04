@@ -76,8 +76,8 @@ function  updateAttributesJS() {
   console.log("updateAttributesJS()-Call called after adding a new Attribute");
   var vClassJS = getSelectedClassJSON();
   var vAttName = vClassJS["sAttribList"] || "";
-  //write2value("sAttribList",vAttName);
-  //selectJSAttribs();
+  write2value("sAttribList",vAttName);
+  selectJSAttribs();
 };
 function  updateMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
@@ -290,15 +290,26 @@ function updateForm2MethodComment() {
   console.log("updateForm2MethodComment()-Call");
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
+  var vMethodComment = getValueDOM("tMethodComment");
   vClassJSON["MethodComment"][vMethodName] = vMethodComment;
 };
 
 function updateForm2MethodNameParam() {
   console.log("updateForm2MethodNameParam()-Call");
   var vMethodCall = getValueDOM("tMethodName");
+  var vMethodCode = getEditorValue("iMethodCode");
   var vMethodName = getMethodName(vMethodCall);
   vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
-  vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
+  var vOldMethodRet = vClassJSON["MethodReturn"][vMethodName];
+  var vMethodRet = getMethodReturn4Call(vMethodCall);
+  if (vOldMethodRet != "") {
+    if (vOldMethodRet != vMethodRet) {
+      vMethodCode = changeReturnType4Code(vMethodCode,vOldMethodRet,vMethodRet);
+      write2value("tMethodCode",vMethodCode);
+      setEditorValue("iMethodCode",vMethodCode);
+    }
+  }
+  vClassJSON["MethodReturn"][vMethodName] = vMethodRet;
 };
 
 function updateJSON2Form(pClass) {
@@ -436,21 +447,16 @@ function updateForm2MethodJSON(pClass) {
   //------ Init undefined Method CODE----------
   var vReturn = "";
   var vCode = "";
-  var vClassDef = "";
   for (var i = 0; i < vMethArr.length; i++) {
     //vMethHash[vMethArr[i]] = "";
     vCode = "// Code for " + vMethArr[i];
     vReturn = vMethReturn[vMethArr[i]];
     if (vReturn != "") {
+      // vReturn is the ClassType of the MethodReturn e.g. class "Matrix"
       vReturn = vReturn.replace(/\s/g,"");
-      if (isBasicClass(vReturn)) {
-        var vBasicClassHash = getBasicClassHash();
-        vClassDef = vBasicClassHash[vReturn];
-      } else {
-        vClassDef = "new "+vReturn+"()"
-      };
-      vCode =  "var vRet"+vReturn +" = "+vClassDef+";\n" +vCode+"\n";
-      vCode += "return vRet"+vReturn+";";
+      var vRetVarDef = getReturnVariableDef(vReturn);
+      vCode =  vRetVarDef + vCode+"\n";
+      vCode += getReturnCommandDef(vReturn);
     };
     vMethHash[vMethArr[i]] = vCode;
   };
@@ -465,9 +471,44 @@ function updateForm2MethodJSON(pClass) {
   //---------------------------------------------
 };
 
+function changeReturnType4Code(pCode,pOldRet,pNewRet) {
+  console.log("CALL: changeReturnType4Code(pCode,'"+pOldRet+"','"+pNewRet+"')");
+  var vCode = pCode || "";
+  if (vCode != "") {
+    // for pOldRet="Matrix" and pNewRet="MyClass" the following commands will
+    // (1) replace "var vRetMatrix = new Matrix()" by "var vRetMyClass = new MyClass()"
+    vCode = replaceString(vCode,getReturnVariableDef(pOldRet),getReturnVariableDef(pNewRet));
+    // (2) replace "return vRetMatrix;" by "return vRetMyClass;"
+    vCode = replaceString(vCode,getReturnCommandDef(pOldRet),getReturnCommandDef(pNewRet));
+  };
+  return vCode;
+}
+
+function getReturnCommandDef(pRetType) {
+  return "return vRet"+pRetType+";";
+};
+
+function getReturnVariableDef(pRetType) {
+  var vReturn = pRetType || "";
+  vReturn = vReturn.replace(/\s/g,"");
+  var vRetVarDef = "";
+  var vClassDef  = "";
+  if (vReturn != "") {
+    if (isBasicClass(vReturn)) {
+      var vBasicClassHash = getBasicClassHash();
+      vClassDef = vBasicClassHash[vReturn];
+    } else {
+      vClassDef = "new "+vReturn+"()"
+    };
+    vRetVarDef =  "var vRet"+vReturn +" = "+vClassDef+";\n";
+  };
+  return vRetVarDef;
+};
+
+
 function updateForm2JSON(pClass) {
-  var vAttributes = getValueDOM("tAttributes");
-  console.log("updateForm2JSON('"+pClass+"') with Attributes="+vAttributes);
+  //var vAttributes = getValueDOM("tAttributes");
+  console.log("updateForm2JSON('"+pClass+"')");
   var vClass = pClass || getSelectedClass();
   // updates the Class content with form content in DOM
   createClassJS(vClass);
@@ -481,28 +522,30 @@ function updateForm2JSON(pClass) {
 };
 
 function defineHashIfUndefined(pHash,pHashListID) {
-  vClassJSON = getClassJSON();
+  var vClassJS = getClassJSON();
   for (var iAttName in pHash) {
-    if (vClassJSON[pHashListID][iAttName]) {
+    if (vClassJS[pHashListID][iAttName]) {
         //vClassJSON[pHashListID][iAttName];
         console.log(pHashListID+"['"+iAttName+"'] defined");
     } else {
       console.log(pHashListID+"['"+iAttName+"'] undefined set to '"+pHash[iAttName]+"'");
-      vClassJSON[pHashListID][iAttName] = pHash[iAttName];
+      vClassJS[pHashListID][iAttName] = pHash[iAttName];
     };
   };
 };
 
 function defineHashIfEmpty(pHash,pHashListID) {
-  vClassJSON = getClassJSON();
+  var vClassJS = getClassJSON();
   defineHashIfUndefined(pHash,pHashListID);
+  var vValue = "";
   for (var iAttName in pHash) {
-    if (vClassJSON[pHashListID][iAttName] != "") {
+    vValue = vClassJS[pHashListID][iAttName];
+    if (vValue != "") {
         //vClassJSON[pHashListID][iAttName];
-        console.log(pHashListID+"['"+iAttName+"'] defined");
+        console.log(pHashListID+"['"+iAttName+"']='"+vValue+"' is not empty");
     } else {
-      console.log(pHashListID+"['"+iAttName+"']='' - Set to '"+pHash[iAttName]+"'");
-      vClassJSON[pHashListID][iAttName] = pHash[iAttName];
+      console.log(pHashListID+"['"+iAttName+"']='' empty - set to default value'"+pHash[iAttName]+"'");
+      vClassJS[pHashListID][iAttName] = pHash[iAttName];
     };
   };
 };

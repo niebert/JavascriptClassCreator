@@ -3,6 +3,13 @@ function write2editor(pID,pValue) {
   setEditorValue("i"+pID,pValue);
 };
 
+function insert2editor(pID,pValue) {
+  var vEditor = getIFrameEditor("i"+pID);
+  vEditor.insert(pValue);
+  var vOutput = getEditorValue("i"+pID);
+  write2value("t"+pID,pValue);
+};
+
 function getIFrameDocument(pIFrameName) {
   var vIFrame = document.getElementById(pIFrameName);
   var vDoc = null;

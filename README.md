@@ -1,4 +1,6 @@
 # JavascriptClassCreator
+
+## Introduction
 Web-based Javascript Class Creator that
 * allows Object Oriented JS Classes, which is not concept (i.e. OOP) JavaScript was originally designed for.
 * supporting [Inheritage](http://phrogz.net/js/classes/OOPinJS2.html) of Classes by using [functions as conctructors](https://www.phpied.com/3-ways-to-define-a-javascript-class/) for classes in ways:
@@ -29,12 +31,17 @@ UglifyJS is used for compressing the code and generate higher performance for th
 
 Future application of UglifyJS will allow cross compilation of generation of generic XML-Code for code generation that is highly independent of a specific programming language (see [XML2Code]https://github.com/niebert/XML2Code) as a proposal). UglifyJS can take Javascript code as input and create an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). When the [AST in UglifyJS](http://lisperator.net/uglifyjs/ast) is generated, you can send a [AST walker](http://lisperator.net/uglifyjs/walk) over all nodes of the abstract syntax tree and perform a [Cross Compilation](https://en.wikipedia.org/wiki/Cross_compiler) from Javascript for example to PHP. For the code compressor in UglifyJS the AST is e.g. used to replace <tt>var vMyLongVariable = 0</tt> by <tt>var v=0</tt>. The walker for the code compressor reduces (among other tasks) the length of variable name. This makes the code less readable for developers, but creates less loading for web browsers. For JSCC the removal of comments has the highest impact on the size of the code.
 
-## ToDo
+## Status of software
+### Releas Status
+Software in currently in Beta-Testing
+
+### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
-* Integrate UglifyJS for the generated Javascript Classes
+* Integrate UglifyJS for the generated Javascript Classes for exporting to Code2XML with AST and TreeWalker
 * BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
 * BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
+* BUG: Update Method Selector
 * IMPROVE: add blank selection option to DB selector
 * IMPROVE: remove JSON Code Generator from init in <tt>index.html</tt>
 * IMPROVE: Aggregate all libs into one file and send after aggregation to the code compressor, that improves the percentage of compression a bit (low priority, because aggregation of compressed files into a single has a higher impact on loading time than the compression of the aggregated single file of all classes)

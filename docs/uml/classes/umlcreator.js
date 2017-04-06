@@ -113,6 +113,7 @@ function createDiagramClass(pClass,pCentered) {
   var vClassUML = getClassUML(pClass);
   // determine the UML Type of the Class "Abstract" "Interface" "Red Class", ...
   var vTypeUML = vClassTypeHash[pClass] || "";
+  console.log("Class '"+pClass+"' has Type '"+vTypeUML+"'");
   return createClass4UML(vTypeUML,vClassUML,pCentered);
 }
 

@@ -16,6 +16,8 @@ function selectClass_do(pClass) {
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
   updateForm2JSON(vCurrentClass);
+  // following command is inserted for the first startup
+  write2value("sClassList",pClass);
   if (vJSON_JS["ClassList"][vClass]) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
   } else {
@@ -33,54 +35,19 @@ function selectClass_do(pClass) {
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect();
+  var vSelectedMethod = getValueDOM("sMethodList") || "";
+  if (vSelectedMethod == "") {
+    var vMethodNameArr = getMethodNameArray();
+    if (vMethodNameArr.length > 0) {
+      write2value("sMethodList",vMethodNameArr[0]);
+      selectJSMethods();
+    };
+  };
   var vClassName = getValueDOM("tClassname");
   writeClassTitle(vClassName);
   updateClassSelectors(vClassName);
   setClassSelectorDefault(vClassName);
 };
-
-function checkInterface4Class(pClassName) {
-  console.log("checkInterface4Class('"+pClassName+"')");
-  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
-  var vSuperClass = vClassJS["tSuperClassname"];
-  var vSuperClassType = getClassTypeJSON(vSuperClass);
-  if (vSuperClassType == "Interface") {
-    //inherit the attributes of interface
-    inheritAttributesDefinitions(vSuperClass,pClassName);
-    //inherit the method interface
-    inheritMethodsInterface(vSuperClass,pClassName);
-  };
-  if (vSuperClassType == "Abstract") {
-    //inherit the method interface
-    inheritAttributesDefinitions(vSuperClass,pClassName);
-    //inherit the method interface
-    inheritMethodInterface(vSuperClass,pClassName);
-    //inherit the method interface
-    inheritMethodCode(vSuperClass,pClassName);
-  };
-};
-
-function inheritAttributesDefinitions(pSuperClass,pClassName) {
-  console.log("inheritAttributesDefinitions('"+pSuperClass+"','"+pClassName+"')-Call");
-  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
-  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
-
-};
-
-function inheritMethodInterface(pSuperClass,pClassName) {
-  console.log("inheritMethodInterface('"+pSuperClass+"','"+pClassName+"')-Call");
-  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
-  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
-
-};
-
-function inheritMethodCode(pSuperClass,pClassName) {
-  console.log("inheritMethodCode('"+pSuperClass+"','"+pClassName+"')-Call");
-  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
-  var vSuperClassJS = getClassJSON(pSuperClass); // umlcreator.js:49
-
-};
-
 
 
 function selectClassType(pClassName,pValue) {
@@ -265,12 +232,6 @@ function selectJSAttribType() {
   saveJSON2LocalStorage();
 };
 
-function getClassJSON(pClassName) {
-  var vClassName = pClassName || getValueDOM("tClassname");
-  console.log("getClassJSON('"+vClassName+"')");
-  return vJSON_JS["ClassList"][vClassName];
-}
-
 function selectJSAttribs() {
   getClassJSON();
   saveAttribJSON();
@@ -292,19 +253,92 @@ function selectJSAttribs() {
   //load method code from  vJSON_JS if exists
   //loadAttribJSON(vAttribName);
   saveJSON2LocalStorage();
+};
+
+function updateForm2Database(pDB) {
+  var vDB = pDB || getValueDOM("tExportedJSON");
+  console.log("updateForm2Database('"+vDB+"') call");
+  var vContent = getEditorValue("iJSONDB");
+  // remove Prefix if it is stored in the Export File;
+  vContent = removePrefix4DB(vContent);
+  var vMSG = "";
+  if (vDB == "") {
+    vMSG = "ERROR: Please select a Database first before you can update the content of the database!";
+  } else if (vDB == "project") {
+    vMSG = "WARNING: You cannot save a JSON for the programming project into the list of databases.\nSee tab Files/Classes to create new JSON DBs!";
+  } else {
+    if (vJSON_JS["DatabaseList"][vDB]) {
+      vJSON_JS["DatabaseList"][vDB] = vContent;
+      vMSG = "DONE: Database ["+vDB+"] was stored in main JSON for the project!"
+    } else {
+      vMSG = "ERROR: Database ["+vDB+"] does not exist in call of updateForm2Database('"+vDB+"')";
+    };
+  };
+  //console.log(vMSG);
+  if (vMSG != "") alert(vMSG);
+};
+
+function removePrefix4DB(pContent) {
+  var vDB = getValueDOM("tExportedJSON");
+  var vPrefix = getExportPrefix4DB(vDB);
+  var vContent = pContent || "";
+  var vPosJSON = 0;
+  var vMsg = "";
+  var vPos = vContent.indexOf(vPrefix);
+  if (vPos >= 0) {
+    vMsg = "removePrefix4DB() Hash found at posistion "+vPos;
+    vPosJSON = vPos + vPrefix.length;
+  };
+  if (vPosJSON > 0) {
+    vContent = vContent.substring(vPosJSON,vContent.length);
+  };
+  return vContent;
 }
 
-function selectDatabase() {
-  //show("bSaveJSON");
+function selectDatabaseJSON() {
   var vDB = getValueDOM("sDatabases");
+  if (vDB) {
+    write2value("tExportedJSON",vDB);
+    console.log("Database: '"+vDB+"' selected!");
+    selectDatabase(vDB);
+  } else {
+    console.log("WARNING: selectDatabaseJSON() vDB undefined!");
+  };
+}
+
+function getExportPrefix() {
+  var vPrefix = "JSON";
+  if (getCheckBox("checkUsePrefix") == true) {
+    vPrefix = "JS";
+  };
+  return vPrefix;
+};
+
+function selectDatabase(pDB) {
+  //show("bSaveJSON");
+  var vDB = pDB || getValueDOM("sDatabases");
+  var vSelExpPref = getExportPrefix();
+  console.log("selectDatabase('"+vDB+"') Type: '"+vSelExpPref+"'");
   var vContent = "";
+  // ExportPrefix = "JSON" means: do not use the export prefix, it is pure JSON,
+  var vExportPrefix = "";
+  var vExtension = ".json";
+  if (getCheckBox("checkUsePrefix") == true) {
+    vExportPrefix = getExportPrefix4DB(vDB);
+  };
   if (vJSON_JS["DatabaseList"][vDB]) {
     vContent = vJSON_JS["DatabaseList"][vDB];
   } else {
     alert("Database ["+vDB+"] does not exist in call of selectDatabase()");
   };
-  setEditorValue("iJSONDB",vContent);
+  setEditorValue("iJSONDB",vExportPrefix + vContent);
 };
+
+function getExportPrefix4DB(pDB) {
+  var vPrefix = getValueDOM("tExportPrefix") || "";
+  vPrefix = replaceString(vPrefix,"___DB___",pDB);
+  return vPrefix;
+}
 
 function saveDatabaseJSON() {
   var vDB = getValueDOM("sDatabases");

@@ -128,10 +128,11 @@ function updateForm2DatabasesJSON() {
   var vDB = "";
   for (var i = 0; i < vNameDB.length; i++) {
     vDB = vNameDB[i];
-    vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || "// Database: db/"+vDB+".js";
+    vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || "{\n  \"name\": \""+vDB+"\"\n}";
   };
-  vJSON_JS["DatabaseList"] =  vDBHash
-}
+  vJSON_JS["DatabaseList"] =  vDBHash;
+  createDatabaseSelect(vNameDB);
+};
 
 function removeExtensionJS4Array(pArrDB) {
   var vRetArr = [];

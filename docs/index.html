@@ -79,7 +79,7 @@
     <li><a id="tabMethods" href="#tabs-3">Methods</a></li>
     <li><a id="tabCode" href="#tabs-4">Code</a></li>
     <li><a id="tabUML" href="#tabs-UML">UML</a></li>
-    <li><a id="tabJSON" href="#tabs-5">JSON</a></li>
+    <li><a id="tabJSON" href="#tabs-JSON">JSON/DB</a></li>
 	</ul>
   <!-- MAIN -->
   <div id="tabs-0" class="tabmenu" style="background-color:#f2f2f2">
@@ -298,7 +298,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
         </select>
 	     </td>
     		<td>
-    		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace">
+    		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace"  onchange="updateFormID2JSON(this.id)">
         <br>leave empty if this class does not inherit from a super class.
     		</td>
     	</tr>
@@ -311,10 +311,10 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     	</tr> -->
     	<tr>
     		<td>
-    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35">
+    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
     		</td>
     		<td>
-    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35">
+    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
     		</td>
     	</tr>
     	<tr>
@@ -333,7 +333,9 @@ aMatCol = new MatrixColumn()
     		</td>
     		<td>
     			<b>Methods</b>
-          <input name="bUpdateMethods" value=" Update Methods " onclick="updateJSMethods()" type="button">
+          <input name="bUpdateMethods" value=" Update Methods " onclick="updateForm2MethodJSON()" type="button">
+          Init Method Code:
+          <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
     			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pParent:Window)
 create(pLI:ListInterface)
@@ -407,7 +409,7 @@ save(pContent:DOMVar,pMatrix:Matrix)
           <b>Method:</b>
           <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
           <hr>
-          <b>Method Call:</b>
+          <b>Method Definition:</b>
           <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
           <input id name="bSaveMethodDef" value="Save" onclick="saveMethodCallJS()" type="button">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
@@ -432,7 +434,8 @@ save(pContent:DOMVar,pMatrix:Matrix)
           <br>
             <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
 	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none">    </textarea>
-      		</td>
+           <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
+           </td>
       	</tr>
       </tbody>
     </table>
@@ -540,7 +543,7 @@ save(pContent:DOMVar,pMatrix:Matrix)
   </div>
 
   <!-- TAB JSON Export -->
-  <div id="tabs-5" class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-JSON" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1"  width="90%">
       <tbody>
         <tr>
@@ -552,15 +555,25 @@ save(pContent:DOMVar,pMatrix:Matrix)
       		<td colspan="2" align="center">
             <b>
             Select JSON Database
-            <select id="sDatabases" name="sDatabases" onchange="selectDatabase()">
+            <select id="sDatabases" name="sDatabases" onchange="selectDatabaseJSON()">
               <option>UndefDB</option>
             </select>
           </b>
-
-            <b>Generate Code:</b>
-          <input name="bCreatorButton" value=" Create Project JSON" onclick="createProjectJSON()" type="button">
+            <br>
+          <b>
+            DB-Prefix:
+          </b>
+            <input type="checkbox" id="checkUsePrefix" name="checkUsePrefix" onchange="createDatabaseJSON()">
+            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDatabase['___DB___'] = " size="30" onchange="createDatabaseJSON()">
+            <input name="bSaveDB" value=" Save DB " onclick="updateForm2Database()" type="button">
+            <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
           <hr>
-            <b>JSON Database</b><br>
+          <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
+            <b>Generate Project JSON:</b>
+          <input name="bCreatorButton" value="Project JSON" onclick="createProjectJSON()" type="button">
+          <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
+          <hr>
+            <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
           <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
             </textarea>
@@ -571,6 +584,10 @@ save(pContent:DOMVar,pMatrix:Matrix)
   </div>
 </div>
 <br>
+ <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
+<br>
+ Javascript Class Generator was developed 2012-17 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
+ <br>
 <div id="buttonHtmlStorage" style="align:center">
   <a id="aToggleTpl"></a>
   <a href="#aToggleTpl" class="btnNT" onclick="$('#htmlStorage').toggle();return false"> Javascript-Templates </a>
@@ -585,6 +602,9 @@ save(pContent:DOMVar,pMatrix:Matrix)
   It is pure HTML with the javascript functions included in the file. So it will be easy to modify
   the source code according to your requirements and constraints.
   <hr>
+  <b>Default App Path:</b> <input type="text" id="tDefaultAppPath" name="tDefaultAppPath" value="app_LSAC/" size="35">
+  <hr>
+  <b>Template for Main HTML:</b> <br>
   <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;html&gt;
     &lt;head&gt;
       &lt;title&gt;App LSAC&lt;/title&gt;
@@ -690,8 +710,8 @@ ___PAGES___
        &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 </textarea>
 <hr>
-<b>Comment Prefix:</b> <input type="text" id="tCommentPrefix" ="tCommentPrefix" value="//" size="5">
-<b>Comment Box Prefix:</b> <input type="text" id="tCommentBoxPrefix" ="tCommentBoxPrefix" value="#" size="5">
+<b>Comment Prefix:</b> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
+<b>Comment Box Prefix:</b> <input type="text" id="tCommentBoxPrefix" name="tCommentBoxPrefix" value="#" size="5">
 <hr>
   <b>Class Header</b><br>
     <textarea id="tHeader" name="tHeader" cols="125" rows="10">//#################################################################
@@ -748,6 +768,9 @@ ___ATTRIBUTES___
 
 ___METHODS___
 
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "___CLASSNAME___()"
+    //---------------------------------------------------------------------
 }
 
 ___METHODSPROTOTYPE___
@@ -855,11 +878,7 @@ ___METHODCODE___
   <script src="jquery/jquery-ui.js"></script>
   <script src="js/jqueryinit.js"></script>
 
- <br>
-  <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
- <br>
-  Javascript Class Generator was developed 2012-17 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
-  <br>
+   <br>
   <a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
   <br>
   <a href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3</a>

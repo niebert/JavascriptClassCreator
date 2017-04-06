@@ -79,7 +79,7 @@ function  updateAttributesJS() {
   write2value("sAttribList",vAttName);
   selectJSAttribs();
 };
-function  updateMethodsJS() {
+function  updateFMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
   console.log("updateMethodsJS()-Call undefined");
 };
@@ -284,7 +284,7 @@ function checkClassJSON(pClassJSON) {
   } else {
     console.log("ERROR: checkClassJSON(pClassJSON) - pClassJSON is undefined");
   }
-}
+};
 
 function updateForm2MethodComment() {
   console.log("updateForm2MethodComment()-Call");
@@ -402,15 +402,34 @@ function updateForm2MissingJSON(pClass) {
   defineHashIfUndefined(vMethHash,"MethodComment");
 }
 
+function updateAttribJSON2Form(pClass) {
+  var vOut = getAttribJSON4Form(pClass);
+  var vClassJS = getClassJSON(pClass);
+  vClassJS["tAttributes"] = vOut;
+  write2value("tAttributes",vOut);
+};
 
+function getAttribJSON4Form(pClass) {
+  var vClass = pClass || getSelectedClass();
+  var vClassJS = getClassJSON(vClass);
+  var vAttDefault = vClassJS["AttribDefault"];
+  var vAttArr = [];
+  for (var iAtt in vAttDefault) {
+    if (vAttDefault.hasOwnProperty(iAtt)) {
+      vAttArr.push(iAtt + " = "+vAttDefault[iAtt]);
+    };
+  };
+  vOut = vAttArr.join("\n");
+  return vOut;
+};
 
 function updateForm2AttribJSON(pClass) {
   var vClass = pClass || getSelectedClass();
-  vClassJSON = getSelectedClassJSON();
+  var vClassJS = getClassJSON(vClass);
   var vAttributes = getValueDOM("tAttributes");
   console.log("updateForm2AttribJSON('"+vClass+"') with Attributes="+vAttributes);
   var vAttHash = getForm2AttribDefaultHash(vClass); //classes.js:484
-  vClassJSON["AttribDefault"] = vAttHash;
+  vClassJS["AttribDefault"] = vAttHash;
   var vAttTypeHash = getAttribTypeHash(vAttHash); // classes.js:336
   // Define Hash in Attribute Hash if undefined
   defineHashIfUndefined(vAttTypeHash,"AttribType");
@@ -443,20 +462,19 @@ function updateForm2MethodJSON(pClass) {
       vMethReturn[vMethName] = getMethodReturn4Call(vCall);
     };
   };
-  defineHashIfUndefined(vMethHash,"MethodParameter");
+  defineHash(vMethHash,"MethodParameter");
+  //defineHashIfUndefined(vMethHash,"MethodParameter");
   //------ Init undefined Method CODE----------
   var vReturn = "";
   var vCode = "";
   for (var i = 0; i < vMethArr.length; i++) {
     //vMethHash[vMethArr[i]] = "";
-    vCode = "// Code for " + vMethArr[i];
-    vReturn = vMethReturn[vMethArr[i]];
-    if (vReturn != "") {
-      // vReturn is the ClassType of the MethodReturn e.g. class "Matrix"
-      vReturn = vReturn.replace(/\s/g,"");
-      var vRetVarDef = getReturnVariableDef(vReturn);
-      vCode =  vRetVarDef + vCode+"\n";
-      vCode += getReturnCommandDef(vReturn);
+    if (getCheckBox("checkInitCode")) {
+      vCode =  "// Code for " + vMethArr[i]+"()";
+      vMethName = vMethArr[i];
+      vCode = getReturnCodeInit(vMethName,vMethReturn[vMethName],Code);
+    } else {
+      vCode = "";
     };
     vMethHash[vMethArr[i]] = vCode;
   };
@@ -467,8 +485,51 @@ function updateForm2MethodJSON(pClass) {
   };
   defineHashIfUndefined(vMethHash,"MethodComment");
   //------ Init undefined Method RETURN----------
-  defineHashIfUndefined(vMethReturn,"MethodReturn");
+  defineHash(vMethReturn,"MethodReturn");
   //---------------------------------------------
+  createMethodSelect();
+};
+
+function getReturnCodeInit(pMethod,pReturn,pCode) {
+  var vReturn = pReturn || "";
+  var vCode = pCode || "";
+  vCode = "// Code for " + pMethod + "\n"+vCode;
+  if (vReturn != "") {
+    // vReturn is the ClassType of the MethodReturn e.g. class "Matrix"
+    vReturn = vReturn.replace(/\s/g,"");
+    var vRetVarDef = getReturnVariableDef(pReturn);
+    vCode =  vRetVarDef + vCode+"\n";
+    vCode += getReturnCommandDef(vReturn);
+  };
+  return vCode;
+}
+
+function updateMethodsJSON2Form(pClass) {
+  var vClass = pClass || getSelectedClass();
+  var vOut = getMethodJSON4Form(vClass);
+  var vClassJS = getClassJSON(vClass);
+  vClassJS["tMethods"] = vOut;
+  write2value("tMethods",vOut);
+};
+
+function getMethodJSON4Form(pClass) {
+  var vClass = pClass || getSelectedClass();
+  var vClassJS = getClassJSON(vClass);
+  var vMethPars = vClassJS["MethodParameter"];
+  var vMethRet  = vClassJS["MethodParameter"];
+  var vMethArr = [];
+  var vMethDef = "";
+  for (var iMeth in vMethPars) {
+    if (vMethPars.hasOwnProperty(iMeth)) {
+      vMethDef = iMeth+"("+vMethPars[iMeth]+")"
+      if (vMethRet.hasOwnProperty(iMeth)) {
+        vMethDef += ":"+ vMethRet[iMeth];
+      };
+      vMethArr.push(vMethDef);
+    };
+  };
+  vOut = vMethArr.join("\n");
+  return vOut;
 };
 
 function changeReturnType4Code(pCode,pOldRet,pNewRet) {
@@ -485,6 +546,7 @@ function changeReturnType4Code(pCode,pOldRet,pNewRet) {
 }
 
 function getReturnCommandDef(pRetType) {
+  pRetType = reduceVarName(pRetType);
   return "return vRet"+pRetType+";";
 };
 
@@ -547,5 +609,15 @@ function defineHashIfEmpty(pHash,pHashListID) {
       console.log(pHashListID+"['"+iAttName+"']='' empty - set to default value'"+pHash[iAttName]+"'");
       vClassJS[pHashListID][iAttName] = pHash[iAttName];
     };
+  };
+};
+
+function defineHash(pHash,pHashListID) {
+  var vClassJS = getClassJSON();
+  defineHashIfUndefined(pHash,pHashListID);
+  var vValue = "";
+  for (var iAttName in pHash) {
+    console.log(pHashListID+"['"+iAttName+"']='"+pHash[iAttName]+"' is defined");
+    vClassJS[pHashListID][iAttName] = pHash[iAttName];
   };
 };

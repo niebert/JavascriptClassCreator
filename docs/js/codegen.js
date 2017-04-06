@@ -39,13 +39,73 @@ function compressCodeJS() {
 
 function createProjectJSON() {
   //hide("bSaveJSON");
-  createCode4JSON_JS(vJSON_JS);
-}
+  var vExportFile = "project";
+  createCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON");
+};
 
-function createCode4JSON_JS(pJSONDB) {
+function createDatabaseJSON() {
+  var vDB = getValueDOM("sDatabases");
+  if (vDB == "") {
+    //vDB = "project";
+    console.log("WARNING: createDatabaseJSON() vDB undefined");
+    alert("Please select a Database first!")
+  } else {
+    var vType = "JSON"; //i.e. JS or JSON
+    if (getCheckBox("checkUsePrefix") == true) {
+      vType = "JS";
+    };
+    var vFileDB = getFilenameWithPath4DB(vDB);
+    write2exportedDB(vDB);
+    // sExportPrefix = "JSON" means do not use the export prefix, it is pure JSON,
+    selectDatabase();
+    alert("Exported Database: '"+vFileDB+"' Format: '"+vType+"'");
+  };
+};
+
+function write2exportedDB(pDB) {
+  var vDB = pDB || "";
+  if (vDB != "") {
+    var vFileDB = getFilenameWithPath4DB(vDB);
+    write2innerHTML("labExportFile",vFileDB);
+    write2value("tExportedJSON",vDB);
+  };
+};
+
+function getFilenameWithPath4DB(pDB) {
+  var vDB = pDB || "";
+  var vPath = "";
+  var vExtension = ".json";
+  if (getCheckBox("checkUsePrefix") == true) {
+    vExtension = ".js";
+  };
+  if (vJSON_JS["DatabaseList"][vDB]) {
+    console.log("getFilenameWithPath4DB()-Call: Database ["+vDB+"] exists");
+    vPath = getValueDOM("tDefaultAppPath")+"db/";  // this is the default app_Path 
+  } else {
+    vPath = "prog/";
+  };
+  vPath += vDB + vExtension
+  return vPath;
+};
+
+function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
+  var vTitle = pTitle || "";
+  var vDB = pDB || "project"; //means vJSON_JS will be export as project JSON
+  var vContent = getCode4JSON_JS(pJSONDB);
+  var vType = "JSON";
+  if (getCheckBox("checkUsePrefix") == true) {
+    vType = "JS";
+    vContent = getExportPrefix4DB(vDB)+vContent;
+  };
+  var vExportFile = getFilenameWithPath4DB(vDB);
   if (pJSONDB) {
-    console.log("Create JSON Code from vJSON_JS");
-    write2editor("JSONDB",getCode4JSON_JS(pJSONDB));
+    console.log("Create JSON Code from vJSON_JS Title: '"+vTitle+"' - File: '"+vExportFile+"' - Type: '"+vType+"'");
+    write2editor("JSONDB",vContent);
+    // Write the selected DB into innerHTML of DOM and into value of "tExportedJSON"
+    write2exportedDB(vDB);
+    if (vTitle != "") {
+      alert("JSON '"+vTitle+"' exported. File: '"+vExportFile+"'");
+    };
     //document.fCreator.tJSONDB.value = getCode4JSON_JS(pJSONDB);
   } else {
     console.log("createCode4JSON_JS()-Call Error pJSONDB undefined");
@@ -447,9 +507,12 @@ function createLinkedMethodDefinitions() {
 
 };
 
-function exportTemplateJSON() {
+function exportTemplatesJSON() {
   //var vOut = getCode4JSON_JS(vJSON_TPL);
-  createCode4JSON_JS(vJSON_TPL)
+  updateForm2TemplateJSON();
+  createCode4JSON_JS(vJSON_TPL,"code_templates","Database Templates");
+  $( "#tabJSON" ).trigger( "click" );
+
 };
 
 function updateTemplatesJSON2Form() {
@@ -467,6 +530,10 @@ function updateTemplatesJSON2Form() {
 };
 
 function populateForm2TemplateJSON() {
+  updateForm2TemplateJSON();
+};
+
+function updateForm2TemplateJSON() {
   // vDOM_TPL is an array of DOM-IDs for textareas to read and write from
   // vJSON_TPL is a hash for DOM-IDs containing the template as text
   var vID = "";

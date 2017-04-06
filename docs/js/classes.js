@@ -5,6 +5,233 @@
 // vJSON_JS["ClassList"][vSelectedClass]  is equal to vClassJSON
 
 
+function checkInterface4Class(pClassName) {
+  console.log("checkInterface4Class('"+pClassName+"')");
+  var vSuperClassType = getSuperClassTypeJSON(pClassName);
+  var vInheritance = getInhertitChain(pClassName);
+  var vChain = vInheritance["chain"];
+  if (vSuperClassType == "Interface") {
+      //inherit the attributes of interface
+    inheritAttributesDefinitions(vChain);
+    //inherit the method interface
+    inheritMethodsInterface(vChain);
+    //Update Form with inherited
+    updateAttribJSON2Form(pClassName);
+    updateMethodsJSON2Form(pClassName);
+    updateJSON2Form();
+  };
+  if (vSuperClassType == "Abstract") {
+    //inherit the method interface
+    inheritAttributesDefinitions(vChain);
+    //inherit the method interface
+    inheritMethodInterface(vChain);
+    //inherit the method interface
+    inheritMethodCode(vChain);
+    //Update Form with inherited
+    updateAttribJSON2Form(pClassName);
+    updateMethodsJSON2Form(pClassName);
+    updateJSON2Form();
+  };
+};
+
+
+function inheritAttributesDefinitions(pChain) {
+  console.log("inheritAttributesDefinitions()-Call");
+  var vChain = pChain || [getSelectedClassName()];
+  var vClassName = pChain[0];
+  var vClassJS = getClassJSON(vClassName); // umlcreator.js:49
+  var k = 0;
+  var vInheritClass;
+  for (var i = 1; i < vChain.length; i++) {
+    k = vChain.length - i;
+    console.log("["+k+"] Inherit Attrib: "+vChain[k]);
+    vInheritClass = getClassJSON(vChain[k]);
+    inheritAttributes4Class(vClassJS,vInheritClass);
+  };
+};
+
+function inheritAttributes4Class(pClassJS,pInheritJS) {
+  var vAttHash = pClassJS["AttribType"];
+  var vInheritHash = pInheritJS["AttribType"];
+  for (var iAtt in vInheritHash) {
+    console.log("Inherit Att ["+iAtt+"]");
+    if (vInheritHash.hasOwnProperty(iAtt)) {
+      if (vAttHash.hasOwnProperty(iAtt)) {
+          if (vInheritHash[iAtt] != vAttHash[iAtt]) {
+            // type mismatch for Interface
+            copyAttritbute4Hash(iAtt,pInheritJS,pClassJS);
+          }
+      } else {
+        copyAttritbute4Hash(iAtt,pInheritJS,pClassJS);
+      }
+    }
+  }
+}
+
+function copyAttritbute4Hash(iAtt,pInClass,pOutClass) {
+  copyArrID4Hash(["AttribType","AttribDefault","AttribComment"],iAtt,pInClass,pOutClass);
+};
+
+function copyArrID4Hash(pArrID,iAtt,pInHash,pOutHash) {
+  var vIn,vOut;
+  for (var i = 0; i < pArrID.length; i++) {
+    vIn  = pInHash[pArrID[i]];
+    vOut = pOutHash[pArrID[i]];
+    for (var iAtt in vIn) {
+      if (vIn.hasOwnProperty(iAtt)) {
+        vOut[iAtt] = vIn[iAtt];
+      }
+    };
+  };
+};
+
+
+function inheritMethodsInterface(pChain) {
+  console.log("inheritMethodInterface()-Call");
+  var vChain = pChain || [getSelectedClassName()];
+  var vClassName = pChain[0];
+  var vClassJS = getClassJSON(vClassName); // umlcreator.js:49
+  var k = 0;
+  var vInheritClass;
+  for (var i = 1; i < vChain.length; i++) {
+    k = vChain.length - i;
+    console.log("["+k+"] Inherit Methods: "+vChain[k]);
+    vInheritClass = getClassJSON(vChain[k]);
+    inheritMethods4Class(vClassJS,vInheritClass);
+  };
+};
+
+function inheritMethods4Class(pClassJS,pInheritJS) {
+  var vMethHash = pClassJS["MethodParameter"];
+  var vInheritHash = pInheritJS["MethodParameter"];
+  for (var iMeth in vInheritHash) {
+    console.log("Inherit Meth ["+iMeth+"]");
+    if (vInheritHash.hasOwnProperty(iMeth)) {
+      if (vMethHash.hasOwnProperty(iMeth)) {
+          if (vInheritHash[iMeth] != vMethHash[iMeth]) {
+            console.log("WARING (inherit): type mismatch Method "+iMeth+"() for Interface - overwrite method parameter");
+            copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+          } else {
+            console.log("Inherit Return: for safety update Method Return for "+iMeth+"()");
+            copyArrID4Hash(["MethodReturn"],iMeth,pInheritJS,pClassJS);
+          };
+      } else {
+        console.log("Inherit [Parameter,Return,Comment]: for Method Return for "+iMeth+"()");
+        copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+      }
+    }
+  }
+};
+
+function inheritMethodsCode(pChain) {
+  var vChain = pChain || [getSelectedClassName()];
+  var vClassName = pChain[0];
+  var vClassJS = getClassJSON(vClassName); // umlcreator.js:49
+  var k = 0;
+  var vInheritClass;
+  for (var i = 1; i < vChain.length; i++) {
+    k = vChain.length - i;
+    console.log("["+k+"] Inherit Methods: "+vChain[k]);
+    vInheritClass = getClassJSON(vChain[k]);
+    inheritMethodeCode4Class(vClassJS,vInheritClass);
+  };
+};
+
+function inheritMethodeCode4Class(pClassJS,pInheritJS) {
+  console.log("inheritMethodCode()-Call");
+  var vMethHash = pClassJS["MethodCode"];
+  var vInheritHash = pInheritJS["MethodCode"];
+  for (var iMeth in vInheritHash) {
+    if (vInheritHash.hasOwnProperty(iMeth)) {
+      //check if Method contains code
+      if (reduceVarName(vInheritHash[iMeth]) == "") {
+        console.log("Inherit Meth "+iMeth+"() as Interface - Code is empty");
+        if (vMethHash.hasOwnProperty(iMeth)) {
+          copyArrID4Hash(["MethodParameter","MethodReturn"],iMeth,pInheritJS,pClassJS);
+        } else {
+          copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+        };
+      };
+    };
+  };
+};
+
+
+function getSuperClassname4Class(pClassName) {
+  var vClassJS = getClassJSON(pClassName);
+  var vSuperClassname = vClassJS["tSuperClassname"] || "";
+  return vSuperClassname;
+};
+
+
+function getClassJSON(pClassName) {
+  var vClassName = pClassName || getValueDOM("tClassname");
+  console.log("getClassJSON('"+vClassName+"')");
+  return vJSON_JS["ClassList"][vClassName];
+}
+
+function getSuperClassJSON(pClassName) {
+  var vClassJS = getClassJSON(pClassName); // umlcreator.js:49
+  var vSuperClassname = vClassJS["tSuperClassname"];
+  var vRetClass;
+  if (vSuperClassname != "") {
+    vRetClass =  getClassJSON(vSuperClassname);
+  };
+  return vRetClass;
+};
+
+function getSuperClassTypeJSON(pClassName) {
+  var vClassJS = getClassJSON(pClassName);
+  var vSuperClassname = vClassJS["tSuperClassname"];
+  var vSuperClassType = "";
+  if (vSuperClassname != "") {
+    vSuperClassType = getClassTypeJSON(vSuperClassname);
+  };
+  console.log("getSuperClassTypeJSON('"+pClassName+"') = '"+vSuperClassType+"'");
+  return vSuperClassType;
+};
+
+function getInhertitChain(pClassName) {
+  var vInheritance = {
+                    "chain" : [pClassName],
+                    "visited" : {pClassName:true}
+              };
+  var vSuperClassname = getSuperClassname4Class(pClassName);
+  if (vSuperClassname != "") {
+    getInhertitedClass(vSuperClassname,vInheritance);
+  };
+  // hash "visited" shows visited Classes in the inherit chain
+  // this is necessary, to identify a loop in the chain
+  // e.g. Class1 ->super-> Class2 ->super-> Class3 ->super->Class1 (revited)
+  // Following the inherit chain will create an infinite loop,
+  // visited helps to identify a revisted Class in the chain
+  var vChain = (vInheritance["chain"]).join("->");
+  console.log("Inherit Chain: "+vChain);
+  return vInheritance;
+};
+
+function getInhertitedClass(pClassName,pInheritance) {
+  // hash "visited" shows visited Classes in the inherit chain
+  // this is necessary, to identify a loop in the chain
+  // e.g. Class1 ->super-> Class2 ->super-> Class3 ->super->Class1 (revited)
+  // the following "if" checks for the possible loop
+  if (pInheritance["visited"][pClassName]) {
+    var vLoopChain = (pInheritance["chain"]).join("->");
+    alert("ERROR: Loop identified in Inheritance chain!\n"+vLoopChain);
+  } else {
+    // append pClass to the chain
+    pInheritance["chain"].push(pClassName);
+    // set this class as visited in the chain
+    pInheritance["visited"][pClassName] = true;
+    // check if this class has a superclass too
+    var vSuperClassname = getSuperClassname4Class(pClassName);
+    if (vSuperClassname != "") {
+      // class has a superclass check the chain for superclass
+      getInhertitedClass(vSuperClassname,pInheritance);
+    };
+  };
+};
+
 function createNewClass() {
   console.log("Click New - create a new class after prompt");
   var vNewClassName = prompt("Please enter name of new Class", "");
@@ -808,7 +1035,7 @@ function setClassTypeJSON(pClass,pClassType) {
     console.log("WARNING: setClassTypeJSON('')-Call with empty ClassName");
   } else {
     //---Set the ClassType in the ClassType-Hash
-    if (vJSON_JS["ClassType"] && vJSON_JS["ClassType"][pClass]) {
+    if (vJSON_JS["ClassType"]) {
       vJSON_JS["ClassType"][pClass] = vClassType;
     } else {
       console.log("WARNING: setClassTypeJSON('"+pClass+"','"+vClassType+"') ClassType for Class '"+pClass+"' does not exist in ClassType-Hash");
@@ -1105,9 +1332,15 @@ function getClassType4Definition(pDefString) {
   return vType;
 }
 
-function clearForm4Class(pClassName) {
-  console.log("clearForm4Class('"+pClassName+"')");
-  var vClassName = pClassName || ""; //getValueDOM("tClassname");
+function clearForm4Class(pClass) {
+  var vClass = pClass || "";
+  clearForm();
+  write2value("tClassname",vClass);
+  write2editor("MethodCode"," ");
+};
+
+function clearForm() {
+  console.log("clearForm4Class()");
   for (var i = 0; i < vDOM_ID.length; i++) {
     write2value(vDOM_ID[i],"");
     if (vTYPE_ID[i] == "Textarea") {
@@ -1115,5 +1348,4 @@ function clearForm4Class(pClassName) {
       write2innerHTML(vDOM_ID[i],"");
     };
   };
-  write2value("tClassname",vClassName);
 };

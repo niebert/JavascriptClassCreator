@@ -6,14 +6,18 @@
 //#################################################################
 // DOM_Global Hash is used to store global values in LocalStorage and in vJSON_JS
 // see saveDOM2LocalStorage() in localstorage.js:125
+// The following DOM elements are defined in index.html
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tLibraries");
-vDOM_Global.push("tDatabases");
-vDOM_Global.push("sShowGeneralizations");
-vDOM_Global.push("sShowAggregations");
-vDOM_Global.push("sShowAssociations");
+vDOM_Global.push("tDatabases"); // List of all included Databases
+vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases
+vDOM_Global.push("sExportPrefix"); //Checkbox if Export Prefix should be used for Databases. Unchecked i.e. pure JSON export
+vDOM_Global.push("sShowGeneralizations"); //UML-Settings for Diagram Export
+vDOM_Global.push("sShowAggregations"); //UML-Settings for Diagram Export
+vDOM_Global.push("sShowAssociations"); //UML-Settings for Diagram Export
 //-------------------------------
+vDOM_TPL.push("tDefaultAppPath"); // default is "app_LSAC/" needed as path to store the exported files for the WebApp.
 vDOM_TPL.push("tTplHTML"); // template for "app.html" main file
 vDOM_TPL.push("tTplSCRIPT"); // Script Tag for import Javascript Libraries
 vDOM_TPL.push("tTplPAGE");  // Template for a DIV page of app.html (iterate for all pages of App)
@@ -29,7 +33,10 @@ vDOM_TPL.push("tMethodHeader"); // Defines the comments before each Method defin
 vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
 vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach
 vDOM_TPL.push("tClassTail"); // Defines the template appended at the end of class definition
-vDOM_TPL.push("tTplLoopHash");
+vDOM_TPL.push("tTplLoopArray"); // Defines the Code for Loop over an Array
+vDOM_TPL.push("tTplLoopHash"); // Defines the Code for Loop over Hash-IDs
+vDOM_TPL.push("tCommentPrefix");  // Default is '//' as Javascript comment
+vDOM_TPL.push("tCommentBoxPrefix"); // Default is '#'
 //vDOM_TPL.push("");
 //-------------------------------
 //var vDOM_ID = ["tClassname","tSuperClassname","tAuthor","tEMail","tAttributes","tMethods"];
@@ -88,6 +95,7 @@ function initCodeCreator() {
        console.log("JSON Database exists in Local Storage");
        top.vJSON_JS = vDB;
        vSelectedClass = top.vJSON_JS["SelectedClass"];
+       clearForm4Class(vSelectedClass);
        console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
         top.vJSON_JS["init_date"] = getDate();
@@ -99,6 +107,7 @@ function initCodeCreator() {
         initFormPageType();
         initFormPageList();
         initFormSelectors();
+        updateClasses(); // reads the tClassList and updates the JSON Classes
       };
   } else {
       alert("Sorry, your browser does not support Local Storage...");
@@ -106,17 +115,19 @@ function initCodeCreator() {
   updateSelectors(); //select.js:140
   //document.fCreator.sClassList.value;
   initClassJS(vSelectedClass);
+  checkInterface4Class(vSelectedClass);
   updateClasses();
   vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
   //initLocalDB("vJSON_JS",pJSONDB)
   initLabelsHTML();
-  setClassSelectorDefault(vSelectedClass)
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   initEditorContent();
-  updateClasses(); // reads the tClassList and updates the JSON Classes
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
   populateForm2TemplateJSON();
+  createClassSelect();
+  setClassSelectorDefault(vSelectedClass);
+  createMethodSelect();
 };
 
 function initLabelsHTML() {
@@ -358,6 +369,7 @@ function initClassSelector() {
   //initClassJS(vClass);
   createClassSelect(vClassArr);
 };
+
 
 function initPageSelector() {
   var vPageArr = [];

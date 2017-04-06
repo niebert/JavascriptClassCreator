@@ -1,3 +1,27 @@
+function setCheckBox(pID,pValue) {
+  var vNode = document.getElementById(pID);
+  if (vNode) {
+    vNode.checked = pValue;
+  } else {
+    console.log("CheckBox ["+pID+"] not found in DOM - setCheckBox('"+pID+"',"+pValue+")");
+  };
+};
+
+function getCheckBox(pID) {
+  var vReturn = false;
+  var vNode = document.getElementById(pID);
+  if (vNode) {
+    if (vNode.checked) {
+      console.log("CheckBox ["+pID+"] is CHECKED");
+    } else {
+      console.log("CheckBox ["+pID+"] is NOT checked!");
+    };
+    vReturn = vNode.checked;
+  } else {
+    console.log("CheckBox ["+pID+"] not found in DOM");
+  };
+  return vReturn;
+};
 
 function createOptions4Array(pArray) {
   var vOptions = "";

@@ -1,5 +1,21 @@
 # JavascriptClassCreator
 
+An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows to tweak software without digging very deep into libraries and code.
+
+The objectiv of a ESEIA approach is, that large group of people is able to modify a software.
+An ESEIA tool like JavascriptClassCreator exports the code in a certain syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management System like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
+
+The vision for certain OpenSource projects is, that a software release *X1* has a ESEIA tool as well, that allow quick and simple alterations *X1* into *X2*.
+
+**(Medium Skill) Example 1:** A Web-App *X1* is regarded useful for another area of domain.  
+* a pages are added to the WebApp with a few checkboxes
+* Wording is changes on pages,
+* Buttons are added or
+* simple the data structure of the submitted records to the server
+are altered.
+
+**(Low Skill) Example 2:** If the software *Y1* can be configured by a config file, the ESEIA tool can be just a web-based interface, that allows to exports the config file and has an menu driven graphical user interface (GUI) to create JSON file (e.g. create a Software Menu and the Menu items a mapper to certain call of the underlying *Y1*. Publishing the software with a new config file support developer in rapid alterations of new releases without diving too deep into the code.  
+
 ## Introduction
 Web-based Javascript Class Creator that
 * allows Object Oriented JS Classes, which is not concept (i.e. OOP) JavaScript was originally designed for.

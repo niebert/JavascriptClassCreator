@@ -9,6 +9,12 @@
 // The following DOM elements are defined in index.html
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
+vDOM_Global.push("tButtons");
+vDOM_Global.push("sPageTypeHTML")
+vDOM_Global.push("sPageHTML"); // Selector for PageID
+vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
+//vDOM_Global.push("sButtonHeader1"); // Selector for ButtonHeader 1
+//vDOM_Global.push("sButtonHeader2"); // Selector for ButtonHeader 2
 vDOM_Global.push("tLibraries");
 vDOM_Global.push("tDatabases"); // List of all included Databases
 vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases
@@ -96,6 +102,7 @@ function initCodeCreator() {
        top.vJSON_JS = vDB;
        vSelectedClass = top.vJSON_JS["SelectedClass"];
        clearForm4Class(vSelectedClass);
+       updateJSON2Form(vSelectedClass);
        console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
         top.vJSON_JS["init_date"] = getDate();
@@ -106,8 +113,10 @@ function initCodeCreator() {
         initFormButtonList();
         initFormPageType();
         initFormPageList();
+        initFormButtonList();
         initFormSelectors();
         updateClasses(); // reads the tClassList and updates the JSON Classes
+        updateFormGlobal2JSON();
       };
   } else {
       alert("Sorry, your browser does not support Local Storage...");
@@ -132,9 +141,9 @@ function initCodeCreator() {
 
 function initLabelsHTML() {
   var vSep = " | ";
-  write2innerHTML("labelPageRecord",vPageRecord.join(vSep));
-  write2innerHTML("labelPageTypeRecord",vPageTypeRecord.join(vSep));
-  write2innerHTML("labelButtonRecord",vButtonRecord.join(vSep));
+  write2innerHTML("labelPageRecord",vPageRECDEF.join(vSep));
+  write2innerHTML("labelPageTypeRecord",vPageTypeRECDEF.join(vSep));
+  write2innerHTML("labelButtonRecord",vButtonRECDEF.join(vSep));
 };
 
 function initFormClassList() {
@@ -205,7 +214,7 @@ function initButtonJS_do(pButtonHash) {
 
 
 function initFormPageList() {
-   var vPageArr = getPageListArray(); //read from tPages in  pages.js 413
+   var vPageArr = getPageListArrayWithHashes(); //read from tPages in  pages.js 413
    console.log("initFormPageList() with "+vPageArr.length+" Pages");
    for (var i = 0; i < vPageArr.length; i++) {
      initPageJS(vPageArr[i]);
@@ -370,19 +379,50 @@ function initClassSelector() {
   createClassSelect(vClassArr);
 };
 
-
-function initPageSelector() {
-  var vPageArr = [];
-  var vPageList = vJSON_JS["PageList"];
-  for (var iPage in vPageList) {
-    if (vPageList.hasOwnProperty(iPage)) {
-      vPageArr.push(iPage);
+function initButtonSelector() {
+  var vButtonArr = [];
+  var vButtonList = vJSON_JS["ButtonList"];
+  for (var iButton in vButtonList) {
+    if (vButtonList.hasOwnProperty(iButton)) {
+      vButtonArr.push(iButton);
     };
   };
-  //PageList update
-  //document.fCreator.tPageList += "\n"+vPage;
-  write2value("tPageList",vPageArr.join("\n"));
-  //var vPage = getValueDOM("tPagename");
+  //ButtonList update
+  //document.fCreator.tButtonList += "\n"+vButton;
+  write2value("tButtonList",vButtonArr.join("\n"));
+  //var vButton = getValueDOM("tButtonname");
+  //initButtonJS(vButton);
+  createButtonSelect(vButtonArr);
+};
+
+function createArray4HashID(pHash) {
+  var vArr = [];
+  for (var iID in pHash) {
+    if (pHash.hasOwnProperty(iID)) {
+      vArr.push(iID);
+    };
+  };
+  return vArr;
+}
+
+function initButtonSelector() {
+  var vButtonArr = [];
+  var vButtonList = vJSON_JS["ButtonList"];
+  for (var iButton in vButtonList) {
+    if (vButtonList.hasOwnProperty(iButton)) {
+      vButtonArr.push(iButton);
+    };
+  };
+  //ButtonList update
+  //document.fCreator.tButtonList += "\n"+vButton;
+  write2value("tButtonList",vButtonArr.join("\n"));
+  //var vButton = getValueDOM("tButtonname");
+  //initButtonJS(vButton);
+  createButtonSelect(vButtonArr);
+};
+
+function initPageSelector() {
+  var vPageArr = getArray4HashID(vJSON_JS["PageList"]);
   //initPageJS(vPage);
   createPageSelect(vPageArr);
 };

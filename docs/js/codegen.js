@@ -40,6 +40,7 @@ function compressCodeJS() {
 function createProjectJSON() {
   //hide("bSaveJSON");
   var vExportFile = "project";
+  updateForm2JSON(getValueDOM("tClassname"));
   createCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON");
 };
 
@@ -80,7 +81,7 @@ function getFilenameWithPath4DB(pDB) {
   };
   if (vJSON_JS["DatabaseList"][vDB]) {
     console.log("getFilenameWithPath4DB()-Call: Database ["+vDB+"] exists");
-    vPath = getValueDOM("tDefaultAppPath")+"db/";  // this is the default app_Path 
+    vPath = getValueDOM("tDefaultAppPath")+"db/";  // this is the default app_Path
   } else {
     vPath = "prog/";
   };
@@ -147,7 +148,7 @@ function getMainHTML() {
     // insert Library Import or Library SCRIPT-Tags with Code
     vHTML = replaceString(vHTML,"___LIBRARIES___",getDatabasesHTML()+"\n"+getLibrariesHTML());
     // Insert Generated Pages
-    vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML()+"\n");
+    vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML4Code()+"\n");
     return vHTML;
 }
 
@@ -183,32 +184,32 @@ function getClassLibrariesHTML() {
   return vOut;
 }
 
-function getPagesHTML() {
+function getPagesHTML4Code() {
   var vOut = "";
-  var vPageList = getPageListArray();
+  var vPageList = getPageListArrayWithHashes();
   for (var i = 0; i < vPageList.length; i++) {
     // vPageList[i]; is a Hash with the following IDs
-    //var vPageRecord = ["page-id","page-title","page-type","parent-id"];
-   vOut += createPageHTML(vPageList[i]);
+    //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+   vOut += createPageHTML4Code(vPageList[i]);
   }
   return vOut;
 }
 
-function createPageHTML(pPageHash) {
+function createPageHTML4Code(pPageHash) {
   var vOut = "";
   // pPageHash has the following IDs
-  //var vPageRecord = ["page-id","page-title","page-type","parent-id"];
+  //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
   var vPageID     = pPageHash["page-id"];
   var vPageTypeID = pPageHash["page-type"];
-  var vPageTpl    = getPageTypeTemplate(vPageTypeID);
+  var vPageTpl    = getPageTypeTemplate4Code(vPageTypeID);
   var vPageContent = vJSON_JS["PageContent"][vPageID] || " undefined content for page '"+ vPageID+"'";
   // Header Buttons are already inserted in PageType-Template
   // ToDo: Insert
   if (vPageTpl) {
-    console.log("createPageHTML('"+pPageHash["page-id"]+"') PageType='"+vPageTypeID+"' is defined");
+    console.log("createPageHTML4Code('"+pPageHash["page-id"]+"') PageType='"+vPageTypeID+"' is defined");
     vOut = vPageTpl;
   } else {
-    console.log("createPageHTML('"+pPageHash["page-id"]+"') PageType='"+vPageTypeID+"' UNDEFINED - use DEFAULT");
+    console.log("createPageHTML4Code('"+pPageHash["page-id"]+"') PageType='"+vPageTypeID+"' UNDEFINED - use DEFAULT");
     vOut= getValueDOM("tTplPAGE");
   };
   vOut = replaceString(vOut,"___PAGE_TITLE___",pPageHash["page-title"]);
@@ -217,7 +218,7 @@ function createPageHTML(pPageHash) {
   return vOut;
 };
 
-function getPageTypeTemplate(pPageTypeID) {
+function getPageTypeTemplate4Code(pPageTypeID) {
   var vPageTpl = "";
   var vButton1 = "";
   var vButton2 = "";
@@ -226,12 +227,12 @@ function getPageTypeTemplate(pPageTypeID) {
   if (vJSON_JS && vJSON_JS["PageType"] && vJSON_JS["PageType"][pPageTypeID]) {
     var vPT = vJSON_JS["PageType"][pPageTypeID];
     vPageTpl = vPT["template"];
-    vOutHash = getButtonDefinition(vPT["button-id1"]);
+    vOutHash = getButtonDefinition4Code(vPT["button-id1"]);
     vButton1 = vOutHash["button-html"];
-    vOutHash = getButtonDefinition(vPT["button-id2"]);
+    vOutHash = getButtonDefinition4Code(vPT["button-id2"]);
     vButton2 = vOutHash["button-html"];
   } else {
-    console.log("getPageTypeTemplate('"+pPageTypeID+"') Template was UNDEFINED");
+    console.log("getPageTypeTemplate4Code('"+pPageTypeID+"') Template was UNDEFINED");
     vPageTpl = getValueDOM("tTplPAGE");
   };
   vPageTpl = replaceString(vPageTpl,"___BUTTON_LEFT___",vButton1);
@@ -239,8 +240,8 @@ function getPageTypeTemplate(pPageTypeID) {
   return vPageTpl;
 };
 
-function getButtonDefinition(pButtonID) {
-    console.log("getButtonDefinition('"+pButtonID+"')");
+function getButtonDefinition4Code(pButtonID) {
+    console.log("getButtonDefinition4Code('"+pButtonID+"')");
     var vOutHash = {
           "button-id":pButtonID,
           "button-type":"",
@@ -255,7 +256,7 @@ function getButtonDefinition(pButtonID) {
         vOut = replaceString(vOut,"___COUNTER___",vBT["counter"]);
         vOutHash["button-type"] = "BUTTON";
       } else {
-        console.log("Button-LINK: getButtonDefinition('"+pButtonID+"') - Definition of Button pButtonID does not exist\nUse '"+pButtonID+"' as Page-ID");
+        console.log("Button-LINK: getButtonDefinition4Code('"+pButtonID+"') - Definition of Button pButtonID does not exist\nUse '"+pButtonID+"' as Page-ID");
         vOut = getValueDOM("tTplBUTTON");
         //pButtonID is a regarded as Page-ID, because a definition for the Button does not exist in ButtonList
         var vTitle = getPageTitle4ID(pButtonID);
@@ -269,7 +270,7 @@ function getButtonDefinition(pButtonID) {
       vOut = replaceString(vOut,"___BUTTON_ID___",pButtonID.toUpperCase());
       vOutHash["button-html"] = vOut;
     } else {
-      console.log("ERROR: getButtonDefinition(pButtonID) - pButtonID UNDEFINED");
+      console.log("ERROR: getButtonDefinition4Code(pButtonID) - pButtonID UNDEFINED");
     };
     console.log("Button Definition:\nvOut="+vOut);
     return vOutHash;
@@ -287,7 +288,8 @@ function getPageTitle4ID(pPageID) {
     console.log("getPageTitle4ID(pPageID)-Call - ERROR: pPageID was UNDEFINED");
   };
   return vTitle; //
-}
+};
+
 function getDatabasesHTML() {
   var vSCRIPT = getValueDOM("tTplSCRIPT");
   var vArrDB = getDatabaseArray();

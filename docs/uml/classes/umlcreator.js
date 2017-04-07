@@ -205,12 +205,16 @@ function createAllGeneralizations() {
       vSuperClass = vClassList[iClass]["tSuperClassname"];
       //----GENERALIZATION-----
       if (vSuperClass && (vSuperClass != "")) {
-        if (classes.hasOwnProperty(vSuperClass)) {
-          vTargetID = classes[vSuperClass].id;
-          vRel = new uml.Generalization({ source: { id: vSourceID }, target: { id: vTargetID }});
-          relations.push(vRel);
-          console.log("GENERALIZATION:\n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vSuperClass+"] vTargetID='"+vTargetID+"'");
-        };
+        if (vSuperClass != iClass) {
+          if (classes.hasOwnProperty(vSuperClass)) {
+            vTargetID = classes[vSuperClass].id;
+            vRel = new uml.Generalization({ source: { id: vSourceID }, target: { id: vTargetID }});
+            relations.push(vRel);
+            console.log("GENERALIZATION:\n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vSuperClass+"] vTargetID='"+vTargetID+"'");
+          };
+        } else {
+          console.log("Class '"+iClass+"' cannot be super class of itsself");
+        }
       };
     };
   };
@@ -248,9 +252,15 @@ function getAggregationHash() {
           // Check if AttribType is a defined Class
           var vAttribType = vHash[iAttribType];
           if (vClassList.hasOwnProperty(vAttribType)) {
-            vTargetID = classes[vAttribType].id;
-            vAggHash[iClass][vAttribType] = vTargetID;
-            console.log("AGGREGATION: found \n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vAttribType+"] vTargetID='"+vTargetID+"'");
+            // add aggregation if iClass and vAttribType are different
+            // no self-aggregation in UML-diagram
+            if (iClass != vAttribType) {
+              vTargetID = classes[vAttribType].id;
+              vAggHash[iClass][vAttribType] = vTargetID;
+              console.log("AGGREGATION: found \n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vAttribType+"] vTargetID='"+vTargetID+"'");
+            } else {
+              console.log("WARNING: self-aggregation for ["+iClass+"]");
+            };
           };
         };
       };
@@ -343,9 +353,13 @@ function getAssociationHash() {
               vTargetClass = vDefArr[1];
               //vTargetClass = "DOMVar"
               if (vClassList.hasOwnProperty(vTargetClass)) {
-                vAssHash[vTargetClass][iClass] = true;
-                vTargetID = classes[vTargetClass].id;
-                console.log("ASSOCIATION: (Parmeter) \n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vTargetClass+"] vTargetID='"+vTargetID+"'");
+                if (iClass != vTargetClass) {
+                  vAssHash[vTargetClass][iClass] = true;
+                  vTargetID = classes[vTargetClass].id;
+                  console.log("ASSOCIATION: (Parmeter) \n["+iClass+"] vSourceID='"+vSourceID+"'\n["+vTargetClass+"] vTargetID='"+vTargetID+"'");
+                } else {
+                  console.log("WARNING: self-association for ["+iClass+"]");
+                };
               }
             }
           };

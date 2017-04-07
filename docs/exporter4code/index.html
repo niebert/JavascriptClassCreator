@@ -115,10 +115,11 @@ function createIndexHTML()  {
 	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
 	vOutput = replaceString(vOutput,"___DATE___",vDate);
     vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
-    document.fCreator.tOutput.value = vOutput;	
+    document.fCreator.tOutput.value = vOutput;
 }
 
-function createMenuHTML()  {
+function createMenuHTML4Code()  {
+  // not used in project ??? 2017/04/07
 	var vString = "";
 	var vDate 			= getDate();
 	var vSoftware 		= "Menu - "+document.fCreator.tSoftware.value;
@@ -153,10 +154,10 @@ function createMenuHTML()  {
 	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
 	vOutput = replaceString(vOutput,"___DATE___",vDate);
     vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
-    document.fCreator.tOutput.value = vOutput;	
+    document.fCreator.tOutput.value = vOutput;
 }
 
-function createButtonHTML(pButton,pButtonLink)  {
+function createButtonHTML4Code4Code(pButton,pButtonLink)  {
 	var vString = "";
 	var vDate 			= getDate();
 	var vSoftware 		= pButton +" - "+document.fCreator.tSoftware.value;
@@ -187,7 +188,7 @@ function createButtonHTML(pButton,pButtonLink)  {
 	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
 	vOutput = replaceString(vOutput,"___DATE___",vDate);
     vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
-    document.fCreator.tOutput.value = vOutput;	
+    document.fCreator.tOutput.value = vOutput;
 }
 
 
@@ -209,7 +210,7 @@ function createEmptyHTML()  {
 	vOutput = replaceString(vOutput,"___FOLDERNAME___",vFolderName);
 	vOutput = replaceString(vOutput,"___DATE___",vDate);
     vOutput = replaceString(vOutput,"___BACKGROUNDCOLOR___",vBackgroundColor);
-    document.fCreator.tOutput.value = vOutput;	
+    document.fCreator.tOutput.value = vOutput;
 }
 
 
@@ -232,9 +233,9 @@ function step2() {
 	for (var i=0; i<vLibraryArray.length; i++) {
 	    vLibraryArray[i] = vLibraryArray[i].replace(/\s/,"");
 		if (vLibraryArray[i] != "") {
-		    vOutput += "\n     "+  vLibraryArray[i].toLowerCase() + ".js" 
+		    vOutput += "\n     "+  vLibraryArray[i].toLowerCase() + ".js"
         }
-	}  
+	}
     alert("STEP 2: Create a Folder '/"+vFolderName+"/library/' and\n"
          +"copy the following Javascript Class Files into folder:"
          + vOutput);
@@ -288,7 +289,7 @@ function step4() {
 		}
    };
    //alert("Selected Button="+vSelectedButton);
-   createButtonHTML(vSelectedButton,vSelectedButtonLink);
+   createButtonHTML4Code4Code(vSelectedButton,vSelectedButtonLink);
    //alert("STEP 4: Create a File '/"+vFolderName+"/frames/'and\n"+
    //       "create '/"+vFolderName+"/frames/menu.html' with the generated HTML Code!");
 }
@@ -318,12 +319,12 @@ function step5() {
 <!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
 </a>
 <hr>
-<b>Create Classes with 
-			<a href="../classgenerator/index.html" target="_blank">Javascript Class Creator</a> 
+<b>Create Classes with
+			<a href="../classgenerator/index.html" target="_blank">Javascript Class Creator</a>
 			or
-			<a href="../java2javascript/index.html" target="_blank">Java to Javascript Class Creator</a> 
+			<a href="../java2javascript/index.html" target="_blank">Java to Javascript Class Creator</a>
 </b>
-<hr>			
+<hr>
 </center>
 <form name="fCreator">
 <table border=1 bgcolor="#A9BCF5">
@@ -332,20 +333,20 @@ function step5() {
 		<table border=0 bgcolor="#A9BCF5">
 		<tr>
 		<td>
-		<input type="button" name="bStep1" value=" Step1 " onclick="step1()"> </td> <td>Create Main Folder	
+		<input type="button" name="bStep1" value=" Step1 " onclick="step1()"> </td> <td>Create Main Folder
 		</td>
 		<td>
-		<input type="button" name="bStep2" value=" Step2 " onclick="step2()"> </td> <td>Copy Libraries		
+		<input type="button" name="bStep2" value=" Step2 " onclick="step2()"> </td> <td>Copy Libraries
 		</td>
 		<td>
-		<input type="button" name="bStep3" value=" Step3 " onclick="step3()"> </td> <td>Create left Menu		
+		<input type="button" name="bStep3" value=" Step3 " onclick="step3()"> </td> <td>Create left Menu
 		</td>
 		</tr><tr>
 		<td>
-		<input type="button" name="bStep4" value=" Step4 " onclick="step4()"> </td> <td>Create Frames for Buttons in Menu		
+		<input type="button" name="bStep4" value=" Step4 " onclick="step4()"> </td> <td>Create Frames for Buttons in Menu
 		</td>
 		<td>
-		<input type="button" name="bStep4" value=" Step5 " onclick="step5()"> </td> <td>Create Empty Frame		
+		<input type="button" name="bStep4" value=" Step5 " onclick="step5()"> </td> <td>Create Empty Frame
 		</td>
 		</tr>
 		</table>
@@ -356,7 +357,7 @@ function step5() {
 		<b>Software Name:</b> <input type=text name="tSoftware" value="MySoftware"> <br/> Used for comments in HTML-Sources.
 		</td>
 		<td>
-		<b>Background Color:</b> 
+		<b>Background Color:</b>
 		<select name="tBackgroundColor" size="1">
           <option value="#FFFFFF">white</option>
           <option value="#EEEEEE" selected>grey</option>
@@ -369,15 +370,15 @@ function step5() {
 	</tr>
 	<tr>
 		<td>
-		<b>Author:</b> <input type=text name="tAuthor" value="My Name"> 
+		<b>Author:</b> <input type=text name="tAuthor" value="My Name">
 		</td>
 		<td>
-		<b>e-Mail Author:</b> <input type=text name="tEMail" value="mymail@example.com"> 
+		<b>e-Mail Author:</b> <input type=text name="tEMail" value="mymail@example.com">
 		</td>
 	</tr>
 	<tr>
 		<td>
-			<b>Used Classes:</b> 
+			<b>Used Classes:</b>
 			<br/>
 			<textarea name="tLibraries" cols="60" rows="10">
 MyClass1
@@ -404,8 +405,8 @@ Display Risk
 	<tr>
 		<td colspan=2 align="center">
 	<hr/>
-	The following text areas define templates for the JavaScript Class Generation. If want to use 
-	differente templates for the javascript class generator, just download the file and edit the HTML 
+	The following text areas define templates for the JavaScript Class Generation. If want to use
+	differente templates for the javascript class generator, just download the file and edit the HTML
 	source code. Use your Browser to save the html-file to your local filesystem.
 	It is pure HTML with the javascript functions included in the file. So it will be easy to modify
 	the source code according to your requirements and constraints.
@@ -420,16 +421,16 @@ Display Risk
      <TITLE>
 	    ___SOFTWARE___
      </TITLE>
-<!-- 
-################################################# 
-# ___SOFTWARE___  								
-# Javascript Software Package  				 
-# email: ___EMAIL___		
+<!--
+#################################################
+# ___SOFTWARE___
+# Javascript Software Package
+# email: ___EMAIL___
 # created               ___DATE___
 # last modifications    ___DATE___
 # Author:  ___AUTHOR___
-# GNU Public License 
-################################################# 
+# GNU Public License
+#################################################
 -->
   <META http-equiv="Content-Type" content="text/html; charset=utf8">
 
@@ -454,7 +455,7 @@ Display Risk
 	//--------------------------------------
 	</textarea>
 		</td>
-	</tr>	
+	</tr>
 	<tr>
 		<td colspan=2 align="center">
  		<b>Tail HTML File</b><br/>
@@ -551,16 +552,16 @@ Use e.g. <a href="http://www.mozilla.org">Mozilla Firefox</a>
 <HTML>
 <HEAD>
    <TITLE>Empty Frame - ___SOFTWARE___</TITLE>
-<!-- 
-################################################# 
-# ___SOFTWARE___ - Empty Frame 						
-# Javascript Software Package  				 
-# email: ___EMAIL___		
+<!--
+#################################################
+# ___SOFTWARE___ - Empty Frame
+# Javascript Software Package
+# email: ___EMAIL___
 # created               ___DATE___
 # last modifications    ___DATE___
 # Author:  ___AUTHOR___
-# GNU Public License 
-################################################# 
+# GNU Public License
+#################################################
 -->
    <META http-equiv="Content-Type" content="text/html; charset=utf8">
 </HEAD>
@@ -581,16 +582,16 @@ Use e.g. <a href="http://www.mozilla.org">Mozilla Firefox</a>
 <HTML>
 <HEAD>
    <TITLE>___SOFTWARE___</TITLE>
-<!-- 
-################################################# 
-# ___SOFTWARE___						
-# Javascript Software Package  				 
-# email: ___EMAIL___		
+<!--
+#################################################
+# ___SOFTWARE___
+# Javascript Software Package
+# email: ___EMAIL___
 # created               ___DATE___
 # last modifications    ___DATE___
 # Author:  ___AUTHOR___
-# GNU Public License 
-################################################# 
+# GNU Public License
+#################################################
 -->
   <META http-equiv="Content-Type" content="text/html; charset=utf8">
 </HEAD>
@@ -624,11 +625,11 @@ Use e.g. <a href="http://www.mozilla.org">Mozilla Firefox</a>
 </font>
 </center>
 </BODY>
-</HTML>	
+</HTML>
 	</textarea>
 <!---------------------------------------------------------------------------->
 		</td>
-	</tr>	
+	</tr>
 		<tr>
 		<td colspan=2 align="center">
 <!---------------------------------------------------------------------------->
@@ -641,11 +642,11 @@ Use e.g. <a href="http://www.mozilla.org">Mozilla Firefox</a>
 	</textarea>
 <!---------------------------------------------------------------------------->
 		</td>
-	</tr>	
+	</tr>
 </table>
 </form>
 <center>
-Javascript Class Generator was developed 2013 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de" target="_bank">University Koblenz-Landau</a> <br/> 
+Javascript Class Generator was developed 2013 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de" target="_bank">University Koblenz-Landau</a> <br/>
 <br/>
 <a href="http://mathematik.uni-landau.de/javascript/classgenerator/" target="_blank">http://mathematik.uni-landau.de/javascript/classgenerator/</a>
 </center>

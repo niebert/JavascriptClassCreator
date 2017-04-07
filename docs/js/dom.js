@@ -78,22 +78,48 @@ function getSelectedClassJSON(pClassName) {
   return vRetClassJSON;
 }
 
-function saveForm2ClassJSON() {
+function updateForm_DOM2JSON() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
   var vClassName = getSelectedClass();
   var vClassJS = getSelectedClassJSON();
-  console.log("saveForm2ClassJSON()-Call: vDOM_ID stored in vJSON_JS");
+  console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSON_JS");
   for (var i = 0; i < vDOM_ID.length; i++) {
     vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
   };
-  console.log("saveForm2ClassJSON()-Call: vDOM_Global stored in vJSON_JS");
+};
+
+function updateDOM_JSON2Form() {
+  // get all Value from DOM and save Values  in JSON Database of selected Class
+  var vClassName = getSelectedClass();
+  var vClassJS = getSelectedClassJSON();
+  var vContent = "";
+  console.log("updateDOM_JSON2Form()-Call: vDOM_ID in JSON stored in Form");
+  for (var i = 0; i < vDOM_ID.length; i++) {
+    if (vClassJS[vDOM_ID[i]]) {
+      vContent = vClassJS[vDOM_ID[i]];
+      write2value(vDOM_ID[i],vContent);
+    }
+  };
+};
+
+function updateFormGlobal2JSON() {
+  console.log("updateFormGlobal2JSON()-Call: vDOM_Global stored in vJSON_JS");
   for (var i = 0; i < vDOM_Global.length; i++) {
     vJSON_JS[vDOM_Global[i]] = getValueDOM(vDOM_Global[i]) || "";
   };
-  // var vArray = getAttribNameArray();
-  // var vOptions = createOptions4Array(vArray);
-  // write2innerHTML("sAttribList",vOptions)
+}
+
+function updateGlobalJSON2Form() {
+  console.log("updateGlobalJSON2Form()-Call: write vDOM_Global in JSON to Form");
+  var vContent = "";
+  for (var i = 0; i < vDOM_Global.length; i++) {
+    if (vJSON_JS[vDOM_Global[i]]) {
+      vContent = vJSON_JS[vDOM_Global[i]];
+      write2value(vDOM_Global[i],vContent);
+    };
+  };
 };
+
 
 function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
@@ -116,8 +142,12 @@ function createClassSelect(pArray) {
   var vArray = pArray || getClassArray();
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sClassList",vOptions)
-  write2innerHTML("sClassCode",vOptions)
+  var vArraySupCla = insertArray1Empty(vArray);
+  write2innerHTML("sClassList",vOptions);
+  write2innerHTML("sClassCode",vOptions);
+  vOptions = createOptions4Array(vArraySupCla);
+  write2innerHTML("sSuperClassname",vOptions);
+  write2value("sSuperClassname",getValueDOM("tSuperClassname"));
 };
 
 function getArray4HashID(pHash) {
@@ -131,28 +161,68 @@ function getArray4HashID(pHash) {
   return vArray
 };
 
-function createPageSelect() {
+function createPageSelect(pArrID) {
   // get all Methods in JSON Database of all Classes
   console.log("createPageSelect()-Call");
-  var vArray = getArray4HashID(vJSON_JS["PageList"]);
+  var vArray = pArrID || getArray4HashID(vJSON_JS["PageList"]);
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sPageHTML",vOptions);
-  var vFirstEmpty = [""];
-  vArray = vFirstEmpty.concat(vArray);
+  vArray = insertArray1Empty(vArray);
   vOptions = createOptions4Array(vArray);
   write2innerHTML("sParentPage",vOptions);
+  var vPageID = getValueDOM("tPageID");
+  setSelectedPage(vArray,vPageID);
 };
 
-function createPageTypeSelect() {
+function setSelectedPage(pArray,pPageID) {
+  var vSelectedID = pArray[1] || "";
+  for (var i = 0; i < pArray.length; i++) {
+    if (pPageID == pArray[i]) {
+      // pPageID is listed in array
+      // i.e page is existing in vJSON_JS
+      vSelectedID = pPageID;
+    };
+  };
+  write2value("sPageHTML",vSelectedID);
+  if (vSelectedID != "") {
+    selectPageJS(vSelectedID);
+  };
+};
+
+function createPageTypeSelect(pArrID) {
   // get all Methods in JSON Database of all Classes
+  var vSelPageType = getValueDOM("sPageTypeHTML");
   console.log("createPageTypeSelect()-Call");
-  var vArray = getArray4HashID(vJSON_JS["PageType"]);
+  var vArray = pArrID || getArray4HashID(vJSON_JS["PageType"]);
   vArray.sort();
+  //updatePageTypeJSON2Form(vArray);
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sPageTypeHTML",vOptions);
-  var vContent = vJSON_JS["PageType"][vArray[0]]["content"]
-  setEditorValue("iPageTypeHTML",vContent);
+  write2innerHTML("sPageType4Page",vOptions);
+  var vPageTypeID = getValueDOM("tPageTypeID");
+  setSelectedPageType(vArray,vPageTypeID);
+};
+
+function setSelectedPageType(pArray,pPageTypeID) {
+  var vSelectedID = pArray[0] || "";
+  for (var i = 0; i < pArray.length; i++) {
+    if (pPageTypeID == pArray[i]) {
+      // pPageTypeID is listed in array
+      // i.e page type is existing in vJSON_JS
+      vSelectedID = pPageTypeID;
+    };
+  };
+  write2value("sPageTypeHTML",vSelectedID);
+  if (vSelectedID != "") {
+    selectPageTypeJS(vSelectedID);
+  };
+};
+
+function insertArray1Empty(pArr) {
+  var vFirstEmpty = [""];
+  pArr = vFirstEmpty.concat(pArr);
+  return pArr;
 };
 
 function createDatabaseSelect(pArray) {
@@ -167,17 +237,68 @@ function createDatabaseSelect(pArray) {
 };
 
 
-function createClassTypeSelect() {
+function createClassTypeSelect(pArray) {
   // get all Methods in JSON Database of all Classes
-  console.log("createClassSelect()-Call");
-  var vArray = getAllClassesArray();  //classes.js 418
+  console.log("createClassTypeSelect-Call");
+  var vArray = pArray || getAllClassesArray();  //classes.js 418
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sClassList",vOptions)
 };
 
+function createButtonSelect(pArray) {
+  // get all Methods in JSON Database of all Classes
+  console.log("createButtonSelect-Call");
+  var vArray = pArray || getButton1EmptyArray();  //classes.js 418
+  var vOptions = createOptions4Array(vArray);
+  write2innerHTML("sButtonHTML",vOptions);
+  createHeaderButtonSelect(vArray);
+  //update PageTypes to select the Button Selectors Left and Right angain
+  // according to vJSON Definition
+  selectPageTypeJS();
+};
+
+function createHeaderButtonSelect(pArray) {
+  // get all Methods in JSON Database of all Classes
+  console.log("createHeaderButtonSelect-Call");
+  var vOptions = "";
+  var vButtonID = "";
+  var vPageID = "";
+  var vCR = "";
+  // Insert the defined Header Buttons
+  var vPrefix = "Button: ";
+  for (var i = 0; i < pArray.length; i++) {
+    vButtonID = pArray[i];
+    if (vButtonID == "") {
+      vOptions += vCR + getHeadOption("",vButtonID);
+    } else {
+      vOptions += vCR + getHeadOption(vPrefix,vButtonID);
+    };
+    vCR = "\n";
+  };
+  // Insert the defined Header Page Links
+  var vPageArr = getPageListArray();
+  vPrefix = "Show Page: ";
+  for (var i = 0; i < vPageArr.length; i++) {
+    vPageID = vPageArr[i];
+    if (vPageID != "") {
+      vOptions += vCR + getHeadOption(vPrefix,vPageID);
+      vCR = "\n";
+    };
+  };
+  write2innerHTML("sButtonHeader1",vOptions);
+  write2innerHTML("sButtonHeader2",vOptions);
+}
+
+function getHeadOption(pPrefix,pValue) {
+  return "<option value=\""+pValue+"\">"+pPrefix+pValue+"</option>";
+};
+
 function createMethodSelect4JSON() {
   // get all Methods in JSON Database of all Classes
-  console.log("createMethodSelect()-Call");
+  console.log("createMethodSelect4JSON()-Call");
+  var vClassJS = getClassJSON();
+  var vArr = getArray4HashID(vClassJS["MethodParameter"]);
+  createButtonSelect(vArr);
 };
 
 function writeClassTitle(pClassName) {

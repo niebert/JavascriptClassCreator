@@ -4,6 +4,10 @@ function sortStringLines(pString) {
 	return vStringArr.join("\n");
 }
 
+function firstUpperCase(pString) {
+    return pString.charAt(0).toUpperCase() + pString.slice(1);
+}
+
 function replaceStringReverse(pString,pReplace,pSearch)
 //###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
 {

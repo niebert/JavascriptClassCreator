@@ -19,9 +19,9 @@
    var vDOM_Global = []; // DOM IDs that store global variables
    var vDOM_TPL = [];  // Array that contains all DOM IDs where the templates are stored
    var vJSON_TPL = {}; // Hash containing the templates for generating code
-   var vPageRecord = ["page-id","page-title","page-type","parent-id"]; //variables that are stored for all pages
-   var vPageTypeRecord = ["page-type","button-id1","button-id2","template"]; // variables that are stored for all page types
-   var vButtonRecord = ["button-id","button-html","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+   var vPageRECDEF = ["page-id","page-title","page-type","parent-id"]; //variables that are stored for all pages
+   var vPageTypeRECDEF = ["page-type","button-id1","button-id2","template"]; // variables that are stored for all page types
+   var vButtonRECDEF = ["button-id","button-html","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
@@ -155,7 +155,7 @@ writedom.js</textarea>
 <tr>
 <td align="center">
   <b>App Pages</b>
-  <input name="bUpdatePages" value=" Update Pages " onclick="updateFormPages2JSON()" type="button">
+  <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
   <br>
   <b>Format:</b>
   <tt id="labelPageRecord">-</tt>
@@ -191,7 +191,7 @@ ConfirmPage|home|OK
   <tt id="labelButtonRecord">-</tt>
   <br>
 
-<textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace">QUIT|&lt;a href="#" "b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+<textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
   </textarea>
 </td>
@@ -210,8 +210,10 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
       <option>home</option>
     </select>
+    <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
+    <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
     <br>
-    <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace">
+    <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
     <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
     <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
       <option>DefaultPage</option>
@@ -222,8 +224,6 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     <select id="sParentPage" name="sParentPage">
       <option>home</option>
     </select>
-    <br>
-    <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
     <br>
     <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
     <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
@@ -242,26 +242,53 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
   <td colspan="2" align="center">
     <b>Select Page Type:</b>
     <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
-      <option>DefaultPage</option>
+      <option></option>
     </select>
-    <br>
-    <b>Type-ID:</b>
-    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace">
-    <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
+    <input type="button"  class="deletebutton" id="bDeletePageTypeHTML" onclick="deletePageTypeHTML();return false" value="Delete">
     <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
     <br>
-    <b>Button Left:</b>
-    <select id="sButtonLeft" name="sButtonLeft">
-      <option>QUIT</option>
+    <b>Type-ID:</b>
+    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace"  onchange="this.value=firstUpperCase(reduceVarName(this.value))">
+    <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
+    <br>
+    <b>Header Button 1:</b>
+    <select id="sButtonHeader1" name="sButtonHeader1">
+      <option></option>
     </select>
-    <b>Button Left:</b>
-    <select id="sButtonRight" name="sButtonRight">
-      <option>OK</option>
+    <b>Header Button 2:</b>
+    <select id="sButtonHeader2" name="sButtonHeader2">
+      <option></option>
     </select>
 
     <br>
     <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
     <iframe id="iPageTypeHTML"  src="ace/editpagetype.html" width="90%" height="100"></iframe>
+  </td>
+</tr>
+<tr>
+  <td  colspan="2" bgcolor="#C0C0C0" align="center">
+    <font size="+2">
+      <b>
+        Edit Buttons
+      </b>
+    </font>
+  </td>
+</tr>
+<tr>
+  <td colspan="2" align="center">
+    <b>Select Button:</b>
+    <select id="sButtonHTML" name="sButtonHTML" onchange="selectButtonJS()">
+      <option>DefaultButton</option>
+    </select>
+    <input type="button" id="bDeleteButtonHTML" onclick="deleteButtonHTML();return false" class="deletebutton" value="Delete">
+    <input type="button" id="bSaveButtonHTML" onclick="saveButtonHTML();return false" value="Save">
+    <br>
+    <b>Button-ID:</b>
+    <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
+    <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
+    <br>
+    <b>HTML:</b>
+    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90">
   </td>
 </tr>
 </tbody>
@@ -298,8 +325,11 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
         </select>
 	     </td>
     		<td>
-    		<b>Super Class Name:</b> <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace"  onchange="updateFormID2JSON(this.id)">
-        <br>leave empty if this class does not inherit from a super class.
+    		<b>Super Class Name:</b>
+        <select name="sSuperClassname" id="sSuperClassname" onchange="selectSuperClass(this.value)">
+        </select>
+        <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
+        <br><b>UML-Type Super Class:</b> <font id="labSuperClassTypeUML" color="blue"></font>
     		</td>
     	</tr>
     	<!-- <tr>
@@ -363,9 +393,9 @@ save(pContent:DOMVar,pMatrix:Matrix)
             <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
               <option></option>
             </select>
-                      <!--
-            <input name="bSetAttribType" value=" Set Type " onclick="setAttribType4Select()" type="button">
-            -->
+            <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
+            <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
+
           </td>
           </tr>
             <tr>
@@ -383,14 +413,13 @@ save(pContent:DOMVar,pMatrix:Matrix)
         <td align="center">
           <b>Select Type:</b>
           <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
-  </td>
+        </td>
     </tr>
     </tr>
       <tr>
         <td colspan="2" align="center">
           Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace">
-              <input name="bSaveAttribDef" value=" Save " onclick="saveAttribEdit()" type="button">
-            </td>
+        </td>
       	</tr>
       </tbody>
     </table>
@@ -408,10 +437,11 @@ save(pContent:DOMVar,pMatrix:Matrix)
       		<td colspan="2" align="center">
           <b>Method:</b>
           <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
+          <input id name="bDeleteMethodDef" class="deletebutton" value="Delete" onclick="deleteMethodForm()" type="button">
+          <input id name="bSaveMethodDef" value="Save" onclick="updateForm2MethodJSON()" type="button">
           <hr>
           <b>Method Definition:</b>
           <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
-          <input id name="bSaveMethodDef" value="Save" onclick="saveMethodCallJS()" type="button">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
           <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
           <hr>
@@ -570,8 +600,8 @@ save(pContent:DOMVar,pMatrix:Matrix)
           <hr>
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
             <b>Generate Project JSON:</b>
-          <input name="bCreatorButton" value="Project JSON" onclick="createProjectJSON()" type="button">
-          <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
+            <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
+            <input name="bCreatorButton" value="Project JSON" onclick="createProjectJSON()" type="button">
           <hr>
             <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>

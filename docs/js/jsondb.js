@@ -55,11 +55,6 @@ function saveClassJSON() {
   saveLocalDB("vJSON_JS",vJSON_JS);
 };
 
-function updateFormPages2JSON() {
-  vJSON_JS["PageList"] = getPageListHash();
-  createPageSelect();
-};
-
 function updateFormPageTypes2JSON() {
   vJSON_JS["PageType"] = getPageTypeHash();
   createPageTypeSelect();
@@ -79,7 +74,7 @@ function  updateAttributesJS() {
   write2value("sAttribList",vAttName);
   selectJSAttribs();
 };
-function  updateFMethodsJS() {
+function  updateMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
   console.log("updateMethodsJS()-Call undefined");
 };
@@ -159,8 +154,42 @@ function save2LevelID2JSON(pListID,pID,pValue) {
     };
 };
 
+function deleteClassForm() {
+  console.log("deleteAttributeForm()");
+  vClassJSON = getSelectedClassJSON();
+  var vMethodName = getValueDOM("sClassList");
+  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  if(vOK == true) {
+    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
+    for (var iID in vArrID) {
+      if (vArrID.hasOwnProperty(iID)) {
+        delete vClassJS[iID][vMethodName];
+      }
+    };
+    updateJSON2Form();
+  };
+};
 
-function saveAttribEdit() {
+
+function deleteAttributeForm() {
+  console.log("deleteAttributeForm()");
+  vClassJSON = getSelectedClassJSON();
+  var vMethodName = getValueDOM("sAttribList");
+  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  if(vOK == true) {
+    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
+    for (var iID in vArrID) {
+      if (vArrID.hasOwnProperty(iID)) {
+        delete vClassJS[iID][vMethodName];
+      }
+    };
+    updateJSON2Form();
+  };
+};
+
+
+function saveAttributeForm() {
+  console.log("saveAttributeForm()");
   vClassJSON = getSelectedClassJSON();
   saveAttribJSON();
   var vOut = "";
@@ -217,6 +246,22 @@ function loadMethodJSON (pMethodName) {
     console.log("loadMethodJSON() Call - Method Name undefined");
   };
 };
+
+function deleteMethodForm() {
+  console.log("deleteAttributeForm()");
+  var vClassJS = getSelectedClassJSON();
+  var vMethodName = getValueDOM("sMethodList");
+  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  if(vOK == true) {
+    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
+    for (var iID in vArrID) {
+      if (vArrID.hasOwnProperty(iID)) {
+        delete vClassJS[iID][vMethodName];
+      }
+    };
+    updateJSON2Form();
+  };
+}
 
 
 function saveMethodCallJS(pClass) {
@@ -316,14 +361,9 @@ function updateJSON2Form(pClass) {
   var vClass = pClass || getSelectedClass();
   var vContent = "";
   console.log("updateJSON2Form('"+vClass+"')");
-  // Set Selected with vClassJSON
-  vClassJSON = vJSON_JS["ClassList"][vClass];
   // updates form content in DOM with Class content
-  for (var i = 0; i < vDOM_ID.length; i++) {
-    //vContent = vClassJSON[vDOM_ID[i]] || "";
-    vContent = vClassJSON[vDOM_ID[i]];
-    write2value(vDOM_ID[i],vContent);
-  };
+  updateDOM_JSON2Form(vClass);
+  updateGlobalJSON2Form(vClass);
   // load the defined Attribute from Form
   updateJSON2FormVariable(vClass,"tAttributes");
   updateJSON2FormVariable(vClass,"tMethods");
@@ -407,6 +447,7 @@ function updateAttribJSON2Form(pClass) {
   var vClassJS = getClassJSON(pClass);
   vClassJS["tAttributes"] = vOut;
   write2value("tAttributes",vOut);
+  createAttribSelect();
 };
 
 function getAttribJSON4Form(pClass) {
@@ -440,8 +481,9 @@ function updateForm2AttribJSON(pClass) {
 };
 
 function updateForm2MethodJSON(pClass) {
-  console.log("updateForm2MethodJSON('"+pClass+"')");
+  saveMethodCallJS(); // saves the definition of the method call
   var vClass = pClass || getSelectedClass();
+  console.log("updateForm2MethodJSON('"+vClass+"')");
   var vMethArr = getMethodNameArray(); //classes.js:275
   var vMethCallArr = getMethodArray(); //classes.js:598
   var vParam = "";
@@ -574,13 +616,11 @@ function updateForm2JSON(pClass) {
   var vClass = pClass || getSelectedClass();
   // updates the Class content with form content in DOM
   createClassJS(vClass);
-  vClassJSON = vJSON_JS["ClassList"][pClass];
-  for (var i = 0; i < vDOM_ID.length; i++) {
-    vClassJSON[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]);
-  };
+  updateForm_DOM2JSON(pClass);
   // load the defined Attribute and Methodsfrom Form
   updateForm2AttribJSON(pClass);
   updateForm2MethodJSON(pClass);
+  updateFormGlobal2JSON();
 };
 
 function defineHashIfUndefined(pHash,pHashListID) {

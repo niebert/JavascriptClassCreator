@@ -1122,9 +1122,32 @@ function getClassTypeHash() {
   return getString2ClassHash(vClassString);
 }
 
+function getButtonArray() {
+  var vButtListStr = getValueDOM("tButtons");
+  var vButtonLineArr = getString2Array(vButtListStr);
+  console.log("getButtonArray() vButtonLineArr.length="+vButtonLineArr.length);
+  var vArr = [];
+  var vButtArr;
+  for (var i = 0; i < vButtonLineArr.length; i++) {
+    vButtArr = (vButtonLineArr[i]).split("|");
+    //vHash = getRecordLine2Hash(vButtonRECDEF, vButtonLineArr[i]);
+    console.log("getButtonArray(): vButtArr["+i+"]='"+vButtonLineArr[i]+"'");
+    var vButtonID = vButtArr[0] || "";
+    if (vButtonID != "") {
+      vArr.push(vButtonID);
+    };
+  };
+  return vArr;
+};
+
+function getButton1EmptyArray() {
+  var vArr = getButtonArray();
+  return insertArray1Empty(vArr);
+};
+
 
 function getAllClassesArray() {
-  var vClassString = document.fCreator.tClassList.value;
+  var vClassString = getValueDOM("tClassList");
   var vBasicClassHash = getBasicClassHash();
   for (var iID in vBasicClassHash) {
     if (vBasicClassHash.hasOwnProperty(iID)) {

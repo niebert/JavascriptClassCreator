@@ -159,7 +159,7 @@ function createMenuHTML()  {
     document.fCreator.tOutput.value = vOutput;
 }
 
-function createButtonHTML(pButton,pButtonLink)  {
+function createButtonHTML4Code(pButton,pButtonLink)  {
 	var vString = "";
 	var vDate 			= getDate();
 	var vSoftware 		= pButton +" - "+document.fCreator.tSoftware.value;
@@ -291,7 +291,7 @@ function step4() {
 		}
    };
    //alert("Selected Button="+vSelectedButton);
-   createButtonHTML(vSelectedButton,vSelectedButtonLink);
+   createButtonHTML4Code(vSelectedButton,vSelectedButtonLink);
    //alert("STEP 4: Create a File '/"+vFolderName+"/frames/'and\n"+
    //       "create '/"+vFolderName+"/frames/menu.html' with the generated HTML Code!");
 }

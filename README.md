@@ -54,16 +54,16 @@ Future application of UglifyJS will allow cross compilation of generation of gen
 ### JSCC Projects
 **(JSCC)** is the main JSON file, that contains the JSCC project of the software development
 
-    **Example:** The web-based software *DisApp* is used in the online version as project of JSCC. Furthermore *DisApp* is used as example for the following sections too.
+**Example:** The web-based software *DisApp* is used in the online version as project of JSCC. Furthermore *DisApp* is used as example for the following sections too.
 
 ### HTML Files - HTML Templates
 
 **(ListHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
 
-    **Example:** The web-based software *DisApp* contains two HTML-files:
-    * **<tt>index.html</tt>** for login to the server the JSON element can be access by <tt>JSCC.ListHTML["index.html"]</tt> ).
-    * **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. <tt>JSCC.ListHTML["app.html"]</tt>).
-    * **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. <tt>JSCC.ListHTML["submit.html"]</tt>).
+**Example:** The web-based software *DisApp* contains two HTML-files:
+* **<tt>index.html</tt>** for login to the server the JSON element can be access by ___JSCC.ListHTML["index.html"]___ ).
+* **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. ___JSCC.ListHTML["app.html"]___).
+* **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. ___JSCC.ListHTML["submit.html"]___).
 
 In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
 
@@ -79,7 +79,11 @@ In traditional software development HTML pages can be regarded as windows with a
 When we consider the object oriented programming concept we have classes in instances of the classes (objects). Similar to this concept we create HTML files as templates, that contain certain markers, that are replaced by user-defined content.
 The markers three preceding underscores before and after the identifier. In Identifying itself consist of uppercase characters. An example of a marker wll look like thislook like this:
 
-**Examples Marker:**  The marker <code>___PAGE_ID___</code> in the template will be replaced by a defined content in the HTML page. The marker <code>___TITLE___</code> will be replaced by the title of the HTML page.
+**Examples Marker:**  The marker
+      ___PAGE_ID___
+in the template will be replaced by a defined content in the HTML page. The marker
+      ___TITLE___
+will be replaced by the title of the HTML page.
 
 The notation with  3 underscores before an after the uppercase identifier is used and, because he creates less conflict with other programming languages the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
 

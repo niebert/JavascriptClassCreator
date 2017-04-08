@@ -35,6 +35,8 @@ function deleteButtonHTML() {
     var vOK = confirm("Do you want to delete Button ["+vButtonID+"]?");
     if(vOK == true) {
       delete vJSON_JS["ButtonList"][vButtonID]
+      var vArrID = createArray4HashID(vJSON_JS["ButtonList"]);
+      updateButtonJSON2Form(vArrID);
     };
   };
 };
@@ -78,12 +80,17 @@ function updatePagesJSON2Form(pArrID) {
 function updateForm2PageTypeJSON(pPageTypeID) {
   var vPageTypeID = pPageTypeID || getValueDOM("tPageTypeID");
   console.log("updateForm2PageTypeJSON('"+vPageTypeID+"')");
-  var vSelHash = vJSON_JS["PageType"][vPageTypeID];
-  write2value("tPageTypeHTML",vSelHash["template"]);
-  setEditorValue("iPageTypeHTML",vSelHash["template"]);
-  write2value("sButtonHeader1",vSelHash["button-id1"]);
-  write2value("sButtonHeader2",vSelHash["button-id2"]);
-}
+  if (existsPageTypeJS(pPageTypeID)) {
+    var vSelHash = vJSON_JS["PageType"][vPageTypeID];
+    write2value("tPageTypeHTML",vSelHash["template"]);
+    setEditorValue("iPageTypeHTML",vSelHash["template"]);
+    write2value("sButtonHeader1",vSelHash["button-id1"]);
+    write2value("sButtonHeader2",vSelHash["button-id2"]);
+  } else {
+    console.log("PageType ["+pPageTypeID+"] does NOT exist!");
+    clearPageTypeForm();
+  };
+};
 
 function updatePageTypeJSON2Form(pArrID) {
   console.log("updatePageTypeJSON2Form()");
@@ -93,6 +100,35 @@ function updatePageTypeJSON2Form(pArrID) {
   } else {
     console.log("ERROR: updatePageTypeJSON2Form(pArrID) - pArrID undefined");
   };
+};
+
+function updateButtonJSON2Form(pArrID) {
+  console.log("updateButtonJSON2Form()");
+  if (pArrID) {
+    write2value("tButtons",getButton4tButtonsForm(pArrID));
+    createButtonSelect(pArrID);
+  } else {
+    console.log("ERROR: updateButtonJSON2Form(pArrID) - pArrID undefined");
+  };
+};
+
+function getButton4tButtonsForm(pArrID) {
+  var vHash = vJSON_JS["ButtonList"];
+  var vArr = [];
+  var vLine = "";
+  var vID = "";
+  var vRECDEF = vButtonRECDEF;
+  if (pArrID) {
+    for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      console.log("get Record for Form '"+vID+"'");
+      vLine = getHash2RecordLine(vRECDEF,vHash[vID]);
+      vArr.push(vLine);
+    }
+  } else {
+    console.log("ERROR: getButton4tButtonsForm(pArrID) - pArrID undefined");
+  };
+  return vArr.join("\n");
 };
 
 function getPageType4tPageTypeForm(pArrID) {
@@ -371,6 +407,18 @@ function createButtonJS(pButtonHash) {
 
 function createNewButton() {
   console.log("Click New - create a new Button with [+]");
+  if (askCreateNew("Button",getValueDOM("tButtonID"))) {
+    createNewButton_do()
+  };
+};
+
+function askCreateNew(pName,pID) {
+  var vOK = confirm("Do you want to create "+pName+" ["+pID+"]?");
+  return vOK;
+}
+
+function createNewButton_do() {
+  console.log("Create a new Button with [+]");
   var vNewButtonID = getValueDOM("tButtonID");
   var vNewButtonDefHTML = getValueDOM("tButtonDefHTML");
   var vErrorMSG = "";
@@ -415,15 +463,22 @@ function createNewButton() {
     console.log("Create new Button cancelled!\n"+vErrorMSG);
   };
   return vSuccess;
-
 };
 
 function createNewPage() {
   console.log("Click New - create a new Page with [+]");
+  if (askCreateNew("Page",getValueDOM("tPageID"))) {
+    createNewPage_do()
+  };
+};
+
+function createNewPage_do() {
+  console.log("Create a new Page with [+]");
   //var vNewPageName = prompt("Please enter name of new Page", "");
   var vNewPageID = getValueDOM("tPageID");
   var vNewPageTitle = getValueDOM("tPageTitle");
   var vNewPageType  = getValueDOM("sPageType4Page");
+  console.log("createNewPage(): sPageType4Page='"+vNewPageType+"'");
   var vParentPageID = getValueDOM("sParentPage");
   var vErrorMSG = "";
   var vSuccess = false;
@@ -435,6 +490,10 @@ function createNewPage() {
   if (vNewPageID == vParentPageID) {
     vCount++;
     vErrorMSG = "\n("+vCount+") Parent Page ID ["+vParentPageID+"] can not be equal PageID!"
+  };
+  if (vNewPageType == "") {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") PageType for Page ["+vNewPageID+"] is not defined!"
   };
   if (vNewPageTitle == "") {
     vCount++;
@@ -487,6 +546,13 @@ function createPageTypeJS(pPageTypeHash) {
 };
 
 function createNewPageType() {
+  console.log("Click New - create a new Button with [+]");
+  if (askCreateNew("Page Type ",getValueDOM("tPageTypeID"))) {
+    createNewPageType_do()
+  };
+}
+
+function createNewPageType_do() {
   console.log("Click New - create a new class after prompt");
   //var vNewPageName = prompt("Please enter name of new Page", "");
   var vPageTypeID = getValueDOM("tPageTypeID");
@@ -597,12 +663,32 @@ function createPageJS(pPageHash) {
   } else {
     console.log("createPageJS('"+vPageID+"')-Call: Create Page '"+vPageID+"'");
     checkPageList(vPageID);
-    createPageTypeJS(pPageHash["page-type"]);
+    var vNewPageType = pPageHash["page-type"];
+    // Create the PageType if not exists
+    if (existsPageTypeJS(vNewPageType)) {
+      console.log("PageType ["+vNewPageType+"] for Page ["+vPageID+"] exists");
+    } else {
+      console.log("PageType ["+vNewPageType+"] for Page ["+vPageID+"] will be CREATED!")
+      createDefaultPageTypeJS(vNewPageType);
+    };
     vJSON_JS["PageList"][vPageID] = pPageHash;
     vJSON_JS["PageContent"][vPageID] = "Content for Page '"+vPageID+"'";
   };
   return vExists;
 };
+
+function createDefaultPageTypeJS(pPageTypeID) {
+  var vNewPageTypeHash = {
+    "page-type":pPageType,
+    "button-id1":"",
+    "button-id2":"",
+    "template":getDefaultPageTypeContent(pPageType)
+  };
+  if (pPageTypeID != "") {
+    createPageTypeJS(vNewPageTypeHash);
+  };
+};
+
 
 function checkButtonList(pButtonID) {
   if (vJSON_JS["ButtonList"]) {

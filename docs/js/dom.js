@@ -176,7 +176,7 @@ function createPageSelect(pArrID) {
 };
 
 function setSelectedPage(pArray,pPageID) {
-  var vSelectedID = pArray[1] || "";
+  var vSelectedID = pArray[0] || "";
   for (var i = 0; i < pArray.length; i++) {
     if (pPageID == pArray[i]) {
       // pPageID is listed in array
@@ -194,9 +194,10 @@ function createPageTypeSelect(pArrID) {
   // get all Methods in JSON Database of all Classes
   var vSelPageType = getValueDOM("sPageTypeHTML");
   console.log("createPageTypeSelect()-Call");
-  var vArray = pArrID || getArray4HashID(vJSON_JS["PageType"]);
-  vArray.sort();
+  var vArrID = pArrID || getArray4HashID(vJSON_JS["PageType"]);
+  vArrID.sort();
   //updatePageTypeJSON2Form(vArray);
+  var vArray = insertArray1Empty(vArrID);
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sPageTypeHTML",vOptions);
   write2innerHTML("sPageType4Page",vOptions);
@@ -205,7 +206,8 @@ function createPageTypeSelect(pArrID) {
 };
 
 function setSelectedPageType(pArray,pPageTypeID) {
-  var vSelectedID = pArray[0] || "";
+  console.log("setSelectedPageType(pArray,'"+pPageTypeID+"')");
+  var vSelectedID = pArray[1] || "";
   for (var i = 0; i < pArray.length; i++) {
     if (pPageTypeID == pArray[i]) {
       // pPageTypeID is listed in array
@@ -254,7 +256,25 @@ function createButtonSelect(pArray) {
   createHeaderButtonSelect(vArray);
   //update PageTypes to select the Button Selectors Left and Right angain
   // according to vJSON Definition
-  selectPageTypeJS();
+  //selectButtonJS(vJSON_JS["SelectedButton"]);
+  var vButtonID = getValueDOM("tButtonID");
+  setSelectedButton(vArray,vButtonID);
+};
+
+
+function setSelectedButton(pArray,pButtonID) {
+  var vSelectedID = pArray[0] || "";
+  for (var i = 0; i < pArray.length; i++) {
+    if (pButtonID == pArray[i]) {
+      // pPageTypeID is listed in array
+      // i.e page type is existing in vJSON_JS
+      vSelectedID = pButtonID;
+    };
+  };
+  write2value("sButtonHTML",vSelectedID);
+  if (vSelectedID != "") {
+    selectButtonJS(vSelectedID);
+  };
 };
 
 function createHeaderButtonSelect(pArray) {

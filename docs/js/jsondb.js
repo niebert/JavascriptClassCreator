@@ -621,6 +621,10 @@ function updateForm2JSON(pClass) {
   updateForm2AttribJSON(pClass);
   updateForm2MethodJSON(pClass);
   updateFormGlobal2JSON();
+  vJSON_JS["SelectedClass"] = getValueDOM("sClassList");
+  vJSON_JS["SelectedPage"] = getValueDOM("sPageHTML");
+  vJSON_JS["SelectedPageType"] = getValueDOM("sPageTypeHTML");
+  vJSON_JS["SelectedButton"] = getValueDOM("sButtonHTML"); 
 };
 
 function defineHashIfUndefined(pHash,pHashListID) {

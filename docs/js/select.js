@@ -160,17 +160,48 @@ function selectPageJS(pPageID) {
   console.log("selectPageJS()-Call: Current Page ["+vOldPageID+"] - Selected Page '"+vPageID+"'.");
   if (vJSON_JS["PageContent"]) {
     console.log("Page with ID '"+vPageID+"' exists in selectPageJS()-Call");
-    var vValue = vJSON_JS["PageContent"][vPageID] || "";
-    write2value("tPageHTML",vValue);
-    setEditorValue("iPageHTML",vValue);
-    var vSelHash = vJSON_JS["PageList"][vPageID];
-    //write2value("sPageHTML",vPageID);
-    write2value("sParentPage",vSelHash["parent-id"]);
-    write2value("tPageTitle",vSelHash["page-title"]);
-    write2value("sPageType4Page",vSelHash["page-type"]);
+    if (existsPageJS(vPageID)) {
+      updatePageJSON4ID2Form(vPageID);
+      // var vValue = vJSON_JS["PageContent"][vPageID] || "";
+      // write2value("tPageHTML",vValue);
+      // setEditorValue("iPageHTML",vValue);
+      // var vSelHash = vJSON_JS["PageList"][vPageID];
+      // //write2value("sPageHTML",vPageID);
+      // write2value("sParentPage",vSelHash["parent-id"]);
+      // write2value("tPageTitle",vSelHash["page-title"]);
+      // write2value("sPageType4Page",vSelHash["page-type"]);
+    } else {
+      vPageID = "";
+      clearPageForm();
+    };
   };
   vJSON_JS["SelectedPage"] = vPageID;
   write2value("tPageID",vPageID);
+};
+
+function clearPageForm() {
+  var vArrID = ["tPageID","sPageHTML","sPageType4Page","tPageTitle","sParentPage","tPageHTML"];
+  clearIDs4DOM(vArrID);
+  setEditorValue("iPageHTML","");
+};
+
+function clearPageTypeForm() {
+  var vArrID = ["tPageTypeID","sPageTypeHTML","sButtonHeader1","sButtonHeader2","tPageTypeHTML"];
+  clearIDs4DOM(vArrID);
+  setEditorValue("iPageTypeHTML","");
+};
+
+function clearButtonForm() {
+  var vArrID = ["tButtonID","sButtonHTML","tButtonDefHTML"];
+  clearIDs4DOM(vArrID);
+};
+
+function clearIDs4DOM(pArrID) {
+    for (var iID in pArrID) {
+      if (pArrID.hasOwnProperty(iID)) {
+        write2value(iID,"");
+      };
+    };
 };
 
 function selectPageTypeJS(pPageTypeID) {
@@ -182,18 +213,36 @@ function selectPageTypeJS(pPageTypeID) {
       updateForm2PageTypeJSON(vOldPageTypeID);
   };
   console.log("selectPageTypeJS()-Call: Current PageType '"+vOldPageTypeID+"' - Selected PageType '"+vPageTypeID+"'.");
-  if (existsPageTypeJS(vPageTypeID)) {
-    console.log("PageType with ID '"+vPageTypeID+"' exists in selectPageTypeJS()-Call");
-    updatePageTypeJSON4ID2Form(vPageTypeID);
+  if (vPageTypeID != "") {
+    if (existsPageTypeJS(vPageTypeID)) {
+      console.log("PageType with ID '"+vPageTypeID+"' exists in selectPageTypeJS()-Call");
+      updatePageTypeJSON4ID2Form(vPageTypeID);
+    } else {
+      console.log("selectPageTypeJS()-Call: Undefined PageType for '"+vPageTypeID+"' - use old PageType Content '"+vOldPageTypeID+"'.");
+      clearPageTypeForm();
+      vPageTypeID = ""; //vOldPageTypeID;
+    };
   } else {
-    console.log("selectPageTypeJS()-Call: Undefined PageType for '"+vPageTypeID+"' - use old PageType Content '"+vOldPageTypeID+"'.");
-    // set Selector for PageType to old Selected PageTypeID
-    write2value("sPageTypeHTML",vOldPageTypeID);
-    // set the vPageTypeID corretly for last write2value
-    vPageTypeID = vOldPageTypeID;
+    clearPageTypeForm();
+    vPageTypeID = ""; //vOldPageTypeID;
   };
   write2value("tPageTypeID",vPageTypeID);
+  vJSON_JS["SelectedPageType"] = vPageTypeID;
 };
+
+function updatePageJSON4ID2Form(pPageID) {
+  var vPageID = pPageID || "";
+  if (existsPageJS(vPageID)) {
+    var vValue = vJSON_JS["PageContent"][vPageID] || "";
+    write2value("tPageHTML",vValue);
+    setEditorValue("iPageHTML",vValue);
+    var vSelHash = vJSON_JS["PageList"][vPageID];
+    //write2value("sPageHTML",vPageID);
+    write2value("sParentPage",vSelHash["parent-id"]);
+    write2value("tPageTitle",vSelHash["page-title"]);
+    write2value("sPageType4Page",vSelHash["page-type"]);
+  };
+}
 
 function  updatePageTypeJSON4ID2Form(pPageTypeID) {
   var vPageTypeID = pPageTypeID || getValueDOM("tPageTypeID");
@@ -217,14 +266,16 @@ function selectButtonJS(pButtonID) {
   var vButtonID = pButtonID || getValueDOM("sButtonHTML");
   var vOldButtonID = getValueDOM("tButtonID"); // old ButtonID
   console.log("selectButtonJS()-Call: Current Button '"+vOldButtonID+"' - Selected Button '"+vButtonID+"'.");
-  if (vJSON_JS["ButtonList"] && vJSON_JS["ButtonList"][vButtonID]) {
+  if (existsButtonJS(vButtonID)) {
     console.log("Button with ID '"+vButtonID+"' exists in selectButtonJS()-Call");
     updateButtonJSON4ID2Form(vButtonID);
   } else {
     console.log("selectButtonJS()-Call: Undefined Button Content '"+vButtonID+"' - use old Button Content '"+vOldButtonID+"'.");
-    vButtonID = vOldButtonID;
+    clearButtonForm();
+    vButtonID = "";
   };
   write2value("tButtonID",vButtonID);
+  vJSON_JS["SelectedButton"] = vButtonID;
 };
 
 function updateButtonJSON4ID2Form(pButtonID) {
@@ -439,8 +490,9 @@ function updateDatabaseSelector() {
 function updateSelectors() {
   createClassSelect();
   createDatabaseSelect();
-  createPageSelect();
+  // PageType creates Selectors for the Form in Page Form 
   createPageTypeSelect();
+  createPageSelect();
   createButtonSelect();
   writeClassTitle(getValueDOM("tClassname"));
 }

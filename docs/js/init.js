@@ -10,7 +10,7 @@
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tButtons");
-vDOM_Global.push("sPageTypeHTML")
+vDOM_Global.push("sPageTypeHTML");
 vDOM_Global.push("sPageHTML"); // Selector for PageID
 vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
 //vDOM_Global.push("sButtonHeader1"); // Selector for ButtonHeader 1
@@ -137,7 +137,28 @@ function initCodeCreator() {
   createClassSelect();
   setClassSelectorDefault(vSelectedClass);
   createMethodSelect();
+  setDefaultSelectors();
 };
+
+function setDefaultSelectors() {
+  // init the selector settings from vJSON_JS
+  var vClassJS = getSelectedClassJSON();
+  var vPageID = vJSON_JS["SelectedPage"] || "";
+  var vPageTypeID = vJSON_JS["SelectedPageType"] || "";
+  var vButtonID = vJSON_JS["SelectedButton"] || "";
+  if (vPageID != "") {
+    selectPageJS(vPageID);
+    write2value("sPageHTML",vPageID);
+  };
+  if (vPageTypeID) {
+    selectPageTypeJS(vPageTypeID);
+    write2value("sPageTypeHTML",vPageTypeID);
+  };
+  if (vButtonID) {
+    selectButtonJS(vButtonID);
+    write2value("sButtonHTML",vButtonID);
+  };
+}
 
 function initLabelsHTML() {
   var vSep = " | ";
@@ -195,6 +216,9 @@ function initButtonJS_do(pButtonHash) {
     } else {
       console.log("JSON Database 'vJSON_JS' exists.");
     };
+    //------------------------------------
+    top.vJSON_JS["SelectedButton"] = vButtonID;
+    //------------------------------------
     if (top.vJSON_JS["ButtonList"]) {
       console.log("vJSON_JS['ButtonList'] exists");
     } else {
@@ -249,7 +273,9 @@ function initPageTypeJS_do(pPageTypeHash) {
     } else {
       console.log("JSON Database 'vJSON_JS' exists.");
     };
-    top.vJSON_JS["SelectedPage"] = pPageType;
+    //------------------------------------
+    top.vJSON_JS["SelectedTypePage"] = pPageType;
+    //------------------------------------
     if (top.vJSON_JS["PageType"]) {
       console.log("vJSON_JS['PageType'] exists");
     } else {
@@ -287,7 +313,9 @@ function initPageJS_do(pPageHash) {
     } else {
       console.log("JSON Database 'vJSON_JS' exists.");
     };
+    //------------------------------------
     top.vJSON_JS["SelectedPage"] = vPageID;
+    //------------------------------------
     if (top.vJSON_JS["PageList"]) {
       console.log("vJSON_JS['PageList'] exists");
     } else {
@@ -301,7 +329,7 @@ function initPageJS_do(pPageHash) {
       console.log("Page '"+vPageID+"' created and updated from HTML Form with default values");
     };
   };
-}
+};
 
 
 function initFormDatabaseList() {
@@ -352,47 +380,48 @@ function initFormSelectors() {
   // get current ClassName
   initClassSelector();
   initPageSelector();
+  initPageTypeSelector();
+  initButtonSelector();
 };
 
 function initClassSelector() {
-  var vClassArr = [];
-  var vClassTypeArr = [];
-  var vClassList = vJSON_JS["ClassList"] || {};
-  var vClassTypeHash = vJSON_JS["ClassType"] || {};
-  var vTypeDef = "";
-  for (var iClass in vClassList) {
-    if (vClassList.hasOwnProperty(iClass)) {
-      vClassArr.push(iClass);
-      vTypeDef = vClassTypeHash[iClass] || "";
-      if (vTypeDef != "") {
-        vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
-        vTypeDef = " = " + vTypeDef;
-      };
-      vClassTypeArr.push(iClass+vTypeDef);
-    };
-  };
-  //ClassList update
-  //document.fCreator.tClassList += "\n"+vClass;
-  write2value("tClassList",vClassTypeArr.join("\n"));
+  // var vClassArr = [];
+  // var vClassTypeArr = [];
+  // var vClassList = vJSON_JS["ClassList"] || {};
+  // var vClassTypeHash = vJSON_JS["ClassType"] || {};
+  // var vTypeDef = "";
+  // for (var iClass in vClassList) {
+  //   if (vClassList.hasOwnProperty(iClass)) {
+  //     vClassArr.push(iClass);
+  //     vTypeDef = vClassTypeHash[iClass] || "";
+  //     if (vTypeDef != "") {
+  //       vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
+  //       vTypeDef = " = " + vTypeDef;
+  //     };
+  //     vClassTypeArr.push(iClass+vTypeDef);
+  //   };
+  // };
+  write2value("tClassList",getJSON2ClassString());
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
   createClassSelect(vClassArr);
 };
 
 function initButtonSelector() {
-  var vButtonArr = [];
-  var vButtonList = vJSON_JS["ButtonList"];
-  for (var iButton in vButtonList) {
-    if (vButtonList.hasOwnProperty(iButton)) {
-      vButtonArr.push(iButton);
-    };
-  };
-  //ButtonList update
-  //document.fCreator.tButtonList += "\n"+vButton;
-  write2value("tButtonList",vButtonArr.join("\n"));
+  write2value("tButtonList",getButtonListString());
   //var vButton = getValueDOM("tButtonname");
   //initButtonJS(vButton);
-  createButtonSelect(vButtonArr);
+  var vArr = getArray4HashID(vJSON_JS["ButtonList"]);
+  createButtonSelect(vArr);
+};
+
+
+function initPageTypeSelector() {
+  write2value("tPageTypes",getPageTypeString());
+  //var vButton = getValueDOM("tButtonname");
+  //initButtonJS(vButton);
+  var vArr = getArray4HashID(vJSON_JS["PageType"]);
+  createPageTypeSelect(vArr);
 };
 
 function createArray4HashID(pHash) {

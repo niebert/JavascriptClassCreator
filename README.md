@@ -1,4 +1,4 @@
-# JavascriptClassCreator
+# JavascriptClassCreator (JSCC)
 
 An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows to tweak software without digging very deep into libraries and code.
 
@@ -41,7 +41,7 @@ JavascriptClassCreator facilitates the export of UML-diagrams with the libraries
 * **IDE vs ESEIA:** An Integrated Development Enviroment is very rich of features. The art of ESEIA development is to eliminate features of IDE (cover feature) and tailor the remaining features for the area of application of the software release. On the other end - in contrast to a pure front-end for software the ESEIA concept allows to *touch certain areas of the code* on the grass roots level of programming. The existing code elements guide programmers with creating new versions or branches by templating the syntactic workflow for the previous versions. UML export of code provides insight in the software design. High levels of documentation for comprehension of the semantics of code are augemented with code compressors, when the exported code is executed by an interpreter (and not compiled).
 
 ## Compressing Code ##
-You might know from other implementation of JavaScript repositories, that there are existing two versions of the JavaScript implementation.
+You might know from other implementations of JavaScript repositories (e.g. [JQuery](), MathJAX), that there are existing two versions of the JavaScript implementation.
 1) the minimise/compressed code for higher performance in web browsers and NodeJS,
 2) documented code for further software development and comprehension of the previous development by new members of a team
 
@@ -49,9 +49,47 @@ UglifyJS is used for compressing the code and generate higher performance for th
 
 Future application of UglifyJS will allow cross compilation of generation of generic XML-Code for code generation that is highly independent of a specific programming language (see [XML2Code]https://github.com/niebert/XML2Code) as a proposal). UglifyJS can take Javascript code as input and create an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). When the [AST in UglifyJS](http://lisperator.net/uglifyjs/ast) is generated, you can send a [AST walker](http://lisperator.net/uglifyjs/walk) over all nodes of the abstract syntax tree and perform a [Cross Compilation](https://en.wikipedia.org/wiki/Cross_compiler) from Javascript for example to PHP. For the code compressor in UglifyJS the AST is e.g. used to replace <tt>var vMyLongVariable = 0</tt> by <tt>var v=0</tt>. The walker for the code compressor reduces (among other tasks) the length of variable name. This makes the code less readable for developers, but creates less loading for web browsers. For JSCC the removal of comments has the highest impact on the size of the code.
 
+## Structure of JSCC projects
+
+### JSCC Projects
+**(JSCC)** is the main JSON file, that contains the JSCC project of the software development
+
+    **Example:** The web-based software *DisApp* is used in the online version as project of JSCC. Furthermore *DisApp* is used as example for the following sections too.
+
+### HTML Files - HTML Templates
+
+**(ListHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
+
+    **Example:** The web-based software *DisApp* contains two HTML-files:
+    * **<tt>index.html</tt>** for login to the server the JSON element can be access by <tt>JSCC.ListHTML["index.html"]</tt> ).
+    * **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. <tt>JSCC.ListHTML["app.html"]</tt>).
+    * **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. <tt>JSCC.ListHTML["submit.html"]</tt>).
+
+In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
+
+
+**(TemplateHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
+
+    **Example:** The web-based software *DisApp* contains two HTML-files:
+    * **<tt>Login</tt>** is the template for login screens to the server the JSON element can be access by <tt>JSCC.TemplateHTML["Login"]</tt> ).
+    * **<tt>Main</tt>** is the window that will be opened by <tt>index.html</tt>, which imports the standard libraries for all main HTML file used for *DisApp*  (e.g. <tt>JSCC.TemplateHTML["Main"]</tt>). In the example the HTML page <tt>submit.html</tt> and <tt>app.html</tt> are created with this HTML template.
+
+In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
+
+When we consider the object oriented programming concept we have classes in instances of the classes (objects). Similar to this concept we create HTML files as templates, that contain certain markers, that are replaced by user-defined content.
+The markers three preceding underscores before and after the identifier. In Identifying itself consist of uppercase characters. An example of a marker wll look like thislook like this:
+
+    **Examples Marker:**  The marker <code>___PAGE_ID___</code> in the template will be replaced by a defined content in the HTML page. The marker <code>___TITLE___</code> will be replaced by the title of the HTML page.
+
+The notation with  3 underscores before an after the uppercase identifier is used and, because he creates less conflict with other programming languages the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
+
+### Pages (Parent: FileHTML)
+
+
 ## Status of software
-### Releas Status
-Software in currently in Beta-Testing
+### Release Status
+Software in currently in Beta-Phase. It is a proof of concept.
+Refactoring of JavascriptClassCreator code in an object-oriented style
 
 ### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
@@ -66,10 +104,11 @@ Software in currently in Beta-Testing
 
 
 ## Acknowledgement
-Special thanks to:
+Special thanks to the following individual developers and teams of OpenSource JavaScript projects:
 * Developer [Mihai Bazon](http://lisperator.net/) create UglifyJS, a great tool to handle and parse Javascript Code and minify the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * The wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is used to minify/compress the exported Javascript code of generated JS Classes (For Online Example of the [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) see source code on https://github.com/Skalman/UglifyJS-online for the Online-Version of the Wrapper.
 * Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)
 * [JointJS](https://github.com/clientIO/joint) JointJS is a JavaScript diagramming library. It can be used to create either static diagrams. JointJS is used in this project to create UML-diagrams, that are interactive diagramming in conjunction and application builder in Javascript.
 * [Inheritage for JavaScript with protoypes](http://phrogz.net/js/classes/OOPinJS2.html) by Gavin Kistner
 * [3 ways to define a JavaScript class](https://www.phpied.com/3-ways-to-define-a-javascript-class/) by Stoyan Stefanov
+* [JQuery](https://jqueryui.com) is used for the theme and standard operations in the Document Object Model (DOM) of HTML-pages. The [JQuery-Themeroller](https://jqueryui.com/themeroller/) was used to create a JQuery theme for JSCC.

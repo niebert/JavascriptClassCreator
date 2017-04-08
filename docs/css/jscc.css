@@ -35,6 +35,10 @@ a:hover {
   background: #993333;
   color: #FFFFFF;
 }
+.renamebutton {
+  background: #3366cc;
+  color: #FFFFFF;
+}
 .cDeleteBT {
   -webkit-border-radius: 2px;
 	-moz-border-radius: 3px;

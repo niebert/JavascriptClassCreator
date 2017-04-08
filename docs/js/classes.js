@@ -233,10 +233,21 @@ function getInhertitedClass(pClassName,pInheritance) {
 };
 
 function createNewClass() {
+  console.log("Click New - create a new Class with [+]");
+  if (askCreateNew("Class",getValueDOM("tClassname"))) {
+    createNewClass_do()
+  };
+};
+
+function createNewClass_do() {
   console.log("Click New - create a new class after prompt");
-  var vNewClassName = prompt("Please enter name of new Class", "");
+  var vNewClassName = getValueDOM("tClassname") || "";
   var vSuccess = false;
-  if (vNewClassName != null) {
+  if (getValueDOM("tAuthor") == "") {
+    alert("Please enter your Name (Author of Class)!")
+  } else if (getValueDOM("tEMail") == "") {
+    alert("Please enter your e-Mail (Contact Mail of Author)!")
+  } else if (vNewClassName != "") {
     write2value("tClassname", vNewClassName);
     vFailed = createClassJS(vNewClassName);
     if (vFailed) {
@@ -429,9 +440,6 @@ function createClassJS(pClass) {
     for (var i = 0; i < vDOM_ID.length; i++) {
       vClassJSON[vDOM_ID[i]] = "";
     };
-    vClassJSON["Page"] = {};
-    vClassJSON["PageType"] = {};
-    vClassJSON["tClassname"] = pClass;
     vClassJSON["tClassname"] = pClass;
     var vClassTypeHash = getClassTypeHash();
     vJSON_JS["ClassType"] = vClassTypeHash;
@@ -1112,8 +1120,8 @@ function getClassArray() {
 
 function getClassTypeArray() {
   var vClassString = getValueDOM("tClassList");
-  vClasses = removeEmptyLines(vClasses);
-  return vClasses.split(/\n/);
+  vClassString = removeEmptyLines(vClassString);
+  return vClassString.split(/\n/);
 }
 
 

@@ -3,21 +3,21 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [JavascriptClassCreator (JSCC)](#javascriptclasscreator-jscc)
-  - [Introduction](#introduction)
-  - [UML Diagrams](#uml-diagrams)
-  - [Compressing Code](#compressing-code)
-  - [Structure of JSCC projects](#structure-of-jscc-projects)
-    - [JSCC Projects](#jscc-projects)
-    - [HTML Files - HTML Templates](#html-files---html-templates)
-    - [Pages (Parent: FileHTML)](#pages-parent-filehtml)
-  - [Status of software](#status-of-software)
-    - [Release Status](#release-status)
-    - [ToDo](#todo)
-  - [Acknowledgement](#acknowledgement)
+- [Introduction](#introduction)
+- [UML Diagrams](#uml-diagrams)
+- [Compressing Code](#compressing-code)
+- [Structure of JSCC projects](#structure-of-jscc-projects)
+  - [JSCC Projects](#jscc-projects)
+  - [HTML Files - HTML Templates](#html-files---html-templates)
+  - [Pages (Parent: FileHTML)](#pages-parent-filehtml)
+- [Status of software](#status-of-software)
+  - [Release Status](#release-status)
+  - [ToDo](#todo)
+- [Acknowledgement](#acknowledgement)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# JavascriptClassCreator (JSCC)
+## JavascriptClassCreator (JSCC)
 
 An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows to tweak software without digging very deep into libraries and code.
 

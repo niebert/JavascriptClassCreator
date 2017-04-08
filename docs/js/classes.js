@@ -235,7 +235,8 @@ function getInhertitedClass(pClassName,pInheritance) {
 function createNewClass() {
   console.log("Click New - create a new Class with [+]");
   if (askCreateNew("Class",getValueDOM("tClassname"))) {
-    createNewClass_do()
+    var vSuccess = createNewClass_do();
+    alert("Class ["+getValueDOM("tClassname")+"] created!");
   };
 };
 
@@ -244,26 +245,41 @@ function createNewClass_do() {
   var vNewClassName = getValueDOM("tClassname") || "";
   var vSuccess = false;
   if (getValueDOM("tAuthor") == "") {
-    alert("Please enter your Name (Author of Class)!")
-  } else if (getValueDOM("tEMail") == "") {
-    alert("Please enter your e-Mail (Contact Mail of Author)!")
-  } else if (vNewClassName != "") {
-    write2value("tClassname", vNewClassName);
-    vFailed = createClassJS(vNewClassName);
-    if (vFailed) {
-      alert("Create New Class ["+vNewClassName+"] was NOT successful. Class already exists!");
-      selectClass(vNewClassName);
+    var vNewAuthor = prompt("Please enter your Name (Author of Class)!","") || "";
+    if (vNewAuthor != "") {
+      write2value("tAuthor",vNewAuthor);
     } else {
-      var vClassTypeArr = getClassTypeArray(); //Defines Class,Abstract,Interface
-      vClassArr.push(vNewClassName);
-      write2value("tClassList", vClassTypeArr.join("\n"));
-      updateClassSelector();
-      updateClasses();
+      write2value("tAuthor","Anonymous");
+    };
+  };
+  if (getValueDOM("tEMail") == "") {
+    var vNewEMail = prompt("Please enter your e-Mail (Contact Mail of Author)!","") || "";
+    if (vNewEMail != "") {
+      write2value("tEMail",vNewEMail);
+    } else {
+      write2value("tEMail","anonymous@example.com");
+    };
+  };
+  if (vNewClassName != "") {
+    write2value("tClassname", vNewClassName);
+    if (existsClassJS(vNewClassName)) {
+      alert("Create New Class ["+vNewClassName+"] was NOT successful. Class already exists!");
+    } else {
+      console.log("append the new class ["+vNewClassName+"]");
+      var vClassTypeArr = getClassArray(); //Defines Class,Abstract,Interface
+      var vClassTypeUML = getValueDOM("sClassType") || "Default";
+      vClassTypeArr.push(vNewClassName +" = " + vClassTypeUML );
+      var vClassString =  vClassTypeArr.join("\n");
+      console.log("NEW CLASS "+vClassString);
+      write2value("tClassList",vClassString);
+      createClassSelect();
+      createClassJS(vNewClassName,vClassTypeUML);
       updateJSON2Form(vNewClassName);
       vSuccess = true;
       //document.location.href = "#tabs-1";
       $( "#tabClass" ).trigger( "click" );
-    }
+    };
+    selectClass(vNewClassName);
   } else {
     console.log("Create new Classes cancelled!");
   };
@@ -428,7 +444,8 @@ function existsBasicClass(pClass) {
   return  vBasicClassHash.hasOwnProperty(pClass);
 }
 
-function createClassJS(pClass) {
+function createClassJS(pClass,pClassType) {
+  var vClassType = pClassType || "";
   var vClassExists = existsClassJS(pClass);
   if (vClassExists) {
     //alert("Class '"+pClass+"' already exists!");
@@ -440,10 +457,9 @@ function createClassJS(pClass) {
     for (var i = 0; i < vDOM_ID.length; i++) {
       vClassJSON[vDOM_ID[i]] = "";
     };
+    // Set ClassType of Class in JSON and other variables
+    vJSON_JS["ClassType"][pClass] = vClassType;
     vClassJSON["tClassname"] = pClass;
-    var vClassTypeHash = getClassTypeHash();
-    vJSON_JS["ClassType"] = vClassTypeHash;
-    var vClassType = vClassTypeHash[pClass] || "UndefClassType";
     vClassJSON["tEMail"] = getValueDOM("tEMail");
     vClassJSON["tAuthor"] = getValueDOM("tAuthor");
     // "myMethod(p1,p2)" stores the code in vClassJSON["MethodCode"]["myMethod"]

@@ -80,9 +80,13 @@ When we consider the object oriented programming concept we have classes in inst
 The markers three preceding underscores before and after the identifier. In Identifying itself consist of uppercase characters. An example of a marker wll look like thislook like this:
 
 **Examples Marker:**  The marker
+
       ___PAGE_ID___
+
 in the template will be replaced by a defined content in the HTML page. The marker
+
       ___TITLE___
+
 will be replaced by the title of the HTML page.
 
 The notation with  3 underscores before an after the uppercase identifier is used and, because he creates less conflict with other programming languages the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.

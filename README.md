@@ -70,21 +70,21 @@ In traditional software development HTML pages can be regarded as windows with a
 
 **(TemplateHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
 
-    **Example:** The web-based software *DisApp* contains two HTML-files:
-    * **<tt>Login</tt>** is the template for login screens to the server the JSON element can be access by <tt>JSCC.TemplateHTML["Login"]</tt> ).
-    * **<tt>Main</tt>** is the window that will be opened by <tt>index.html</tt>, which imports the standard libraries for all main HTML file used for *DisApp*  (e.g. <tt>JSCC.TemplateHTML["Main"]</tt>). In the example the HTML page <tt>submit.html</tt> and <tt>app.html</tt> are created with this HTML template.
+**Example:** The web-based software *DisApp* contains two HTML-files:
+* **<tt>Login</tt>** is the template for login screens to the server the JSON element can be access by <tt>JSCC.TemplateHTML["Login"]</tt> ).
+* **<tt>Main</tt>** is the window that will be opened by <tt>index.html</tt>, which imports the standard libraries for all main HTML file used for *DisApp*  (e.g. <tt>JSCC.TemplateHTML["Main"]</tt>). In the example the HTML page <tt>submit.html</tt> and <tt>app.html</tt> are created with this HTML template.
 
 In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
 
 When we consider the object oriented programming concept we have classes in instances of the classes (objects). Similar to this concept we create HTML files as templates, that contain certain markers, that are replaced by user-defined content.
 The markers three preceding underscores before and after the identifier. In Identifying itself consist of uppercase characters. An example of a marker wll look like thislook like this:
 
-    **Examples Marker:**  The marker <code>___PAGE_ID___</code> in the template will be replaced by a defined content in the HTML page. The marker <code>___TITLE___</code> will be replaced by the title of the HTML page.
+**Examples Marker:**  The marker <code>___PAGE_ID___</code> in the template will be replaced by a defined content in the HTML page. The marker <code>___TITLE___</code> will be replaced by the title of the HTML page.
 
 The notation with  3 underscores before an after the uppercase identifier is used and, because he creates less conflict with other programming languages the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
 
 ### Pages (Parent: FileHTML)
-
+Pages are areas of HTML files that shown or hidden by JQuery.
 
 ## Status of software
 ### Release Status

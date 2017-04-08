@@ -83,7 +83,7 @@ The markers three preceding underscores before and after the identifier. In Iden
 
       ___PAGE_ID___
 
-in the template will be replaced by a defined content in the HTML page. The marker
+in the template could be replaced by a unique page-id if instances the HTML template are created as page. Similar to this approach the marker
 
       ___TITLE___
 

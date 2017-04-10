@@ -10,7 +10,7 @@
    var vSelectedClass = "Undefined";
 
    var vJSON_JS   = {};
-   var vClassJSON = {};
+   //var vClassJSON = {};
    // Contains the JSON File for a specific class
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
@@ -186,9 +186,9 @@ writedom.js</textarea>
           Page-ID can be replaced by Button-ID
           <br>
           <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">DefaultPage|home|
-        MenuPage|welcome|QUIT
-        OptionsPage|home|save
-        ConfirmPage|home|OK
+MenuPage|welcome|QUIT
+OptionsPage|home|save
+ConfirmPage|home|OK
           </textarea>
         </td>
         </tr>
@@ -201,7 +201,7 @@ writedom.js</textarea>
           <br>
 
         <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
-        OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
+OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
           </textarea>
         </td>
         </tr>
@@ -325,9 +325,13 @@ writedom.js</textarea>
         </tr>
         <tr>
     		<td>
-    		<b>Class Name:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
+    		<b>Class:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
         <input type="button" id="bCreateNewClass" onclick="createNewClass();return false" value="+">
-        <button id="bRenameClass" class="renamebutton" onclick="renameClassForm();return false">Rename</button> <br>
+        <button id="bRenameClass"    class="renamebutton" onclick="renameClassForm();return false">Rename</button>
+        <!--
+        <button id="bDeletePageHTML" class="deletebutton" onclick="deleteClassHTML();return false">Delete</button>
+      -->
+         <br>
         <b>UML Type:</b>
         <select id="sClassType" name="sClassType" onchange="selectClassType(getValueDOM('tClassname'),this.value)">
           <option value="Default"></option>

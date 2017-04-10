@@ -123,6 +123,32 @@ function inheritMethods4Class(pClassJS,pInheritJS) {
   }
 };
 
+function getDefaultClassHash(pClass,pClassType) {
+  console.log("getDefaultClassHash()");
+  var vClassType = pClassType || "Default";
+  var vRetClass = {};
+  for (var i = 0; i < vDOM_ID.length; i++) {
+    vRetClass[vDOM_ID[i]] = "";
+  };
+  //----SET CLASS TYPE---
+  vJSON_JS["ClassType"][pClass] = vClassType;
+  // Set ClassType of Class in JSON and other variables
+  vRetClass["tClassname"] = pClass;
+  vRetClass["sClassType"][pClass] = vClassType;
+  vRetClass["tEMail"] = getValueDOM("tEMail") || "anonymous@example.com";
+  vRetClass["tAuthor"] = getValueDOM("tAuthor") || "My Name";
+  // "myMethod(p1,p2)" stores the code in vRetClass["MethodCode"]["myMethod"]
+  // and stores the comment in vRetClass["MethodComment"]["myMethod"]
+  vRetClass["AttribType"] = {};
+  vRetClass["AttribDefault"] = {};
+  vRetClass["AttribComment"] = {};
+  vRetClass["MethodParameter"] = {};
+  vRetClass["MethodReturn"] = {};
+  vRetClass["MethodCode"] = {};
+  vRetClass["MethodComment"] = {};
+  return vRetClass;
+};
+
 function inheritMethodsCode(pChain) {
   var vChain = pChain || [getSelectedClassName()];
   var vClassName = pChain[0];
@@ -166,8 +192,31 @@ function getSuperClassname4Class(pClassName) {
 
 function getClassJSON(pClassName) {
   var vClassName = pClassName || getValueDOM("tClassname");
+  var vRetClass;
   console.log("getClassJSON('"+vClassName+"')");
-  return vJSON_JS["ClassList"][vClassName];
+  if (vClassName != "") {
+    if (top.vJSON_JS) {
+      if (top.vJSON_JS.ClassList) {
+        if (top.vJSON_JS.ClassList[vClassName]) {
+          vRetClass = top.vJSON_JS.ClassList[vClassName];
+        } else {
+          vRetClass = getDefaultClassHash(vClassName);
+          vJSON_JS["ClassList"][vClassName] = vRetClass;
+          console.log("Class Create in getClassJSON('"+vClassName+"')");
+        };
+      } else {
+        console.log("getClassJSON('"+pClassName+"') ClassList undefined");
+        initClassJS(pClassName,null,"getClassJSON()");
+      };
+    } else {
+      initClassJS(pClassName,null,"getClassJSON()");
+      alert("getClassJSON('"+pClassName+"') vJSON_JS as Main Project DB is undefined");
+    };
+  };
+  if (!vRetClass) {
+    alert("Class '"+vClassName+"' does not exist")
+  };
+  return vRetClass;
 }
 
 function getSuperClassJSON(pClassName) {
@@ -273,7 +322,7 @@ function createNewClass_do() {
       console.log("NEW CLASS "+vClassString);
       write2value("tClassList",vClassString);
       createClassSelect();
-      createClassJS(vNewClassName,vClassTypeUML);
+      createClassJS(vNewClassName,vClassTypeUML,"createNewClass_do()");
       updateJSON2Form(vNewClassName);
       vSuccess = true;
       //document.location.href = "#tabs-1";
@@ -368,15 +417,24 @@ function renameClassForm() {
     }
 }
 
-function initClassJS(pClass) {
+function initClassJS(pClass,pClassType,pCaller) {
+  var vCaller = pCaller || "";
+  console.log("initClassJS('"+pClass+"','"+pClassType+"') Caller="+vCaller);
+  var vClassType = pClassType || getFormClassType4Class(pClass);
   if (!pClass) {
     console.log("Call: initClassJS(pClass) with pClass undefined");
   } else {
-      initClassJS_do(pClass)
+      initClassJS_do(pClass,vClassType);
+      var vClassJS = vJSON_JS["ClassList"][pClass];
+      if (vClassJS) {
+        checkClassJSON(vClassJS);
+      }
   }
 };
 
-function initClassJS_do(pClass) {
+function initClassJS_do(pClass,pClassType) {
+  //console.log("initClassJS_do('"+pClass+"','"+pClassType+"')");
+  var vClassType = getFormClassType4Class(pClass) || "";
   pClass = reduceVarName(pClass);
   if (pClass == "") {
     console.log("initClassJS()-Call: Classname undefined");
@@ -404,8 +462,8 @@ function initClassJS_do(pClass) {
     if (top.vJSON_JS["ClassList"][pClass]) {
       console.log("Class '"+pClass+"' exists in JSON DB");
     } else {
-      top.createClassJS(pClass);
-      console.log("Class '"+pClass+"' created and updated from HTML Form with default values");
+      top.createClassJS(pClass,vClassType,"initClassJS_do()");
+      console.log("Class '"+pClass+"' created and updated from HTML Form with default values ClassType='"+vClassType+"'");
     };
   };
 }
@@ -444,33 +502,19 @@ function existsBasicClass(pClass) {
   return  vBasicClassHash.hasOwnProperty(pClass);
 }
 
-function createClassJS(pClass,pClassType) {
-  var vClassType = pClassType || "";
+function createClassJS(pClass,pClassType,pCallerJS) {
+  var vCallerJS = pCallerJS || "";
+  console.log("createClassJS('"+pClass+"','"+pClassType+"') Caller="+vCallerJS);
+  var vClassType = pClassType || getValueDOM("sClassType") || "";
   var vClassExists = existsClassJS(pClass);
   if (vClassExists) {
     //alert("Class '"+pClass+"' already exists!");
     console.log("Class '"+pClass+"' already exists!");
   } else {
-    console.log("createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' - createClassJS()-Call");
+    console.log("createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
     checkClassList(pClass);
-    vClassJSON = vJSON_JS["ClassList"][pClass];
-    for (var i = 0; i < vDOM_ID.length; i++) {
-      vClassJSON[vDOM_ID[i]] = "";
-    };
-    // Set ClassType of Class in JSON and other variables
-    vJSON_JS["ClassType"][pClass] = vClassType;
-    vClassJSON["tClassname"] = pClass;
-    vClassJSON["tEMail"] = getValueDOM("tEMail");
-    vClassJSON["tAuthor"] = getValueDOM("tAuthor");
-    // "myMethod(p1,p2)" stores the code in vClassJSON["MethodCode"]["myMethod"]
-    // and stores the comment in vClassJSON["MethodComment"]["myMethod"]
-    vClassJSON["AttribType"] = {};
-    vClassJSON["AttribDefault"] = {};
-    vClassJSON["AttribComment"] = {};
-    vClassJSON["MethodParameter"] = {};
-    vClassJSON["MethodReturn"] = {};
-    vClassJSON["MethodCode"] = {};
-    vClassJSON["MethodComment"] = {};
+    getDefaultClassHash(pClass,vClassType);
+    //vClassJSON = vJSON_JS["ClassList"][pClass];
   };
   return vClassExists;
 };
@@ -506,6 +550,7 @@ function getAttribName(pAttribWithParams) {
 };
 
 function getAttribComment(pAttribWithParams) {
+  var vClassJSON = getClassJSON();
   var vAttribName = getAttribName(pAttribWithParams);
   return vClassJSON["AttribComment"][vAttribName] || "";
 };
@@ -517,22 +562,26 @@ function getMethodName(pMethodWithParams) {
 };
 
 function getMethodComment(pMethodWithParams) {
+  var vClassJSON = getClassJSON();
   var vMethodName = getMethodName(pMethodWithParams);
   return vClassJSON["MethodComment"][vMethodName] || "";
 };
 
 function getMethodParameter(pMethodWithParams) {
+  var vClassJSON = getClassJSON();
   var vMethodName = getMethodName(pMethodWithParams);
   return vClassJSON["MethodParameter"][vMethodName] || "";
 };
 
 function getMethodReturn(pMethodWithParams) {
+  var vClassJSON = getClassJSON();
   var vMethodName = getMethodName(pMethodWithParams);
   return vClassJSON["MethodReturn"][vMethodName] || "";
 };
 
 
 function getMethodCode(pMethodWithParams) {
+  var vClassJSON = getClassJSON();
   var vMethodName = getMethodName(pMethodWithParams);
   //return vClassJSON["MethodCode"][vMethodName] || "undefined Code '"+pMethodWithParams+"'";
   return vClassJSON["MethodCode"][vMethodName] || "";
@@ -606,7 +655,7 @@ function createNewAttribJS(pName) {
   // get name of Attributes
   var vName = pName || getValueDOM("tAttribName");
   console.log("createNewAttribJS('"+vName+"')");
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON();
   if (reduceVarName(vName) == "") {
     alert("ERROR: Name of Attribute is undefined.\nPlease enter the Name of the Variable!");
     console.log("ERROR: Name Variable undefined - createNewAttribJS()");
@@ -641,7 +690,7 @@ function createNewAttribJS(pName) {
 function createNewAttributeForm(pName,pType,pValue,pComment) {
     console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"')");
     var vClassJS = getSelectedClassJSON();
-    var vClassName = getSelectedClass();
+    var vClassName = getSelectedClassID();
     var vAttrDef = pName + " = " + pValue;
     var vAttributes = document.fCreator.tAttributes;
     //var vAttribs = reduceVarName(vAttributes.value);
@@ -661,6 +710,7 @@ function createNewAttributeForm(pName,pType,pValue,pComment) {
 };
 
 function createNewMethodJS() {
+  var vClassJSON = getClassJSON();
   // get name of Attributes
   var vMethCall = getValueDOM("tMethodName");
   var vName = getName4Method(vMethCall);
@@ -992,48 +1042,64 @@ function getName4SepChar(pChar,pLine) {
   return pLine
 };
 
+function getFormMethodsString() {
+  return getFormString4ID("tMethods");
+}
+
+function getFormString4ID(pDOMID) {
+  var vString = getValueDOM(pDOMID) || "";
+  vString  = removeEmptyLines(vString);
+  return vString;
+}
+
 function getMethodHash() {
-  var vMethods = getValueDOM("tMethods");
-  vMethods = removeEmptyLines(vMethods);
-  var vMethodArray    = vMethods.split(/\n/);
-  var vLine = "";
-  var vName = "";
+  var vMethods = getFormMethodsString();
   var vRetHash = {};
-  for (var i = 0; i < vMethodArray.length; i++) {
-      vName = getName4Method(vMethodArray[i]);
-      if (vName != "") {
-        vRetHash[vName] = vMethodArray[i];
-        //console.log("getMethodHash() "+vName+" = " + vMethodArray[i]);
-      };
+  if (vMethods.length > 0) {
+    var vMethodArray    = vMethods.split(/\n/);
+    var vLine = "";
+    var vName = "";
+    for (var i = 0; i < vMethodArray.length; i++) {
+        vName = getName4Method(vMethodArray[i]);
+        if (vName != "") {
+          vRetHash[vName] = vMethodArray[i];
+          //console.log("getMethodHash() "+vName+" = " + vMethodArray[i]);
+        };
+    };
   };
   return vRetHash;
 };
 
 function getMethodNameArray() {
-  var vMethods = getValueDOM("tMethods");
-  vMethods = removeEmptyLines(vMethods);
-  var vMethodArray    = vMethods.split(/\n/);
-  var vLine = "";
+  var vMethods = getFormMethodsString();
   var vRetArr = [];
-  for (var i = 0; i < vMethodArray.length; i++) {
-      vLine = getName4Method(vMethodArray[i]);
-      if (vLine != "") {
-        vRetArr.push(vLine);
-      };
+  if (vMethods.length > 0) {
+    vMethods = removeEmptyLines(vMethods);
+    var vMethodArray    = vMethods.split(/\n/);
+    var vLine = "";
+    for (var i = 0; i < vMethodArray.length; i++) {
+        vLine = getName4Method(vMethodArray[i]);
+        if (vLine != "") {
+          vRetArr.push(vLine);
+        };
+    };
   };
   return vRetArr;
 };
 
 function getMethodParamArray() {
-  var vMethods = getValueDOM("tMethods");
-  vMethods = removeEmptyLines(vMethods);
-  var vMethodArray    = vMethods.split(/\n/);
-  var vLine = "";
-  for (var i = 0; i < vMethodArray.length; i++) {
-    var vRegEx = /([A-Za-z_0-9]+)*[\w\s$]*(\((.*[\w\s,$]*)\))/;
-    vLine = vMethodArray[i];
-    vRegEx.exec(vLine);
-    vMethodArray[i] = vRegEx.$2;
+  var vMethods = getFormMethodsString();
+  var vMethodArray = [];
+  if (vMethods.length > 0) {
+    vMethods = removeEmptyLines(vMethods);
+    vMethodArray    = vMethods.split(/\n/);
+    var vLine = "";
+    for (var i = 0; i < vMethodArray.length; i++) {
+      var vRegEx = /([A-Za-z_0-9]+)*[\w\s$]*(\((.*[\w\s,$]*)\))/;
+      vLine = vMethodArray[i];
+      vRegEx.exec(vLine);
+      vMethodArray[i] = vRegEx.$2;
+    };
   };
   return vMethodArray;
 };
@@ -1140,8 +1206,11 @@ function getClassTypeArray() {
   return vClassString.split(/\n/);
 }
 
-
 function getClassTypeHash() {
+  return getClassTypeHashForm();
+}
+
+function getClassTypeHashForm() {
   var vClassString = getValueDOM("tClassList");
   return getString2ClassHash(vClassString);
 }
@@ -1286,7 +1355,7 @@ function getBasicClassHash() {
   var vVar;
   for (var i = 0; i < vClassArray.length; i++) {
     vVar = splitAtEqual(vClassArray[i]);
-    console.log("getBasisClassDefHash() - Var='"+vVar[0]+"' value='"+vVar[1]+"'");
+    //console.log("getBasisClassDefHash() - Var='"+vVar[0]+"' value='"+vVar[1]+"'");
     if (reduceVarName(vVar[0]) != "") {
       vClassHash[reduceVarName(vVar[0])] = vVar[1].replace(/^\s+/,"");
     } else {
@@ -1324,6 +1393,7 @@ function updateClasses() {
   // (3) sets the ClassType in ClassList vJSON_JS["ClassType"]["App"] = "Interface",
   // (4) sets the Selector of the ClassType i.e. DOM-Selector "sClassType" vJSON_JS["ClassList"]["App"]["sClassType"] = "Interface",
   // (5) and removes empty line in tClassList textarea in Tab "Files/Classes"
+  var vClassTypeHash = getForm2ClassTypeHash();
   console.log("updateClasses()-Call");
   updateBasicClasses();
   vJSON_JS["BasicClasses"] = getBasicClassHash();
@@ -1334,13 +1404,15 @@ function updateClasses() {
   var vClassHashJSON = null;
   var vClassType = "";
   var vClassName = "";
-  var vSelectedClass = getSelectedClass();
+  var vSelectedClass = getSelectedClassID();
   for (var i = 0; i < vClassArray.length; i++) {
     // extract ClassName "MyClass" from Definition "MyClass = Interface" in vClassArray[i]
     vClassName = reduceVarName(vClassArray[i]);
     // extract ClassType "Interface" from Definition "MyClass = Interface" in vClassArray[i]
     vClassType = getClassType4Definition(vClassArray[i]);
+    createClassJS(vClassName,vClassType,"updateClasses(1)");
     // Set the ClassType in vJSON_JS
+    console.log("updateClasses() ClassID='"+vClassName+"' ClassTypeID='"+vClassType+"'\nLINE='"+vClassArray[i]+"'");
     setClassTypeJSON(vClassName,vClassType);
     // get the ClassHash from JSON
     vClassHashJSON = vJSON_JS["ClassList"][vClassName];
@@ -1353,14 +1425,15 @@ function updateClasses() {
       if (vClassHashJSON) {
         console.log("Class '"+vClassName+"' exists for updateClasses()-Call.\nDefinition '"+vClassArray[i]+"'");
       } else {
-        createClassJS(vClassArray[i]);
+        createClassJS(vClassName,vClassType,"updateClasses(2)");
       };
       // The following setting must be called after createClassJS,
       // otherwise the class might not be available in vJSON_JS.
       // Next command will set the selector for the ClassType properly.
       // This value is used, when users change the selected class and
       // the selector ClassType in DOM should show the selected ClassType
-      vJSON_JS["ClassList"][vClassName]["sClassType"] = vClassType;
+      setClassTypeJSON(vClassName,vClassType);
+      //vJSON_JS["ClassList"][vClassName]["sClassType"] = vClassType;
     };
   };
   // create the Class Selector Option of all existing classes

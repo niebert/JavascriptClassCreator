@@ -69,7 +69,7 @@ function updateFormID2JSON(pID) {
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
   console.log("updateAttributesJS()-Call called after adding a new Attribute");
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vAttName = vClassJS["sAttribList"] || "";
   write2value("sAttribList",vAttName);
   selectJSAttribs();
@@ -86,6 +86,7 @@ function updateJSAttribs() {
 };
 
 function updateJSMethods() {
+  console.log("updateJSMethods()");
   var vMethodNameArr   = getMethodNameArray();
   var vMethodHash      = getMethodHash();
   var vMethodNameArray = getMethodNameArray();
@@ -109,6 +110,7 @@ function updateJSMethods() {
 };
 
 function loadAttribJSON (pAttribName) {
+  var vClassJSON = getClassJSON();
   var vAttribName = getValueDOM("tAttribName");
   vAttribName = pAttribName || vAttribName;
   write2value("tAttribName",vAttribName);
@@ -156,7 +158,7 @@ function save2LevelID2JSON(pListID,pID,pValue) {
 
 function deleteClassForm() {
   console.log("deleteAttributeForm()");
-  vClassJSON = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vMethodName = getValueDOM("sClassList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -173,7 +175,7 @@ function deleteClassForm() {
 
 function deleteAttributeForm() {
   console.log("deleteAttributeForm()");
-  vClassJSON = getSelectedClassJSON();
+  vClassJSON = getClassJSON;
   var vMethodName = getValueDOM("sAttribList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -190,7 +192,7 @@ function deleteAttributeForm() {
 
 function saveAttributeForm() {
   console.log("saveAttributeForm()");
-  vClassJSON = getSelectedClassJSON();
+  var vClassJSON = getClassJSON;
   saveAttribJSON();
   var vOut = "";
   var vCR = "";
@@ -206,7 +208,7 @@ function saveAttributeForm() {
 }
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
-  vClassJSON = getSelectedClassJSON();
+  var vClassJSON = getClassJSON;
   var vAttribName     = pAttName    || getValueDOM("tAttribName")    || "";
   var vAttribType     = pAttType    || getValueDOM("tAttribType")    || "";
   var vAttribDefault  = pAttDefault || getValueDOM("tAttribDefault") || "";
@@ -230,6 +232,7 @@ function updateJSON2selectAttrib(pClass) {
 }
 
 function loadMethodJSON (pMethodName) {
+  var vClassJSON = getClassJSON();
   var vMethodName = getValueDOM("tMethodName");
   vMethodName = pMethodName || vMethodName;
   var vMethodHash = getMethodHash();
@@ -249,7 +252,7 @@ function loadMethodJSON (pMethodName) {
 
 function deleteMethodForm() {
   console.log("deleteAttributeForm()");
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vMethodName = getValueDOM("sMethodList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -265,6 +268,7 @@ function deleteMethodForm() {
 
 
 function saveMethodCallJS(pClass) {
+  var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   var vMethodHash = getMethodHash();
@@ -289,13 +293,13 @@ function saveMethodCallJS(pClass) {
 
 function write2JSON(pID,pValue) {
   console.log("write2JSON('"+pID+"',pValue)-Call");
-  vClassJSON = getClassJSON();
+  var vClassJSON = getClassJSON();
   vClassJSON[pID] = pValue;
   write2value(pID,pValue);
 }
 
 function saveMethodJSON(pMethodName) {
-  vClassJSON = getSelectedClassJSON();
+  var vClassJSON = getClassJSON;
   var vMethodCall = getValueDOM("tMethodName");
   vMethodName = pMethodName || vMethodCall;
   vMethodName = getMethodName(vMethodName);
@@ -333,6 +337,7 @@ function checkClassJSON(pClassJSON) {
 
 function updateForm2MethodComment() {
   console.log("updateForm2MethodComment()-Call");
+  var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   var vMethodComment = getValueDOM("tMethodComment");
@@ -341,6 +346,7 @@ function updateForm2MethodComment() {
 
 function updateForm2MethodNameParam() {
   console.log("updateForm2MethodNameParam()-Call");
+  var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodCode = getEditorValue("iMethodCode");
   var vMethodName = getMethodName(vMethodCall);
@@ -358,7 +364,7 @@ function updateForm2MethodNameParam() {
 };
 
 function updateJSON2Form(pClass) {
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   var vContent = "";
   console.log("updateJSON2Form('"+vClass+"')");
   // updates form content in DOM with Class content
@@ -429,17 +435,18 @@ function getString4JSONVariable(pClass,pVarname) {
 
 function updateForm2MissingJSON(pClass) {
   var vAttHash = getForm2AttribDefaultHash(pClass); //classes.js:484
+  var vClassJSON = getClassJSON();
   vClassJSON["AttribDefault"] = vAttHash;
   // Define Hash in Attribute Hash if undefined
-  defineHashIfUndefined(vAttHash,"AttribType");
-  defineHashIfUndefined(vAttHash,"AttribComment");
+  defineHashIfUndefined(vAttHash,"AttribType",vClassJSON);
+  defineHashIfUndefined(vAttHash,"AttribComment",vClassJSON);
   var vMethArr = getMethodNameArray(); //classes.js:275
   var vMethHash = {};
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = vMethArr[i];
   };
-  defineHashIfUndefined(vMethHash,"MethodCode");
-  defineHashIfUndefined(vMethHash,"MethodComment");
+  defineHashIfUndefined(vMethHash,"MethodCode",vClassJSON);
+  defineHashIfUndefined(vMethHash,"MethodComment",vClassJSON);
 }
 
 function updateAttribJSON2Form(pClass) {
@@ -451,7 +458,7 @@ function updateAttribJSON2Form(pClass) {
 };
 
 function getAttribJSON4Form(pClass) {
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vAttDefault = vClassJS["AttribDefault"];
   var vAttArr = [];
@@ -465,25 +472,27 @@ function getAttribJSON4Form(pClass) {
 };
 
 function updateForm2AttribJSON(pClass) {
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vAttributes = getValueDOM("tAttributes");
   console.log("updateForm2AttribJSON('"+vClass+"') with Attributes="+vAttributes);
   var vAttHash = getForm2AttribDefaultHash(vClass); //classes.js:484
-  vClassJS["AttribDefault"] = vAttHash;
-  var vAttTypeHash = getAttribTypeHash(vAttHash); // classes.js:336
+  vClassJS["AttribDefault"] = vAttHash || {};
+  var vAttTypeHash = getAttribTypeHash(vAttHash) || {}; // classes.js:336
   // Define Hash in Attribute Hash if undefined
-  defineHashIfUndefined(vAttTypeHash,"AttribType");
-  defineHashIfEmpty(vAttTypeHash,"AttribType");
-  var vAttCommentHash = getAttribCommentHash(vAttHash); // classes.js:356
-  defineHashIfUndefined(vAttCommentHash,"AttribComment");
+  defineHashIfUndefined(vAttTypeHash,"AttribType",vClassJS);
+  console.log("CALL in updateForm2AttribJSON('"+vClass+"') DEBUG-LOG");
+  defineHashIfEmpty(vAttTypeHash,"AttribType",vClassJS);
+  var vAttCommentHash = getAttribCommentHash(vAttHash) || {}; // classes.js:356
+  defineHashIfUndefined(vAttCommentHash,"AttribComment",vClassJS);
   createAttribSelect();
 };
 
 function updateForm2MethodJSON(pClass) {
-  saveMethodCallJS(); // saves the definition of the method call
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   console.log("updateForm2MethodJSON('"+vClass+"')");
+  var vClassJS = getClassJSON();
+  saveMethodCallJS(); // saves the definition of the method call
   var vMethArr = getMethodNameArray(); //classes.js:275
   var vMethCallArr = getMethodArray(); //classes.js:598
   var vParam = "";
@@ -504,7 +513,7 @@ function updateForm2MethodJSON(pClass) {
       vMethReturn[vMethName] = getMethodReturn4Call(vCall);
     };
   };
-  defineHash(vMethHash,"MethodParameter");
+  defineHash(vMethHash,"MethodParameter",vClassJS);
   //defineHashIfUndefined(vMethHash,"MethodParameter");
   //------ Init undefined Method CODE----------
   var vReturn = "";
@@ -520,14 +529,14 @@ function updateForm2MethodJSON(pClass) {
     };
     vMethHash[vMethArr[i]] = vCode;
   };
-  defineHashIfUndefined(vMethHash,"MethodCode");
+  defineHashIfUndefined(vMethHash,"MethodCode",vClassJS);
   //------ Init undefined Method COMMENTS----------
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = "Comment for " + vMethArr[i];
   };
-  defineHashIfUndefined(vMethHash,"MethodComment");
+  defineHashIfUndefined(vMethHash,"MethodComment",vClassJS);
   //------ Init undefined Method RETURN----------
-  defineHash(vMethReturn,"MethodReturn");
+  defineHash(vMethReturn,"MethodReturn",vClassJS);
   //---------------------------------------------
   createMethodSelect();
 };
@@ -547,7 +556,7 @@ function getReturnCodeInit(pMethod,pReturn,pCode) {
 }
 
 function updateMethodsJSON2Form(pClass) {
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   var vOut = getMethodJSON4Form(vClass);
   var vClassJS = getClassJSON(vClass);
   vClassJS["tMethods"] = vOut;
@@ -555,7 +564,7 @@ function updateMethodsJSON2Form(pClass) {
 };
 
 function getMethodJSON4Form(pClass) {
-  var vClass = pClass || getSelectedClass();
+  var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vMethPars = vClassJS["MethodParameter"];
   var vMethRet  = vClassJS["MethodParameter"];
@@ -610,25 +619,36 @@ function getReturnVariableDef(pRetType) {
 };
 
 
-function updateForm2JSON(pClass) {
+function updateForm2JSON(pClass,pClassType) {
+  var vClass = pClass || getSelectedClassID();
+  //var vClassTypeHash = getForm2ClassTypeHash();
+  var vClassType = getFormClassType4Class(vClass) || "";
   //var vAttributes = getValueDOM("tAttributes");
-  console.log("updateForm2JSON('"+pClass+"')");
-  var vClass = pClass || getSelectedClass();
+  console.log("updateForm2JSON('"+vClass+"','"+vClassType+"')");
   // updates the Class content with form content in DOM
-  createClassJS(vClass);
+  createClassJS(vClass,vClassType,"updateForm2JSON()");
   updateForm_DOM2JSON(pClass);
   // load the defined Attribute and Methodsfrom Form
+  console.log("(1) updateForm2JSON('"+pClass+"') >> updateForm2AttribJSON()");
   updateForm2AttribJSON(pClass);
+  console.log("(2) updateForm2JSON('"+pClass+"') >> uupdateForm2MethodJSON()");
   updateForm2MethodJSON(pClass);
+  console.log("(3) updateForm2JSON('"+pClass+"') >> updateFormGlobal2JSON()");
   updateFormGlobal2JSON();
-  vJSON_JS["SelectedClass"] = getValueDOM("sClassList");
-  vJSON_JS["SelectedPage"] = getValueDOM("sPageHTML");
-  vJSON_JS["SelectedPageType"] = getValueDOM("sPageTypeHTML");
-  vJSON_JS["SelectedButton"] = getValueDOM("sButtonHTML"); 
+  console.log("(4) updateForm2JSON('"+pClass+"') >> set Selected IDs");
+  vJSON_JS["SelectedClass"] = getValueDOM("sClassList") || "";
+  vJSON_JS["SelectedPage"] = getValueDOM("sPageHTML") || "";
+  vJSON_JS["SelectedPageType"] = getValueDOM("sPageTypeHTML") || "";
+  vJSON_JS["SelectedButton"] = getValueDOM("sButtonHTML") || "";
 };
 
-function defineHashIfUndefined(pHash,pHashListID) {
-  var vClassJS = getClassJSON();
+function defineHashIfUndefined(pHash,pHashListID,pClassJS) {
+  var vClassJS = pClassJS || getClassJSON();
+  if (vClassJS[pHashListID]) {
+    console.log("defineHashIfUndefined(pHash,'"+pHashListID+"',pClassJS) Hash '"+pHashListID+"' exists");
+  } else {
+    vClassJS[pHashListID] = {};
+  };
   for (var iAttName in pHash) {
     if (vClassJS[pHashListID][iAttName]) {
         //vClassJSON[pHashListID][iAttName];
@@ -640,9 +660,9 @@ function defineHashIfUndefined(pHash,pHashListID) {
   };
 };
 
-function defineHashIfEmpty(pHash,pHashListID) {
-  var vClassJS = getClassJSON();
-  defineHashIfUndefined(pHash,pHashListID);
+function defineHashIfEmpty(pHash,pHashListID,pClassJS) {
+  var vClassJS = pClassJS || getClassJSON();
+  defineHashIfUndefined(pHash,pHashListID,vClassJS);
   var vValue = "";
   for (var iAttName in pHash) {
     vValue = vClassJS[pHashListID][iAttName];
@@ -656,9 +676,10 @@ function defineHashIfEmpty(pHash,pHashListID) {
   };
 };
 
-function defineHash(pHash,pHashListID) {
-  var vClassJS = getClassJSON();
-  defineHashIfUndefined(pHash,pHashListID);
+function defineHash(pHash,pHashListID,pClassJS) {
+  var vClassJS = pClassJS || getClassJSON();
+  console.log("defineHash(pHash,'"+pHashListID+"',pClassJS)");
+  defineHashIfUndefined(pHash,pHashListID,pClassJS);
   var vValue = "";
   for (var iAttName in pHash) {
     console.log(pHashListID+"['"+iAttName+"']='"+pHash[iAttName]+"' is defined");

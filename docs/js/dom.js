@@ -37,6 +37,7 @@ function createOptions4Array(pArray) {
 
 function createMethodSelect() {
   // get all Methods in JSON Database of all Classes
+  var vClassJSON = getClassJSON();
   console.log("createMethodSelect()-Call");
   var vArray = getMethodNameArray();
   var vOptions = createOptions4Array(vArray);
@@ -51,7 +52,7 @@ function createMethodSelect() {
 
 
 function createAttribSelect() { // TA=TextArea
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vClass = getValueDOM("tClassname");
   var vArray = getAttribNameArray();
   var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
@@ -65,23 +66,20 @@ function createAttribSelect() { // TA=TextArea
   write2value("tAttribComment",vAttCommentHash[vSelectedAtt] || "");
 };
 
-function getSelectedClass() {
+function getSelectedClassID() {
   return getValueDOM("tClassname") || getValueDOM("sClassList") || "UndefClass";
 };
 
 function getSelectedClassJSON(pClassName) {
-  var vSelectedClass = pClassName || getSelectedClass();
-  var vRetClassJSON = {};
-  if (vJSON_JS["ClassList"] && vJSON_JS["ClassList"][vSelectedClass]) {
-    vRetClassJSON = vJSON_JS["ClassList"][vSelectedClass]
-  };
-  return vRetClassJSON;
+  var vSelectedClass = pClassName || getSelectedClassID();
+  console.log("getClassJSON='"+vSelectedClass+"'");
+  return getClassJSON(vSelectedClass);
 }
 
 function updateForm_DOM2JSON() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
-  var vClassName = getSelectedClass();
-  var vClassJS = getSelectedClassJSON();
+  var vClassName = getSelectedClassID();
+  var vClassJS = getClassJSON();
   console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSON_JS");
   for (var i = 0; i < vDOM_ID.length; i++) {
     vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
@@ -90,8 +88,8 @@ function updateForm_DOM2JSON() {
 
 function updateDOM_JSON2Form() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
-  var vClassName = getSelectedClass();
-  var vClassJS = getSelectedClassJSON();
+  var vClassName = getSelectedClassID();
+  var vClassJS = getClassJSON;
   var vContent = "";
   console.log("updateDOM_JSON2Form()-Call: vDOM_ID in JSON stored in Form");
   for (var i = 0; i < vDOM_ID.length; i++) {
@@ -124,7 +122,8 @@ function updateGlobalJSON2Form() {
 function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createAttribTypeSelect()-Call");
-  var vArray = getAllClassesArray(); //classes.js 418
+  var vArr = getAllClassesArray(); //classes.js 418
+  var vArray = insertArray1Empty(vArr)
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
   var vName =  "";

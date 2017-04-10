@@ -41,19 +41,25 @@ function getSelectedClassName() {
   return vClassName;
 };
 
-function getSelectedClassJSON() {
+function getClassJSON {
   var vSelectedClass = getSelectedClassName();
-  return getClassJSON(vSelectedClass);
+  var vRetHash;
+  if (vSelectedClass != "") {
+    vRetHash = getClassJSON(vSelectedClass)
+  };
+  return vRetHash;
 };
 
 function getClassJSON(pClassName) {
   var vClass = pClassName || getSelectedClassName();
+  var vClassTypeHash = vJSON_JS["ClassType"];
   var vRetClassJSON = {}; //Undefined Variable
   if ((vSelectedClass != "") && vJSON_JS["ClassList"] && vJSON_JS["ClassList"][vClass]) {
     vRetClassJSON = vJSON_JS["ClassList"][vClass];
   } else {
     if (vClass != "") {
-      createClassJS(vClass);
+      var vClassType = vClassTypeHash[vClass] || "getClassJSON";
+      createClassJS(vClass,vClassType,"getClassJSON()");
       vRetClassJSON = vJSON_JS["ClassList"][vClass];
     } else {
       console.log("ERROR: getClassJSON(pClassName)  pClassName undefined");

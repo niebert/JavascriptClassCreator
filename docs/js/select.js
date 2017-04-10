@@ -31,7 +31,7 @@ function selectClass_do(pClass) {
   checkInterface4Class(vClass);
   createCode4JSON_JS(vJSON_JS);
   fillForm4Class(vClass);
-  createClassJS(vClass); // if necessary
+  //createClassJS(vClass); // if necessary
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect();
@@ -347,9 +347,8 @@ function selectJSAttribType() {
 };
 
 function selectJSAttribs() {
-  getClassJSON();
+  var vClassJSON = getClassJSON();
   saveAttribJSON();
-  vClassJSON = getClassJSON();
   //get SELECT AttribName value
   var vAttribName = getValueDOM("sAttribList");
   console.log("selectJSAttribs() - AttribName='"+vAttribName+"'");
@@ -477,7 +476,7 @@ function selectJSMethods() {
 };
 
 function updateClassSelector() {
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vClassType = vClassJS["sClassType"] || "Default";
   write2value("sClassType",vClassType);
   createClassSelect();
@@ -490,7 +489,7 @@ function updateDatabaseSelector() {
 function updateSelectors() {
   createClassSelect();
   createDatabaseSelect();
-  // PageType creates Selectors for the Form in Page Form 
+  // PageType creates Selectors for the Form in Page Form
   createPageTypeSelect();
   createPageSelect();
   createButtonSelect();

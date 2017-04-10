@@ -1,3 +1,23 @@
+function deleteClassHTML() {
+  var vClassID = getValueDOM("sClassList");
+  console.log("deleteClassHTML('"+vClassID+"')");
+  var vOK = confirm("Do you want to delete Class ["+vClassID+"]?");
+  var vID = "";
+  if(vOK == true) {
+    var vHashID = ["ClassList","ClassType"];
+    for (var i = 0; i < vHashID.length; i++) {
+      vID = vHashID[i];
+      delete vJSON_JS[vID][vClassID];
+    };
+    var vArrID = createArray4HashID(vJSON_JS["ClassList"]);
+    var vSelClassID = vArrID[0] || ""
+    vJSON_JS["SelectedClass"] = vSelClassID;
+    write2value("sClassList",vSelClassID);
+    updateJSON2Form();
+  };
+};
+
+
 function deletePageHTML() {
   var vPageID = getValueDOM("sPageHTML");
   console.log("deletePageHTML('"+vPageID+"')");
@@ -221,12 +241,38 @@ function getPageTypeArray() {
   return vPageTypeArray
 };
 
+function getFormClassType4Class(pClass) {
+   var vHash = getForm2ClassTypeHash();
+   var vClass = reduceVarName(pClass);
+   var vClassType = vHash[vClass] || "";
+   console.log("FormClassType["+vClass+"]='"+vClassType+"'");
+   return vClassType;
+};
+
+function showHashContent4LOG(pPrefixLOG,pHash) {
+  var vHash = pHash || {};
+  console.log("showHashContent4LOG() - Show Hash Content in Browser Log");
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      console.log(pPrefixLOG+" '"+iID+"'='"+vHash[iID]+"'");
+    };
+  };
+
+}
+
+function getForm2ClassTypeHash() {
+   var vHash = getClassTypeHash();
+   showHashContent4LOG("getForm2ClassTypeHash():",vHash);
+   return vHash;
+};
+
 function getPageTypeHash() {
   var vArr = getPageTypeArray();
   var vPageTypeHash = {};
   var vID = "";
   for (var i = 0; i < vArr.length; i++) {
     vID = vArr[i]["page-type"];
+    vID = reduceVarName(vID);
     // vArr[i] is a PageType-Hash with the IDs vPageTypeRECDEF in index.html
     vPageTypeHash[vID] = vArr[i];
   };
@@ -239,6 +285,7 @@ function getPageListArray() {
   var vRetArr = [];
   for (var i = 0; i < vArr.length; i++) {
     vID = vArr[i]["page-id"];
+    vID = reduceVarName(vID);
     vRetArr.push(vID);
   };
   return vRetArr;
@@ -253,6 +300,7 @@ function getPageListArrayWithHashes() {
    for (var i = 0; i < vArr.length; i++) {
      var vHash = getPageLine2Hash(vArr[i]);
      vPageID = vHash["page-id"];
+     vPageID = reduceVarName(vPageID);
      //vPageTypeID = vHash["page-type"];
      if (vPageID && (vPageID != "")) {
        vPageArr.push(vHash);
@@ -307,6 +355,7 @@ function getRecordLine2Hash(pRecord,pLine) {
    //console.log("getRecordLine2Hash('"+pLine+"')");
    var vHash = {};
    var vArr = pLine.split("|");
+   var vID = "";
    for (var k = 0; k < pRecord.length; k++) {
      vHash[pRecord[k]] = vArr[k] || "";
    };
@@ -530,19 +579,25 @@ function createNewPage_do() {
 };
 
 function createPageTypeJS(pPageTypeHash) {
-  var vPageTypeID = reduceVarName(pPageTypeHash["page-type"]);
-  console.log("createPageTypeJS('"+vPageTypeID+"')");
-  var vExists = existsPageTypeJS(vPageTypeID);
-  if (vExists) {
-    //alert("Page '"+pPageType+"' already exists!");
-    console.log("PageType '"+vPageTypeID+"' already exists!");
+  var vPageTypeID = pPageTypeHash["page-type"] || "";
+  var vSuccess = true;
+  console.log("createPageTypeJS(pHash) for '"+vPageTypeID+"'");
+  if (vPageTypeID != "") {
+    vPageTypeID = reduceVarName(vPageTypeID);
+    if (existsPageTypeJS(vPageTypeID)) {
+      //alert("Page '"+pPageType+"' already exists!");
+      console.log("PageType '"+vPageTypeID+"' already exists!");
+    } else {
+      console.log("createPageTypeJS()-Call: Create PageType '"+vPageTypeID+"'");
+      checkPageType(vPageTypeID);
+      //vJSON_JS["PageType"][pPageType] = vPageTypeHash[pPageType] || {};
+      vJSON_JS["PageType"][vPageTypeID]["template"] = getDefaultPageTypeContent(vPageTypeID);
+    };
   } else {
-    console.log("createPageTypeJS()-Call: Create PageType '"+vPageTypeID+"'");
-    checkPageType(vPageTypeID);
-    //vJSON_JS["PageType"][pPageType] = vPageTypeHash[pPageType] || {};
-    vJSON_JS["PageType"][vPageTypeID]["template"] = getDefaultPageTypeContent(vPageTypeID);
+    console.log("createPageTypeJS()-Call with empty PageType");
+    vSuccess = false
   };
-  return vExists;
+  return vSuccess;
 };
 
 function createNewPageType() {
@@ -679,10 +734,10 @@ function createPageJS(pPageHash) {
 
 function createDefaultPageTypeJS(pPageTypeID) {
   var vNewPageTypeHash = {
-    "page-type":pPageType,
+    "page-type":pPageTypeID,
     "button-id1":"",
     "button-id2":"",
-    "template":getDefaultPageTypeContent(pPageType)
+    "template":getDefaultPageTypeContent(pPageTypeID)
   };
   if (pPageTypeID != "") {
     createPageTypeJS(vNewPageTypeHash);

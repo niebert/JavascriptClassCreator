@@ -88,11 +88,13 @@ vDOM_ID.push("tMethodLoop");
 vTYPE_ID.push("String");
 //vDOM_ID.push("");
 
+
 function initCodeCreator() {
   // if Local Storage is supported by Browser try to Load JSON DB with Classes
   console.log("initCodeCreator()-Call");
   var vDB = null;
   var vSelectedClass = getValueDOM("tClassname");
+  console.log("initCodeCreator() Selected Class ["+vSelectedClass+"]");
   if (typeof(Storage) != "undefined") {
      //alert("Local Storage");
      loadLocalStorage("dom");
@@ -100,33 +102,29 @@ function initCodeCreator() {
      if (vDB) {
        console.log("JSON Database exists in Local Storage");
        top.vJSON_JS = vDB;
-       vSelectedClass = top.vJSON_JS["SelectedClass"];
+       vSelectedClass = top.vJSON_JS["SelectedClass"] || "";
        clearForm4Class(vSelectedClass);
        updateJSON2Form(vSelectedClass);
        console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
-        top.vJSON_JS["init_date"] = getDate();
-        initFormClass(vSelectedClass);
-        //console.log("DEBUG 1: "+getValueDOM("tClassList"));
-        initFormClassList();
-        initFormDatabaseList();
-        initFormButtonList();
-        initFormPageType();
-        initFormPageList();
-        initFormButtonList();
-        initFormSelectors();
-        updateClasses(); // reads the tClassList and updates the JSON Classes
-        updateFormGlobal2JSON();
+        if ((vJSON_JS["init_type"]) && vJSON_JS["init_type"] == "JSCC") {
+          console.log("vJSON_JS was loaded from Library prg/project.js");
+        } else {
+          console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
+          top.vJSON_JS["init_type"] = "JSCC";
+          top.vJSON_JS["init_date"] = getDate();
+          loadForm2JSON(vSelectedClass);        
+        };
       };
   } else {
       alert("Sorry, your browser does not support Local Storage...");
   };
   updateSelectors(); //select.js:140
   //document.fCreator.sClassList.value;
-  initClassJS(vSelectedClass);
+  //initClassJS(vSelectedClass);
   checkInterface4Class(vSelectedClass);
   updateClasses();
-  vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
+  //vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
   //initLocalDB("vJSON_JS",pJSONDB)
   initLabelsHTML();
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
@@ -140,9 +138,27 @@ function initCodeCreator() {
   setDefaultSelectors();
 };
 
+function loadForm2JSON(pSelectedClass) {
+  var vSelectedClass = pSelectedClass || getValueDOM("tClassname");
+  console.log("loadForm2JSON()");
+  var vClassTypeID = getFormClassType4Class(vSelectedClass);
+  initClassJS(vSelectedClass,vClassTypeID,"loadForm2JSON()");
+  initFormClass(vSelectedClass);
+  //console.log("DEBUG 1: "+getValueDOM("tClassList"));
+  initFormClassList();
+  initFormDatabaseList();
+  initFormButtonList();
+  initFormPageType();
+  initFormPageList();
+  initFormButtonList();
+  initFormSelectors();
+  updateClasses(); // reads the tClassList and updates the JSON Classes
+  updateFormGlobal2JSON();
+}
+
 function setDefaultSelectors() {
   // init the selector settings from vJSON_JS
-  var vClassJS = getSelectedClassJSON();
+  var vClassJS = getClassJSON;
   var vPageID = vJSON_JS["SelectedPage"] || "";
   var vPageTypeID = vJSON_JS["SelectedPageType"] || "";
   var vButtonID = vJSON_JS["SelectedButton"] || "";
@@ -169,12 +185,14 @@ function initLabelsHTML() {
 
 function initFormClassList() {
   console.log("initFormClassList()");
-  var vClassTypeHash = getClassTypeHash(); //read from tClassList in  classes.js 413
+  var vClassTypeHash = getForm2ClassTypeHash(); //read from tClassList in  classes.js 413
   top.vJSON_JS["ClassType"] = vClassTypeHash;
+  var vClassTypeID = "";
   var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
    for (var i = 0; i < vClassArr.length; i++) {
-     initClassJS(vClassArr[i]);
-     setClassTypeJSON(vClassArr[i],vClassTypeHash[vClassArr[i]]);
+     vClassTypeID = vClassTypeHash[vClassArr[i]] || "";
+     initClassJS(vClassArr[i],vClassTypeID,"initFormClassList()");
+     setClassTypeJSON(vClassArr[i],vClassTypeID);
    };
 };
 
@@ -385,22 +403,22 @@ function initFormSelectors() {
 };
 
 function initClassSelector() {
-  // var vClassArr = [];
-  // var vClassTypeArr = [];
-  // var vClassList = vJSON_JS["ClassList"] || {};
-  // var vClassTypeHash = vJSON_JS["ClassType"] || {};
-  // var vTypeDef = "";
-  // for (var iClass in vClassList) {
-  //   if (vClassList.hasOwnProperty(iClass)) {
-  //     vClassArr.push(iClass);
-  //     vTypeDef = vClassTypeHash[iClass] || "";
-  //     if (vTypeDef != "") {
-  //       vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
-  //       vTypeDef = " = " + vTypeDef;
-  //     };
-  //     vClassTypeArr.push(iClass+vTypeDef);
-  //   };
-  // };
+  var vClassArr = [];
+  var vClassTypeArr = [];
+  var vClassList = vJSON_JS["ClassList"] || {};
+  var vClassTypeHash = vJSON_JS["ClassType"] || {};
+  var vTypeDef = "";
+  for (var iClass in vClassList) {
+    if (vClassList.hasOwnProperty(iClass)) {
+      vClassArr.push(iClass);
+      vTypeDef = vClassTypeHash[iClass] || "";
+      if (vTypeDef != "") {
+        vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
+        vTypeDef = " = " + vTypeDef;
+      };
+      vClassTypeArr.push(iClass+vTypeDef);
+    };
+  };
   write2value("tClassList",getJSON2ClassString());
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
@@ -474,12 +492,15 @@ function initDatabaseSelector() {
 
 
 function initFormClass(pClass) {
+  var vClassTypeHash = getForm2ClassTypeHash();
+  var vClassType = vClassTypeHash[pClass] || "";
   var vSuperClass = getValueDOM("tSuperClassname");
   if (vSuperClass && vSuperClass != "") {
-    initClassJS(vSuperClass);
+    initClassJS(vSuperClass,vClassType,"initFormClass()");
   };
-  updateForm2JSON(pClass); // jsondb.js:157
+  updateForm2JSON(pClass,vClassType); // jsondb.js:157
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect(); //dom.js:13
+  console.log("initFormClass('"+pClass+"') DONE");
 }

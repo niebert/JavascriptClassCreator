@@ -28,14 +28,19 @@ function deleteFileHTML() {
       vID = vHashID[i];
       delete vJSON_JS[vID][vFileID];
     };
-    var vArrID = createArray4HashID(vJSON_JS["FileList"]);
-    if (vArrID.length > 0) {
-      selectFilenameHTML(vArrID[0]);
-    } else {
-      clearForm4File();
-    }
+    updateFileList2Form();
+    clearForm4File();
+    //selectFilenameHTML();
   };
 };
+
+function  updateFileList2Form() {
+  var vArrID = createArray4HashID(vJSON_JS["FileList"]);
+  var vString = vArrID.join("\n");
+  write2value("tHTMLfiles",removeEmptyLines(vString));
+  createFileSelect();
+}
+
 
 
 function deletePageHTML() {
@@ -51,6 +56,7 @@ function deletePageHTML() {
     };
     var vArrID = createArray4HashID(vJSON_JS["PageList"]);
     updatePagesJSON2Form(vArrID);
+    clearPageForm();
   };
 };
 
@@ -846,7 +852,7 @@ function updateFormElementIDs2JSON(pFile) {
   if (vFile != "") {
     if (existsFileJS(vFile)) {
       var vElemIDs = getValueDOM("tElementIDs");
-      vElemIDs = removeSpaces(vElementIDs);
+      vElemIDs = removeSpaces(vElemIDs);
       var vElemArrID = [];
       if (vElemIDs != "") {
         vElemArrID = vElemIDs.split("|");

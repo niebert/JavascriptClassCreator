@@ -33,6 +33,7 @@ function selectFilenameHTML_do(pFile) {
   clearForm4File(vFile);
   console.log("selectFile()-Call Selected File: "+getValueDOM("tFilename")+" Attributes="+getValueDOM("tAttributes"));
   fillForm4File(vFile);
+  write2value("sFileListHTML",vFile);
   write2value("sFileList",vFile);
   write2value("tFilename",vFile);
   createElementSelect();
@@ -88,14 +89,17 @@ function getSelectedFileHash() {
 };
 
 function selectJSElements() {
-  console.log("selectJSElements()");
-
-  getArray4HashID()
+  console.log("selectJSElements() TODO");
+  //getArray4HashID()
 };
 
 
-function clearForm4File(pFileName) {
-  console.log("clearForm4File('"+pFileName+"') TODO");
+function clearForm4File() {
+  console.log("clearForm4File()");
+  var vArrID = ["sFileListHTML","tFilename","tPageIDs","tElementIDs","sElementList","tElementID","tElementHTML"];
+  clearIDs4DOM(vArrID);
+  setEditorValue("iElementHTML","");
+  write2innerHTML("sElementList","");
 };
 
 function getElementNameArray() {

@@ -1,0 +1,153 @@
+<html>
+    <head>
+      <title>App LSAC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <link type="text/css"  href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+      <link type="text/css" href="css/ios_inspired.css" rel="stylesheet" />
+      <script src="js/jquery-1.7.1.min.js"></script>
+
+      <script>
+        //------------BEGIN iOS-Inspired------------
+         // all dialog buttons should close their parent dialog
+         $(".ui-dialog button").live("click", function() {
+           $("[data-role='dialog']").dialog("close");
+          });
+          $(document).on("mobileinit", function(){
+             $.mobile.defaultPageTransition = "slide";
+           });
+         //--------------END iOS-Inspired------------
+      </script>
+      <script>
+         //-----INIT DisApp -----
+          var vDebug = 0;
+       </script>
+       <script src="js/jquery.mobile-1.2.0.min.js"></script>
+       <link type="text/css" href="css/ios_post.css" rel="stylesheet" />
+     </head>
+    <body>
+
+<!--
+=============================================
+         BEGIN OF PAGES
+=============================================
+-->
+
+     <!-- Page: welcome     Page Type: DefaultPage -->
+     <div data-role="page" id="welcome">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME8" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Welcome</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'welcome'
+       </div>
+    <!-- /page ID: welcome -->
+    </div>
+     <!-- Page: home     Page Type: MenuPage -->
+     <div data-role="page" id="home">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Welcome' -->
+       <a href="#" id="bWELCOME9" onclick="$.mobile.changePage( '#welcome', { transition: 'slideup', changeHash: false });return false" data-theme="a">Welcome</a>
+
+            <h1>Home</h1>
+                  <!-- header button: 'Title 'QUIT'?' -->
+       <a href="#" id="bQUIT10" onclick="$.mobile.changePage( '#QUIT', { transition: 'slideup', changeHash: false });return false" data-theme="a">Title 'QUIT'?</a>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'home'
+       </div>
+    <!-- /page ID: home -->
+    </div>
+     <!-- Page: setting     Page Type: OptionsPage -->
+     <div data-role="page" id="setting">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME11" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Settings</h1>
+                  <!-- header button: 'Save' -->
+       <a href="#" id="bSAVE12" onclick="$.mobile.changePage( '#save', { transition: 'slideup', changeHash: false });return false" data-theme="a">Save</a>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'setting'
+       </div>
+    <!-- /page ID: setting -->
+    </div>
+     <!-- Page: save     Page Type: SaveDialog -->
+     <div data-role="page" id="save">
+         <div data-role="header" data-position="fixed">
+
+            <h1>Save</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'save'
+       </div>
+    <!-- /page ID: save -->
+    </div>
+     <!-- Page: quit     Page Type: ConfirmPage -->
+     <div data-role="page" id="quit">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME13" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Quit App</h1>
+                  <!-- header button: 'Title 'OK'?' -->
+       <a href="#" id="bOK14" onclick="$.mobile.changePage( '#OK', { transition: 'slideup', changeHash: false });return false" data-theme="a">Title 'OK'?</a>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'quit'
+       </div>
+    <!-- /page ID: quit -->
+    </div>
+     <!-- Page: login     Page Type: LoginPage -->
+     <div data-role="page" id="login">
+         <div data-role="header" data-position="fixed">
+
+            <h1>Login</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'login'
+       </div>
+    <!-- /page ID: login -->
+    </div>
+
+
+
+<!--
+=============================================
+     END OF PAGES / BEGIN iFRAME JSCALL
+=============================================
+ -->
+    <div id="divJSCALL"></div>
+    <div id="iFrameContainer" style="display:none">
+      <iframe id="iLoader" src="loader/setonline.html" width="90%" height="100" name="iLoader"></iframe>
+    </div>
+<!--
+=============================================
+         END OF iFRAME JSCALL
+=============================================
+ -->
+    <script type="text/javascript">
+       var vQueryHash = readQueryParams();
+       var vOnlineMode = false;
+       var vApp = new App();
+       vApp.init(document,vQueryHash);
+       checkOnlineMode();
+      </script>
+    </body>
+</html>

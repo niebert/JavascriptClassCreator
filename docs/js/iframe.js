@@ -1,5 +1,9 @@
-function write2editor(pID,pValue) {
+function write2editor(pID,pValue,pMode) {
   write2value("t"+pID,pValue);
+  if (pMode) {
+    // e.g. editor.session.setMode("ace/mode/javascript");
+    setEditorMode("i"+pID,pMode);
+  };
   setEditorValue("i"+pID,pValue);
 };
 
@@ -78,6 +82,25 @@ function writePageType2Editor() {
   write2value("tPageTypeHTML",vValue);
   write2value("tPageTypeID",vID);
 }
+
+
+function setEditorMode(pIFrameName,pMode) {
+  if (pMode) {
+    var vEditor = getIFrameEditor(pIFrameName);
+    // e.g. vEditor.session.setMode("ace/mode/javascript");
+    if (vEditor) {
+      if (vEditor.session) {
+        console.log("setEditorMode('"+pIFrameName+"','"+pMode+"')");
+        vEditor.session.setMode(pMode);
+      } else {
+        console.log("WARNING: vEditor['"+pIFrameName+"'].session undefined");
+      }
+    } else {
+      console.log("WARNING: vEditor['"+pIFrameName+"']");
+    };
+  };
+};
+
 
 function setEditorValue(pIFrameName,pValue) {
   var vEditor = getIFrameEditor(pIFrameName);

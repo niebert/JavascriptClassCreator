@@ -1,0 +1,63 @@
+<html>
+    <head>
+      <title>___FILE_TITLE___</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+      <link href="css/ios_inspired.css" rel="stylesheet" />
+
+___LIBRARIES___
+
+      <script>
+        //------------BEGIN iOS-Inspired------------
+         // all dialog buttons should close their parent dialog
+         $(".ui-dialog button").live("click", function() {
+           $("[data-role='dialog']").dialog("close");
+          });
+          $(document).on("mobileinit", function(){
+             $.mobile.defaultPageTransition = "slide";
+           });
+         //--------------END iOS-Inspired------------
+      </script>
+      <script>
+         //-----INIT DisApp -----
+          var vDebug = 0;
+          var vApp = new App();
+          vApp.init(document);
+       </script>
+       <script src="js/jquery.mobile-1.2.0.min.js"></script>
+       <link href="css/ios_post.css" rel="stylesheet" />
+     </head>
+    <body>
+
+<!--
+=============================================
+         BEGIN OF PAGES
+=============================================
+-->
+
+___PAGES___
+
+<!--
+=============================================
+     END OF PAGES / BEGIN iFRAME JSCALL
+=============================================
+ -->
+    <div id="divJSCALL"></div>
+    <div id="iFrameContainer" style="display:none">
+      <iframe id="iLoader" src="loader/setonline.html" width="90%" height="100" name="iLoader"></iframe>
+    </div>
+<!--
+=============================================
+         END OF iFRAME JSCALL
+=============================================
+ -->
+    <script type="text/javascript">
+       var vQueryHash = readQueryParams();
+       var vOnlineMode = false;
+       var vApp = new App();
+       vApp.init(document,vQueryHash);
+       checkOnlineMode();
+      </script>
+    </body>
+</html>

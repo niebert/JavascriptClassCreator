@@ -30,13 +30,8 @@
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/html");
-    var vPageTypeID = top.getValueDOM("sPageTypeHTML");
-    if (vPageTypeID == "") {
-      editor.setValue("",-1);
-    } else {
-      editor.setValue(top.getValueDOM("tPageTypeHTML"),-1);
-    };
-    //alert("PaegTypeID='"+vPageTypeID+"'");
+    //alert("Parent:" +parent.id);
+    editor.setValue(top.getValueDOM("tElementHTML"),-1);
 </script>
 
 </body>

@@ -23,10 +23,10 @@ function saveJSON2LocalStorage() {
 };
 
 
-function createMethodJSON() {
+function stringifyJSON(pJSONDB) {
   var vJSON = "";
-  if (vMethodJSON) {
-    vJSON = JSON.stringify(vClassFileJSON);
+  if (pJSONDB) {
+    vJSON = JSON.stringify(pJSONDB);
   };
   return vJSON;
 };
@@ -64,7 +64,83 @@ function updateFormID2JSON(pID) {
   var vClass 	= getValueDOM("tClassname");
   console.log("updateFormID2JSON('"+pID+"')-Call with Classname: '"+vClass+"'");
   vJSON_JS["ClassList"][vClass][pID] = getValueDOM(pID);
+};
+
+function getSelectedFilenameHTML() {
+  var vFile 	= vJSON_JS["SelectedFile"] || getValueDOM("tFilename") || "";
+  if (vFile == "") {
+    vFile = "app.html";
+  };
+  return vFile;
 }
+
+function updateFormFileID2JSON(pID) {
+  var vFile 	= getSelectedFilenameHTML();
+  checkFileHTML(vFile);
+  console.log("updateFormFileID2JSON('"+pID+"')-Call with Filename: '"+vFile+"'");
+  vJSON_JS["FileList"][vFile][pID] = getValueDOM(pID);
+};
+
+function checkFileHTML(pFile) {
+  if (vJSON_JS["FileList"]) {
+    console.log("FileList exists");
+  } else {
+    vJSON_JS["FileList"] = {};
+    console.log("create vJSON_JS['FileList']");
+  };
+  if (vJSON_JS["FileList"][pFile]) {
+    console.log("FileList['"+pFile+"'] exists");
+  } else {
+    vJSON_JS["FileList"][pFile] = {}
+  };
+  var vID = "";
+  for (var i = 0; i < vDOM_File.length; i++) {
+    vID = vDOM_File[i];
+    if (vJSON_JS["FileList"][pFile][vID]) {
+      console.log("FileList['"+pFile+"']['"+vID+"'] exists");
+    } else {
+      console.log("FileList['"+pFile+"']['"+vID+"'] created");
+      vJSON_JS["FileList"][pFile][vID] = getValueDOM(vID);
+    };
+  };
+  if (vJSON_JS["FileList"][pFile]["elements"]) {
+    console.log("FileList['"+pFile+"']['elements'] exists");
+  } else {
+    console.log("FileList['"+pFile+"']['elements'] created");
+    vJSON_JS["FileList"][pFile]["elements"] = getElementsHash4Form({},pFile);
+  };
+  var vElemHash = vJSON_JS["FileList"][pFile]["elements"];
+  var vElemArrID = getArray4HashID(vElemHash,pFile);
+  if (vJSON_JS["FileList"][pFile]["tElementID"]) {
+    console.log("FileList['"+pFile+"']['tElementID'] exists");
+    if (vJSON_JS["FileList"][pFile]["tElementID"] == "") {
+      if (vElemArrID.length > 0) {
+        vJSON_JS["FileList"][pFile]["tElementID"] = vElemArrID[0];
+        vJSON_JS["FileList"][pFile]["sElementList"] = vElemArrID[0];
+      };
+    };
+  } else {
+    console.log("FileList['"+pFile+"']['tElementID'] undefined");
+  }
+};
+
+function getElementsHash4Form(pHash,pFile) {
+  var vIDString = getValueDOM("tElementIDs");
+  var vFile = pFile || "";
+  vIDString = vIDString.replace(/\s/g,"");
+  var vArrID = vIDString.split("|");
+  var vHash = pHash || {};
+  var vOutHash = {}
+  for (var i = 0; i < vArrID.length; i++) {
+    if (vHash.hasOwnProperty(vArrID[i])) {
+      console.log("ID ["+vArrID[i]+"] exists "+vFile);
+      vOutHash[vArrID[i]] = vHash[vArrID[i]];
+    } else {
+      vOutHash[vArrID[i]] = getDefaultElementString(vFile,vArrID[i]);
+    };
+  };
+  return vOutHash;
+};
 
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
@@ -78,6 +154,16 @@ function  updateMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
   console.log("updateMethodsJS()-Call undefined");
 };
+
+function updateJSLibraries() {
+  console.log("updateJSLibraries");
+};
+
+function updateHTMLFiles() {
+  console.log("updateHTMLFiles() - update File Selector of HTML Files and JSON Files");
+  createFileSelect(); // dom.js:123
+
+}
 
 function updateJSAttribs() {
   updateForm2AttribJSON();
@@ -317,10 +403,11 @@ function saveMethodJSON(pMethodName) {
 };
 
 function checkClassJSON(pClassJSON) {
-  var vClass = pClassJSON || vClassJSON; // Global Variable
+  var vClass = pClassJSON || getSelectedClassJSON(); // Global Variable
   // The function check if all variables in the Class are defined
   if (vClass) {
     console.log("Check Properties of Class");
+    initClassJS_undefined(vClass["tClassname"]);
     for (var i = 0; i < vDOM_ID.length; i++) {
       var vID = vDOM_ID[i];
       if (vClass.hasOwnProperty(vID)) {
@@ -362,14 +449,26 @@ function updateForm2MethodNameParam() {
   }
   vClassJSON["MethodReturn"][vMethodName] = vMethodRet;
 };
-
-function updateJSON2Form(pClass) {
-  var vClass = pClass || getSelectedClassID();
+function updateFileHTML2Form(pFile) {
+  var vFile = pFile || getSelectedFileID();
   var vContent = "";
-  console.log("updateJSON2Form('"+vClass+"')");
+  console.log("updateFileHTML2Form('"+vFile+"')");
+  // updates form content in DOM with File content
+  updateDOM_JSON2Form(vFile);
+  updateGlobalJSON2Form(vFile);
+  // load the defined Attribute from Form
+  updateFileJSON2FormVariable(vFile,"tElements");
+};
+
+function updateJSON2Form(pClass,pFile) {
+  var vClass = pClass || getSelectedClassID();
+  var vFile  = pFile  || getSelectedFileID();
+  var vContent = "";
+  console.log("updateJSON2Form('"+vClass+"','"+vFile+"')");
   // updates form content in DOM with Class content
   updateDOM_JSON2Form(vClass);
   updateGlobalJSON2Form(vClass);
+  updateFileJSON2Form(vFile);
   // load the defined Attribute from Form
   updateJSON2FormVariable(vClass,"tAttributes");
   updateJSON2FormVariable(vClass,"tMethods");
@@ -620,6 +719,7 @@ function getReturnVariableDef(pRetType) {
 
 
 function updateForm2JSON(pClass,pClassType) {
+  updateFileForm2JSON();
   var vClass = pClass || getSelectedClassID();
   //var vClassTypeHash = getForm2ClassTypeHash();
   var vClassType = getFormClassType4Class(vClass) || "";

@@ -32,7 +32,7 @@ function readFileTXT(pFile) {
             if(rawFile.status === 200 || rawFile.status == 0)
             {
                 vContent = rawFile.responseText;
-                alert(vContent);
+                //alert(vContent);
             }
         }
     }

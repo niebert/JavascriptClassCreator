@@ -5,7 +5,7 @@
    <meta http-equiv="last-modification" content="22.02.2013 (9:35)">
    <meta http-equiv="content-language" content="de">
    <meta http-equiv="desktop-type" content="tasks">
-   <script language="javascript">
+   <script type="text/javascript">
 
    var vSelectedClass = "Undefined";
 
@@ -17,24 +17,30 @@
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
    var vTYPE_ID = []; // Defines the types of DOM input elements, these array are populated in init.js at the beginning
    var vDOM_Global = []; // DOM IDs that store global variables
+   var vDOM_File = [];  // Array that contains all DOM IDs where the HTML-file properties are stored
    var vDOM_TPL = [];  // Array that contains all DOM IDs where the templates are stored
    var vJSON_TPL = {}; // Hash containing the templates for generating code
-   var vPageRECDEF = ["page-id","page-title","page-type","parent-id"]; //variables that are stored for all pages
-   var vPageTypeRECDEF = ["page-type","button-id1","button-id2","template"]; // variables that are stored for all page types
-   var vButtonRECDEF = ["button-id","button-html","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+   var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"]; //variables that are stored for all pages
+   var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2","template"]; // variables that are stored for all page types
+   var vButtonRECDEF = ["BUTTON_ID","button-html","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
    </script>
+   <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
+   <script language="javascript" src="js/blob.js"></script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
    <script language="javascript" src="js/date.js"></script>
    <script language="javascript" src="js/dom.js"></script>
    <script language="javascript" src="js/file.js"></script>
+   <!-- FileSaver Library by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
+   <script language="javascript" src="js/filesaver.js"></script>
    <script language="javascript" src="js/iframe.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
+   <script language="javascript" src="js/openwin.js"></script>
    <script language="javascript" src="js/pages.js"></script>
    <script language="javascript" src="js/select.js"></script>
    <script language="javascript" src="js/sort.js"></script>
@@ -59,6 +65,7 @@
   <form name="fCreator">
   <font size="+3">Javascript Class Generator</font><br>
       <font size="+2">
+        <b>HTML-File:</b> <font color="blue" id="titleFileName">FileName</font>
         <b>Class:</b> <font color="blue" id="titleClassName">ClassName</font>
       </font>
     <br>
@@ -72,7 +79,9 @@
     -->
       <b>
       Select
-      <select id="sClassList" name="sClassList" onchange="selectClass()">
+      <select id="sFileList" name="sFileList" onchange="selectFilenameHTML(this.value)">
+      </select>
+      <select id="sClassList" name="sClassList" onchange="selectClassCode()">
       </select>
     </b>
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
@@ -80,18 +89,18 @@
 <br>
 <div id="tabs">
 	<ul>
-    <li><a id="tabMain" href="#tabs-0">Files/Classes</a></li>
     <li><a id="tabHTML" href="#tabs-HTML">HTML</a></li>
     <li><a id="tabPAGE" href="#tabs-PAGE">Page</a></li>
-    <li><a id="tabClass" href="#tabs-1">Class</a></li>
-		<li><a id="tabAttributes" href="#tabs-2">Attributes</a></li>
-    <li><a id="tabMethods" href="#tabs-3">Methods</a></li>
-    <li><a id="tabCode" href="#tabs-4">Code</a></li>
+    <li><a id="tabClass" href="#tabs-Class">Class</a></li>
+		<li><a id="tabAttributes" href="#tabs-Attributes">Attributes</a></li>
+    <li><a id="tabMethods" href="#tabs-Methods">Methods</a></li>
     <li><a id="tabUML" href="#tabs-UML">UML</a></li>
+    <li><a id="tabFileClass" href="#tabs-FileClass">Files/Classes</a></li>
     <li><a id="tabJSON" href="#tabs-JSON">JSON/DB</a></li>
+    <li><a id="tabCode" href="#tabs-Code">Code</a></li>
 	</ul>
   <!-- MAIN -->
-  <div id="tabs-0" class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-FileClass" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="80%">
       <tbody>
         <tr>
@@ -103,16 +112,29 @@
             </font>
           </td>
         </tr>
-    <tr>
+        <tr>
+          <td>
+          <b>Author:</b> <input name="tMainAuthor" id="tMainAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+          </td>
+          <td>
+          <b>e-Mail Author:</b> <input name="tMainEMail" id="tMainEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+          </td>
+        </tr>
+      <tr>
   		<td colspan="1" align="center">
           <b>List of defined Classes</b>
           <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
           <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar = Blue
-Matrix = Yellow
-MatrixColumn = Red
-App = Abstract
-ListInterface = Interface
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar = Red
+DOMVarList = Red
+CheckBoxList = Red
+FuzzyLayer= Yellow
+FuzzyController = Yellow
+DatabaseList = Green
+Database = Green
+AppAbstract = Abstract
+Server = Blue
+App = Blue
           </textarea>
   		</td>
   	<!-- </tr>
@@ -134,16 +156,68 @@ Hash = {}</textarea>
     <b>JSON Databases</b>
     <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
     <br>
-    <textarea name="tDatabases" id="tDatabases" cols="45" rows="10" onchange="" style="font-family: monospace">db_mydata.js
+    <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">db_mydata.js
 db_disapp.js</textarea>
-    </td>
-    <td align="center">
-      <b>Global Libaries</b>
-      <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateJSLibraries()" type="button">
-      <br>
-      <textarea name="tLibraries" id="tLibraries" cols="45" rows="10" style="font-family: monospace">string.js
+<br>
+<b>Global Libaries</b>
+<input name="bUpdateLibraries" value=" Update Libraries " onclick="updateJSLibraries()" type="button">
+<br>
+<textarea name="tLibraries" id="tLibraries" cols="45" rows="5" style="font-family: monospace">string.js
 localstorage.js
 writedom.js</textarea>
+    </td>
+    <td align="center">
+      <b>HTML Files</b>
+      <input name="bUpdateLibraries" value=" Update HTML Files " onclick="updateHTMLFiles()" type="button">
+      <br>
+      <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">index.html
+app.html
+submit.html</textarea>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>Pages in HTML-File</b>
+      <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
+      <br>
+      <b>Format:</b>
+      <tt id="labelPageRecord">-</tt>
+      <br>
+      <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
+home|Home|MenuPage|
+setting|Settings|OptionsPage|home
+save|Save|SaveDialog|home
+quit|Quit App|ConfirmPage|home
+login|Login|LoginPage|quit
+    </textarea>
+    </td>
+    <td align="center">
+      <b>Page Types</b>
+      <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
+      <br>
+      <b>Format:</b>
+      <tt id="labelPageTypeRecord">-</tt>
+      <br>
+      Page-ID can be replaced by Button-ID
+      <br>
+      <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">DefaultPage|home|
+MenuPage|welcome|QUIT
+OptionsPage|home|save
+ConfirmPage|home|OK
+      </textarea>
+    </td>
+    </tr>
+    <tr>
+    <td colspan="2" align="center">
+      <b>Buttons</b>
+      <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
+      -- <b>Format:</b>
+      <tt id="labelButtonRecord">-</tt>
+      <br>
+
+    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
+      </textarea>
     </td>
   </tr>
   </tbody>
@@ -162,49 +236,79 @@ writedom.js</textarea>
         </td>
       </tr>
       <tr>
-        <td align="center">
-          <b>Pages in HTML-File</b>
-          <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
+        <td  colspan="2" align="center">
+          <b>Select HTML File:</b>
+          <select id="sFileListHTML" name="sFileListHTML" onchange="selectFilenameHTML(this.value)">
+          </select>
+          <input  class="deletebutton" type="button" id="bDeleteFileHTML" onclick="deleteFileHTML();return false" value="Delete">
+          <input name="bSaveFile" value=" Save " onclick="updateFileForm2JSON()" type="button">
+          <input name="bOpenEmulator" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
           <br>
-          <b>Format:</b>
-          <tt id="labelPageRecord">-</tt>
+          <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
+          <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
           <br>
-          <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
-        home|Home|MenuPage|
-        setting|Settings|OptionsPage|home
-        save|Save|SaveDialog|home
-        quit|Quit App|ConfirmPage|home
-        </textarea>
-        </td>
-        <td align="center">
-          <b>Page Types</b>
-          <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
-          <br>
-          <b>Format:</b>
-          <tt id="labelPageTypeRecord">-</tt>
-          <br>
-          Page-ID can be replaced by Button-ID
-          <br>
-          <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">DefaultPage|home|
-MenuPage|welcome|QUIT
-OptionsPage|home|save
-ConfirmPage|home|OK
-          </textarea>
-        </td>
+          <b>Template HTML:</b> <input name="tTemplateHTML" id="tTemplateHTML" value="Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)"> <b>Path:</b> /tpl/
+      		  <br>
+              <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs4Page2JSON()">
+            </td>
         </tr>
         <tr>
-        <td colspan="2" align="center">
-          <b>Buttons</b>
-          <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
-          -- <b>Format:</b>
-          <tt id="labelButtonRecord">-</tt>
-          <br>
-
-        <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
-OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
-          </textarea>
-        </td>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                Pages
+              </b>
+            </font>
+          </td>
         </tr>
+  <tr>
+    <td colspan="2" align="center">
+      <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
+        <option>home</option>
+      </select>
+      <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
+      <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
+      <br>
+      <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
+      <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
+      <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
+        <option>DefaultPage</option>
+      </select>
+      <br>
+      <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
+      <b>Parent Page ID:</b>
+      <select id="sParentPage" name="sParentPage">
+        <option>home</option>
+      </select>
+      <br>
+      <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
+      <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
+    </td>
+  </tr>
+  <tr>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+                  <b>
+                    HTML Elements
+                  </b>
+            </font>
+        </td>
+      </tr>
+      <tr>
+        <td  colspan="2" align="center">
+            <b>Element IDs:</b> <input name="tElementIDs" id="tElementIDs" value="HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE" type="text" size="65" style="font-family: monospace" onchange="updateFormElementIDs2JSON()">
+          <input name="bUpdateElements" value=" Save " onclick="updateForm2ElementsJSON()" type="button">
+          <br>
+          <b>HTML Element ID for Replace:</b>
+          <select id="sElementList" name="sElementList" onchange="selectElementJS(this.value)">
+            <option>SERVER_URL</option>
+          </select>
+          <b>Element-ID:</b>
+          <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
+          <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
+          <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
+          <iframe id="iElementHTML"  src="ace/editfilehtml.html" width="90%" height="100"></iframe>
+        </td>
       </tr>
     </tbody>
   </table>
@@ -212,39 +316,6 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
 <div id="tabs-PAGE" class="tabmenu" style="background-color:#f2f2f2">
   <table bgcolor="#A9BCF5" border="1" width="80%">
     <tbody>
-      <tr>
-        <td  colspan="2" bgcolor="#C0C0C0" align="center">
-          <font size="+2">
-            <b>
-              Pages
-            </b>
-          </font>
-        </td>
-      </tr>
-<tr>
-  <td colspan="2" align="center">
-    <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
-      <option>home</option>
-    </select>
-    <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
-    <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
-    <br>
-    <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
-    <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
-    <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
-      <option>DefaultPage</option>
-    </select>
-    <br>
-    <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
-    <b>Parent Page ID:</b>
-    <select id="sParentPage" name="sParentPage">
-      <option>home</option>
-    </select>
-    <br>
-    <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
-    <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
-  </td>
-</tr>
 <tr>
   <td  colspan="2" bgcolor="#C0C0C0" align="center">
     <font size="+2">
@@ -311,7 +382,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
 </table>
 </div>
 <!-- CLASS -->
-  <div id="tabs-1" class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-Class" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1">
       <tbody>
         <tr>
@@ -325,7 +396,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
         </tr>
         <tr>
     		<td>
-    		<b>Class:</b> <input name="tClassname" id="tClassname" value="FuzzyControl" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
+    		<b>Class:</b> <input name="tClassname" id="tClassname" value="App" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
         <input type="button" id="bCreateNewClass" onclick="createNewClass();return false" value="+">
         <button id="bRenameClass"    class="renamebutton" onclick="renameClassForm();return false">Rename</button>
         <!--
@@ -348,7 +419,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     		<b>Super Class Name:</b>
         <select name="sSuperClassname" id="sSuperClassname" onchange="selectSuperClass(this.value)">
         </select>
-        <input name="tSuperClassname" id="tSuperClassname" value="FuzzyLayer" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
+        <input name="tSuperClassname" id="tSuperClassname" value="AppAbstract" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
         <br><b>UML-Type Super Class:</b> <font id="labSuperClassTypeUML" color="blue"></font>
     		</td>
     	</tr>
@@ -372,13 +443,12 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     			<b>Attributes</b>
           <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateForm2AttribJSON()" type="button">
           <br>
-    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace">aParent = 1.2353
-aName = "domvar"
-aDOM = null
-aCount = 0
-aLength = 23.5
-aMatrix = new Matrix()
-aMatCol = new MatrixColumn()
+    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace">aDoc = null
+aName = "DisApp"
+aServer = new Server("___SERVER_URL___")
+aDatabaseList = new DatabaseList()
+aCurrentPage = "welcome"
+aFuzzyController = new FuzzyController()
 </textarea>
     		</td>
     		<td>
@@ -387,11 +457,13 @@ aMatCol = new MatrixColumn()
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pParent:Window)
-create(pLI:ListInterface)
-link2dom(pVariable:String,pDOMID:Integer):DOMvar
-load(pFileName:String):String
-save(pContent:DOMVar,pMatrix:Matrix)
+    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pDoc:Document)
+load():Boolean
+save():Boolean
+calcRisk()
+calcResponse()
+gotoPage(pPageID)
+submitPage(pPageID)
     			</textarea>
         </td>
       </tr>
@@ -399,7 +471,7 @@ save(pContent:DOMVar,pMatrix:Matrix)
     </table>
   </div>
   <!-- ATTRIBUTES -->
-  <div id="tabs-2"  class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-Attributes"  class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="90%">
       <tbody>
         <tr>
@@ -445,7 +517,7 @@ save(pContent:DOMVar,pMatrix:Matrix)
     </table>
   </div>
   <!-- METHOD -->
-  <div id="tabs-3"  class="tabmenu" style="background-color:#f2f2f2" >
+  <div id="tabs-Methods"  class="tabmenu" style="background-color:#f2f2f2" >
     <table bgcolor="#A9BCF5" border="1">
       <tbody>
         <tr>
@@ -491,7 +563,7 @@ save(pContent:DOMVar,pMatrix:Matrix)
     </table>
   </div>
   <!-- CODE -->
-  <div id="tabs-4" class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-Code" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="95%">
       <tbody>
         <tr>
@@ -523,8 +595,11 @@ save(pContent:DOMVar,pMatrix:Matrix)
         <tr>
           <td colspan="2" align="center">
               <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML">
-                <option>app.html</option>
-                <option>index.html</option>
+              </select>
+              <b>Standalone:</b>
+              <select id="sStandalone" name="sStandalone">
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
               </select>
               <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
               <br>
@@ -655,20 +730,21 @@ save(pContent:DOMVar,pMatrix:Matrix)
   <b>Default App Path:</b> <input type="text" id="tDefaultAppPath" name="tDefaultAppPath" value="app_LSAC/" size="35">
   <hr>
   <b>Template for Main HTML:</b> <br>
-  <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;html&gt;
+  <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
     &lt;head&gt;
+      &lt;meta charset="utf-8"/&gt;
       &lt;title&gt;App LSAC&lt;/title&gt;
       &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"&gt;
       &lt;meta name="apple-mobile-web-app-capable" content="yes"&gt;
-      &lt;link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" /&gt;
-      &lt;link href="css/ios_inspired.css" rel="stylesheet" /&gt;
-
-___LIBRARIES___
+      &lt;link type="text/css" href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" /&gt;
+      &lt;link  type="text/css" href="css/ios_inspired.css" rel="stylesheet" /&gt;
+      &lt;script src="js/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
 
       &lt;script&gt;
         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
-         $(".ui-dialog button\").live("click", function() {
+         $(".ui-dialog button").live("click", function() {
            $("[data-role='dialog']").dialog("close");
           });
           $(document).on("mobileinit", function(){
@@ -676,6 +752,7 @@ ___LIBRARIES___
            });
          //--------------END iOS-Inspired------------
       &lt;/script&gt;
+      ___LIBRARIES___
       &lt;script&gt;
          //-----INIT DisApp -----
           var vDebug = 0;
@@ -709,11 +786,11 @@ ___PAGES___
 =============================================
  --&gt;
     &lt;script type="text/javascript"&gt;
-       var vQueryHash = readQueryParams();
+       // var vQueryHash = readQueryParams();
        var vOnlineMode = false;
        var vApp = new App();
        vApp.init(document,vQueryHash);
-       checkOnlineMode();
+       // checkOnlineMode();
       &lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;
@@ -721,18 +798,25 @@ ___PAGES___
   <hr>
 <b>Script Import</b><br>
 <textarea id="tTplSCRIPT" name="tTplSCRIPT" cols="125" rows="2">
-      &lt;script type="text/javascript" src="___LIBERARY___"&gt;&lt;/script&gt;
+      &lt;script type="text/javascript" src="___LIBRARY___"&gt;&lt;/script&gt;
 </textarea>
 
+<hr>
+<b>Script Standalone</b><br>
+<textarea id="tTplSCRIPTSTANDALONE" name="tTplSCRIPTSTANDALONE" cols="125" rows="2">
+&lt;script type="text/javascript" &gt;
+___JSCODE___
+&lt;/script&gt;
+</textarea>
   <hr>
 <b>App Page</b><br>
   <textarea id="tTplPAGE" name="tTplPAGE" cols="125" rows="10">
      &lt;!-- Page: ___PAGE_ID___     Page Type: ___PAGE_TYPE_ID___ --&gt;
      &lt;div data-role="page" id="___PAGE_ID___">
          &lt;div data-role="header" data-position="fixed">
-           ___BUTTON_LEFT___
+           ___HEADER_BUTTON1___
             &lt;h1>___PAGE_TITLE___&lt;/h1&gt;
-           ___BUTTON_RIGHT___
+           ___HEADER_BUTTON2___
        &lt;/div&gt;
          &lt;!-- /header --&gt;
        &lt;div data-role="content"&gt;
@@ -741,6 +825,19 @@ ___PAGES___
     &lt;!-- /page ID: ___PAGE_ID___ --&gt;
     &lt;/div&gt;
 </textarea>
+<b>Header Button</b><br>
+<textarea id="tTplMENU" name="tTplMENU" cols="125" rows="2">
+   &lt;ul data-role="listview" data-inset="true"&gt;
+     ___MENUITEM_LIST___
+	&lt;/ul&gt;
+</textarea>
+
+  <hr>
+  <b>Header Button</b><br>
+<textarea id="tTplMENUITEM" name="tTplMENUITEM" cols="125" rows="2">
+  &lt;li&gt;&lt;a href="#___PAGE_ID___"&gt;___PAGE_TITLE___&lt;/a&gt;&lt;/li&gt;
+</textarea>
+<hr>
 
 <hr>
 <b>Header Button</b><br>
@@ -757,7 +854,7 @@ ___PAGES___
 <hr>
 <b>Quit Button</b><br>
 <textarea id="tTplQUIT" name="tTplQUIT" cols="125" rows="2">
-       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="if (quitApp()) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
+       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 </textarea>
 <hr>
 <b>Comment Prefix:</b> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
@@ -772,7 +869,7 @@ ___PAGES___
 //# Author of Class:      ___AUTHOR___
 //# email:                ___EMAIL___
 //# created               ___DATE___
-//# last modifications    ___DATE___
+//# last modifications    ___MODDATE___
 //# GNU Public License V3 - OpenSource
 //#
 //# created with JavaScript Class Generator by Engelbert Niehaus
@@ -781,7 +878,7 @@ ___PAGES___
 
 //---------------------------------------------------------------------
 //---Store File in Subdirectory /js and import this Class in HTML-File with
-// &lt;SCRIPT LANGUAGE="JavaScript" SRC="js/___CLASSFILENAME___"&gt; &lt;/SCRIPT&gt;
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/___CLASSFILENAME___"
 //---------------------------------------------------------------------
 //---Constructor of Class ___CLASSNAME___()
 // Call the constructor for creating an instance of class ___CLASSNAME___
@@ -922,14 +1019,14 @@ ___METHODCODE___
 <center>
   <script>
     initCodeCreator();
-    setTimeout('createCode4JSON_JS(vJSON_JS)',5000);
+    setTimeout('createCode4JSON_JS(vJSON_JS)',6000);
   </script>
-  <script src="jquery/external/jquery/jquery.js"></script>
-  <script src="jquery/jquery-ui.js"></script>
-  <script src="js/jqueryinit.js"></script>
+  <script src="jquery/external/jquery/jquery.js" type="text/javascript"></script>
+  <script src="jquery/jquery-ui.js" type="text/javascript"></script>
+  <script src="js/jqueryinit.js" type="text/javascript"></script>
 
    <br>
-  <a href="http://niebert.github.com/JavascriptClassGenerator/" target="_blank">http://niebert.github.com/JavascriptClassGenerator/</a>
+  <a href="http://niebert.github.io/JavascriptClassCreator/" target="_blank">http://niebert.github.io/JavascriptClassCreator/</a>
   <br>
   <a href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3</a>
 </center>

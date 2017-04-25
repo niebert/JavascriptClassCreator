@@ -39,6 +39,10 @@ a:hover {
   background: #3366cc;
   color: #FFFFFF;
 }
+.viewbutton {
+  background: #85a3e0;
+  color: #FFFFFF;
+}
 .cDeleteBT {
   -webkit-border-radius: 2px;
 	-moz-border-radius: 3px;

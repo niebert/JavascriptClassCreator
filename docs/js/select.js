@@ -3,9 +3,117 @@
 function selectClassCode() {
   var vClass = getValueDOM("sClassCode");
   console.log("selectClassCode('"+vClass+"')-Call");
-  selectClass(pClass);
+  selectClass(vClass);
   createCode4Class();
 }
+
+function selectFilenameHTML(pFileName) {
+  selectFilenameHTML_do(pFileName);
+  $( "#tabHTML").trigger( "click" );
+}
+
+function selectFilenameHTML_do(pFile) {
+  var vCurrentFile = getValueDOM("tFilename");
+  var vFile = pFile || getValueDOM("sFileList");
+  console.log("selectFilenameHTML()-Call: Current File '"+vCurrentFile+"' - Selected File '"+vFile+"'.");
+  write2value("sFileListHTML",vCurrentFile);
+  write2value("sFileList",vCurrentFile);
+  write2value("sFileHTML",vCurrentFile);
+  write2value("tFilename",vCurrentFile);
+  updateFileForm2JSON(vCurrentFile);
+  // following command is inserted for the first startup
+  if (vJSON_JS["FileList"][vFile]) {
+    console.log("File '"+vFile+"' exists in selectFile()-Call");
+  } else {
+    console.log("selectFile()-Call: Undefined File '"+vFile+"' - use old class '"+vCurrentFile+"'.");
+    vFile = vCurrentFile;
+  };
+  vJSON_JS["SelectedFile"] = vFile;
+  vFileJSON = vJSON_JS["FileList"][vFile];
+  clearForm4File(vFile);
+  console.log("selectFile()-Call Selected File: "+getValueDOM("tFilename")+" Attributes="+getValueDOM("tAttributes"));
+  fillForm4File(vFile);
+  write2value("sFileList",vFile);
+  write2value("tFilename",vFile);
+  createElementSelect();
+  var vSelectedElement = getValueDOM("sElementList") || "";
+  if (vSelectedElement == "") {
+    var vElementNameArr = getElementNameArray();
+    if (vElementNameArr.length > 0) {
+      write2value("sElementList",vElementNameArr[0]);
+      selectJSElements();
+    };
+  };
+  writeFileTitle(vFile);
+  updateFileSelectors(vFile);
+  //setFileSelectorDefault(vFile);
+  createCode4JSON_JS(vJSON_JS);
+};
+
+function updateFileForm2JSON(pFile) {
+  var vFile = pFile || "";
+  if ((pFile != "") && (existsFileJS(pFile))) {
+    var vID = "";
+    for (var i = 0; i < vDOM_File.length; i++) {
+      vID = vDOM_File[i];
+      vJSON_JS["FileList"][vFile][vID] = getValueDOM(vID);
+    };
+    // update the definition of current selected ELEMENT as well
+    updateFormElement2JSON(vFile);
+  }
+};
+
+function updateFormElement2JSON(pFile) {
+  var vFile = pFile || getSelectedFileID();
+  var vElementID = getValueDOM("sElementList") || "";
+  if (vElementID != "") {
+    if (vJSON_JS["FileList"][vFile]["elements"]) {
+      vJSON_JS["FileList"][vFile]["elements"] = getEditorValue("iElementHTML");
+    } else {
+      console.log("ERROR: elements for file '"+vFile+"' undefined");
+    };
+  };
+};
+
+
+function getSelectedFileHash() {
+  var vFile = getSelectedFilenameHTML();
+  var vHash;
+  if (vJSON_JS["FileList"] && vJSON_JS["FileList"][vFile]) {
+    vHash = vJSON_JS["FileList"][vFile];
+  } else {
+    console.log("ERROR: getSelectedFileHash() for FileList for '"+vFile+"' undefined!");
+  };
+  return vHash
+};
+
+function selectJSElements() {
+  console.log("selectJSElements()");
+
+  getArray4HashID()
+};
+
+
+function clearForm4File(pFileName) {
+  console.log("clearForm4File('"+pFileName+"') TODO");
+};
+
+function getElementNameArray() {
+  console.log("getElementNameArray() TODO");
+};
+
+function writeFileTitle(pFileName) {
+  console.log("writeFileTitle('"+pFileName+"')");
+  write2innerHTML("titleFileName",pFileName);
+};
+
+function updateFileSelectors(pFileName) {
+  console.log("updateFileSelectors('"+pFileName+"') TODO");
+};
+function setFileSelectorDefault(pFileName) {
+  console.log("setFileSelectorDefault('"+pFileName+"') TODO");
+};
+
 function selectClass(pClass) {
   selectClass_do(pClass);
   $( "#tabClass" ).trigger( "click" );
@@ -17,7 +125,8 @@ function selectClass_do(pClass) {
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
   updateForm2JSON(vCurrentClass);
   // following command is inserted for the first startup
-  write2value("sClassList",pClass);
+  write2value("sClassList",vClass);
+  write2value("tClassname",vClass);
   if (vJSON_JS["ClassList"][vClass]) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
   } else {
@@ -29,7 +138,6 @@ function selectClass_do(pClass) {
   clearForm4Class(vClass);
   console.log("selectClass()-Call Selected Class: "+getValueDOM("tClassname")+" Attributes="+getValueDOM("tAttributes"));
   checkInterface4Class(vClass);
-  createCode4JSON_JS(vJSON_JS);
   fillForm4Class(vClass);
   //createClassJS(vClass); // if necessary
   createAttribTypeSelect();
@@ -49,6 +157,7 @@ function selectClass_do(pClass) {
   setClassSelectorDefault(vClassName);
   var vSuperClassname = getValueDOM("tSuperClassname");
   selectSuperClass(vSuperClassname);
+  createCode4JSON_JS(vJSON_JS);
 };
 
 function selectSuperClass(pSuperClass) {
@@ -137,6 +246,30 @@ function getMethodNameArrayJSON(pClassName) {
   return vArr;
 };
 
+function selectFileJS(pFileID) {
+  var vFileID = pFileID || getValueDOM("sFileHTML");
+  console.log("selectFileJS('"+vFileID+"')");
+  var vOldFileID = getValueDOM("tFilename"); // old FileID
+  var vFileHash = {};
+  if (vOldFileID != "") {
+    if (existsFileJS(vOldFileID)) {
+      console.log("selectFileJS('"+vFileID+"') update content of vFile='"+vOldFileID+"'");
+      updateFileForm2JSON(vOldFileID);
+    };
+  };
+  console.log("selectFileJS()-Call: Current File ["+vOldFileID+"] - Selected File '"+vFileID+"'.");
+  if (existsFileJS(vFileID)) {
+    console.log("File with ID '"+vFileID+"' exists in selectFileJS()-Call");
+    updateFileJSON2Form(vFileID);
+    write2value("tFilename",vFileID);
+  } else {
+    vFileID = "";
+    clearFileForm();
+  };
+  vJSON_JS["SelectedFile"] = vFileID;
+  write2value("tFilename",vFileID);
+};
+
 
 function selectPageJS(pPageID) {
   var vPageID = pPageID || getValueDOM("sPageHTML");
@@ -162,14 +295,6 @@ function selectPageJS(pPageID) {
     console.log("Page with ID '"+vPageID+"' exists in selectPageJS()-Call");
     if (existsPageJS(vPageID)) {
       updatePageJSON4ID2Form(vPageID);
-      // var vValue = vJSON_JS["PageContent"][vPageID] || "";
-      // write2value("tPageHTML",vValue);
-      // setEditorValue("iPageHTML",vValue);
-      // var vSelHash = vJSON_JS["PageList"][vPageID];
-      // //write2value("sPageHTML",vPageID);
-      // write2value("sParentPage",vSelHash["parent-id"]);
-      // write2value("tPageTitle",vSelHash["page-title"]);
-      // write2value("sPageType4Page",vSelHash["page-type"]);
     } else {
       vPageID = "";
       clearPageForm();
@@ -197,11 +322,11 @@ function clearButtonForm() {
 };
 
 function clearIDs4DOM(pArrID) {
-    for (var iID in pArrID) {
-      if (pArrID.hasOwnProperty(iID)) {
-        write2value(iID,"");
-      };
-    };
+  var vID = "";
+  for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      write2value(vID,"");
+  };
 };
 
 function selectPageTypeJS(pPageTypeID) {
@@ -239,7 +364,7 @@ function updatePageJSON4ID2Form(pPageID) {
     var vSelHash = vJSON_JS["PageList"][vPageID];
     //write2value("sPageHTML",vPageID);
     write2value("sParentPage",vSelHash["parent-id"]);
-    write2value("tPageTitle",vSelHash["page-title"]);
+    write2value("tPageTitle",vSelHash["PAGE_TITLE"]);
     write2value("sPageType4Page",vSelHash["page-type"]);
   };
 }
@@ -248,10 +373,10 @@ function  updatePageTypeJSON4ID2Form(pPageTypeID) {
   var vPageTypeID = pPageTypeID || getValueDOM("tPageTypeID");
   if ((vPageTypeID) && (vPageTypeID != "")) {
     var vSelHash = vJSON_JS["PageType"][vPageTypeID];
-    if (vSelHash) { // page-type | button-id1 | button-id2 | template
+    if (vSelHash) { // page-type | HEADER_BUTTON1 | HEADER_BUTTON2 | template
       write2value("tPageTypeID",vSelHash["page-type"]);
-      write2value("sButtonHeader1",vSelHash["button-id1"]);
-      write2value("sButtonHeader2",vSelHash["button-id2"]);
+      write2value("sButtonHeader1",vSelHash["HEADER_BUTTON1"]);
+      write2value("sButtonHeader2",vSelHash["HEADER_BUTTON2"]);
       write2value("tPageTypeHTML",vSelHash["template"]);
       setEditorValue("iPageTypeHTML",vSelHash["template"]);
     } else {
@@ -278,20 +403,114 @@ function selectButtonJS(pButtonID) {
   vJSON_JS["SelectedButton"] = vButtonID;
 };
 
+function createElementSelect(pElementString) {
+  var vElementStr = pElementString || getValueDOM("tElementIDs");
+  var vArr = getArray4IDString(vElementStr);
+  write2innerHTML("sElementList",createOptions4Array(vArr));
+};
+
+function getArray4IDString(pIDString) {
+  var vIDString = pIDString || "";
+  vIDString = vIDString.replace(/\s/g,"");
+  var vArr = vIDString.split("|");
+  var vOutArr = [];
+  for (var i = 0; i < vArr.length; i++) {
+    if (vArr[i] != "") {
+      vOutArr.push(vArr[i]);
+    }
+  };
+  return vOutArr;
+}
+
+function getSelectedFileID() {
+  return getSelectedFilenameHTML();
+}
+
+function getSelectedElement() {
+  return getValueDOM("sElementList") || "";
+}
+
+
+function selectElementJS(pElementID) {
+  console.log("selectElementJS('"+pElementID+"')");
+  var vFile = getSelectedFilenameHTML();
+  checkFileHTML(vFile);
+  var vElementJSON = vJSON_JS["FileList"][vFile]["elements"];
+  var vPrevElementID = getValueDOM("tElementID");
+  var vElementArrID = getElementArrayID4JSON(vFile);
+  var vFirstElement = vElementArrID[0] || "";
+  //console.log("selectElementJS('"+pElementID+"') vFirstElement='"+vFirstElement+"'");
+  console.log("selectElementJS('"+pElementID+"') vFirstElement='"+vFirstElement+"' with content='"+vElementJSON[vFirstElement]+"'");
+  var vSelElementID = pElementID || getValueDOM("sElementList") || vFirstElement;
+  var vContent;
+  if (vPrevElementID != "") {
+    if (vPrevElementID != pElementID) {
+      vContent = getEditorValue("iElementHTML");
+      console.log("selectElementJS('"+pElementID+"') Save the Content of Element ["+vPrevElementID+"] Content='"+vContent+"'");
+      vElementJSON[vPrevElementID] = vContent;
+    };
+  } else {
+    console.log("No previous Element Definition found");
+  };
+  //var Arr = [];
+  if (vSelElementID != "") {
+    if (vElementJSON[vSelElementID]) {
+      console.log("JSON definition of Element ['"+vSelElementID+"'] exists");
+      console.log("selectElementJS('"+pElementID+"') vFirstElement='"+vFirstElement+"' with content='"+vElementJSON[vFirstElement]+"'");
+    } else {
+      console.log("WARNING: Set JSON definition of Element ['"+vSelElementID+"']");
+      console.log("selectElementJS('"+pElementID+"') vFirstElement='"+vFirstElement+"' with content='"+vElementJSON[vFirstElement]+"'");
+      vElementJSON[vSelElementID] = "undefined content of "+vSelElementID;
+    };
+    write2value("tElementHTML",vElementJSON[vSelElementID]);
+    setEditorValue("iElementHTML",vElementJSON[vSelElementID]);
+  } else {
+    clearFileForm();
+  };
+  write2value("tElementID",vSelElementID);
+  vJSON_JS["SelectedElement"] = vSelElementID;
+  //write2innerHTML("sElementList",createOptions4Array(vArr));
+};
+
+function getElementArrayID4JSON(pFile) {
+  var vFile = pFile || "";
+  var vArrID = [];
+  if (existsFileJS(vFile)) {
+    var vFileJSON = vJSON_JS["FileList"][vFile];
+    if (vFileJSON["elements"]) {
+      vArrID = getArray4HashID(vFileJSON["elements"]);
+    } else {
+      console.log("ERROR: Element Hash for File='"+vFile+"' is undefined");
+    }
+  } else {
+    console.log("ERROR: in FileList File='"+vFile+"' is undefined");
+  };
+  return vArrID;
+}
+
+function clearFileForm() {
+  var vID;
+  for (var i = 0; i < vDOM_File.length; i++) {
+    vID = vDOM_File[i];
+    write2value(vID,"");
+  };
+  setEditorValue("iElementHTML","");
+}
+
 function updateButtonJSON4ID2Form(pButtonID) {
   var vButtonID = reduceVarName(pButtonID);
   console.log("updateButtonParamHash2Form('"+vButtonID+"')");
   if ((vButtonID) && (vButtonID != "")) {
     var vSelHash = {
-      "button-id": "BUTUDEF",
+      "BUTTON_ID": "BUTUDEF",
       "button-html": "undefined button '"+vButtonID+"'",
     };
     if (existsButtonJS(vButtonID)) {
       console.log("Button '"+vButtonID+"' is defined");
       vSelHash = vJSON_JS["ButtonList"][vButtonID];
     };
-    if (vSelHash) { // button-id | button-html
-      write2value("tButtonID",vSelHash["button-id"] );
+    if (vSelHash) { // BUTTON_ID | button-html
+      write2value("tButtonID",vSelHash["BUTTON_ID"] );
       write2value("tButtonDefHTML",vSelHash["button-html"]);
     } else {
       console.log("WARNING: Selected Button Hash for ["+pButtonID+"] undefined");
@@ -300,6 +519,57 @@ function updateButtonJSON4ID2Form(pButtonID) {
     console.log("WARNING: ButtonID empty");
   }
 }
+
+function fillForm4File(pFileName) {
+  console.log("fillForm4File('"+pFileName+"')");
+  updateFileJSON2Form(pFileName);
+};
+
+function updateFileForm2JSON(pFileName) {
+  console.log("updateFileForm2JSON('"+pFileName+"')");
+  var vID = "";
+  if (pFileName) {
+    if (vJSON_JS["FileList"][pFileName]) {
+      console.log("updateFileForm2JSON() - vJSON_JS['FileList']['"+pFileName+"'] exists!");
+    } else {
+      checkFileHTML(pFileName);
+    };
+    var vFileJSON = vJSON_JS["FileList"][pFileName];
+    var vValue = "";
+    for (var i = 0; i < vDOM_File.length; i++) {
+      vID = vDOM_File[i];
+      vValue = getValueDOM(vID);
+      if (vValue) {
+        vFileJSON[vID] = vValue;
+      } else {
+        vFileJSON[vID] = "";
+      };
+    };
+  };
+};
+
+function updateFileJSON2Form(pFileName) {
+  console.log("updateFileJSON2Form('"+pFileName+"')");
+  var vID = "";
+  if (pFileName) {
+    if (vJSON_JS["FileList"][pFileName]) {
+      console.log("updateFileJSON2Form() - vJSON_JS['FileList']['"+pFileName+"'] exists!");
+    } else {
+      checkFileHTML(pFileName);
+    };
+    var vFileJSON = vJSON_JS["FileList"][pFileName];
+    for (var i = 0; i < vDOM_File.length; i++) {
+      vID = vDOM_File[i];
+      if (vFileJSON.hasOwnProperty(vID)) {
+        write2value(vID,vFileJSON[vID]);
+      };
+    };
+    var vElementID = getValueDOM("tElementID") || "";
+    console.log("updateFileJSON2Form() tElementID='"+vElementID+"'");
+    write2value("sElementList",vElementID);
+    selectElementJS(vElementID);
+  };
+};
 
 function fillForm4Class(pClassName) {
   console.log("fillForm4Class('"+pClassName+"')");
@@ -476,7 +746,7 @@ function selectJSMethods() {
 };
 
 function updateClassSelector() {
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vClassType = vClassJS["sClassType"] || "Default";
   write2value("sClassType",vClassType);
   createClassSelect();

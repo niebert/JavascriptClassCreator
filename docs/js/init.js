@@ -7,6 +7,9 @@
 // DOM_Global Hash is used to store global values in LocalStorage and in vJSON_JS
 // see saveDOM2LocalStorage() in localstorage.js:125
 // The following DOM elements are defined in index.html
+vDOM_Global.push("sStandalone"); //YES/NO for Standalone export of HTML
+vDOM_Global.push("tMainAuthor");
+vDOM_Global.push("tMainEMail");
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tButtons");
@@ -23,10 +26,21 @@ vDOM_Global.push("sShowGeneralizations"); //UML-Settings for Diagram Export
 vDOM_Global.push("sShowAggregations"); //UML-Settings for Diagram Export
 vDOM_Global.push("sShowAssociations"); //UML-Settings for Diagram Export
 //-------------------------------
+vDOM_File.push("tElementIDs"); // Pipe separated ID String
+vDOM_File.push("tElementID"); // the edit string of selected Element ID - used to edit a new Element ID
+vDOM_File.push("sElementList"); // the select Box setting of selected Element ID
+vDOM_File.push("tElementHTML"); // Content of Element Definition
+vDOM_File.push("tFilename"); // Is the Filename
+vDOM_File.push("tTemplateHTML"); // HTML Template for File
+vDOM_File.push("tPageIDs"); // Used Pages in HTML-File
+//-------------------------------
 vDOM_TPL.push("tDefaultAppPath"); // default is "app_LSAC/" needed as path to store the exported files for the WebApp.
 vDOM_TPL.push("tTplHTML"); // template for "app.html" main file
 vDOM_TPL.push("tTplSCRIPT"); // Script Tag for import Javascript Libraries
+vDOM_TPL.push("tTplSCRIPTSTANDALONE"); // Script Tag for injection of Javascript code in ___JSCODE___
 vDOM_TPL.push("tTplPAGE");  // Template for a DIV page of app.html (iterate for all pages of App)
+vDOM_TPL.push("tTplMENU"); // Creates the template for a Menu of Childpages replace ID ___MENU_CONTENT___
+vDOM_TPL.push("tTplMENUITEM"); // Definition of a single Menu Item replace IDs ___PAGE_ID___ and ___PAGE_TITLE___
 vDOM_TPL.push("tTplBUTTON"); // Definition of Header Buttons of an App, to link between pages
 vDOM_TPL.push("tDefaultBUTTON"); // Default button that must be edited by user, contains an alert as event handler
 vDOM_TPL.push("tTplQUIT"); // Main Quit Button (red) which will close the window
@@ -54,6 +68,8 @@ vTYPE_ID.push("String");
 vDOM_ID.push("sClassType");
 vTYPE_ID.push("String");
 //vTYPE_ID.push("Select");
+vDOM_ID.push("tDate"); // Generated Date of Class
+vTYPE_ID.push("String");
 vDOM_ID.push("tAuthor");
 vTYPE_ID.push("String");
 vDOM_ID.push("tEMail");
@@ -103,17 +119,20 @@ function initCodeCreator() {
        console.log("JSON Database exists in Local Storage");
        top.vJSON_JS = vDB;
        vSelectedClass = top.vJSON_JS["SelectedClass"] || "";
+       vSelectedFile  = top.vJSON_JS["SelectedFile"]  || "";
        clearForm4Class(vSelectedClass);
+       clearForm4File(vSelectedFile);
        updateJSON2Form(vSelectedClass);
        console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
         if ((vJSON_JS["init_type"]) && vJSON_JS["init_type"] == "JSCC") {
-          console.log("vJSON_JS was loaded from Library prg/project.js");
+          console.log("vJSON_JS was loaded from Library prog/project.js");
         } else {
           console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
           top.vJSON_JS["init_type"] = "JSCC";
-          top.vJSON_JS["init_date"] = getDate();
-          loadForm2JSON(vSelectedClass);        
+          top.vJSON_JS["init_date"] = getDateTime();
+          top.vJSON_JS["mod_date"] = "";
+          loadForm2JSON(vSelectedClass);
         };
       };
   } else {
@@ -135,10 +154,12 @@ function initCodeCreator() {
   createClassSelect();
   setClassSelectorDefault(vSelectedClass);
   createMethodSelect();
+  createFileSelect();
   setDefaultSelectors();
 };
 
-function loadForm2JSON(pSelectedClass) {
+function loadForm2JSON(pSelectedClass,pSelectedFile) {
+  var vSelectedFile = pSelectedFile   || getValueDOM("tFilename");
   var vSelectedClass = pSelectedClass || getValueDOM("tClassname");
   console.log("loadForm2JSON()");
   var vClassTypeID = getFormClassType4Class(vSelectedClass);
@@ -147,30 +168,44 @@ function loadForm2JSON(pSelectedClass) {
   //console.log("DEBUG 1: "+getValueDOM("tClassList"));
   initFormClassList();
   initFormDatabaseList();
-  initFormButtonList();
+  initFormFileHTMLList();
   initFormPageType();
   initFormPageList();
   initFormButtonList();
   initFormSelectors();
   updateClasses(); // reads the tClassList and updates the JSON Classes
   updateFormGlobal2JSON();
+  clearPageTypeForm();
+  initMenuPageType("MenuPage");
 }
 
 function setDefaultSelectors() {
   // init the selector settings from vJSON_JS
   var vClassJS = getClassJSON;
+  var vFileID = vJSON_JS["SelectedFile"] || "";
+  var vElementID = vJSON_JS["SelectedElement"] || "";
   var vPageID = vJSON_JS["SelectedPage"] || "";
   var vPageTypeID = vJSON_JS["SelectedPageType"] || "";
   var vButtonID = vJSON_JS["SelectedButton"] || "";
+  if (vFileID != "") {
+    selectFileJS(vFileID);
+    write2value("sFileList",vFileID);
+  };
+  if (vElementID != "") {
+    selectElementJS(vElementID);
+    write2value("sElementList",vElementID);
+  } else {
+    write2value("sElementList","");
+  };
   if (vPageID != "") {
     selectPageJS(vPageID);
     write2value("sPageHTML",vPageID);
   };
-  if (vPageTypeID) {
+  if (vPageTypeID != "") {
     selectPageTypeJS(vPageTypeID);
     write2value("sPageTypeHTML",vPageTypeID);
   };
-  if (vButtonID) {
+  if (vButtonID != "") {
     selectButtonJS(vButtonID);
     write2value("sButtonHTML",vButtonID);
   };
@@ -199,14 +234,40 @@ function initFormClassList() {
 function setClassType(pClass,pClassType) {
   console.log("setClassType('"+pClass+"','"+pClassType+"')");
   setClassTypeJSON(pClass,pClassType);
-}
+};
+
+
+function initFormFileHTMLList() {
+  console.log("initFormFileHTMLList()");
+   var vArr = getAllFilesArray(); //read from tButtonList in  classes.js 413
+   for (var i = 0; i < vArr.length; i++) {
+     console.log("Call: initFileHTML() for ID='"+vArr[i]+"'");
+     //alert("ID='"+vArr[i]["BUTTON_ID"]+"'");
+     initFileHTML(vArr[i]);
+   };
+   if (vArr.length > 0) {
+     top.vJSON_JS["SelectedFile"] = vArr[0];
+     selectFilenameHTML_do(vArr[0]);
+     write2value("tFilename",vArr[0]);
+   };
+};
+
+function initFileHTML(pFileName) {
+  if (!pFileName) {
+    console.log("Call: initButtonJS(pButtonHash) with pButtonHash undefined");
+  } else {
+      console.log("initFileHTML(pFileName)-Call for ID='"+pFileName+"'");
+      checkFileHTML(pFileName);
+  };
+};
+
 
 function initFormButtonList() {
   console.log("initFormButtonList()");
-   var vArr = getButtonArray(); //read from tButtonList in  classes.js 413
+   var vArr = getButtonArrayWithHashes(); //read from tButtonList in  classes.js 413
    for (var i = 0; i < vArr.length; i++) {
-     console.log("Call: initButtonJS() for ID='"+vArr[i]["button-id"]+"'");
-     //alert("ID='"+vArr[i]["button-id"]+"'");
+     console.log("Call: initButtonJS() for ID='"+vArr[i]["BUTTON_ID"]+"'");
+     //alert("ID='"+vArr[i]["BUTTON_ID"]+"'");
      initButtonJS(vArr[i]);
    };
 };
@@ -215,15 +276,15 @@ function initButtonJS(pButtonHash) {
   if (!pButtonHash) {
     console.log("Call: initButtonJS(pButtonHash) with pButtonHash undefined");
   } else {
-      var vButtonID = reduceVarName(pButtonHash["button-id"]);
+      var vButtonID = reduceVarName(pButtonHash["BUTTON_ID"]);
       console.log("initButtonJS(pButtonHash)-Call for ID='"+vButtonID+"'");
-      initButtonJS_do(pButtonHash)
+      initButtonJS_do(pButtonHash);
   }
 };
 
 function initButtonJS_do(pButtonHash) {
-  console.log("initButtonJS_do() ID:'"+pButtonHash["button-id"]+"'");
-  var vButtonID = reduceVarName(pButtonHash["button-id"]);
+  console.log("initButtonJS_do() ID:'"+pButtonHash["BUTTON_ID"]+"'");
+  var vButtonID = reduceVarName(pButtonHash["BUTTON_ID"]);
   if (vButtonID == "") {
     console.log("initButtonJS()-Call: Button-ID undefined");
   } else {
@@ -270,6 +331,17 @@ function initFormPageType() {
      initPageTypeJS(vPageArr[i]);
    };
 };
+
+function initMenuPageType(pPageTypeID) {
+  console.log("initMenuPageType('"+pPageTypeID+"')");
+  if (existsPageTypeJS(pPageTypeID)) {
+    var vPageTypeJS = vJSON_JS["PageType"][pPageTypeID];
+    var vTemplate = vPageTypeJS["template"];
+    vPageTypeJS["template"] = replaceString(vTemplate,"___PAGE_CONTENT___","___PAGE_CONTENT___\n          ___MENU_CONTENT___");
+  } else {
+    console.log("ERROR: MenuPageType '"+pPageTypeID+"' does not exist!");
+  }
+}
 
 function initPageTypeJS(pPageTypeHash) {
   if (!pPageTypeHash) {
@@ -320,7 +392,7 @@ function initPageJS(pPageHash) {
 };
 
 function initPageJS_do(pPageHash) {
-  var vPageID = reduceVarName(pPageHash["page-id"]);
+  var vPageID = reduceVarName(pPageHash["PAGE_ID"]);
   if (vPageID == "") {
     console.log("initPageJS()-Call: Page-ID undefined");
   } else {
@@ -397,10 +469,23 @@ function initDatabaseJS_do(pDatabase) {
 function initFormSelectors() {
   // get current ClassName
   initClassSelector();
+  initFileSelector();
   initPageSelector();
   initPageTypeSelector();
   initButtonSelector();
 };
+
+function initFileSelector() {
+  var vFileArr = [];
+  var vFileList = vJSON_JS["FileList"] || {};
+  for (var iFile in vFileList) {
+    if (vFileList.hasOwnProperty(iFile)) {
+      vFileArr.push(iFile);
+    };
+  };
+  createFileSelect(vFileArr);
+};
+
 
 function initClassSelector() {
   var vClassArr = [];

@@ -19,10 +19,10 @@
 
 ## JavascriptClassCreator (JSCC)
 
-An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows to tweak software without digging very deep into libraries and code.
+An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows novice developers to tweak software without digging very deep into libraries and code of the project.
 
-The objectiv of a ESEIA approach is, that large group of people is able to modify a software.
-An ESEIA tool like JavascriptClassCreator exports the code in a certain syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management System like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
+The objectiv of an ESEIA approach is, that large groups of people are able to modify a software according to their needs.
+An ESEIA tool like ___JavascriptClassCreator___ exports the code in a certain programming languages or syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management Systema like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
 
 The vision for certain OpenSource projects is, that a software release *X1* has a ESEIA tool as well, that allow quick and simple alterations *X1* into *X2*.
 
@@ -96,35 +96,113 @@ In traditional software development HTML pages can be regarded as windows with a
 In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
 
 When we consider the object oriented programming concept we have classes in instances of the classes (objects). Similar to this concept we create HTML files as templates, that contain certain markers, that are replaced by user-defined content.
-The markers three preceding underscores before and after the identifier. In Identifying itself consist of uppercase characters. An example of a marker wll look like thislook like this:
+The markers three preceding underscores before and after the identifier. In Identifier itself consist of uppercase characters only with 3 underscores before and after the uppercase name of the identifier. Only uppercase characters and single separating underscores are allowed as identifiers. An example of a marker will look like thislook like this:
 
 **Examples Marker:**  The marker
 
-      ___PAGE_ID___
+      ___MYMARKER___  or ___MY_MARKER___
 
-in the template could be replaced by a unique page-id if instances the HTML template are created as page. Similar to this approach the marker
+in the template for an identifier with the name ___MYMARKER___ or ___MY_MARKER___ that will be replaced by a defined content for a specific instance of the template. E.g.
 
-      ___TITLE___
+     ___PAGE_ID___
 
-will be replaced by the title of the HTML page.
+will be replaced by a unique ID of the page, e.g. ___page12___ for the 12th generated page of one template. The number will be incremented after
+any new page generation of a certain HTML template (PageType). Similar to this approach the marker
 
-The notation with  3 underscores before an after the uppercase identifier is used and, because he creates less conflict with other programming languages the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
+      ___PAGE_TITLE___
+
+will be replaced by the title of the HTML page. In general markers that are replaced by content from a hash (Object), are stored in the project JSON file ___vJSON_JS___ with the ID in uppercase characters (e.g. PAGE_TITLE) and the definition of page title.
+
+      ___"PAGE_TITLE": "My Title of the Page",___
+
+The notation with  3 underscores before an after the uppercase identifier is used, because it creates less conflict with other programming languages and the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
 
 ### Pages (Parent: FileHTML)
-Pages are areas of HTML files that shown or hidden by JQuery.
+Pages are sections in HTML files that are shown separately with JQuery in the WebApp. In general the user will perceive switching from page to an other page like following from one HTML page to an other HTML page. From the programming site we have to distinguish ___pages___ and ___html-files___ because the browser will not leave the HTML-page, when an other pages is displayed. For ___pages___ the previous page is hidden and the new page is shown by application of ___JQuery___. Pages must have a unique ID ___PAGE_ID___, so that single pages can be addressed by JQuery via ___hide()___ and ___show()___.
 
-## Status of software
+For pages the standard markers are
+* element ___HEADER_BUTTON1___ first button of the header of a page (usually left button)
+* element ___HEADER_BUTTON2___ second button of the header of a page (usually right button)
+Header buttons can just link to another page (e.g. ___Show Page: home___)
+
+### Elements on Page (Parent: Page)
+A page contains elements. These elements could be a
+* HTML select box,
+* a checkbox,
+* input box for text,
+* a password to login to the backend,
+* a text or
+* larger section of HTML, that are used on multiple pages.
+These elements with a unique ID (e.g. ___HTML_TITLE___) are replaced in all page contents of all HTML files. This leads to the fact, that definition of DOM elements in layout, wording and event handling can be defined accross HTML files of the web app.
+
+
+### FileHTML
+A FileHTML (e.g. ___app.html___ or ___login.html___) is generated from a template (e.g. ___DefaultTPLHTML___). In a HTML file their are two main identifiers, that are replaced by a specific page content.
+* the identifier ___LIBRARIES___ will be replaced by all imported Javascript libraries and JSON databases.
+* the identifier ___PAGES___ will be replaced by all defined pages, that are used in the HTML file. For all HTML-files, pages can be defined separately. HTML files can exchange actions settings via the parameters of the URL, starting with a "?". Main parameters are:
+* the selected database (e.g. ___database=mydata.db___)
+* the action ID (e.g. ___action=dothis___)
+* FileHTML with the ID ___index.html___ loads a file ___tpl/index.html___ replaces the markers and the file should be stored in the downloaded subfolder ___/app_LSAC/___ as ___/app_LSAC/index.html___. The folder ___/app_LSAC/___ can be retrieved if you download the repository of ___JavaScriptClassCreator___ from GitHub.
+
+## Folders of software
+With the following enumeration the purpose of the folders is explained. JSCC-folders are necessary for the JavascriptClassCreator. JSCC uses serveral other OpenSource projects mentioned in the section [Acknowledgements](#acknowledgement). If you want to replace the libraries with new versions of the OpenSource software it is much easier to replace that, when the versions are kept in separate folders. The used OpenSource packages are not updated automatically, so that JSCC as a whole could fail all of a sudden, due to unresolved dependencies.
+1. JSCC-folder ___/ace___ contains the source of the ACE code editor used in iFrames for JavascriptClassCreator (JSCC)
+2. WebApp-folder ___/app_LSAC___ is the directory in which you can store the generate sources for a specific WebApp. ___LSAC___ is an abbreviation for Local Storage and App Cache.
+3. JSCC-folder ___/css___ contains the Stype Sheets for JavascriptClassCreator (JSCC)
+4. folder ___/exporter4code___ is a template driven code generator that is pure HTML/JS and independent of a specific syntax of an programming languages (not necessary for JSCC)
+5. folder ___/java2javascipt___ allows the import of Java-Classes into JSCC, it parses attributes and method headers of the Java Class (not necessary for JSCC)
+6. folder ___/javascipt2htmlcreator___ contains older framework for WebApps based on frames (not necessary for JSCC)
+7. JSCC-folder ___/jquery___ contains the JQuery libraries and images
+8. JSCC-folder ___/js___ contains the Javascript libraries for JSCC
+9. JSCC-folder ___/prog___ contains the JSON files for the programming project
+10. JSCC-folder ___/uglify___ contain the code compressor.
+11. JSCC-folder ___/uml___ contains the UML diagram generation, called from JSCC.
+
+## Status of Software
 ### Release Status
 Software in currently in Beta-Phase. It is a proof of concept.
 Refactoring of JavascriptClassCreator code in an object-oriented style
 
+### Programming Languages
+JavascriptClassCreator (JSCC) is currently designed to develop software for Javascript. Even if it is not a perfect solutions for this web-based approach Javascript is regarded as sink for programming code. By using the parser UglifyJS, Javascript code will be parsed and crosscompile in other programming languages (e.g. PHP, C++, Java,... ). Source code optimizations can be performed in the exported programming language.
+
+## Client-Server Communication of App
+### Collected Data in LocalStorage
+The collected data of the App is stored in the LocalStorage of the browser by default.
+The application of LocalStorage from the browser does not require any connectivity to the Server. This assures that data collection can be done if the mobile device is offline.
+
+### Cross-site scripting - Security Risk
+Cross site scripting is a security risk for users, so the WebApp must be stored on the webserver, where the server backend is installed, e.g.:
+* start app via
+     https://www.example.com/myapp/index.html
+* submit data to server e.g. via PHP-script
+     https://www.example.com/backend/myapp/submit.php
+
+### Remote Server and Form Submit
+If it is necessary to submit the collected data to a remote server it is necessary to use the FORM tag in HTML. The following workflow can be applied:
+* start app for login
+     https://www.example.com/myapp/index.html
+* a sucessful login creates a session ID ___sid___ for the user ___uid___ that is valid for a certain period of time. Then the app is started with those parameters
+     https://www.example.com/myapp/app.html?uid=...&sid=...&...
+* The client collects data offine and stores the data in LocalStorage of the browser. All records get a primary key ___pkey___ (e.g. ___pkey=637___). If a certain record was not submitted to the server the client assigns the submitted attribute in the offline database as false (e.g. ___record with pkey=637 submitted=false____). The in the HTML-page of ___app.html___ the client submits data to the remote server via PHP-script
+* Through a form in the HTML-page of ___app.html___ the client submits data to the remote server via PHP-script
+     https://www.remote.srv/backend/myapp/submit.php?uid=...&sid=...&pkey=637&...&
+* The import step is the backward channel from the remote server to https://www.remote.srv to the clients url. HTML-file can access the query string of the call of the HTML file. The server calls the ___app.html___ as callback e.g. with the following parameters:
+     https://www.example.com/myapp/app.html?uid=...&pkey=637&action=submitted
+So the client knows that the record was sucessfully submitted. This leads to alteration of the submitted flag in the LocalStorage of the browser (e.g. ___record with pkey=637 submitted=true____). 
+
 ### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
-* Integrate UglifyJS for the generated Javascript Classes for exporting to Code2XML with AST and TreeWalker
+* Integrate UglifyJS for parsing Javascript Code of Classes for exporting to Code2XML with AST and TreeWalker
 * BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
 * BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
 * BUG: Update Method Selector
+* BUG: getPageLine2Hash() leading blanks for page-id must be removed
+* BUG: PageType Editor wrong init for '' PageTypeID
+* BUG: Name of File for Download not defined saveAs FileSaver.js
+* MISSING IMPLEMENTATION: getPageIDArr4File(pFile);
+* MISSING IMPLEMENTATION: getDefaultPageHash(pID);
 * IMPROVE: add blank selection option to DB selector
 * IMPROVE: remove JSON Code Generator from init in <tt>index.html</tt>
 * IMPROVE: Aggregate all libs into one file and send after aggregation to the code compressor, that improves the percentage of compression a bit (low priority, because aggregation of compressed files into a single has a higher impact on loading time than the compression of the aggregated single file of all classes)
@@ -135,6 +213,7 @@ Special thanks to the following individual developers and teams of OpenSource Ja
 * Developer [Mihai Bazon](http://lisperator.net/) create UglifyJS, a great tool to handle and parse Javascript Code and minify the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * The wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is used to minify/compress the exported Javascript code of generated JS Classes (For Online Example of the [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) see source code on https://github.com/Skalman/UglifyJS-online for the Online-Version of the Wrapper.
 * Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)
+* [FileSaver.js](https://github.com/eligrey/FileSaver.js) Developer Eli Grey provided the ___FileSaver.js___ that is used to store created JSCC files to the local filesystem. JSCC uses the same mechanism of browsers, that allows a ___Save as...___ in the context menu of a web pages or image. So not uncontrolled write access to your file system is implemented, because users have to select the locations in which the user whats to store the file (e.g. JSON, Javascript or HTML).
 * [JointJS](https://github.com/clientIO/joint) JointJS is a JavaScript diagramming library. It can be used to create either static diagrams. JointJS is used in this project to create UML-diagrams, that are interactive diagramming in conjunction and application builder in Javascript.
 * [Inheritage for JavaScript with protoypes](http://phrogz.net/js/classes/OOPinJS2.html) by Gavin Kistner
 * [3 ways to define a JavaScript class](https://www.phpied.com/3-ways-to-define-a-javascript-class/) by Stoyan Stefanov

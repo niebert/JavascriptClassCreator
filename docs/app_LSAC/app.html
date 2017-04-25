@@ -1,0 +1,2815 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>App LSAC</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <link type="text/css" href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+      <link  type="text/css" href="css/ios_inspired.css" rel="stylesheet" />
+      <script src="js/jquery-1.7.1.min.js"></script>
+
+      <script>
+        //------------BEGIN iOS-Inspired------------
+         // all dialog buttons should close their parent dialog
+         $(".ui-dialog button").live("click", function() {
+           $("[data-role='dialog']").dialog("close");
+          });
+          $(document).on("mobileinit", function(){
+             $.mobile.defaultPageTransition = "slide";
+           });
+         //--------------END iOS-Inspired------------
+      </script>
+            <!-- JSON Databases -->
+      <script type="text/javascript" src="db/db_mydata.js"></script>
+      <script type="text/javascript" src="db/db_disapp.js"></script>
+
+      <!-- JavaScript Libraries -->
+      <script type="text/javascript" src="js/string.js"></script>
+      <script type="text/javascript" src="js/localstorage.js"></script>
+      <script type="text/javascript" src="js/writedom.js"></script>
+
+      <!-- Classes Javascript-Libs -->
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: App()
+//#       SuperClass: AppAbstract
+//#   Class Filename: app.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/app.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class App()
+// Call the constructor for creating an instance of class App
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new App();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of App, use
+// the attribute name with a leading "this." in the definition of method of App, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'App'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'App' will be set by
+// use the method's name and extend it with '_App'.
+//    _App.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+//--------------------------------------
+//---Super Class------------------------
+// Inheritance: 'App' inherits from 'AppAbstract'
+App.prototype = new AppAbstract();
+// Constructor for instances of App has to updated.
+// Otherwise constructor of AppAbstract is called
+App.prototype.constructor=App;
+// see http://phrogz.net/js/classes/OOPinJS2.html for explanation
+//--------------------------------------
+
+
+function App () {
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "App()"
+    //---------------------------------------------------------------------
+	this.aDoc = null;
+	this.aName = "DisApp";
+	this.aServer = new Server("File app.html - Content of element SERVER_URL");
+	this.aDatabaseList = new DatabaseList();
+	this.aCurrentPage = "welcome";
+	this.aFuzzyController = new FuzzyController();
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "App()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "App()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: App
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//#
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: App
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: Boolean
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: load():Boolean")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: App
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: Boolean
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: save():Boolean")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: App
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//#
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: calcRisk()")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: App
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//#
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: calcResponse()")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: App
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//#
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: App
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//#
+//# created
+//# last modifications
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("app.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of App----
+  //    var vMyInstance = new App();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: App
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: AppAbstract()
+//#       SuperClass:
+//#   Class Filename: appabstract.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/appabstract.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class AppAbstract()
+// Call the constructor for creating an instance of class AppAbstract
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new AppAbstract();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of AppAbstract, use
+// the attribute name with a leading "this." in the definition of method of AppAbstract, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'AppAbstract'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'AppAbstract' will be set by
+// use the method's name and extend it with '_AppAbstract'.
+//    _AppAbstract.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function AppAbstract () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "AppAbstract()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "AppAbstract()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "AppAbstract()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: load():Boolean")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: save():Boolean")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: calcRisk()")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: calcResponse()")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: AppAbstract
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("appabstract.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of AppAbstract----
+  //    var vMyInstance = new AppAbstract();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: AppAbstract
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DOMVar()
+//#       SuperClass:
+//#   Class Filename: domvar.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/domvar.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class DOMVar()
+// Call the constructor for creating an instance of class DOMVar
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DOMVar();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DOMVar, use
+// the attribute name with a leading "this." in the definition of method of DOMVar, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DOMVar'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DOMVar' will be set by
+// use the method's name and extend it with '_DOMVar'.
+//    _DOMVar.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DOMVar () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DOMVar()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DOMVar()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DOMVar()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: DOMVar
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: DOMVar
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: load():Boolean")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: DOMVar
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: save():Boolean")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: DOMVar
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: calcRisk()")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: DOMVar
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: calcResponse()")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: DOMVar
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: DOMVar
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvar.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of DOMVar----
+  //    var vMyInstance = new DOMVar();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DOMVar
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DOMVarList()
+//#       SuperClass:
+//#   Class Filename: domvarlist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/domvarlist.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class DOMVarList()
+// Call the constructor for creating an instance of class DOMVarList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DOMVarList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DOMVarList, use
+// the attribute name with a leading "this." in the definition of method of DOMVarList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DOMVarList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DOMVarList' will be set by
+// use the method's name and extend it with '_DOMVarList'.
+//    _DOMVarList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DOMVarList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DOMVarList()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DOMVarList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DOMVarList()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: load():Boolean")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: save():Boolean")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: calcRisk()")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: calcResponse()")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: DOMVarList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("domvarlist.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of DOMVarList----
+  //    var vMyInstance = new DOMVarList();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DOMVarList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: CheckBoxList()
+//#       SuperClass:
+//#   Class Filename: checkboxlist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/checkboxlist.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class CheckBoxList()
+// Call the constructor for creating an instance of class CheckBoxList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new CheckBoxList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of CheckBoxList, use
+// the attribute name with a leading "this." in the definition of method of CheckBoxList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'CheckBoxList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'CheckBoxList' will be set by
+// use the method's name and extend it with '_CheckBoxList'.
+//    _CheckBoxList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function CheckBoxList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "CheckBoxList()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "CheckBoxList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "CheckBoxList()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: load():Boolean")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: save():Boolean")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: calcRisk()")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: calcResponse()")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: CheckBoxList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("checkboxlist.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of CheckBoxList----
+  //    var vMyInstance = new CheckBoxList();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: CheckBoxList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: FuzzyLayer()
+//#       SuperClass:
+//#   Class Filename: fuzzylayer.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/fuzzylayer.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class FuzzyLayer()
+// Call the constructor for creating an instance of class FuzzyLayer
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new FuzzyLayer();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of FuzzyLayer, use
+// the attribute name with a leading "this." in the definition of method of FuzzyLayer, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'FuzzyLayer'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'FuzzyLayer' will be set by
+// use the method's name and extend it with '_FuzzyLayer'.
+//    _FuzzyLayer.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function FuzzyLayer () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "FuzzyLayer()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "FuzzyLayer()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "FuzzyLayer()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: load():Boolean")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: save():Boolean")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: calcRisk()")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: calcResponse()")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: FuzzyLayer
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzylayer.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of FuzzyLayer----
+  //    var vMyInstance = new FuzzyLayer();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: FuzzyLayer
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: FuzzyController()
+//#       SuperClass:
+//#   Class Filename: fuzzycontroller.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/fuzzycontroller.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class FuzzyController()
+// Call the constructor for creating an instance of class FuzzyController
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new FuzzyController();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of FuzzyController, use
+// the attribute name with a leading "this." in the definition of method of FuzzyController, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'FuzzyController'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'FuzzyController' will be set by
+// use the method's name and extend it with '_FuzzyController'.
+//    _FuzzyController.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function FuzzyController () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "FuzzyController()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "FuzzyController()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "FuzzyController()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: load():Boolean")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: save():Boolean")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: calcRisk()")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: calcResponse()")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: FuzzyController
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("fuzzycontroller.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of FuzzyController----
+  //    var vMyInstance = new FuzzyController();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: FuzzyController
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DatabaseList()
+//#       SuperClass:
+//#   Class Filename: databaselist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/databaselist.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class DatabaseList()
+// Call the constructor for creating an instance of class DatabaseList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DatabaseList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DatabaseList, use
+// the attribute name with a leading "this." in the definition of method of DatabaseList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DatabaseList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DatabaseList' will be set by
+// use the method's name and extend it with '_DatabaseList'.
+//    _DatabaseList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DatabaseList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DatabaseList()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DatabaseList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DatabaseList()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: load():Boolean")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: save():Boolean")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: calcRisk()")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: calcResponse()")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: DatabaseList
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("databaselist.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of DatabaseList----
+  //    var vMyInstance = new DatabaseList();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DatabaseList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: Database()
+//#       SuperClass:
+//#   Class Filename: database.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/database.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class Database()
+// Call the constructor for creating an instance of class Database
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new Database();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of Database, use
+// the attribute name with a leading "this." in the definition of method of Database, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'Database'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'Database' will be set by
+// use the method's name and extend it with '_Database'.
+//    _Database.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function Database () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "Database()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "Database()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "Database()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: Database
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: Database
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: load():Boolean")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: Database
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: save():Boolean")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: Database
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: calcRisk()")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: Database
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: calcResponse()")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: Database
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: Database
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("database.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of Database----
+  //    var vMyInstance = new Database();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: Database
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: Server()
+//#       SuperClass:
+//#   Class Filename: server.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// <SCRIPT LANGUAGE="JavaScript" SRC="js/server.js"> </SCRIPT>
+//---------------------------------------------------------------------
+//---Constructor of Class Server()
+// Call the constructor for creating an instance of class Server
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new Server();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of Server, use
+// the attribute name with a leading "this." in the definition of method of Server, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'Server'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'Server' will be set by
+// use the method's name and extend it with '_Server'.
+//    _Server.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function Server () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "Server()"
+    //---------------------------------------------------------------------
+
+
+
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "Server()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "Server()" defined as JS functions
+//---------------------------------------------------------------------
+
+//#################################################################
+//# Method: init()
+//#    used in Class: Server
+//# Parameter:
+//#    pDoc:Document
+//# Comment:
+//#    Comment for init
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.init = function (pDoc) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: init(pDoc:Document)")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.init(pDoc);
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method init Definition
+
+
+//#################################################################
+//# Method: load()
+//#    used in Class: Server
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for load
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.load = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: load():Boolean")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.load();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method load Definition
+
+
+//#################################################################
+//# Method: save()
+//#    used in Class: Server
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for save
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.save = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: save():Boolean")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.save();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method save Definition
+
+
+//#################################################################
+//# Method: calcRisk()
+//#    used in Class: Server
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcRisk
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcRisk = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: calcRisk()")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.calcRisk();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcRisk Definition
+
+
+//#################################################################
+//# Method: calcResponse()
+//#    used in Class: Server
+//# Parameter:
+//#
+//# Comment:
+//#    Comment for calcResponse
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.calcResponse = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: calcResponse()")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.calcResponse();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method calcResponse Definition
+
+
+//#################################################################
+//# Method: gotoPage()
+//#    used in Class: Server
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for gotoPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.gotoPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: gotoPage(pPageID)")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.gotoPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method gotoPage Definition
+
+
+//#################################################################
+//# Method: submitPage()
+//#    used in Class: Server
+//# Parameter:
+//#    pPageID
+//# Comment:
+//#    Comment for submitPage
+//# Return: undefined
+//# created               25.4.2017
+//# last modifications    25.4.2017
+//#################################################################
+
+App.prototype.submitPage = function () {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("server.js - Call: submitPage(pPageID)")
+  //----Create Object/Instance of Server----
+  //    var vMyInstance = new Server();
+  //    vMyInstance.submitPage();
+  //-------------------------------------------------------
+
+	//----------- INSERT YOUR CODE HERE ---------------
+
+};
+//----End of Method submitPage Definition
+
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: Server
+//-------------------------------------------
+
+</script>
+
+      <script>
+         //-----INIT DisApp -----
+          var vDebug = 0;
+          var vApp = new App();
+       </script>
+       <script src="js/jquery.mobile-1.2.0.min.js"></script>
+       <link href="css/ios_post.css" rel="stylesheet" />
+     </head>
+    <body>
+
+<!--
+=============================================
+         BEGIN OF PAGES
+=============================================
+-->
+
+     <!-- Page: welcome     Page Type: DefaultPage -->
+     <div data-role="page" id="welcome">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME1" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Welcome</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'welcome'
+       </div>
+    <!-- /page ID: welcome -->
+    </div>
+     <!-- Page: home     Page Type: MenuPage -->
+     <div data-role="page" id="home">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Welcome' -->
+       <a href="#" id="bWELCOME2" onclick="$.mobile.changePage( '#welcome', { transition: 'slideup', changeHash: false });return false" data-theme="a">Welcome</a>
+
+            <h1>Home</h1>
+           <a href="#" id="bQUIT1" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c">Quit</a>
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'home'
+             <ul data-role="listview" data-inset="true">
+       <li><a href="#welcome">Welcome</a></li>
+  <li><a href="#setting">Settings</a></li>
+  <li><a href="#save">Save</a></li>
+  <li><a href="#quit">Quit App</a></li>
+
+	</ul>
+
+       </div>
+    <!-- /page ID: home -->
+    </div>
+     <!-- Page: setting     Page Type: OptionsPage -->
+     <div data-role="page" id="setting">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME3" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Settings</h1>
+                  <!-- header button: 'Save' -->
+       <a href="#" id="bSAVE4" onclick="$.mobile.changePage( '#save', { transition: 'slideup', changeHash: false });return false" data-theme="a">Save</a>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'setting'
+       </div>
+    <!-- /page ID: setting -->
+    </div>
+     <!-- Page: save     Page Type: SaveDialog -->
+     <div data-role="page" id="save">
+         <div data-role="header" data-position="fixed">
+
+            <h1>Save</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'save'
+       </div>
+    <!-- /page ID: save -->
+    </div>
+     <!-- Page: quit     Page Type: ConfirmPage -->
+     <div data-role="page" id="quit">
+         <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME5" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
+            <h1>Quit App</h1>
+           <a href="#" id="bOK1" onclick="vApp.confirmClick(this.id);" data-theme="a">OK</a>
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'quit'
+       </div>
+    <!-- /page ID: quit -->
+    </div>
+     <!-- Page: login     Page Type: LoginPage -->
+     <div data-role="page" id="login">
+         <div data-role="header" data-position="fixed">
+
+            <h1>Login</h1>
+
+       </div>
+         <!-- /header -->
+       <div data-role="content">
+          Content for Page 'login'
+       </div>
+    <!-- /page ID: login -->
+    </div>
+
+
+
+<!--
+=============================================
+     END OF PAGES / BEGIN iFRAME JSCALL
+=============================================
+ -->
+    <div id="divJSCALL"></div>
+    <div id="iFrameContainer" style="display:none">
+      <iframe id="iLoader" src="loader/setonline.html" width="90%" height="100" name="iLoader"></iframe>
+    </div>
+<!--
+=============================================
+         END OF iFRAME JSCALL
+=============================================
+ -->
+    <script type="text/javascript">
+       // var vQueryHash = readQueryParams();
+       var vOnlineMode = false;
+       var vApp = new App();
+       vApp.init(document,vQueryHash);
+       // checkOnlineMode();
+      </script>
+    </body>
+</html>
+  

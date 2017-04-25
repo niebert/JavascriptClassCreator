@@ -118,11 +118,30 @@ function updateGlobalJSON2Form() {
   };
 };
 
+function createFileSelect(pFileArr) {
+  console.log("createFileSelect()");
+  var vArray = pFileArr || getAllFilesArray(); //classes.js 1289
+  //var vArray = insertArray1Empty(vArr)
+  if (vArray.length == 0) {
+    vArray.push("app.html");
+  };
+  var vOptions = createOptions4Array(vArray);
+  write2innerHTML("sFileList",vOptions);
+  write2innerHTML("sFileListHTML",vOptions);
+  write2innerHTML("sFileHTML",vOptions);
+  var vName =  vJSON_JS["SelectedFile"] || "";
+  if (vArray.length>1) {
+    if (vName == "") {
+      vName = vArray[1];
+    };
+  };
+  write2value("tFilename",vName);
+};
 
 function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createAttribTypeSelect()-Call");
-  var vArr = getAllClassesArray(); //classes.js 418
+  var vArr = getAllClassesArray(); //classes.js 1274
   var vArray = insertArray1Empty(vArr)
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);

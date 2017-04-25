@@ -11,9 +11,9 @@ function checkInterface4Class(pClassName) {
   var vInheritance = getInhertitChain(pClassName);
   var vChain = vInheritance["chain"];
   if (vSuperClassType == "Interface") {
-      //inherit the attributes of interface
+      //inherit all defined attributes of interface
     inheritAttributesDefinitions(vChain);
-    //inherit the method interface
+    //inherit all method interfaces
     inheritMethodsInterface(vChain);
     //Update Form with inherited
     updateAttribJSON2Form(pClassName);
@@ -23,10 +23,9 @@ function checkInterface4Class(pClassName) {
   if (vSuperClassType == "Abstract") {
     //inherit the method interface
     inheritAttributesDefinitions(vChain);
-    //inherit the method interface
-    inheritMethodInterface(vChain);
-    //inherit the method interface
-    inheritMethodCode(vChain);
+    //inherit defined methods from parent abstract class and
+    //create an interface for methods, i.e. methods with an empty code
+    inheritMethodsAbstract(vChain);
     //Update Form with inherited
     updateAttribJSON2Form(pClassName);
     updateMethodsJSON2Form(pClassName);
@@ -73,6 +72,8 @@ function copyAttritbute4Hash(iAtt,pInClass,pOutClass) {
 };
 
 function copyArrID4Hash(pArrID,iAtt,pInHash,pOutHash) {
+  // copies all content
+  // iAtt is
   var vIn,vOut;
   for (var i = 0; i < pArrID.length; i++) {
     vIn  = pInHash[pArrID[i]];
@@ -86,8 +87,8 @@ function copyArrID4Hash(pArrID,iAtt,pInHash,pOutHash) {
 };
 
 
-function inheritMethodsInterface(pChain) {
-  console.log("inheritMethodInterface()-Call");
+function inheritMethodsAbstract(pChain) {
+  console.log("inheritMethodsAbstract()-Call");
   var vChain = pChain || [getSelectedClassName()];
   var vClassName = pChain[0];
   var vClassJS = getClassJSON(vClassName); // umlcreator.js:49
@@ -95,9 +96,39 @@ function inheritMethodsInterface(pChain) {
   var vInheritClass;
   for (var i = 1; i < vChain.length; i++) {
     k = vChain.length - i;
-    console.log("["+k+"] Inherit Methods: "+vChain[k]);
+    console.log("["+k+"] Inherit Abstract Methods: "+vChain[k]);
     vInheritClass = getClassJSON(vChain[k]);
-    inheritMethods4Class(vClassJS,vInheritClass);
+    // inherit Abstract Methods inherits the Method Headers which empty code MethodCode
+    inheritAbstractMethods4Class(vClassJS,vInheritClass);
+  };
+};
+function inheritAbstractMethods4Class(pClassJS,pInheritJS) {
+  var vMethHash = pClassJS["MethodParameter"];
+  var vInheritHash = pInheritJS["MethodParameter"];
+  var vInheritCode = pInheritJS["MethodCode"];
+  var vCode = "";
+  for (var iMeth in vInheritHash) {
+    console.log("Inherit Meth ["+iMeth+"]");
+    if (vInheritHash.hasOwnProperty(iMeth)) {
+      if (vMethHash.hasOwnProperty(iMeth)) {
+          if (vInheritHash[iMeth] != vMethHash[iMeth]) {
+            console.log("WARING (inherit): type mismatch Method "+iMeth+"() for Interface - overwrite method parameter");
+            copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+          } else {
+            console.log("Inherit Return: for safety update Method Return for "+iMeth+"()");
+            copyArrID4Hash(["MethodReturn"],iMeth,pInheritJS,pClassJS);
+          };
+      } else {
+        vCode = vInheritCode[iMath] || "";
+        vCode = reduceVarName(vCode) || "";
+        if (vCode == "") {
+          console.log("Inherit [Parameter,Return,Comment]: for Method Return for "+iMeth+"()");
+          copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+        } else {
+          console.log("Inherit: Code of Method "+iMeth+"() is defined, INHERIT applied and NO import of Method Interface");
+        };
+      };
+    };
   };
 };
 
@@ -137,6 +168,7 @@ function getDefaultClassHash(pClass,pClassType) {
   vRetClass["sClassType"][pClass] = vClassType;
   vRetClass["tEMail"] = getValueDOM("tEMail") || "anonymous@example.com";
   vRetClass["tAuthor"] = getValueDOM("tAuthor") || "My Name";
+  vRetClass["tDate"] = getDate();
   // "myMethod(p1,p2)" stores the code in vRetClass["MethodCode"]["myMethod"]
   // and stores the comment in vRetClass["MethodComment"]["myMethod"]
   vRetClass["AttribType"] = {};
@@ -191,7 +223,10 @@ function getSuperClassname4Class(pClassName) {
 
 
 function getClassJSON(pClassName) {
-  var vClassName = pClassName || getValueDOM("tClassname");
+  var vClassName = pClassName || "";
+  if (vClassName == "") {
+    vClassName = getValueDOM("tClassname");
+  };
   var vRetClass;
   console.log("getClassJSON('"+vClassName+"')");
   if (vClassName != "") {
@@ -293,22 +328,7 @@ function createNewClass_do() {
   console.log("Click New - create a new class after prompt");
   var vNewClassName = getValueDOM("tClassname") || "";
   var vSuccess = false;
-  if (getValueDOM("tAuthor") == "") {
-    var vNewAuthor = prompt("Please enter your Name (Author of Class)!","") || "";
-    if (vNewAuthor != "") {
-      write2value("tAuthor",vNewAuthor);
-    } else {
-      write2value("tAuthor","Anonymous");
-    };
-  };
-  if (getValueDOM("tEMail") == "") {
-    var vNewEMail = prompt("Please enter your e-Mail (Contact Mail of Author)!","") || "";
-    if (vNewEMail != "") {
-      write2value("tEMail",vNewEMail);
-    } else {
-      write2value("tEMail","anonymous@example.com");
-    };
-  };
+  setAuthorEmail();
   if (vNewClassName != "") {
     write2value("tClassname", vNewClassName);
     if (existsClassJS(vNewClassName)) {
@@ -334,6 +354,80 @@ function createNewClass_do() {
   };
   return vSuccess;
 };
+
+function createNewElement(pFile) {
+  var vFile = pFile || getValueDOM("tFilename");
+  if (existsFileJS(vFile)) {
+    var vNewElementID = getValueDOM("tElementID");
+    if (existsElementJS(vFile,vNewElementID)) {
+      alert("Create New Element ["+vNewElementID+"] was NOT successful. Element exists already for file '"+vFile+"'!");
+    } else {
+      createElementJS(vFile,vNewElementID);
+    }
+  } else {
+    console.log("ERROR: createNewElement('"+vFile+"') not successful, '"+vFile+"' does not exist in FileList.");
+  }
+};
+
+function createElementJS(pFile,pElementID) {
+  if (existsFileJS(pFile)) {
+    if (existsElementJS(vFile,vNewElementID)) {
+      console.log("Create New Element ["+pElementID+"] was NOT successful. Element exists already for file '"+pFile+"'!");
+    } else {
+      vJSON_JS["FileList"][vFile]["elements"][vNewElementID] = getDefaultElementString(vFile,vNewElementID);
+      var vElemArrID = getElementNameArray();
+      vElemArrID.push(pElementID);
+      write2value("tElementIDs",vElemArrID.join("|"));
+      createElementSelect();
+    };
+  };
+};
+
+function getDefaultElementString(pFile,pElementID) {
+  var vReturn = "File "+pFile+" - Content of element "+pElementID;
+  return vReturn;
+}
+
+function getElementListHash(pFile) {
+  var vFile = pFile || getValueDOM("tFilename");
+  var vHash;
+  if (existsFileJS(vFile)) {
+    if (vJSON_JS["FileList"][vFile]["elements"]) {
+      vHash = vJSON_JS["FileList"][vFile]["elements"];
+    } else {
+      vJSON_JS["FileList"][vFile]["elements"] = {};
+      vHash = vJSON_JS["FileList"][vFile]["elements"];
+    };
+  };
+  return vHash
+};
+
+function setAuthorEmail() {
+  if (getValueDOM("tAuthor") == "") {
+    write2value("tAuthor",getValueDOM("tMainAuthor"));
+  };
+  if (getValueDOM("tEmail") == "") {
+    write2value("tEmail",getValueDOM("tEmail"));
+  };
+  if (getValueDOM("tAuthor") == "") {
+    var vNewAuthor = prompt("Please enter your Name (Author of Class)!","") || "";
+    if (vNewAuthor != "") {
+      write2value("tAuthor",vNewAuthor);
+      write2value("tMainAuthor",vNewAuthor);
+    } else {
+      write2value("tAuthor","Anonymous");
+    };
+  };
+  if (getValueDOM("tEMail") == "") {
+    var vNewEMail = prompt("Please enter your e-Mail (Contact Mail of Author)!","") || "";
+    if (vNewEMail != "") {
+      write2value("tEMail",vNewEMail);
+      write2value("tMainEMail",vNewEMail);
+    } else {
+      write2value("tEMail","anonymous@example.com");
+    };
+  };
+}
 
 function updateJSON2tClassList() {
   // update the Selectors sClassType in vJSON_JS["ClassList"] with ClassTypes defined in tClassList
@@ -381,6 +475,7 @@ function createClassTypeString4Hash(pClassTypeHash) {
   for (var iClass in vClassTypeHash) {
     if (vClassTypeHash.hasOwnProperty(iClass)) {
       vType = vClassTypeHash[iClass];
+      vType = reduceVarName(vType);
       if (vType == "") {
         vArr.push(iClass);
       } else {
@@ -453,20 +548,71 @@ function initClassJS_do(pClass,pClassType) {
       console.log("vJSON_JS['ClassType'] created");
     };
     top.vJSON_JS["SelectedClass"] = pClass;
-    if (top.vJSON_JS["ClassList"]) {
-      console.log("vJSON_JS['ClassList'] exists");
-    } else {
-      top.vJSON_JS["ClassList"] = {};
-      console.log("vJSON_JS['ClassList'] created");
-    };
+    initClassJS_undefined(pClass);
     if (top.vJSON_JS["ClassList"][pClass]) {
       console.log("Class '"+pClass+"' exists in JSON DB");
+      initClassJS_undefined(pClass);
     } else {
       top.createClassJS(pClass,vClassType,"initClassJS_do()");
       console.log("Class '"+pClass+"' created and updated from HTML Form with default values ClassType='"+vClassType+"'");
     };
   };
 }
+
+function initClassJS_undefined(pClass) {
+  if (pClass) {
+    if (top.vJSON_JS["ClassList"]) {
+      //console.log("initClassJS_undefined('"+pClass+"') - vJSON_JS['ClassList'] exists");
+    } else {
+      top.vJSON_JS["ClassList"] = {};
+      console.log("initClassJS_undefined('"+pClass+"') - vJSON_JS['ClassList'] created");
+    };
+    if (top.vJSON_JS["ClassList"][pClass]) {
+      //console.log("Class '"+pClass+"' exists in JSON DB");
+    } else {
+      top.vJSON_JS["ClassList"][pClass] = {};
+      console.log("Class '"+pClass+"' created");
+    };
+    var vID = "";
+    var vHash = top.vJSON_JS["ClassList"][pClass];
+    for (var i = 0; i < vDOM_ID.length; i++) {
+      vID = vDOM_ID[i];
+      if (vHash.hasOwnProperty(vID)) {
+        //vID exisits
+      } else {
+        switch (vID) {
+          case "tClassname":
+            vHash[vID] = pClass;
+          break;
+          case "tAuthor":
+            vHash[vID] = getValueDOM("tMainAuthor");
+          break;
+          case "tEMail":
+            vHash[vID] = getValueDOM("tMainEMail");
+          break;
+          case "tDate":
+            vHash[vID] = getDate();
+          break;
+          default:
+            vHash[vID] = "";
+        };
+        //console.log("initClassJS_undefined('"+pClass+"') - ['"+vID+"'] created");
+      };
+    };
+    var vArrID = ["AttribName","AttribDefault","AttribType","MethodName","MethodReturn","MethodCode","MethodComment"];
+    for (var i = 0; i < vArrID.length; i++) {
+      vID = vArrID[i];
+      if (vHash.hasOwnProperty(vID)) {
+        //vID exisits
+      } else {
+        vHash[vID] = {};
+        //console.log("initClassJS_undefined('"+pClass+"') - Hash for ['"+vID+"'] created");
+      };
+    };
+  } else {
+    console.log("WARNING: initClassJS_undefined(pClass) pClass undefined!");
+  };
+};
 
 function existsClassJS(pClass) {
   if (!pClass) {
@@ -644,11 +790,15 @@ function isAttribNameDefined(pAttribName) {
   };
 };
 
-function getAttribArray() {
-  var vAttributes 	= document.fCreator.tAttributes.value;
+function getAttribArray(pClass) {
+  var vAttributes = "";
+  if (pClass) {
+    vAttributes = getString4JSONVariable(pClass,"tAttributes");
+  } else {
+    var vAttributes 	= document.fCreator.tAttributes.value;
+  };
   vAttributes = removeEmptyLines(vAttributes);
-  var vAttribArray    = vAttributes.split(/\n/);
-  return vAttribArray;
+  return vAttributes.split(/\n/);
 }
 
 function createNewAttribJS(pName) {
@@ -689,7 +839,7 @@ function createNewAttribJS(pName) {
 
 function createNewAttributeForm(pName,pType,pValue,pComment) {
     console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"')");
-    var vClassJS = getSelectedClassJSON();
+    var vClassJS = getClassJSON();
     var vClassName = getSelectedClassID();
     var vAttrDef = pName + " = " + pValue;
     var vAttributes = document.fCreator.tAttributes;
@@ -1224,7 +1374,7 @@ function getButtonArray() {
   for (var i = 0; i < vButtonLineArr.length; i++) {
     vButtArr = (vButtonLineArr[i]).split("|");
     //vHash = getRecordLine2Hash(vButtonRECDEF, vButtonLineArr[i]);
-    console.log("getButtonArray(): vButtArr["+i+"]='"+vButtonLineArr[i]+"'");
+    console.log("getButtonArray(): vButtArr["+i+"]='"+vButtArr[0]+"'");
     var vButtonID = vButtArr[0] || "";
     if (vButtonID != "") {
       vArr.push(vButtonID);
@@ -1251,6 +1401,10 @@ function getAllClassesArray() {
   return getString2ClassArray(vClassString);
 }
 
+function getAllFilesArray() {
+  var vHTMLfilesString = getValueDOM("tHTMLfiles");
+  return getString2Array(vHTMLfilesString);
+};
 
 function getString2ClassArray(pString) {
   var vClasses    	  = pString;

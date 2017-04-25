@@ -57,7 +57,17 @@ function reduceVarName(pName) {
   return vName;
 };
 
-
+function removeSpaces(pString) {
+	if (pString) {
+		if (pString != "") {
+			pString = pString.replace(/\s/g,"");
+		};
+		return pString
+	} else {
+		console.log("removeSpaces(pString) pString undefined");
+		return "";
+	}
+}
 
 function encodeURL(pURL) {
   return encodeURI(pURL);

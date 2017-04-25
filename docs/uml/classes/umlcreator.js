@@ -41,11 +41,11 @@ function getSelectedClassName() {
   return vClassName;
 };
 
-function getClassJSON {
-  var vSelectedClass = getSelectedClassName();
+function X_getClassJSON(pClass) {
+  var vSelectedClass = pClass || getSelectedClassName();
   var vRetHash;
   if (vSelectedClass != "") {
-    vRetHash = getClassJSON(vSelectedClass)
+    vRetHash = vJSON_JS["ClassList"][vSelectedClass] || {};
   };
   return vRetHash;
 };
@@ -75,7 +75,7 @@ function createAllClasses(pClassList) {
   var vSuperClass = "";
   var vCentered = true;
   if (vSelectedClass != "") {
-    var vClassJS = getSelectedClassJSON(vSelectedClass);
+    var vClassJS = getClassJSON(vSelectedClass);
     vSuperClass = vClassJS["tSuperClassname"] || "";
     if (vSuperClass != "") {
       vClasses[vSuperClass] = createDiagramClass(vSuperClass,vCentered);

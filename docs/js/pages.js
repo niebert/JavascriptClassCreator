@@ -17,6 +17,26 @@ function deleteClassHTML() {
   };
 };
 
+function deleteFileHTML() {
+  var vFileID = getValueDOM("sFileList");
+  console.log("deleteFileHTML('"+vFileID+"')");
+  var vOK = confirm("Do you want to delete File ["+vFileID+"]?");
+  var vID = "";
+  if(vOK == true) {
+    var vHashID = ["FileList"];
+    for (var i = 0; i < vHashID.length; i++) {
+      vID = vHashID[i];
+      delete vJSON_JS[vID][vFileID];
+    };
+    var vArrID = createArray4HashID(vJSON_JS["FileList"]);
+    if (vArrID.length > 0) {
+      selectFilenameHTML(vArrID[0]);
+    } else {
+      clearForm4File();
+    }
+  };
+};
+
 
 function deletePageHTML() {
   var vPageID = getValueDOM("sPageHTML");
@@ -43,6 +63,7 @@ function deletePageTypeHTML() {
     delete vJSON_JS["PageType"][vPageTypeID];
     var vArrID = createArray4HashID(vJSON_JS["PageType"]);
     updatePageTypeJSON2Form(vArrID);
+    clearPageTypeForm();
   };
 };
 
@@ -69,15 +90,43 @@ function isButtonUsed(pButtonID) {
   for (var iPageType in vPageTypeHash) {
     if (vPageTypeHash.hasOwnProperty(iPageType)) {
       vPT = vPageTypeHash;
-      if (vPT["button-id1"] == pButtonID) {
+      if (vPT["HEADER_BUTTON1"] == pButtonID) {
         vRet = true;
       };
-      if (vPT["button-id2"] == pButtonID) {
+      if (vPT["HEADER_BUTTON2"] == pButtonID) {
         vRet = true;
       };
     };
   };
 };
+
+function updateForm2ElementsJSON() {
+  console.log("updateForm2ElementsJSON()");
+  updateFormFileID2JSON("tElementIDs");
+  var vFile 	= getSelectedFilenameHTML();
+  var vElements = vJSON_JS["FileList"][vFile]["elements"];
+  var vElementsArr = getDefLine2ArrayID(getValueDOM("tElementIDs"));
+  var vID = "";
+  for (var i = 0; i < vElementsArr.length; i++) {
+    vID = vElementsArr[i];
+    if (vElements.hasOwnProperty(vID)) {
+        console.log("FileList['"+vFile+"']['elements']['"+vID+"'] exists");
+    } else {
+      vElements[vID] = "";
+    };
+  };
+  //vJSON_JS["FileList"] = getFileListHash();
+  //createFileSelect();
+};
+
+function getDefLine2ArrayID(pLine) {
+  var vLine = pLine || "";
+  var vArr = vLine.split("|");
+  for (var i = 0; i < vArr.length; i++) {
+    vArr[i] = reduceVarName(vArr[i]);
+  };
+  return vArr;
+}
 
 function updateForm2PagesJSON() {
   console.log("updateForm2PagesJSON()");
@@ -104,8 +153,8 @@ function updateForm2PageTypeJSON(pPageTypeID) {
     var vSelHash = vJSON_JS["PageType"][vPageTypeID];
     write2value("tPageTypeHTML",vSelHash["template"]);
     setEditorValue("iPageTypeHTML",vSelHash["template"]);
-    write2value("sButtonHeader1",vSelHash["button-id1"]);
-    write2value("sButtonHeader2",vSelHash["button-id2"]);
+    write2value("sButtonHeader1",vSelHash["HEADER_BUTTON1"]);
+    write2value("sButtonHeader2",vSelHash["HEADER_BUTTON2"]);
   } else {
     console.log("PageType ["+pPageTypeID+"] does NOT exist!");
     clearPageTypeForm();
@@ -284,22 +333,41 @@ function getPageListArray() {
   var vID = "";
   var vRetArr = [];
   for (var i = 0; i < vArr.length; i++) {
-    vID = vArr[i]["page-id"];
+    vID = vArr[i]["PAGE_ID"];
     vID = reduceVarName(vID);
     vRetArr.push(vID);
   };
   return vRetArr;
 };
 
-function getPageListArrayWithHashes() {
-   //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+function getPageListArrayWithHashes(pFile) {
+   //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
+   // Function can be called with pFile as parameter and without.
+   // (1) With paramter pFile all Pages in the HTML file pFile are exported
+   // (2) Without parameter all PagesHash are exported
    var vPageID = "";
    //var vPageTypeID = "";
    var vPageArr = [];
+   var vPageList = getPageListForm();
+   // get all defined Pages from Form
+   if (pFile) {
+     // (1) With paramter pFile all Pages in the HTML file pFile are exported
+     var vPageIDArr = getPageIDArr4File(pFile);
+     var vID = "";
+     for (var i = 0; i < vPageIDArr.length; i++) {
+       vID = vPageIDArr[i];
+       if (vPageList[vID]) {
+         vPageArr.push(vPageList[vID])
+       } else {
+         console.log("WARNING: Page with PageID ["+vID+"] does not exist, JSCC will create one for you");
+         getDefaultPageHash(vID);
+       }
+     }
+   }
    var vArr = getTextareaArray("tPages");
    for (var i = 0; i < vArr.length; i++) {
      var vHash = getPageLine2Hash(vArr[i]);
-     vPageID = vHash["page-id"];
+     vPageID = vHash["PAGE_ID"];
      vPageID = reduceVarName(vPageID);
      //vPageTypeID = vHash["page-type"];
      if (vPageID && (vPageID != "")) {
@@ -310,6 +378,66 @@ function getPageListArrayWithHashes() {
    };
    return vPageArr;
 };
+
+
+
+function getPageIDArr4File(pFile) {
+  var vFile = pFile || "";
+  console.log("getPageIDArr4File('"+vFile+"')");
+  var vPageIDArr = [];
+  if (vFile != "") {
+    if (existsFileJS(vFile)) {
+      var vIDs = vJSON_JS["FileList"][vFile]["tPageIDs"];
+      vIDs = removeSpaces(vIDs);
+      if (vIDs != "") {
+        vPageIDArr = vIDs.split("|");
+      };
+    };
+  };
+  if (vPageIDArr.length = 0) {
+    console.log("tPageID was empty for Page '"+vFile+"'");
+    vPageIDArr = getAllPageIDsJSON();
+  };
+  return vPageIDArr;
+}
+
+function getAllPageIDsJSON() {
+  var vPageIDArr = [];
+  if (vJSON_JS["PageList"]) {
+    var vPageList = vJSON_JS["PageList"];
+    for (var iID in vPageList) {
+      if (vPageList.hasOwnProperty(iID)) {
+        vPageIDArr.push(iID)
+      };
+    };
+  };
+  return vPageIDArr;
+}
+
+function getPageListForm() {
+  var vPageList = {};
+  var vArr = getTextareaArray("tPages");
+  for (var i = 0; i < vArr.length; i++) {
+    var vHash = getPageLine2Hash(vArr[i]);
+    vPageID = vHash["PAGE_ID"];
+    vPageID = reduceVarName(vPageID);
+    vHash["PAGE_ID"] = vPageID;
+    vPageList[vPageID] = vHash;
+    //vPageTypeID = vHash["page-type"];
+  };
+  return vPageList
+};
+
+function getPageListJSON() {
+  var vPageList = {};
+  if (vJSON_JS["PageList"]) {
+    vPageList = vJSON_JS["PageList"]
+  } else {
+    vPageList = {};
+    console.log("ERROR: PageList in JSON undefined");
+  };
+  return vPageList;
+}
 
 function getButtonLine2Hash(pLine) {
   //console.log("getButtonLine2Hash('"+pLine+"')");
@@ -322,7 +450,7 @@ function getPageTypeLine2Hash(pLine) {
 }
 
 function getPageLine2Hash(pLine) {
-   //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+   //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
    //console.log("getPageLine2Hash('"+pLine+"')");
    var vHash = {};
    var vRecord = vPageRECDEF;
@@ -336,7 +464,7 @@ function getPageLine2Hash(pLine) {
 
 function getString2Array(pString) {
   var vRet = [];
-  console.log("getString2Array(pString) pString='"+pString+"'");
+  //console.log("getString2Array(pString) pString='"+pString+"'");
   if (pString) {
     pString = removeEmptyLines(pString);
     if (pString.length > 0) {
@@ -351,7 +479,7 @@ function getString2Array(pString) {
 };
 
 function getRecordLine2Hash(pRecord,pLine) {
-   //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+   //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
    //console.log("getRecordLine2Hash('"+pLine+"')");
    var vHash = {};
    var vArr = pLine.split("|");
@@ -363,7 +491,7 @@ function getRecordLine2Hash(pRecord,pLine) {
 };
 
 function getHash2RecordLine(pRecord,pHash) {
-   //var vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+   //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
    console.log("getHash2RecordLine()");
    var vArr = [];
    var vValue = "";
@@ -419,15 +547,22 @@ function getButtonArrayWithHashes() {
   return vRetArr;
 }
 
+function getFileListHash() {
+  console.log("getFileListHash()-Call from Form");
+  var vFileArr = getFileListArrayWithHashes();
+  var vPageHash = {};
+
+}
+
 function getPageListHash() {
   console.log("getPageListHash()-Call from Form");
-  //vPageRECDEF = ["page-id","page-title","page-type","parent-id"];
+  //vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
   var vPageArr = getPageListArrayWithHashes();
   var vPageHash = {};
   var vID = "";
   var vPageID = "";
   for (var i = 0; i < vPageArr.length; i++) {
-    vPageID = vPageArr[i]["page-id"];
+    vPageID = vPageArr[i]["PAGE_ID"];
     console.log("getPageHash() - Page ["+vPageID+"]");
     // vPageArr[i] is a Hash with the IDs vPageRECDEF create with getPageLine2Hash(pLine)
     vPageHash[vPageID] = vPageArr[i];
@@ -437,7 +572,7 @@ function getPageListHash() {
 };
 
 function createButtonJS(pButtonHash) {
-  var vButtonID = reduceVarName(pButtonHash["button-id"]);
+  var vButtonID = reduceVarName(pButtonHash["BUTTON_ID"]);
   if ((!pButtonHash["counter"]) || (pButtonHash["counter"] == "")) {
     pButtonHash["counter"] = 0
   };
@@ -488,7 +623,7 @@ function createNewButton_do() {
   if (vErrorMSG == "") {
     //write2value("tButtonID", vNewButtonName);
     var vNewButtonHash = {
-      "button-id":vNewButtonID,
+      "BUTTON_ID":vNewButtonID,
       "button-html": vNewButtonDefHTML
     };
     vFailed = createButtonJS(vNewButtonHash);
@@ -512,6 +647,31 @@ function createNewButton_do() {
     console.log("Create new Button cancelled!\n"+vErrorMSG);
   };
   return vSuccess;
+};
+
+function createNewFile() {
+  console.log("Click New - create a new Page with [+]");
+  if (askCreateNew("File",getValueDOM("tFilename"))) {
+    createNewFile_do()
+  };
+};
+
+function createNewFile_do() {
+  console.log("Create a new File with [+]");
+  var vNewFile = getValueDOM("tFilename") || "";
+  if (vNewFile != "") {
+    vNewFile = removeSpaces(vNewFile);
+  };
+  if (vNewFile != "") {
+    if (existsFileJS(vFile)) {
+      alert("Create New File ["+vNewFile+"] was NOT successful. File already exists!");
+    } else {
+      checkFileHTML(vNewFile);
+      selectFilenameHTML_do(vNewFile);
+      write2value("tFilename",vNewFile);
+      console.log("Create New File ["+vNewFile+"] performed");
+    };
+  };
 };
 
 function createNewPage() {
@@ -551,8 +711,8 @@ function createNewPage_do() {
   if (vErrorMSG == "") {
     //write2value("tPageID", vNewPageName);
     var vNewPageHash = {
-      "page-id":vNewPageID,
-      "page-title": vNewPageTitle,
+      "PAGE_ID":vNewPageID,
+      "PAGE_TITLE": vNewPageTitle,
       "page-type": vNewPageType,
       "parent-id": vParentPageID
     };
@@ -581,8 +741,8 @@ function createNewPage_do() {
 function createPageTypeJS(pPageTypeHash) {
   var vPageTypeID = pPageTypeHash["page-type"] || "";
   var vSuccess = true;
-  console.log("createPageTypeJS(pHash) for '"+vPageTypeID+"'");
   if (vPageTypeID != "") {
+    console.log("createPageTypeJS(pHash) for '"+vPageTypeID+"'");
     vPageTypeID = reduceVarName(vPageTypeID);
     if (existsPageTypeJS(vPageTypeID)) {
       //alert("Page '"+pPageType+"' already exists!");
@@ -594,7 +754,7 @@ function createPageTypeJS(pPageTypeHash) {
       vJSON_JS["PageType"][vPageTypeID]["template"] = getDefaultPageTypeContent(vPageTypeID);
     };
   } else {
-    console.log("createPageTypeJS()-Call with empty PageType");
+    console.log("createPageTypeJS()-Call not sucessful - vPageTypeID=''");
     vSuccess = false
   };
   return vSuccess;
@@ -631,8 +791,8 @@ function createNewPageType_do() {
     //write2value("tPageID", vNewPageName);
     var vNewPageHash = {
       "page-type":  vPageTypeID,
-      "button-id1": vLeftButtonID,
-      "button-id2": vRightButtonID,
+      "HEADER_BUTTON1": vLeftButtonID,
+      "HEADER_BUTTON2": vRightButtonID,
       "template":   vTemplate
     };
     console.log("CALL: createPageTypeJS() for ["+vPageTypeID+"]");
@@ -680,13 +840,61 @@ function getHash4Record2String(pRECDEF,pHashJSON,pCutAtEnd) {
   return vOut;
 };
 
+function updateFormElementIDs2JSON(pFile) {
+  var vFile = pFile || getValueDOM("tFilename") || "";
+  var vRet = "";
+  if (vFile != "") {
+    if (existsFileJS(vFile)) {
+      var vElemIDs = getValueDOM("tElementIDs");
+      vElemIDs = removeSpaces(vElementIDs);
+      var vElemArrID = [];
+      if (vElemIDs != "") {
+        vElemArrID = vElemIDs.split("|");
+      };
+      var vID = "";
+      // vHash contains the OLD Element Definitions
+      var vHash = vJSON_JS["FileList"][vFile]["elements"];
+      // in vElemHash the NEW Element Definitions are populated
+      var vElemHash = {};
+      for (var i = 0; i < vElemArrID.length; i++) {
+        vID = vElemArrID[i];
+        if (vHash.hasOwnProperty(vID)) {
+          // an OLD defintion exists and the NEW definitions are defined
+          vElemHash[vID] = vHash[vID];
+        } else {
+          // vID is a NEW Element Definition init that with a default value
+          vElemHash[vID] = getDefaultElementString(vFile,vID);
+        };
+      };
+      // set Elements with the NEW Element Definitions
+      vJSON_JS["FileList"][vFile]["elements"] = vElemHash;
+      write2value("tElementIDs",getElementListString(vFile));
+      createElementSelect();
+    };
+  };
+}
+
+function getElementListString(pFile) {
+  var vFile = pFile || getValueDOM("tFilename") || "";
+  var vRet = "";
+  if (vFile != "") {
+    if (existsFileJS(vFile)) {
+      var vArrID = getArray4HashID(vJSON_JS["FileList"][vFile]["elements"]);
+      vRet = vArrID.join("|");
+    };
+  };
+  return vRet;
+};
+
 function getPageListString() {
-  return getHash4Record2String(vPageRECDEF,vJSON_JS["PageList"],0);
+  var vCutColsAtEnd = 0;
+  return getHash4Record2String(vPageRECDEF,vJSON_JS["PageList"],vCutColsAtEnd);
 };
 
 
 function getButtonListString() {
-  return getHash4Record2String(vButtonRECDEF,vJSON_JS["ButtonList"],1);
+  var vCutColsAtEnd = 1;
+  return getHash4Record2String(vButtonRECDEF,vJSON_JS["ButtonList"],vCutColsAtEnd);
 };
 
 function getPageTypeString() {
@@ -710,7 +918,7 @@ function prompt4hash(pHash) {
 }
 
 function createPageJS(pPageHash) {
-  var vPageID = reduceVarName(pPageHash["page-id"]);
+  var vPageID = reduceVarName(pPageHash["PAGE_ID"]);
   var vExists = existsPageJS(vPageID);
   if (vExists) {
     //alert("Page '"+vPageID+"' already exists!");
@@ -735,8 +943,8 @@ function createPageJS(pPageHash) {
 function createDefaultPageTypeJS(pPageTypeID) {
   var vNewPageTypeHash = {
     "page-type":pPageTypeID,
-    "button-id1":"",
-    "button-id2":"",
+    "HEADER_BUTTON1":"",
+    "HEADER_BUTTON2":"",
     "template":getDefaultPageTypeContent(pPageTypeID)
   };
   if (pPageTypeID != "") {
@@ -826,14 +1034,14 @@ function fillPageTypeRecord(pPageType,pPageTypeRecord) {
     if (vPageTypeHash) {
       console.log("fillPageTypeRecord()-Call - vPageTypeHash defined ");
       if (vPageTypeHash[pPageType]) {
-        vButton1 = vPageTypeHash[pPageType]["button-id1"]
-        vButton2 = vPageTypeHash[pPageType]["button-id2"]
+        vButton1 = vPageTypeHash[pPageType]["HEADER_BUTTON1"]
+        vButton2 = vPageTypeHash[pPageType]["HEADER_BUTTON2"]
       } else {
         console.log("fillPageTypeRecord()-Call - vPageTypeHash['"+pPageType+"'] undefined Buttons");
       }
     };
-    pPageTypeRecord["button-id1"] = vButton1;
-    pPageTypeRecord["button-id2"] = vButton2;
+    pPageTypeRecord["HEADER_BUTTON1"] = vButton1;
+    pPageTypeRecord["HEADER_BUTTON2"] = vButton2;
     pPageTypeRecord["template"] = getDefaultPageTypeContent(pPageType);
   } else {
     console.log("fillPageTypeRecord(pPageTypeRecord) - pPageTypeRecord UNDEFINED");
@@ -854,43 +1062,11 @@ function getDefaultPageTypeContent(pPageType) {
 };
 
 function existsPageTypeJS(pPageType) {
-  if (!pPageType) {
-    alert("existsPageTypeJS(pPageType)-Call with pPageType undefined");
-  };
-  console.log("existsPageTypeJS('"+pPageType+"')");
-  var vReturn = false;
-  if (vJSON_JS) {
-    if (vJSON_JS["PageType"]) {
-      if (vJSON_JS["PageType"][pPageType]) {
-        vReturn = true;
-        console.log("PageType '"+pPageType+"' is a user-defined Page.");
-      };
-    };
-  };
-  if (vReturn == false) {
-    console.log("PageType '"+pPageType+"' does NOT exist.");
-  };
-  return vReturn
+  return existsListJS("PageType","PageType",pPageType);
 };
 
 function existsButtonJS(pButtonID) {
-  if (!pButtonID) {
-    alert("existsButtonJS(pButtonID)-Call with pButtonID undefined");
-  };
-  console.log("existsButtonJS('"+pButtonID+"')");
-  var vReturn = false;
-  if (vJSON_JS) {
-    if (vJSON_JS["ButtonList"]) {
-      if (vJSON_JS["ButtonList"][pButtonID]) {
-        vReturn = true;
-        console.log("Button '"+pButtonID+"' is a user-defined Button.");
-      };
-    };
-  };
-  if (vReturn == false) {
-    console.log("Button '"+pButtonID+"' does NOT exist.");
-  };
-  return vReturn
+  return existsListJS("Button","ButtonList",pButtonID);
 };
 
 function savePageHTML() {
@@ -910,21 +1086,46 @@ function savePageTypeHTML() {
 }
 
 function existsPageJS(pPageID) {
-  if (!pPageID) {
-    alert("existsPageJS(pPageID)-Call with pPageID undefined");
+  return existsListJS("Page","PageList",pPageID);
+};
+
+function existsFileJS(pFileID) {
+  return existsListJS("File","FileList",pFileID);
+};
+
+function existsElementJS(pFileID,pElementID) {
+  var vExists = false;
+  var vFile = pFileID || getValueDOM("tFilename");
+  var vElementList = getElementListHash(vFile);
+  if (existsFileJS(vFile)) {
+    var vElemHash = vJSON_JS["FileList"][vFile]["elements"]
+    if (vElemHash) {
+      if (vElemHash.hasOwnProperty(pElementID)) {
+          vExists = true;
+      };
+    };
   };
-  console.log("existsPageJS('"+pPageID+"')");
+  return vExists;
+};
+
+
+
+function existsListJS(pName,pListID,pID) {
+  if (!pID) {
+    alert("exists"+pName+"JS(p"+pName+"ID)-Call with p"+pName+"ID undefined");
+  };
+  console.log("exists"+pName+"JS('"+pID+"')");
   var vReturn = false;
   if (vJSON_JS) {
-    if (vJSON_JS["PageList"]) {
-      if (vJSON_JS["PageList"][pPageID]) {
+    if (vJSON_JS[pListID]) {
+      if (vJSON_JS[pListID][pID]) {
         vReturn = true;
-        console.log("Page '"+pPageID+"' is a user-defined Page.");
+        console.log(pName+" with '"+pID+"' is a user-defined in vJSON_JS["+pListID+"].");
       };
     };
   };
   if (vReturn == false) {
-    console.log("Page '"+pPageID+"' does NOT exist.");
+    console.log("WARNING: In "+pListID+" '"+pID+"' does NOT exist.");
   };
   return vReturn
 };

@@ -394,6 +394,7 @@ function  updatePageTypeJSON4ID2Form(pPageTypeID) {
 function selectButtonJS(pButtonID) {
   var vButtonID = pButtonID || getValueDOM("sButtonHTML");
   var vOldButtonID = getValueDOM("tButtonID"); // old ButtonID
+  saveButtonHTML_do();
   console.log("selectButtonJS()-Call: Current Button '"+vOldButtonID+"' - Selected Button '"+vButtonID+"'.");
   if (existsButtonJS(vButtonID)) {
     console.log("Button with ID '"+vButtonID+"' exists in selectButtonJS()-Call");

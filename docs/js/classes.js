@@ -154,6 +154,71 @@ function inheritMethods4Class(pClassJS,pInheritJS) {
   }
 };
 
+function getDefaultPageHash(pPage,pPageType) {
+  var vPageType = pPageType || "Default";
+  console.log("getDefaultPageHash('"+pPage+"','"+pPageType+"')");
+  var vRetPage = {};
+  for (var i = 0; i < vPageRECDEF.length; i++) {
+    vRetPage[vPageRECDEF] = "";
+  };
+  //----SET CLASS TYPE---
+  vRetPage["PAGE_ID"] = pPage;
+  vRetPage["page-type"] = vPageType;
+  // Set PageType of Page in JSON and other variables
+  vRetPage["PAGE_TITLE"] = "Title "+pPage;
+  return vRetPage;
+};
+
+function checkHeaderButtons4PageType() {
+  var vPageTypeHash = vJSON_JS["PageType"];
+  var vHash = null;
+  for (var iPageType in vPageTypeHash) {
+    if (vPageTypeHash.hasOwnProperty(iPageType)) {
+      vHash = vPageTypeHash[iPageType];
+      checkHeaderButton(vHash["HEADER_BUTTON1"]);
+      checkHeaderButton(vHash["HEADER_BUTTON2"]);
+    };
+  };
+};
+
+function checkHeaderButton(pHeaderButton) {
+  if (pHeaderButton != "") {
+    pHeaderButton = reduceVarName(pHeaderButton);
+    console.log("checkHeaderButton('"+pHeaderButton+"')");
+    if (pHeaderButton.toUpperCase() == pHeaderButton) {
+      console.log("HeaderButton['"+pHeaderButton+"'] is a Button");
+      if (existsButtonJS(pHeaderButton)) {
+        console.log("Button ['"+pHeaderButton+"'] exists");
+      } else {
+        var vButtDef = getValueDOM("tDefaultBUTTON");
+        vButDef = replaceString(vButDef,"\n"," ");
+        vButDef = replaceString(vButDef,"___BUTTON_TEXT___",pHeaderButton);
+        vJSON_JS["ButtonList"][pHeaderButton] = vButDef;
+        updateButtonJSON2Form();
+      }
+    } else {
+      console.log("Button ["+pHeaderButton+"] is a link");
+      pHeaderButton = pHeaderButton.toLowerCase();
+      if (existsPageJS(pHeaderButton)) {
+        console.log("Button links to Page ['"+pHeaderButton+"']. Page exists");
+      } else {
+        var vNewPageHash = {
+          "PAGE_ID": pHeaderButton,
+          "PAGE_TITLE": "Title "+pHeaderButton,
+          "page-type": "DefaultPage",
+          "parent-id": "home"
+        };
+        vFailed = createPageJS(vNewPageHash);
+        if (!vFailed) {
+          vJSON_JS["PageList"][vNewPageID] = vNewPageHash;
+          write2value("tPages", getPageListString());
+          createPageSelect();
+        };
+      };
+    };
+  };
+};
+
 function getDefaultClassHash(pClass,pClassType) {
   console.log("getDefaultClassHash()");
   var vClassType = pClassType || "Default";
@@ -615,28 +680,29 @@ function initClassJS_undefined(pClass) {
 };
 
 function existsClassJS(pClass) {
-  if (!pClass) {
-    alert("existsClassJS(pClass)-Call with pClass undefined");
-  };
-  console.log("existsClassJS('"+pClass+"')");
   var vReturn = false;
-  if (vJSON_JS) {
-    if (vJSON_JS["ClassList"]) {
-      if (vJSON_JS["ClassList"][pClass]) {
-        vReturn = true;
-        var vClassType = "";
-        console.log("Class '"+pClass+"' (Type: '"+vClassType+"') is a user-defined class.");
+  if (!pClass) {
+    console.log("existsClassJS(pClass)-Call with pClass undefined");
+  } else {
+    console.log("existsClassJS('"+pClass+"')");
+    if (vJSON_JS) {
+      if (vJSON_JS["ClassList"]) {
+        if (vJSON_JS["ClassList"][pClass]) {
+          vReturn = true;
+          var vClassType = "";
+          console.log("Class '"+pClass+"' (Type: '"+vClassType+"') is a user-defined class.");
+        };
       };
     };
-  };
-  if (vReturn == false) {
-    if (existsBasicClass(pClass)) {
-      console.log("Class '"+pClass+"' is a basic class.");
-      vReturn = true;
+    if (vReturn == false) {
+      if (existsBasicClass(pClass)) {
+        console.log("Class '"+pClass+"' is a basic class.");
+        vReturn = true;
+      };
     };
-  };
-  if (vReturn == false) {
-    console.log("Class '"+pClass+"' does NOT exist.");
+    if (vReturn == false) {
+      console.log("Class '"+pClass+"' does NOT exist.");
+    };
   };
   return vReturn
 };

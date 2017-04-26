@@ -190,6 +190,7 @@ function setDefaultSelectors() {
   if (vFileID != "") {
     selectFileJS(vFileID);
     write2value("sFileList",vFileID);
+    write2value("sFileListHTML",vFileID);
   };
   if (vElementID != "") {
     selectElementJS(vElementID);
@@ -375,7 +376,8 @@ function initPageTypeJS_do(pPageTypeHash) {
     if (top.vJSON_JS["PageType"][pPageType]) {
       console.log("Page '"+pPageType+"' exists in JSON DB");
     } else {
-      top.createPageTypeJS(pPageType);
+      //top.createPageTypeJS(pPageType);
+      top.vJSON_JS["PageType"][pPageType] = pPageTypeHash;
       console.log("Page '"+pPageType+"' created and updated from HTML Form with default values");
     };
   };

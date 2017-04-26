@@ -90,7 +90,7 @@
 <div id="tabs">
 	<ul>
     <li><a id="tabHTML" href="#tabs-HTML">HTML</a></li>
-    <li><a id="tabPAGE" href="#tabs-PAGE">Page</a></li>
+    <li><a id="tabPAGE" href="#tabs-PAGE">Page Types</a></li>
     <li><a id="tabUML" href="#tabs-UML">UML</a></li>
     <li><a id="tabClass" href="#tabs-Class">Class</a></li>
 		<li><a id="tabAttributes" href="#tabs-Attributes">Attributes</a></li>
@@ -249,7 +249,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
           <br>
           <b>Template HTML:</b> <input name="tTemplateHTML" id="tTemplateHTML" value="Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)"> <b>Path:</b> /tpl/
       		  <br>
-              <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs4Page2JSON()">
+              <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
             </td>
         </tr>
         <tr>
@@ -272,7 +272,6 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
       <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
       <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
       <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
-        <option>DefaultPage</option>
       </select>
       <br>
       <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
@@ -296,13 +295,15 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
       </tr>
       <tr>
         <td  colspan="2" align="center">
-            <b>Element IDs:</b> <input name="tElementIDs" id="tElementIDs" value="HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE" type="text" size="65" style="font-family: monospace" onchange="updateFormElementIDs2JSON()">
+          <b>Element ID for Replace:</b>
+          <select id="sElementList" name="sElementList" onchange="selectElementJS(this.value)">
+          </select>
+          <input  class="deletebutton" type="button" id="bDeleteElementHTML" onclick="deleteElementHTML();return false" value="Delete">
+          <input type="button" id="bSaveElementHTML" onclick="updateForm2ElementsJSON();return false" value="Save">
+          </br>
+          <b>HTML Element IDs:</b> <input name="tElementIDs" id="tElementIDs" value="HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE" type="text" size="65" style="font-family: monospace" onchange="updateFormElementIDs2JSON()">
           <input name="bUpdateElements" value=" Save " onclick="updateForm2ElementsJSON()" type="button">
           <br>
-          <b>HTML Element ID for Replace:</b>
-          <select id="sElementList" name="sElementList" onchange="selectElementJS(this.value)">
-            <option>SERVER_URL</option>
-          </select>
           <b>Element-ID:</b>
           <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
           <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
@@ -356,7 +357,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
   <td  colspan="2" bgcolor="#C0C0C0" align="center">
     <font size="+2">
       <b>
-        Buttons for Page Header
+        Buttons Page Header
       </b>
     </font>
   </td>

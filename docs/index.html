@@ -204,6 +204,7 @@ login|Login|LoginPage|quit
 MenuPage|welcome|QUIT
 OptionsPage|home|save
 ConfirmPage|home|OK
+SaveDialog|home|CANCEL
       </textarea>
     </td>
     </tr>
@@ -588,6 +589,7 @@ submitPage(pPageID)
 
           <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
           <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
+          <input name="bSaveButtonClass" value=" Export " onclick="saveCode4Class()" type="button">
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
@@ -697,7 +699,7 @@ submitPage(pPageID)
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
             <b>Generate Project JSON:</b>
             <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
-            <input name="bCreatorButton" value="Project JSON" onclick="createProjectJSON()" type="button">
+            <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
           <hr>
             <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
@@ -1020,7 +1022,7 @@ ___METHODCODE___
 <center>
   <script>
     initCodeCreator();
-    setTimeout('createCode4JSON_JS(vJSON_JS)',6000);
+    setTimeout('createCode4JSON_JS(vJSON_JS)',9000);
   </script>
   <script src="jquery/external/jquery/jquery.js" type="text/javascript"></script>
   <script src="jquery/jquery-ui.js" type="text/javascript"></script>

@@ -173,9 +173,13 @@ function exportHTML4File(pFile,pStandalone) {
   write2editor("MainHTML",vHTML);
 };
 
-function X_exportIndexHTML() {
-  var vHTML = readFileTXT("tpl/index.html");
-  write2editor("MainHTML",vHTML);
+function saveCode4Class() {
+  var vClassID = getSelectedClassID();
+  var vFilename = vClassID.toLowerCase()+".js";
+  var vContent = getEditorValue("iOutput");
+  alert("Save Javascript Class File to '"+getValueDOM("tDefaultAppPath")+"js/"+vFilename+"' in your WebApp");
+  saveFile2HDD(vFilename,pContent)
+  //vreadFileTXT("tpl/index.html");
 }
 
 

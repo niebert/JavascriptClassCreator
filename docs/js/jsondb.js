@@ -354,7 +354,7 @@ function deleteMethodForm() {
 
 
 function saveMethodCallJS(pClass) {
-  var vClassJSON = getClassJSON();
+  var vClassJSON = getClassJSON(pClass);
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
   var vMethodHash = getMethodHash();
@@ -364,7 +364,7 @@ function saveMethodCallJS(pClass) {
     if (vMethodHash[vMethodName]) {
       vMethodHash[vMethodName] = vMethodCall;
       write2JSON("tMethods",convertHash2String(vMethodHash));
-      vClassJSON = getClassJSON();
+      //vClassJSON = getClassJSON();
       vClassJSON["MethodCode"][vMethodName] = vMethodCode;
       vClassJSON["MethodComment"][vMethodName] = vMethodComment;
       vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
@@ -372,7 +372,7 @@ function saveMethodCallJS(pClass) {
       updateJSMethods();
     } else {
       console.log("saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
-      createNewMethodJS();
+      createNewMethodJS(pClass);
     }
   };
 }
@@ -403,20 +403,38 @@ function saveMethodJSON(pMethodName) {
 };
 
 function checkClassJSON(pClassJSON) {
-  var vClass = pClassJSON || getSelectedClassJSON(); // Global Variable
+  var vClassJS = pClassJSON || getSelectedClassJSON(); // Global Variable
   // The function check if all variables in the Class are defined
-  if (vClass) {
+  if (vClassJS) {
     console.log("Check Properties of Class");
-    initClassJS_undefined(vClass["tClassname"]);
     for (var i = 0; i < vDOM_ID.length; i++) {
       var vID = vDOM_ID[i];
-      if (vClass.hasOwnProperty(vID)) {
+      if (vClassJS.hasOwnProperty(vID)) {
         //console.log("checkClassJSON() - Class['"+vID+"'] defined");
       } else {
         console.log("WARNING: checkClassJSON() - Class['"+vID+"'] undefined");
+        switch (vID) {
+          case "tAuthor":
+            vClassJS[vID] = getValueDOM("tMainAuthor");
+          break;
+          case "tEMail":
+            vClassJS[vID] = getValueDOM("tMainEMail");
+          break;
+          default:
+            vClassJS[vID] = "";
+        }
         //eval()
-      }
-    }
+      };
+    };
+    // Check for Hashes
+    var vHashDefID = ["AttribType","AttribDefault","AttribComment","MethodComment","MethodReturn","MethodCode","MethodParameter"];
+    var vID = "";
+    for (var i = 0; i < vHashDefID.length; i++) {
+      vID = vHashDefID[i];
+      if (!(vClassJS.hasOwnProperty(vID))) {
+        vClassJS[vID] = {};
+      };
+    };
   } else {
     console.log("ERROR: checkClassJSON(pClassJSON) - pClassJSON is undefined");
   }
@@ -591,7 +609,7 @@ function updateForm2MethodJSON(pClass) {
   var vClass = pClass || getSelectedClassID();
   console.log("updateForm2MethodJSON('"+vClass+"')");
   var vClassJS = getClassJSON();
-  saveMethodCallJS(); // saves the definition of the method call
+  saveMethodCallJS(vClass); // saves the definition of the method call
   var vMethArr = getMethodNameArray(); //classes.js:275
   var vMethCallArr = getMethodArray(); //classes.js:598
   var vParam = "";

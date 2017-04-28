@@ -106,9 +106,13 @@ function setEditorValue(pIFrameName,pValue) {
   var vEditor = getIFrameEditor(pIFrameName);
   //vEditor.setValue(vEditor.getValue(), 1);
   if (vEditor) {
-    vEditor.setValue(pValue, -1);
+    if (typeof vEditor.setValue === "function") {
+      vEditor.setValue(pValue, -1);
+      console.log("Setting Text of ACE-Editor in iFrame '"+pIFrameName+"' DONE!");
+    } else {
+      console.log("WARNING: vEditor.setValue() undefined");
+    }
     //vEditor.setValue(pValue, 1);
-    console.log("Setting Text of ACE-Editor in iFrame '"+pIFrameName+"' DONE!");
   } else {
     console.log("ERROR: Setting Text of ACE-Editor in iFrame '"+pIFrameName+"' was not successful!");
   }

@@ -20,6 +20,15 @@ function readTextFile2Hash(pFile)
     return vFileHash;
 };
 
+function readFile2Editor(pFile,pEditorID) {
+  console.log("readFile2Editor('"+pFile+"','"+pEditorID+"')");
+  var fr = new FileReader();
+  fr.onload = function(e) {
+      // e.target.result should contain the text
+      setEditorValue(pEditorID,e.target.result);
+  };
+  fr.readAsText(pFile);
+}
 
 function readFileTXT(pFile) {
     var vContent = null;

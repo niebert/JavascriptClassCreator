@@ -189,7 +189,7 @@ If it is necessary to submit the collected data to a remote server it is necessa
      https://www.remote.srv/backend/myapp/submit.php?uid=...&sid=...&pkey=637&...&
 * The import step is the backward channel from the remote server to https://www.remote.srv to the clients url. HTML-file can access the query string of the call of the HTML file. The server calls the ___app.html___ as callback e.g. with the following parameters:
      https://www.example.com/myapp/app.html?uid=...&pkey=637&action=submitted
-So the client knows that the record was sucessfully submitted. This leads to alteration of the submitted flag in the LocalStorage of the browser (e.g. ___record with pkey=637 submitted=true____). 
+So the client knows that the record was sucessfully submitted. This leads to alteration of the submitted flag in the LocalStorage of the browser (e.g. ___record with pkey=637 submitted=true____).
 
 ### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
@@ -198,9 +198,6 @@ So the client knows that the record was sucessfully submitted. This leads to alt
 * BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
 * BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
 * BUG: Update Method Selector
-* BUG: getPageLine2Hash() leading blanks for page-id must be removed
-* BUG: PageType Editor wrong init for '' PageTypeID
-* BUG: Name of File for Download not defined saveAs FileSaver.js
 * MISSING IMPLEMENTATION: getPageIDArr4File(pFile);
 * MISSING IMPLEMENTATION: getDefaultPageHash(pID);
 * IMPROVE: add blank selection option to DB selector

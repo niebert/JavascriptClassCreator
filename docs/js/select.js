@@ -46,7 +46,7 @@ function selectFilenameHTML_do(pFile) {
     };
   };
   writeFileTitle(vFile);
-  updateFileSelectors(vFile);
+  //updateFileSelectors(vFile);
   //setFileSelectorDefault(vFile);
   createCode4JSON_JS(vJSON_JS);
 };
@@ -102,8 +102,22 @@ function clearForm4File() {
   write2innerHTML("sElementList","");
 };
 
-function getElementNameArray() {
-  console.log("getElementNameArray() TODO");
+function getElementNameArray(pFile) {
+  console.log("getElementNameArray() from vJSON_JS");
+  var vFile = pFile || getSelectedFilenameHTML();
+  var vElemArrID = []
+  if (existsFileJS(vFile)) {
+    var vFileHash = vJSON_JS["FileList"][vFile];
+    if (vFileHash.hasOwnProperty("elements")) {
+      var vElemHash = vFileHash["elements"];
+      for (var iID in vElemHash) {
+        if (vElemHash.hasOwnProperty()) {
+          vElemArrID.push(iID);
+        }
+      }
+    }
+  };
+  return vElemArrID;
 };
 
 function writeFileTitle(pFileName) {
@@ -112,8 +126,23 @@ function writeFileTitle(pFileName) {
 };
 
 function updateFileSelectors(pFileName) {
-  console.log("updateFileSelectors('"+pFileName+"') TODO");
+  console.log("updateFileSelectors('"+pFileName+"') Argument is the selected file");
+  var vFileArr = getFileNameListJSON();
+  createFileSelect(vFileArr);
 };
+
+function getFileNameListJSON() {
+  console.log("getFileNameListJSON()");
+  var vFileList = vJSON_JS["FileList"];
+  var vFileArr = [];
+  for (var iFile in vFileList) {
+    if (vFileList.hasOwnProperty(iFile)) {
+        vFileArr.push(iFile);
+    };
+  };
+  return vFileArr;
+};
+
 function setFileSelectorDefault(pFileName) {
   console.log("setFileSelectorDefault('"+pFileName+"') TODO");
 };
@@ -186,7 +215,7 @@ function selectSuperClass(pSuperClass) {
 
 function selectClassType(pClassName,pValue) {
   if (vJSON_JS["ClassType"]) {
-    setClassTypeJSON(pClassName,pValue);
+    setClassTypeJSON(pClassName,pValue,"selectClassType()");
     updateJSON2tClassList();
   } else {
     console.log("ERROR: selectClassType('"+pClassName+"','"+pValue+"') - vJSON_JS['ClassType'] undefined");
@@ -665,6 +694,23 @@ function updateForm2Database(pDB) {
   //console.log(vMSG);
   if (vMSG != "") alert(vMSG);
 };
+
+function removeDBPrefix(pContent) {
+  var vContent = pContent || "";
+  var vPosJSON = 0;
+  var vMsg = "";
+  if (vContent) {
+    var vPos = vContent.indexOf("{");
+    if (vPos >= 0) {
+      vMsg = "removeDBPrefix() '"+pContent.substring(0,vPos)+"' found at posistion "+vPos;
+      vPosJSON = vPos;
+    };
+    if (vPosJSON > 0) {
+      vContent = vContent.substring(vPosJSON,vContent.length);
+    };
+  };
+  return vContent;
+}
 
 function removePrefix4DB(pContent) {
   var vDB = getValueDOM("tExportedJSON");

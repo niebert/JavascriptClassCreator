@@ -218,6 +218,69 @@ function replaceElements4HTML(pHTML,pFile) {
   return pHTML;
 };
 
+function loadProjectJSON(pProjectFile) {
+  console.log("loadProjectJSON('"+pProjectFile+"')");
+  if (pProjectFile) {
+    readFile2Editor(pProjectFile,"iOutput");
+  } else {
+    console.log("ERROR: loadProjectJSON(pProjectFile)-Call pProjectFile undefined!");
+  }
+};
+
+function importProjectJSON() {
+  var fileToLoad=document.getElementById("myImportFile").files[0]; //for input type=file
+  if (fileToLoad) {
+    console.log("importProjectJSON() - File '"+fileToLoad.name+"' exists.");
+    var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent){
+        var vTextFromFileLoaded = fileLoadedEvent.target.result;
+        //document.getElementById("inputTextToSave").value = textFromFileLoaded;
+        //alert("textFromFileLoaded="+textFromFileLoaded);
+        loadProjectJSON(fileToLoad.name,vTextFromFileLoaded);
+      };
+    fileReader.readAsText(fileToLoad, "UTF-8");
+  } else {
+    alert("File is missing");
+  };
+}
+
+
+function loadProjectJSON(pProjectFile,pContent) {
+  var vContent = pContent || "{'name':'"+pProjectFile+"'}";
+  //alert(vContent);
+  vContent = removeDBPrefix(vContent);
+  if (vContent) {
+    var vJSDB = JSON.parse(vContent);
+    if (vJSDB) {
+      var vTypeJS = vJSDB["init_type"] || "UNDEFINED";
+      switch (vTypeJS) {
+        case "JSCC":
+          alert("Import JSON file of Type: "+vTypeJS+"");
+          vJSON_JS = vJSDB;
+          setEditorValue("iJSONDB",vContent);
+          writeFileTitle()
+          initCodeCreator();
+        break;
+        case "CLASS":
+          alert("Import JSON file of Type: "+vTypeJS+"");
+          importClass(vJSDB);
+        break;
+        case "DB":
+          var vDBname = vJSDB["name"] || "DBundefined";
+          alert("Import JSON Database '"+vDBname+"' of Type: "+vTypeJS+"");
+          vJSON_JS["DatabaseList"][vDBname] = vJSDB;
+        break;
+        default:
+          alert("Undefined handler JSON file of Type: "+vTypeJS+"");
+      }
+    }
+  }
+}
+
+function importClass(pJSDB) {
+  alert("importClass(pJSDB) is not implemented yet");
+};
+
 function getTemplate4File(pFile) {
   var vTemplate = getValueDOM("tTplHTML");
   if (existsFileJS(pFile)) {
@@ -485,7 +548,8 @@ function displayCompress() {
         vWinCompress.close();
       };
     };
-    vWinCompress = window.open("uglify/index.html","wCOMP"+Date.now(),"width=900,height=600");
+    var vParam = "?autoclose=1";
+    vWinCompress = window.open("uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
 };
 
 
@@ -557,6 +621,7 @@ function replaceCodeMainVars(pOutput,pClass) {
 	var vClassFile  	= getClassFile4ClassJSON(vClassJS);
   var vSuperClassDef = getValueDOM("tSuperClass");
   var vSuperClassProtoDef = getValueDOM("tSuperClassProto");
+  var vMethodDefPrefix = ""; 
   if (vClassJS["tSuperClassname"] == "") {
     vSuperClassDef = "	// no superclass defined\n";
     vSuperClassProtoDef = "	// no superclass defined\n";

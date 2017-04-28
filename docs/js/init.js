@@ -168,10 +168,12 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
   //console.log("DEBUG 1: "+getValueDOM("tClassList"));
   initFormClassList();
   initFormDatabaseList();
-  initFormFileHTMLList();
+  //Button before PageTypes, because Buttons are used in PageTypes
+  initFormButtonList();
+  //PageType before Pages, because Pages are of create of a type from PageTypes
   initFormPageType();
   initFormPageList();
-  initFormButtonList();
+  initFormFileHTMLList();
   initFormSelectors();
   updateClasses(); // reads the tClassList and updates the JSON Classes
   updateFormGlobal2JSON();
@@ -223,18 +225,21 @@ function initFormClassList() {
   console.log("initFormClassList()");
   var vClassTypeHash = getForm2ClassTypeHash(); //read from tClassList in  classes.js 413
   top.vJSON_JS["ClassType"] = vClassTypeHash;
+  var vClass = "";
   var vClassTypeID = "";
   var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
    for (var i = 0; i < vClassArr.length; i++) {
-     vClassTypeID = vClassTypeHash[vClassArr[i]] || "";
+     vClass = reduceVarName(vClassArr[i])
+     vClassTypeID = vClassTypeHash[vClass] || "";
      initClassJS(vClassArr[i],vClassTypeID,"initFormClassList()");
-     setClassTypeJSON(vClassArr[i],vClassTypeID);
+     setClassTypeJSON(vClassArr[i],vClassTypeID,"initFormClassList()");
    };
 };
 
-function setClassType(pClass,pClassType) {
-  console.log("setClassType('"+pClass+"','"+pClassType+"')");
-  setClassTypeJSON(pClass,pClassType);
+function setClassType(pClass,pClassType,pCaller) {
+  var vCaller = pCaller ||"Caller unknown";
+  console.log("setClassType('"+pClass+"','"+pClassType+"','"+vCaller+"')");
+  setClassTypeJSON(pClass,pClassType,pCaller);
 };
 
 

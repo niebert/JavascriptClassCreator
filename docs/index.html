@@ -81,7 +81,7 @@
       Select
       <select id="sFileList" name="sFileList" onchange="selectFilenameHTML(this.value)">
       </select>
-      <select id="sClassList" name="sClassList" onchange="selectClassCode()">
+      <select id="sClassList" name="sClassList" onchange="selectClass(this.value)">
       </select>
     </b>
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
@@ -434,10 +434,10 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     	</tr> -->
     	<tr>
     		<td>
-    		<b>Author:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+    		<b>Author of Class:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
     		</td>
     		<td>
-    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
     		</td>
     	</tr>
     	<tr>
@@ -697,9 +697,14 @@ submitPage(pPageID)
             <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
           <hr>
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
-            <b>Generate Project JSON:</b>
-            <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
+          <b>Generate Project JSON:</b>
+          <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
             <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
+          <br>
+          <b>Load Project JSON:</b>
+            <input type="file" id="myImportFile" onchange="importProjectJSON()">
+            <input name="bImportProject" value="Import Project" onclick="importProjectJSON()" type="button">
+
           <hr>
             <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>

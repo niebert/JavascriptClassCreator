@@ -22,7 +22,8 @@
    var vJSON_TPL = {}; // Hash containing the templates for generating code
    var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"]; //variables that are stored for all pages
    var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2","template"]; // variables that are stored for all page types
-   var vButtonRECDEF = ["BUTTON_ID","button-html","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+   //var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+   var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
@@ -180,8 +181,10 @@ submit.html</textarea>
       <b>Pages in HTML-File</b>
       <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
       <br>
-      <b>Format:</b>
-      <tt id="labelPageRecord">-</tt>
+      <font size="-2">
+        <b>Format:</b>
+        <tt id="labelPageRecord">-</tt>
+      </font>
       <br>
       <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
 home|Home|MenuPage|
@@ -195,8 +198,10 @@ login|Login|LoginPage|quit
       <b>Page Types</b>
       <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
       <br>
-      <b>Format:</b>
-      <tt id="labelPageTypeRecord">-</tt>
+      <font size="-2">
+        <b>Format:</b>
+        <tt id="labelPageTypeRecord">-</tt>
+      </font>
       <br>
       Page-ID can be replaced by Button-ID
       <br>
@@ -216,8 +221,9 @@ SaveDialog|home|CANCEL
       <tt id="labelButtonRecord">-</tt>
       <br>
 
-    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
-OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(this.id);" data-theme="a"&gt;OK&lt;/a&gt;
+    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|Quit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;___BUTTON_TITLE___&lt;/a&gt;
+OK|OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('Click on ___BUTTON_TITLE___');" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
+SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('Submit Data ___BUTTON_TITLE___');" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
       </textarea>
     </td>
   </tr>
@@ -248,9 +254,16 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
           <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
           <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
           <br>
-          <b>Template HTML:</b> <input name="tTemplateHTML" id="tTemplateHTML" value="Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)"> <b>Path:</b> /tpl/
-      		  <br>
-              <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
+          <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
+          <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDatabase)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+          <br>
+          <div id="divTemplateHTML" style="display:none">
+            <b>Template :</b> <input name="tTemplateHTML" id="tTemplateHTML" value="tpl/Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+            <b>Path:</b> /tpl/
+            <br>
+
+          </div>
+      		    <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
             </td>
         </tr>
         <tr>
@@ -264,7 +277,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
         </tr>
   <tr>
     <td colspan="2" align="center">
-      <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS()">
+      <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS(this.value)">
         <option>home</option>
       </select>
       <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
@@ -312,6 +325,32 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
           <iframe id="iElementHTML"  src="ace/editfilehtml.html" width="90%" height="100"></iframe>
         </td>
       </tr>
+      <tr>
+        <td  colspan="2" bgcolor="#C0C0C0" align="center">
+          <font size="+2">
+            <b>
+              HTML-Export
+            </b>
+          </font>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+            <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML" onchange="selectFilenameHTML(this.value)">
+            </select>
+            <input name="bOpenEmulatorExport" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
+          <br>
+            <b>Standalone:</b>
+            <select id="sStandalone" name="sStandalone">
+              <option value="YES">YES</option>
+              <option value="NO">NO</option>
+            </select>
+            <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
+            <br>
+            <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
+          </td>
+       </tr>
     </tbody>
   </table>
 </div>
@@ -375,9 +414,11 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     <b>Button-ID:</b>
     <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
     <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
+    <b>Button-Title:</b>
+    <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonJSON4ID2Form(this.id)">
     <br>
     <b>HTML:</b>
-    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90">
+    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90" onchange="updateButtonJSON4ID2Form(this.id)">
   </td>
 </tr>
 </tbody>
@@ -445,7 +486,7 @@ OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="vApp.confirmClick(
     			<b>Attributes</b>
           <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateForm2AttribJSON()" type="button">
           <br>
-    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace">aDoc = null
+    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">aDoc = null
 aName = "DisApp"
 aServer = new Server("___SERVER_URL___")
 aDatabaseList = new DatabaseList()
@@ -459,7 +500,7 @@ aFuzzyController = new FuzzyController()
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace">init(pDoc:Document)
+    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">init(pDoc:Document)
 load():Boolean
 save():Boolean
 calcRisk()
@@ -489,7 +530,6 @@ submitPage(pPageID)
             </select>
             <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
             <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
-
           </td>
           </tr>
             <tr>
@@ -502,7 +542,7 @@ submitPage(pPageID)
         <tr>
           <td align="center">
             Attribute Type/Class:
-            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace">
+            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" >
           </td>
         <td align="center">
           <b>Select Type:</b>
@@ -512,7 +552,7 @@ submitPage(pPageID)
     </tr>
       <tr>
         <td colspan="2" align="center">
-          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace">
+          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace" onchange="updateAttribTypeComment4Form()" >
         </td>
       	</tr>
       </tbody>
@@ -595,22 +635,6 @@ submitPage(pPageID)
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
       		</td>
         </tr>
-        <tr>
-          <td colspan="2" align="center">
-              <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML">
-              </select>
-              <b>Standalone:</b>
-              <select id="sStandalone" name="sStandalone">
-                <option value="YES">YES</option>
-                <option value="NO">NO</option>
-              </select>
-              <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
-              <br>
-              <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
-              <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
-
-            </td>
-         </tr>
       </tbody>
     </table>
   </div>
@@ -735,9 +759,9 @@ submitPage(pPageID)
   It is pure HTML with the javascript functions included in the file. So it will be easy to modify
   the source code according to your requirements and constraints.
   <hr>
-  <b>Default App Path:</b> <input type="text" id="tDefaultAppPath" name="tDefaultAppPath" value="app_LSAC/" size="35">
+  <b>Default App Path:</b> <tt>[tDefaultAppPath]</tt><input type="text" id="tDefaultAppPath" name="tDefaultAppPath" value="app_LSAC/" size="35">
   <hr>
-  <b>Template for Main HTML:</b> <br>
+  <b>Template for Main HTML:</b>  <tt>[tTplHTML]</tt><br>
   <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
     &lt;head&gt;
@@ -750,6 +774,8 @@ submitPage(pPageID)
       &lt;script src="js/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
 
       &lt;script&gt;
+        // vDatabase contains all loaded Databases as JSON file
+        var vDatabase = {};
         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
          $(".ui-dialog button").live("click", function() {
@@ -796,28 +822,28 @@ ___PAGES___
     &lt;script type="text/javascript"&gt;
        // var vQueryHash = readQueryParams();
        var vOnlineMode = false;
-       var vApp = new App();
-       vApp.init(document,vQueryHash);
+       var vApp = new ___APP_CLASS___();
+       vApp.___APP_INIT_CALL___;
        // checkOnlineMode();
       &lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;
   </textarea>
   <hr>
-<b>Script Import</b><br>
+<b>Script Import</b> <tt>[tTplSCRIPT]</tt><br>
 <textarea id="tTplSCRIPT" name="tTplSCRIPT" cols="125" rows="2">
       &lt;script type="text/javascript" src="___LIBRARY___"&gt;&lt;/script&gt;
 </textarea>
 
 <hr>
-<b>Script Standalone</b><br>
+<b>Script Standalone</b> <tt>[tTplSCRIPTSTANDALONE]</tt><br>
 <textarea id="tTplSCRIPTSTANDALONE" name="tTplSCRIPTSTANDALONE" cols="125" rows="2">
 &lt;script type="text/javascript" &gt;
 ___JSCODE___
 &lt;/script&gt;
 </textarea>
   <hr>
-<b>App Page</b><br>
+<b>App Page</b> <tt>[tTplPAGE]</tt><br>
   <textarea id="tTplPAGE" name="tTplPAGE" cols="125" rows="10">
      &lt;!-- Page: ___PAGE_ID___     Page Type: ___PAGE_TYPE_ID___ --&gt;
      &lt;div data-role="page" id="___PAGE_ID___">
@@ -833,7 +859,7 @@ ___JSCODE___
     &lt;!-- /page ID: ___PAGE_ID___ --&gt;
     &lt;/div&gt;
 </textarea>
-<b>Header Button</b><br>
+<b>Header Button</b> <tt>[tTplMENU]</tt><br>
 <textarea id="tTplMENU" name="tTplMENU" cols="125" rows="2">
    &lt;ul data-role="listview" data-inset="true"&gt;
      ___MENUITEM_LIST___
@@ -841,34 +867,34 @@ ___JSCODE___
 </textarea>
 
   <hr>
-  <b>Header Button</b><br>
+  <b>Header Button</b> <tt>[tTplMENUITEM]</tt><br>
 <textarea id="tTplMENUITEM" name="tTplMENUITEM" cols="125" rows="2">
   &lt;li&gt;&lt;a href="#___PAGE_ID___"&gt;___PAGE_TITLE___&lt;/a&gt;&lt;/li&gt;
 </textarea>
 <hr>
 
 <hr>
-<b>Header Button</b><br>
-<textarea id="tTplBUTTON" name="tTplBUTTON" cols="125" rows="2">
-       &lt;!-- header button: '___BUTTON_TEXT___' --&gt;
-       &lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="$.mobile.changePage( '#___LINK_PAGE_ID___', { transition: 'slideup', changeHash: false });return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
+<b>Header Button</b> <tt>[tTplPageLinkBUTTON]</tt><br>
+<textarea id="tTplPageLinkBUTTON" name="tTplPageLinkBUTTON" cols="125" rows="2">
+       &lt;!-- header button: '___BUTTON_TITLE___' --&gt;
+       &lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="$.mobile.changePage( '#___LINK_PAGE_ID___', { transition: 'slideup', changeHash: false });return false" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
 </textarea>
 <hr>
-<b>Default Button</b><br>
+<b>Default Button</b> <tt>[tDefaultBUTTON]</tt><br>
 <textarea id="tDefaultBUTTON" name="tDefaultBUTTON" cols="125" rows="2">
-       &lt;!-- header button: '___BUTTON_TEXT___' --&gt;
-       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="alert('Click Button ___PAGE_ID___');return false" data-theme="a"&gt;___BUTTON_TEXT___&lt;/a&gt;
+       &lt;!-- header button: '___BUTTON_TITLE___' --&gt;
+       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="alert('Click Button ___BUTTON_ID___');return false" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
 </textarea>
 <hr>
-<b>Quit Button</b><br>
+<b>Quit Button</b> <tt>[tTplQUIT]</tt><br>
 <textarea id="tTplQUIT" name="tTplQUIT" cols="125" rows="2">
        &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;Quit&lt;/a&gt;
 </textarea>
 <hr>
-<b>Comment Prefix:</b> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
+<b>Comment Prefix:</b>  <tt>[tCommentPrefix]</tt> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
 <b>Comment Box Prefix:</b> <input type="text" id="tCommentBoxPrefix" name="tCommentBoxPrefix" value="#" size="5">
 <hr>
-  <b>Class Header</b><br>
+  <b>Class Header</b> <tt>[tHeader]</tt><br>
     <textarea id="tHeader" name="tHeader" cols="125" rows="10">//#################################################################
 //# Javascript Class: ___CLASSNAME___()
 //#       SuperClass: ___SUPERCLASSNAME___
@@ -931,7 +957,13 @@ ___METHODS___
 ___METHODSPROTOTYPE___
     </textarea>
     <hr>
-    <b>Methods Header</b><br>
+    <b>Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
+    <textarea id="tTplAttribute" name="tTplAttribute" cols="125" rows="2">
+      //---___ATTRIB_NAME___: ___ATTRIB_COMMENT___
+      this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
+    </textarea>
+    <hr>
+    <b>Methods Header</b> <tt>[tMethodsHeaderTpl]</tt><br>
 <textarea id="tMethodsHeaderTpl" name="tMethodsHeaderTpl" cols="125" rows="3">
 
 //---------------------------------------------------------------------
@@ -939,11 +971,11 @@ ___METHODSPROTOTYPE___
 //---------------------------------------------------------------------
 </textarea>
 <hr>
-<b>Method Prefix:</b> <input type="text" id="tMethodPrefix" name="tMethodPrefix" value="this." size="7">
+<b>Method Prefix:</b>  <tt>[tMethodPrefix]</tt> <input type="text" id="tMethodPrefix" name="tMethodPrefix" value="this." size="7">
 <b>Comment Box Prefix:</b> <input type="text" id="tMethodPrefixProto" name="tMethodPrefixProto" value="___CLASSNAME___.prototype." size="28">
   <hr>
-  <b>Inherit from SuperClass (Prototype definition)</b><br>
-<textarea id="tSuperClassProto" name="tSuperClass" cols="125" rows="3">//--------------------------------------
+  <b>Inherit from SuperClass (Prototype definition)</b> <tt>[tSuperClassProto]</tt><br>
+<textarea id="tTplSuperClassProto" name="tTplSuperClassProto" cols="125" rows="3">//--------------------------------------
 //---Super Class------------------------
 // Inheritance: '___CLASSNAME___' inherits from '___SUPERCLASSNAME___'
 ___CLASSNAME___.prototype = new ___SUPERCLASSNAME___();
@@ -955,8 +987,8 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 </textarea>
 
 <hr>
-<b>Inherit from SuperClass</b><br>
-   <textarea id="tSuperClass" name="tSuperClass" cols="125" rows="3">
+<b>Inherit from SuperClass</b>  <tt>[tTplSuperClass]</tt><br>
+   <textarea id="tTplSuperClass" name="tTplSuperClass" cols="125" rows="3">
 
     //--------------------------------------
     //---Super Class------------------------
@@ -965,7 +997,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
     //--------------------------------------
   </textarea>
 <hr>
-<b>Class Tail</b><br>
+<b>Class Tail</b>  <tt>[tClassTail]</tt><br>
   <textarea id="tClassTail" name="tClassTail" cols="125" rows="3">
 
 //-------------------------------------------
@@ -974,7 +1006,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 //-------------------------------------------
 </textarea>
 <hr>
-  <b>Method Header</b><br>
+  <b>Method Header</b> <tt>[tMethodHeader]</tt><br>
     <textarea id="tMethodHeader" name="tMethodHeader" cols="125" rows="10">
 
 //#################################################################

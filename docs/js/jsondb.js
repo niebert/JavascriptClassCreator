@@ -230,6 +230,15 @@ function save3LevelID2JSON(pListID,pHashID,pID,pValue) {
 };
 
 function save2LevelID2JSON(pListID,pID,pValue) {
+  var vSuccess = saveID4HashPath2JSON(pListID+"."+pID,pValue);
+  if (vSuccess == true) {
+    console.log("save2LevelID2JSON('"+pListID+"','"+pID+"',pValue) DONE");
+  } else {
+    console.log("ERROR: save2LevelID2JSON('"+pListID+"','"+pID+"',pValue)");
+  }
+};
+
+function X_save2LevelID2JSON(pListID,pID,pValue) {
     console.log("save2LevelID2JSON('"+pListID+"','"+pID+"',pValue)");
     if (vJSON_JS[pListID]) {
       if (vJSON_JS[pListID][pID]) {
@@ -241,6 +250,47 @@ function save2LevelID2JSON(pListID,pID,pValue) {
       console.log("vJSON_JS['"+pListID+"'] was undefined!");
     };
 };
+
+function saveID4HashPath2JSON(pHashPath,pValue) {
+  var vPathOK = true;
+  var vID = "";
+  var vPrevHash;
+  var vHash = vJSON_JS;
+  var vLog = "vJSON_JS";
+  console.log("saveID4HashPath2JSON('"+pHashPath+"','"+pValue+"') ");
+  if (pHashPath && pHashPath.length>1) {
+    var vArrID = pHashPath.split(".");
+    for (var i = 0; i < vArrID.length; i++) {
+      vID = reduceVarName(vArrID[i]);
+      if (vID != "") { // skip empty ID defined by path ".."
+        if (vPathOK) {
+          if (vHash.hasOwnProperty(vID)) {
+            vLog += "["+vID+"]"; // vID exists in HashPath
+            vPrevHash = vHash;
+            vHash = vHash[vID]; // set Hash to Lower Part of Hash
+          } else {
+            vLog += " OK - Undefined Path ["+vID+"]";
+          };
+        } else {
+          // append undefined part of Hash
+          vLog += "["+vID+"]";
+        }
+      }; // empty ID
+    }; // end For
+  } else {
+    console.log("saveID4HashPath2JSON(): HashPath undefined");
+  };
+  console.log(vLog);
+  if (vPathOK) {
+    //set Value
+    if (vPrevHash) {
+      vPrevHash[vID] = pValue;
+    } else {
+      alert("ERROR: HashPath '"+pHashPath+"' length to short!")
+    };
+  }
+  return vPathOK; // boolead for success of save operation
+}
 
 function deleteClassForm() {
   console.log("deleteAttributeForm()");

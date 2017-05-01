@@ -437,7 +437,7 @@ vDatabase["JSCC"] = {
             "sElementList": "HTML_TITLE",
             "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "tFilename": "index.html",
-            "tTemplateHTML": "Default.html",
+            "tAppInitCall": "init(document,vDatabase)",
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
@@ -453,7 +453,7 @@ vDatabase["JSCC"] = {
             "sElementList": "",
             "tElementHTML": "",
             "tFilename": "",
-            "tTemplateHTML": "Default.html",
+            "tAppInitCall": "init(document,vDatabase)",
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
@@ -469,7 +469,7 @@ vDatabase["JSCC"] = {
             "sElementList": "",
             "tElementHTML": "",
             "tFilename": "",
-            "tTemplateHTML": "Default.html",
+            "tAppInitCall": "init(document,vDatabase)",
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
@@ -570,12 +570,12 @@ vDatabase["JSCC"] = {
     "ButtonList": {
         "QUIT": {
             "BUTTON_ID": "QUIT",
-            "button-html": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
+            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
             "counter": 0
         },
         "OK": {
             "BUTTON_ID": "OK",
-            "button-html": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
+            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
             "counter": 0
         }
     },

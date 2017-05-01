@@ -49,10 +49,10 @@ function reduceVarName(pName) {
 		if (pName) {
 			vName = pName.replace(/[^A-Za-z0-9_]/g,"");
 		} else {
-			console.log("reduceVarName(pName)='' or undefined");
+			//console.log("reduceVarName(pName)='' or undefined");
 		};
 	} else {
-		console.log("reduceVarName(pName) pName was undefined or empty");
+		//console.log("reduceVarName(pName) pName was undefined or empty");
 	};
   return vName;
 };

@@ -35,6 +35,7 @@ function selectFilenameHTML_do(pFile) {
   fillForm4File(vFile);
   write2value("sFileListHTML",vFile);
   write2value("sFileList",vFile);
+  write2value("sFileHTML",vFile);
   write2value("tFilename",vFile);
   createElementSelect();
   var vSelectedElement = getValueDOM("sElementList") || "";
@@ -63,6 +64,23 @@ function updateFileForm2JSON(pFile) {
     updateFormElement2JSON(vFile);
   }
 };
+
+function showClassTab(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  $( "#tabClass" ).trigger( "click" );
+
+}
+
+function showAttributes(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  $( "#tabAttributes" ).trigger( "click" );
+  createAttribTypeSelect();
+}
+
+function showMethods(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  $( "#tabMethods" ).trigger( "click" );
+}
 
 function updateFormElement2JSON(pFile) {
   var vFile = pFile || getSelectedFileID();
@@ -350,7 +368,7 @@ function clearPageTypeForm() {
 };
 
 function clearButtonForm() {
-  var vArrID = ["tButtonID","sButtonHTML","tButtonDefHTML"];
+  var vArrID = ["tButtonID","sButtonHTML","tButtonTitle","tButtonDefHTML"];
   clearIDs4DOM(vArrID);
 };
 
@@ -536,16 +554,17 @@ function updateButtonJSON4ID2Form(pButtonID) {
   console.log("updateButtonParamHash2Form('"+vButtonID+"')");
   if ((vButtonID) && (vButtonID != "")) {
     var vSelHash = {
-      "BUTTON_ID": "BUTUDEF",
-      "button-html": "undefined button '"+vButtonID+"'",
+      "BUTTON_ID": "BUTUNDEF",
+      "tButtonDefHTML": "undefined button '"+vButtonID+"'",
     };
     if (existsButtonJS(vButtonID)) {
       console.log("Button '"+vButtonID+"' is defined");
       vSelHash = vJSON_JS["ButtonList"][vButtonID];
     };
-    if (vSelHash) { // BUTTON_ID | button-html
+    if (vSelHash) { // BUTTON_ID | tButtonDefHTML
       write2value("tButtonID",vSelHash["BUTTON_ID"] );
-      write2value("tButtonDefHTML",vSelHash["button-html"]);
+      write2value("tButtonTitle",vSelHash["BUTTON_TITLE"] );
+      write2value("tButtonDefHTML",vSelHash["tButtonDefHTML"]);
     } else {
       console.log("WARNING: Selected Button Hash for ["+pButtonID+"] undefined");
     }

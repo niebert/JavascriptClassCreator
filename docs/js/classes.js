@@ -159,7 +159,7 @@ function getDefaultPageHash(pPage,pPageType) {
   console.log("getDefaultPageHash('"+pPage+"','"+pPageType+"')");
   var vRetPage = {};
   for (var i = 0; i < vPageRECDEF.length; i++) {
-    vRetPage[vPageRECDEF] = "";
+    vRetPage[vPageRECDEF[i]] = "";
   };
   //----SET CLASS TYPE---
   vRetPage["PAGE_ID"] = pPage;
@@ -167,6 +167,25 @@ function getDefaultPageHash(pPage,pPageType) {
   // Set PageType of Page in JSON and other variables
   vRetPage["PAGE_TITLE"] = "Title "+pPage;
   return vRetPage;
+};
+
+
+function getDefaultButtonHash(pButtonID) {
+  pButtonID = reduceVarName(pButtonID.toUpperCase());
+  console.log("getDefaultButtonHash('"+pButtonID+"')");
+  var vRetButton = {};
+  for (var i = 0; i < vButtonRECDEF.length; i++) {
+    vRetButton[vButtonRECDEF[i]] = "";
+  };
+  var vButtonHTML = getValueDOM("tDefaultBUTTON");
+  vButtonHTML = replaceString(vButtonHTML,"___BUTTON_ID___",pButtonID);
+  //----SET CLASS TYPE---
+  vRetButton["BUTTON_ID"] = pButtonID;
+  vRetButton["BUTTON_TITLE"] = firstUpperCase(pButtonID.toLowerCase(pButtonID));
+  vRetButton["tButtonDefHTML"] = vButtonHTML;
+  vRetButton["counter"] = 0;
+  // Set ButtonTitle of Page in JSON and other variables
+  return vRetButton;
 };
 
 function checkHeaderButtons4PageType() {
@@ -192,7 +211,7 @@ function checkHeaderButton(pHeaderButton) {
       } else {
         var vButtDef = getValueDOM("tDefaultBUTTON");
         vButDef = replaceString(vButDef,"\n"," ");
-        vButDef = replaceString(vButDef,"___BUTTON_TEXT___",pHeaderButton);
+        vButDef = replaceString(vButDef,"___BUTTON_TITLE___",pHeaderButton);
         vJSON_JS["ButtonList"][pHeaderButton] = vButDef;
         updateButtonJSON2Form();
       }
@@ -697,7 +716,7 @@ function existsClassJS(pClass) {
       if (vJSON_JS["ClassList"]) {
         if (vJSON_JS["ClassList"][pClass]) {
           vReturn = true;
-          var vClassType = "";
+          var vClassType = vJSON_JS["ClassType"][pClass] || "";
           console.log("Class '"+pClass+"' (Type: '"+vClassType+"') is a user-defined class.");
         };
       };
@@ -723,18 +742,23 @@ function existsBasicClass(pClass) {
 }
 
 function createClassJS(pClass,pClassType,pCallerJS) {
-  var vCallerJS = pCallerJS || "";
-  console.log("createClassJS('"+pClass+"','"+pClassType+"') Caller="+vCallerJS);
-  var vClassType = pClassType || getValueDOM("sClassType") || "";
-  var vClassExists = existsClassJS(pClass);
-  if (vClassExists) {
-    //alert("Class '"+pClass+"' already exists!");
-    console.log("Class '"+pClass+"' already exists!");
+  var vClassExists = false;
+  if (pClass != "") {
+    var vCallerJS = pCallerJS || "";
+    console.log("createClassJS('"+pClass+"','"+pClassType+"') Caller="+vCallerJS);
+    var vClassType = pClassType || getValueDOM("sClassType") || "";
+    var vClassExists = existsClassJS(pClass);
+    if (vClassExists) {
+      //alert("Class '"+pClass+"' already exists!");
+      console.log("Class '"+pClass+"' already exists!");
+    } else {
+      console.log("createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
+      checkClassList(pClass);
+      getDefaultClassHash(pClass,vClassType);
+      //vClassJSON = vJSON_JS["ClassList"][pClass];
+    };
   } else {
-    console.log("createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
-    checkClassList(pClass);
-    getDefaultClassHash(pClass,vClassType);
-    //vClassJSON = vJSON_JS["ClassList"][pClass];
+    console.log("createClassJS()-Call with empty pClass");
   };
   return vClassExists;
 };

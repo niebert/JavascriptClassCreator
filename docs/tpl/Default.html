@@ -5,11 +5,15 @@
       <meta name="apple-mobile-web-app-capable" content="yes">
       <link href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
       <link href="css/ios_inspired.css" rel="stylesheet" />
+      <script>
+        //--- vDatabase contains all loaded Databases as JSON file
+        var vDatabase = {};
+      </script>
 
 ___LIBRARIES___
 
       <script>
-        //------------BEGIN iOS-Inspired------------
+         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
          $(".ui-dialog button").live("click", function() {
            $("[data-role='dialog']").dialog("close");
@@ -18,12 +22,6 @@ ___LIBRARIES___
              $.mobile.defaultPageTransition = "slide";
            });
          //--------------END iOS-Inspired------------
-      </script>
-      <script>
-         //-----INIT DisApp -----
-          var vDebug = 0;
-          var vApp = new App();
-          vApp.init(document);
        </script>
        <script src="js/jquery.mobile-1.2.0.min.js"></script>
        <link href="css/ios_post.css" rel="stylesheet" />
@@ -53,11 +51,9 @@ ___PAGES___
 =============================================
  -->
     <script type="text/javascript">
-       var vQueryHash = readQueryParams();
-       var vOnlineMode = false;
-       var vApp = new App();
-       vApp.init(document,vQueryHash);
-       checkOnlineMode();
+      //-----INIT App -----
+       var vApp = new ___APP___();
+       vApp.___APP_INIT_CALL___;
       </script>
     </body>
 </html>

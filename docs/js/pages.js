@@ -195,8 +195,8 @@ function updatePageTypeJSON2Form(pArrID) {
 };
 
 function updateElementJSON2Form(pArrID) {
-  console.log("updateElementJSON2Form()");
   if (pArrID) {
+    console.log("updateElementJSON2Form('"+pArrID+"')");
     write2value("tElementIDs",getElement4tElementIDsForm(pArrID));
     createElementSelect(pArrID);
   } else {
@@ -206,13 +206,33 @@ function updateElementJSON2Form(pArrID) {
 
 
 function updateButtonJSON2Form(pArrID) {
+  var vArrID = pArrID || getArray4HashID(vJSON_JS["ButtonList"]);
   console.log("updateButtonJSON2Form()");
-  if (pArrID) {
-    write2value("tButtons",getButton4tButtonsForm(pArrID));
-    createButtonSelect(pArrID);
+  if (vArrID) {
+    write2value("tButtons",getButton4tButtonsForm(vArrID));
+    createButtonSelect(vArrID);
   } else {
     console.log("ERROR: updateButtonJSON2Form(pArrID) - pArrID undefined");
   };
+};
+
+function getButton4tButtonsForm(pArrID) {
+  var vHash = vJSON_JS["ButtonList"];
+  var vArr = [];
+  var vLine = "";
+  var vID = "";
+  var vRECDEF = vButtonRECDEF;
+  if (pArrID) {
+    for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      vLine = getHash2RecordLine(vRECDEF,vHash[vID]);
+      console.log("getButton4tButtonsForm(pArrID) "+vLine);
+      vArr.push(vLine);
+    }
+  } else {
+    console.log("ERROR: getButton4tButtonsForm(pArrID) - pArrID undefined");
+  };
+  return vArr.join("\n");
 };
 
 function getElement4tElementIDsForm(pArrID) {
@@ -235,25 +255,6 @@ function getElement4tElementIDsForm(pArrID) {
     };
   };
   return vArr.join("|");
-};
-
-function getButton4tButtonsForm(pArrID) {
-  var vHash = vJSON_JS["ButtonList"];
-  var vArr = [];
-  var vLine = "";
-  var vID = "";
-  var vRECDEF = vButtonRECDEF;
-  if (pArrID) {
-    for (var i = 0; i < pArrID.length; i++) {
-      vID = pArrID[i];
-      console.log("get Record for Form '"+vID+"'");
-      vLine = getHash2RecordLine(vRECDEF,vHash[vID]);
-      vArr.push(vLine);
-    }
-  } else {
-    console.log("ERROR: getButton4tButtonsForm(pArrID) - pArrID undefined");
-  };
-  return vArr.join("\n");
 };
 
 function getPageType4tPageTypeForm(pArrID) {
@@ -310,11 +311,28 @@ function updateForm2ButtonJSON() {
 };
 
 function getButtonListHash() {
+  var vListHash = {};
   var vHash = {};
-  var vButtArr = getTextareaArray("tButtons");
-  for (var i = 0; i < vButtArr.length; i++) {
-    vButtArr[i]
-  }
+  var vButtListArr = getTextareaArray("tButtons");
+  var vButtArr;
+  var vID = "";
+  var vValue = "";
+  for (var i = 0; i < vButtListArr.length; i++) {
+    vButtArr = vButtArr[i].split("|");
+    // Loop over all Buttons
+    for (var k = 0; k < vButtonRECDEF.length; k++) {
+      vID = vButtonRECDEF[k];
+      if (k < vButtArr.length) {
+        vValue = vButtArr[k];
+      } else {
+        vValue = "undefined "+vID;
+      };
+      vHash[vID] = vValue;
+    }; // vHash populated
+    vID = vHash["BUTTON_ID"];
+    vListHash[vID] = vHash;
+  };
+  return vListHash;
 };
 
 function getGlobalLibArray() {
@@ -629,7 +647,7 @@ function getPageListHash() {
 
 function createButtonJS(pButtonHash) {
   var vButtonID = reduceVarName(pButtonHash["BUTTON_ID"]);
-  if ((!pButtonHash["counter"]) || (pButtonHash["counter"] == "")) {
+  if ((!pButtonHash["counter"]) || (pButtonHash["counter"] == "")) {
     pButtonHash["counter"] = 0
   };
   console.log("createButtonJS(pButtonHash)-Call for ID='"+vButtonID+"' Button Counter="+pButtonHash["counter"]);
@@ -660,6 +678,7 @@ function askCreateNew(pName,pID) {
 function createNewButton_do() {
   console.log("Create a new Button with [+]");
   var vNewButtonID = getValueDOM("tButtonID");
+  var vNewButtonTitle = getValueDOM("tButtonTitle");
   var vNewButtonDefHTML = getValueDOM("tButtonDefHTML");
   var vErrorMSG = "";
   var vSuccess = false;
@@ -680,7 +699,8 @@ function createNewButton_do() {
     //write2value("tButtonID", vNewButtonName);
     var vNewButtonHash = {
       "BUTTON_ID":vNewButtonID,
-      "button-html": vNewButtonDefHTML
+      "BUTTON_TITLE":vNewButtonTitle,
+      "tButtonDefHTML": vNewButtonDefHTML
     };
     vFailed = createButtonJS(vNewButtonHash);
     //vFailed == true means Button exists,
@@ -1171,8 +1191,9 @@ function saveButtonHTML_do(pID) {
   var vID = pID || getValueDOM("tButtonID") || "";
   if (vID != "") {
     console.log("saveButtonHTML() - Button ["+vID+"]");
-    save3LevelID2JSON("ButtonList",vID,"button-html",getValueDOM("tButtonDefHTML"));
-    saveJSON2LocalStorage("json");
+    save3LevelID2JSON("ButtonList",vID,"tButtonDefHTML",getValueDOM("tButtonDefHTML"));
+    save3LevelID2JSON("ButtonList",vID,"BUTTON_TITLE",getValueDOM("tButtonTitle"));
+    autoSaveJSON();
   };
 };
 

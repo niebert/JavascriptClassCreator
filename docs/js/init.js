@@ -31,8 +31,11 @@ vDOM_File.push("tElementID"); // the edit string of selected Element ID - used t
 vDOM_File.push("sElementList"); // the select Box setting of selected Element ID
 vDOM_File.push("tElementHTML"); // Content of Element Definition
 vDOM_File.push("tFilename"); // Is the Filename
-vDOM_File.push("tTemplateHTML"); // HTML Template for File
+vDOM_File.push("sAppClassHTML"); // is the main App that is instantiated when a web site is loaded.
+vDOM_File.push("tAppInitCall"); // Init Call when App is started
+vDOM_File.push("tTemplateHTML"); // Template for HTML-File
 vDOM_File.push("tPageIDs"); // Used Pages in HTML-File
+
 //-------------------------------
 vDOM_TPL.push("tDefaultAppPath"); // default is "app_LSAC/" needed as path to store the exported files for the WebApp.
 vDOM_TPL.push("tTplHTML"); // template for "app.html" main file
@@ -41,14 +44,15 @@ vDOM_TPL.push("tTplSCRIPTSTANDALONE"); // Script Tag for injection of Javascript
 vDOM_TPL.push("tTplPAGE");  // Template for a DIV page of app.html (iterate for all pages of App)
 vDOM_TPL.push("tTplMENU"); // Creates the template for a Menu of Childpages replace ID ___MENU_CONTENT___
 vDOM_TPL.push("tTplMENUITEM"); // Definition of a single Menu Item replace IDs ___PAGE_ID___ and ___PAGE_TITLE___
-vDOM_TPL.push("tTplBUTTON"); // Definition of Header Buttons of an App, to link between pages
+vDOM_TPL.push("tTplPageLinkBUTTON"); // Definition of Header Buttons of an App, to link between pages
 vDOM_TPL.push("tDefaultBUTTON"); // Default button that must be edited by user, contains an alert as event handler
 vDOM_TPL.push("tTplQUIT"); // Main Quit Button (red) which will close the window
 vDOM_TPL.push("tHeader"); // Class Header for Javascript Classes
 vDOM_TPL.push("tMethodsHeaderTpl"); // Contains the methods header of definitions of methods
-vDOM_TPL.push("tSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
-vDOM_TPL.push("tSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
+vDOM_TPL.push("tTplSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
+vDOM_TPL.push("tTplSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
 vDOM_TPL.push("tClassTail"); // Defines the End of the Class Definition
+vDOM_TPL.push("tTplAttribute"); // Defines the Attributes definition in a Constructor
 vDOM_TPL.push("tMethodHeader"); // Defines the comments before each Method definition
 vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
 vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach
@@ -183,7 +187,7 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
 
 function setDefaultSelectors() {
   // init the selector settings from vJSON_JS
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vFileID = vJSON_JS["SelectedFile"] || "";
   var vElementID = vJSON_JS["SelectedElement"] || "";
   var vPageID = vJSON_JS["SelectedPage"] || "";
@@ -191,8 +195,10 @@ function setDefaultSelectors() {
   var vButtonID = vJSON_JS["SelectedButton"] || "";
   if (vFileID != "") {
     selectFileJS(vFileID);
+    write2value("sFileHTML",vFileID);
     write2value("sFileList",vFileID);
     write2value("sFileListHTML",vFileID);
+    writeFileTitle(vFileID);
   };
   if (vElementID != "") {
     selectElementJS(vElementID);
@@ -515,6 +521,9 @@ function initClassSelector() {
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
   createClassSelect(vClassArr);
+  createAttribTypeSelect();
+  createAttribSelect();
+  createMethodSelect(); //dom.js:13
 };
 
 function initButtonSelector() {
@@ -591,8 +600,5 @@ function initFormClass(pClass) {
     initClassJS(vSuperClass,vClassType,"initFormClass()");
   };
   updateForm2JSON(pClass,vClassType); // jsondb.js:157
-  createAttribTypeSelect();
-  createAttribSelect();
-  createMethodSelect(); //dom.js:13
   console.log("initFormClass('"+pClass+"') DONE");
 }

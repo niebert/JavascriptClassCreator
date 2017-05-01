@@ -1,7 +1,7 @@
 {
     "init_type": "JSCC",
-    "init_date": "2017/03/04 19:00:16",
-    "mod_date": "2017/03/04 19:01:10",
+    "init_date": "2017/03/05 18:13:28",
+    "mod_date": "2017/03/05 21:12:36",
     "ClassType": {
         "DOMVar": "Red",
         "DOMVarList": "Red",
@@ -104,7 +104,7 @@
             "tClassname": "AppAbstract",
             "tSuperClassname": "",
             "sClassType": "Abstract",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -134,7 +134,7 @@
             "tClassname": "DOMVar",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -164,7 +164,7 @@
             "tClassname": "DOMVarList",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -194,7 +194,7 @@
             "tClassname": "CheckBoxList",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -224,7 +224,7 @@
             "tClassname": "FuzzyLayer",
             "tSuperClassname": "",
             "sClassType": "Yellow",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -254,7 +254,7 @@
             "tClassname": "FuzzyController",
             "tSuperClassname": "",
             "sClassType": "Yellow",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -284,7 +284,7 @@
             "tClassname": "DatabaseList",
             "tSuperClassname": "",
             "sClassType": "Green",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -314,7 +314,7 @@
             "tClassname": "Database",
             "tSuperClassname": "",
             "sClassType": "Green",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -344,7 +344,7 @@
             "tClassname": "Server",
             "tSuperClassname": "",
             "sClassType": "Blue",
-            "tDate": "27.4.2017",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -377,33 +377,63 @@
             "tDate": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "",
-            "tMethods": "init(pDoc:Document):pDoc:Document",
-            "sAttribList": "aDoc",
-            "tAttribName": "aDoc",
-            "tAttribType": "",
-            "tAttribComment": "Attribute: 'aDoc' Type: '' stores ... ",
-            "tAttribDefault": "  null",
-            "sAttribTypeList": "",
+            "tAttributes": "aParamHash = {}",
+            "tMethods": "init(pDoc:Document)\nparseLink4HTML()\nparseLink(pLink:String)\ngetLink():String\nsetValue(pVar,pValue)\ngetValue(pVar)\ndeleteValue(pVar)",
+            "sAttribList": "aParamHash",
+            "tAttribName": "aParamHash",
+            "tAttribType": "Hash",
+            "tAttribComment": "Attribute: 'aParamHash' Type: 'Hash' stores ... ",
+            "tAttribDefault": " {}",
+            "sAttribTypeList": "Hash",
             "tMethodName": "init(pDoc:Document)",
-            "tMethodComment": "Comment for init",
+            "tMethodComment": "inits the instances of LinkParameter",
             "sMethodList": "init",
-            "tArrayLoop": "myArray",
-            "tMethodLoop": "myLoopMethod(pID)",
-            "AttribDefault": {},
-            "AttribType": {},
-            "AttribComment": {},
+            "tArrayLoop": "",
+            "tMethodLoop": "",
+            "AttribDefault": {
+                "aParamHash": " {}"
+            },
+            "AttribType": {
+                "aParamHash": "Hash"
+            },
+            "AttribComment": {
+                "aParamHash": "Attribute: 'aParamHash' Type: 'Hash' stores ... "
+            },
             "MethodComment": {
-                "init": "Comment for init"
+                "init": "inits the instances of LinkParameter",
+                "parseLink4HTML": "Comment for parseLink4HTML",
+                "parseLink": "Comment for parseLink",
+                "getLink": "Comment for getLink",
+                "setValue": "Comment for setValue",
+                "getValue": "Comment for getValue",
+                "deleteValue": "Comment for deleteValue"
             },
             "MethodReturn": {
-                "init": ""
+                "init": "",
+                "parseLink4HTML": "",
+                "parseLink": "",
+                "getLink": "String",
+                "setValue": "",
+                "getValue": "",
+                "deleteValue": ""
             },
             "MethodCode": {
-                "init": ""
+                "init": " ",
+                "parseLink4HTML": "",
+                "parseLink": "",
+                "getLink": "",
+                "setValue": "",
+                "getValue": "",
+                "deleteValue": ""
             },
             "MethodParameter": {
-                "init": "pDoc:Document"
+                "init": "pDoc:Document",
+                "parseLink4HTML": "",
+                "parseLink": "pLink:String",
+                "getLink": "",
+                "setValue": "pVar,pValue",
+                "getValue": "pVar",
+                "deleteValue": "pVar"
             }
         }
     },
@@ -430,58 +460,18 @@
         "db_mydata": "{\n  \"name\": \"db_mydata\"\n}",
         "db_disapp": "{\n  \"name\": \"db_disapp\"\n}"
     },
-    "FileList": {
-        "index.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
-            "tElementID": "HTML_TITLE",
-            "sElementList": "HTML_TITLE",
-            "tElementHTML": "File index.html - Content of element HTML_TITLE",
-            "tFilename": "index.html",
-            "tTemplateHTML": "Default.html",
-            "tPageIDs": "welcome|home|quit|newpage",
-            "elements": {
-                "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File index.html - Content of element SERVER_URL",
-                "USERNAME": "File index.html - Content of element USERNAME",
-                "SESSION": "File index.html - Content of element SESSION",
-                "DATABASE": "File index.html - Content of element DATABASE"
-            }
+    "ButtonList": {
+        "QUIT": {
+            "BUTTON_ID": "QUIT",
+            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
+            "counter": 0
         },
-        "app.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
-            "tElementID": "",
-            "sElementList": "",
-            "tElementHTML": "",
-            "tFilename": "",
-            "tTemplateHTML": "Default.html",
-            "tPageIDs": "welcome|home|quit|newpage",
-            "elements": {
-                "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File app.html - Content of element SERVER_URL",
-                "USERNAME": "File app.html - Content of element USERNAME",
-                "SESSION": "File app.html - Content of element SESSION",
-                "DATABASE": "File app.html - Content of element DATABASE"
-            }
-        },
-        "submit.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
-            "tElementID": "",
-            "sElementList": "",
-            "tElementHTML": "",
-            "tFilename": "",
-            "tTemplateHTML": "Default.html",
-            "tPageIDs": "welcome|home|quit|newpage",
-            "elements": {
-                "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File submit.html - Content of element SERVER_URL",
-                "USERNAME": "File submit.html - Content of element USERNAME",
-                "SESSION": "File submit.html - Content of element SESSION",
-                "DATABASE": "File submit.html - Content of element DATABASE"
-            }
+        "OK": {
+            "BUTTON_ID": "OK",
+            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
+            "counter": 0
         }
     },
-    "SelectedFile": "index.html",
-    "SelectedElement": "HTML_TITLE",
     "SelectedTypePage": "SaveDialog",
     "PageType": {
         "DefaultPage": {
@@ -567,18 +557,58 @@
         "quit": "Content for Page 'quit'",
         "login": "Content for Page 'login'"
     },
-    "ButtonList": {
-        "QUIT": {
-            "BUTTON_ID": "QUIT",
-            "button-html": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 0
+    "FileList": {
+        "index.html": {
+            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "HTML_TITLE",
+            "sElementList": "HTML_TITLE",
+            "tElementHTML": "File index.html - Content of element HTML_TITLE",
+            "tFilename": "index.html",
+            "tAppInitCall": "init(document,vDatabase)",
+            "tPageIDs": "welcome|home|quit|newpage",
+            "elements": {
+                "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
+                "SERVER_URL": "File index.html - Content of element SERVER_URL",
+                "USERNAME": "File index.html - Content of element USERNAME",
+                "SESSION": "File index.html - Content of element SESSION",
+                "DATABASE": "File index.html - Content of element DATABASE"
+            }
         },
-        "OK": {
-            "BUTTON_ID": "OK",
-            "button-html": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
-            "counter": 0
+        "app.html": {
+            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementList": "",
+            "tElementHTML": "",
+            "tFilename": "",
+            "tAppInitCall": "init(document,vDatabase)",
+            "tPageIDs": "welcome|home|quit|newpage",
+            "elements": {
+                "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
+                "SERVER_URL": "File app.html - Content of element SERVER_URL",
+                "USERNAME": "File app.html - Content of element USERNAME",
+                "SESSION": "File app.html - Content of element SESSION",
+                "DATABASE": "File app.html - Content of element DATABASE"
+            }
+        },
+        "submit.html": {
+            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementList": "",
+            "tElementHTML": "",
+            "tFilename": "",
+            "tAppInitCall": "init(document,vDatabase)",
+            "tPageIDs": "welcome|home|quit|newpage",
+            "elements": {
+                "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
+                "SERVER_URL": "File submit.html - Content of element SERVER_URL",
+                "USERNAME": "File submit.html - Content of element USERNAME",
+                "SESSION": "File submit.html - Content of element SESSION",
+                "DATABASE": "File submit.html - Content of element DATABASE"
+            }
         }
     },
+    "SelectedFile": "index.html",
+    "SelectedElement": "HTML_TITLE",
     "BasicClasses": {
         "Boolean": "false",
         "String": "\"\"",

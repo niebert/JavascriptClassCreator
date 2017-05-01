@@ -6,7 +6,7 @@
 - [Introduction](#introduction)
 - [UML Diagrams](#uml-diagrams)
 - [Compressing Code](#compressing-code)
-- [Structure of JSCC projects](#structure-of-jscc-projects)
+- [Structure of ___JSCC___ projects](#structure-of-jscc-projects)
   - [JSCC Projects](#jscc-projects)
   - [HTML Files - HTML Templates](#html-files---html-templates)
   - [Pages (Parent: FileHTML)](#pages-parent-filehtml)
@@ -51,11 +51,11 @@ All the repositories in "niebert" are mainly designed for rapid prototyping, exp
 JavascriptClassCreator facilitates the export of UML-diagrams with the libraries of the OpenSource [JointJS](https://github.com/clientIO/joint) repository:
 * **Attributes of Classes:** UML editing of Attrubutes of Classes
 * **Methods of Classes:** UML editing of Attrubutes of Classes
-* **Inheritance from Classes:** JSCC allows to edit the SuperClass of Classes, visualized in UML-diagram.
+* **Inheritance from Classes:** ___JSCC___ allows to edit the SuperClass of Classes, visualized in UML-diagram.
 * **Associations** between objects (Associations can be created and destroy during runtime)
 * **Aggregation** of child instances/objects by a parent instance/object
-* **Interfaces** allows inheritance the method headers that determine the call of methods. This is implemented in the JavascriptClassCreator (JSCC), but not in the Javascript itsself. When you determine a class of the type *Interface*, that JSCC checks if all method headers (i.e. the way a method will be called with parameters) are properly defined and existing. If not, JSCC will create the method header for you without creating a link for inheritance in Javascript. Attributes of the interface class are available in class as well.
-* **Abstract** In contrast to an Interface an abstract class has real defined bodies of methods that can be inherited. For those methods that do not contain a body (i.e. MethodCode is empty) the method code is handle like methods defined in an interface. This means that JSCC creates method header for you by inheritance from the abstract class, that will overwritten/defined in the child class.
+* **Interfaces** allows inheritance the method headers that determine the call of methods. This is implemented in the JavascriptClassCreator (JSCC), but not in the Javascript itsself. When you determine a class of the type *Interface*, that ___JSCC___ checks if all method headers (i.e. the way a method will be called with parameters) are properly defined and existing. If not, ___JSCC___ will create the method header for you without creating a link for inheritance in Javascript. Attributes of the interface class are available in class as well.
+* **Abstract** In contrast to an Interface an abstract class has real defined bodies of methods that can be inherited. For those methods that do not contain a body (i.e. MethodCode is empty) the method code is handle like methods defined in an interface. This means that ___JSCC___ creates method header for you by inheritance from the abstract class, that will overwritten/defined in the child class.
 
 * **IDE vs ESEIA:** An Integrated Development Enviroment is very rich of features. The art of ESEIA development is to eliminate features of IDE (cover feature) and tailor the remaining features for the area of application of the software release. On the other end - in contrast to a pure front-end for software the ESEIA concept allows to *touch certain areas of the code* on the grass roots level of programming. The existing code elements guide programmers with creating new versions or branches by templating the syntactic workflow for the previous versions. UML export of code provides insight in the software design. High levels of documentation for comprehension of the semantics of code are augemented with code compressors, when the exported code is executed by an interpreter (and not compiled).
 
@@ -64,14 +64,14 @@ You might know from other implementations of JavaScript repositories (e.g. [JQue
 1) the minimise/compressed code for higher performance in web browsers and NodeJS,
 2) documented code for further software development and comprehension of the previous development by new members of a team
 
-UglifyJS is used for compressing the code and generate higher performance for the web-applications. The Developer [Mihai Bazon](http://lisperator.net/) created UglifyJS, that has even the option to parse Javascript Code, which is necessary to create equivalent minified the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2))). JSCC uses  mainly the wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is called in a seperate window to minify/compress the exported Javascript code for generated JS Classes. The original version of his [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) can be accessed and forked at [GitHub](https://github.com/Skalman/UglifyJS-online).
+UglifyJS is used for compressing the code and generate higher performance for the web-applications. The Developer [Mihai Bazon](http://lisperator.net/) created UglifyJS, that has even the option to parse Javascript Code, which is necessary to create equivalent minified the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2))). ___JSCC___ uses  mainly the wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is called in a seperate window to minify/compress the exported Javascript code for generated JS Classes. The original version of his [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) can be accessed and forked at [GitHub](https://github.com/Skalman/UglifyJS-online).
 
-Future application of UglifyJS will allow cross compilation of generation of generic XML-Code for code generation that is highly independent of a specific programming language (see [XML2Code]https://github.com/niebert/XML2Code) as a proposal). UglifyJS can take Javascript code as input and create an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). When the [AST in UglifyJS](http://lisperator.net/uglifyjs/ast) is generated, you can send a [AST walker](http://lisperator.net/uglifyjs/walk) over all nodes of the abstract syntax tree and perform a [Cross Compilation](https://en.wikipedia.org/wiki/Cross_compiler) from Javascript for example to PHP. For the code compressor in UglifyJS the AST is e.g. used to replace <tt>var vMyLongVariable = 0</tt> by <tt>var v=0</tt>. The walker for the code compressor reduces (among other tasks) the length of variable name. This makes the code less readable for developers, but creates less loading for web browsers. For JSCC the removal of comments has the highest impact on the size of the code.
+Future application of UglifyJS will allow cross compilation of generation of generic XML-Code for code generation that is highly independent of a specific programming language (see [XML2Code]https://github.com/niebert/XML2Code) as a proposal). UglifyJS can take Javascript code as input and create an [Abstract Syntax Tree](https://en.wikipedia.org/wiki/Abstract_syntax_tree) (AST). When the [AST in UglifyJS](http://lisperator.net/uglifyjs/ast) is generated, you can send a [AST walker](http://lisperator.net/uglifyjs/walk) over all nodes of the abstract syntax tree and perform a [Cross Compilation](https://en.wikipedia.org/wiki/Cross_compiler) from Javascript for example to PHP. For the code compressor in UglifyJS the AST is e.g. used to replace <tt>var vMyLongVariable = 0</tt> by <tt>var v=0</tt>. The walker for the code compressor reduces (among other tasks) the length of variable name. This makes the code less readable for developers, but creates less loading for web browsers. For ___JSCC___ the removal of comments has the highest impact on the size of the code.
 
-## Structure of JSCC projects
+## Structure of ___JSCC___ projects
 
-### JSCC Projects
-**(JSCC)** is the main JSON file, that contains the JSCC project of the software development
+### ___JSCC___ Projects
+**(JSCC)** is the main JSON file, that contains the ___JSCC___ project of the software development
 
 **Example:** The web-based software *DisApp* is used in the online version as project of JSCC. Furthermore *DisApp* is used as example for the following sections too.
 
@@ -145,9 +145,9 @@ A FileHTML (e.g. ___app.html___ or ___login.html___) is generated from a templat
 * FileHTML with the ID ___index.html___ loads a file ___tpl/index.html___ replaces the markers and the file should be stored in the downloaded subfolder ___/app_LSAC/___ as ___/app_LSAC/index.html___. The folder ___/app_LSAC/___ can be retrieved if you download the repository of ___JavaScriptClassCreator___ from GitHub.
 
 ## Folders of software
-With the following enumeration the purpose of the folders is explained. JSCC-folders are necessary for the JavascriptClassCreator. JSCC uses serveral other OpenSource projects mentioned in the section [Acknowledgements](#acknowledgement). If you want to replace the libraries with new versions of the OpenSource software it is much easier to replace that, when the versions are kept in separate folders. The used OpenSource packages are not updated automatically, so that JSCC as a whole could fail all of a sudden, due to unresolved dependencies.
+With the following enumeration the purpose of the folders is explained. JSCC-folders are necessary for the JavascriptClassCreator. ___JSCC___ uses serveral other OpenSource projects mentioned in the section [Acknowledgements](#acknowledgement). If you want to replace the libraries with new versions of the OpenSource software it is much easier to replace that, when the versions are kept in separate folders. The used OpenSource packages are not updated automatically, so that ___JSCC___ as a whole could fail all of a sudden, due to unresolved dependencies.
 1. JSCC-folder ___/ace___ contains the source of the ACE code editor used in iFrames for JavascriptClassCreator (JSCC)
-2. WebApp-folder ___/app_LSAC___ is the directory in which you can store the generate sources for a specific WebApp. ___LSAC___ is an abbreviation for Local Storage and App Cache.
+2. WebApp-folder ___/app_LSAC___ is the directory in which you can store the generate sources for a specific WebApp. ___LSAC___ is an abbreviation for ***Local Storage and App Cache***.
 3. JSCC-folder ___/css___ contains the Stype Sheets for JavascriptClassCreator (JSCC)
 4. folder ___/exporter4code___ is a template driven code generator that is pure HTML/JS and independent of a specific syntax of an programming languages (not necessary for JSCC)
 5. folder ___/java2javascipt___ allows the import of Java-Classes into JSCC, it parses attributes and method headers of the Java Class (not necessary for JSCC)
@@ -165,6 +165,14 @@ Refactoring of JavascriptClassCreator code in an object-oriented style
 
 ### Programming Languages
 JavascriptClassCreator (JSCC) is currently designed to develop software for Javascript. Even if it is not a perfect solutions for this web-based approach Javascript is regarded as sink for programming code. By using the parser UglifyJS, Javascript code will be parsed and crosscompile in other programming languages (e.g. PHP, C++, Java,... ). Source code optimizations can be performed in the exported programming language.
+
+## Internal Load Chain for Project and Templates
+If you start the [JavascriptClassCreator JSCC](http://niebert.github.io/JavascriptClassCreator/index.html)  with ___docs/index.html___ in your browser then JSCC loads the following definitions:
+* ***Project Definitions*** for you programming project, that define all Javascript Classes and HTML files for your WebAppm
+* ***Code Generation Templates***, that determines the code output of Javascript Classes and HTML pages.
+For both definitions there is a load chain, that assigns an order the loading the content of these definitions.
+1. ***Load Project and Templates from Local Storage***: These definitions are available if the user has stored his settings by pressing ___Save Local Storage___ button in ___JSCC___.
+2. ***Load Project and Templates from ___vDatabase___***:  if users of ___JSCC___ never stored the alterations of the code in ___Local Storage___ of the browser. Then the predefined databases in the hash ___vDatabase___  are used. Accessing a specific JSON database works as usual by ___vDatabase["myjson"]___. If these databases are changed, it is necessary to store the alterations in local storage. Now the local storages does contain a JSON file and new reload in the browser will load data from the local storage.
 
 ## Client-Server Communication of App
 ### Collected Data in LocalStorage
@@ -191,6 +199,22 @@ If it is necessary to submit the collected data to a remote server it is necessa
      https://www.example.com/myapp/app.html?uid=...&pkey=637&action=submitted
 So the client knows that the record was sucessfully submitted. This leads to alteration of the submitted flag in the LocalStorage of the browser (e.g. ___record with pkey=637 submitted=true____).
 
+### Template Driven Code Generation
+JSCC is HTML/Javascript application and the templates of ___JSCC___ are stored in textareas or input elements of HTML pages itsself. All template elements have a unique ID in the HTML-tag and the function ___getValueDOM("tTplHTML")___ reads e.g. the content of the input element. Javascript Code is generated on the ___Code___ of ___JSCC___ and the underlying HTML pages for the App are generated on the ___HTML___ tab of JSCC.
+
+#### View Code Templates
+You can view the content elements used for code generation by scrolling down the ___JSCC___ page and press on the blue Button ___Code Templates___. You can play around with these templates and explore how these templates affect code generation for Classes and HTML file changes these value without any concerns and check impact on code generation. Just by reload of the JSCC-HTML page [docs/index.html](http://niebert.github.io/JavascriptClassCreator/index.html) the old settings of the code templates are restored.
+
+#### Edit Code Templates and Export
+Scroll down the ___JSCC___ page in  [docs/index.html](http://niebert.github.io/JavascriptClassCreator/index.html)  and press on the blue Button ___Code Templates___. Now you can edit or replace the content elements that determine the code generation of classes.
+* If you press ___Save Local Storage___ in ___JSCC___ and the template setting is stored in your own browser (not alteration of templates are submitted to a server). Next reload with the same browser will restore you settings.
+* If you want to share your templates with others download your setting by ___Export Templates___ with the downloaded template file ___code_templates.json___ you can send the file to other developers and the import the templates in ___Code___ tab of ___JSCC___.
+* You can download the ___JSCC___ infrastructure on you own computer and then replace the template file ___code_templates.js___ in folder ___docs/tpl___. The difference between the extension ___.js___ and ___.json___ is a simple prefix in front of the JSON file, that converts the JSON-file into JavaScript-file. The prefix defines, where the JSON content is stored.
+* JSON: ___{"color":"blue","setting" : "is ok", "header" : "this is my header"}___
+* JS-File with global Variable: ___vMyJSON = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
+* JS-File with Hash: ___vDatabase["myjson"] = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
+With this approach you can access the JSON file in the hash ___vDatabase___ with the ID ___myjson___. This has the advantage, that you can load and access several JSON file through the hash ___vDatabase___  without contamination the root name space of the App/HTML file to much.
+
 ### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
@@ -198,10 +222,16 @@ So the client knows that the record was sucessfully submitted. This leads to alt
 * BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
 * BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
 * BUG: Update Method Selector
+* BUG: Generated Header Button (e.g. CANCEL) is not generated in tButtonList
+* BUG: ButtonTitle is NOT set for init and for selecting another Header Button
 * MISSING IMPLEMENTATION: getPageIDArr4File(pFile);
 * MISSING IMPLEMENTATION: getDefaultPageHash(pID);
+* MISSING INTEGRATION: showClass(),showAttributes(),showMethods
+* IMPROVE: Write Classname in Header of Attributes and Methods in blue color
+* BUG: AttribTypeSelect is not working
+* BUG: Updating change in Form by
 * IMPROVE: add blank selection option to DB selector
-* IMPROVE: remove JSON Code Generator from init in <tt>index.html</tt>
+* IMPROVE: import JSON Classes in Code Generator
 * IMPROVE: Aggregate all libs into one file and send after aggregation to the code compressor, that improves the percentage of compression a bit (low priority, because aggregation of compressed files into a single has a higher impact on loading time than the compression of the aggregated single file of all classes)
 
 
@@ -210,7 +240,7 @@ Special thanks to the following individual developers and teams of OpenSource Ja
 * Developer [Mihai Bazon](http://lisperator.net/) create UglifyJS, a great tool to handle and parse Javascript Code and minify the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * The wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is used to minify/compress the exported Javascript code of generated JS Classes (For Online Example of the [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) see source code on https://github.com/Skalman/UglifyJS-online for the Online-Version of the Wrapper.
 * Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)
-* [FileSaver.js](https://github.com/eligrey/FileSaver.js) Developer Eli Grey provided the ___FileSaver.js___ that is used to store created JSCC files to the local filesystem. JSCC uses the same mechanism of browsers, that allows a ___Save as...___ in the context menu of a web pages or image. So not uncontrolled write access to your file system is implemented, because users have to select the locations in which the user whats to store the file (e.g. JSON, Javascript or HTML).
+* [FileSaver.js](https://github.com/eligrey/FileSaver.js) Developer Eli Grey provided the ___FileSaver.js___ that is used to store created ___JSCC___ files to the local filesystem. ___JSCC___ uses the same mechanism of browsers, that allows a ___Save as...___ in the context menu of a web pages or image. So not uncontrolled write access to your file system is implemented, because users have to select the locations in which the user whats to store the file (e.g. JSON, Javascript or HTML).
 * [JointJS](https://github.com/clientIO/joint) JointJS is a JavaScript diagramming library. It can be used to create either static diagrams. JointJS is used in this project to create UML-diagrams, that are interactive diagramming in conjunction and application builder in Javascript.
 * [Inheritage for JavaScript with protoypes](http://phrogz.net/js/classes/OOPinJS2.html) by Gavin Kistner
 * [3 ways to define a JavaScript class](https://www.phpied.com/3-ways-to-define-a-javascript-class/) by Stoyan Stefanov

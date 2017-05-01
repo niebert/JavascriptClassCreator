@@ -252,7 +252,7 @@ function loadProjectJSON(pProjectFile,pContent) {
   if (vContent) {
     var vJSDB = JSON.parse(vContent);
     if (vJSDB) {
-      var vTypeJS = vJSDB["init_type"] || "UNDEFINED";
+      var vTypeJS = vJSDB["init_type"] || "JSON";
       switch (vTypeJS) {
         case "JSCC":
           alert("Import JSON file of Type: "+vTypeJS+"");
@@ -268,20 +268,36 @@ function loadProjectJSON(pProjectFile,pContent) {
         case "DB":
           var vDBname = vJSDB["name"] || "DBundefined";
           alert("Import JSON Database '"+vDBname+"' of Type: "+vTypeJS+"");
+          importDatabase(vDBname,vJSDB);
           vJSON_JS["DatabaseList"][vDBname] = vJSDB;
         break;
         default:
-          alert("Undefined handler JSON file of Type: "+vTypeJS+"");
+          alert("Import to Databases of Type: "+vTypeJS+"");
       }
     }
   }
 }
 
+function exportClass(pClass) {
+  console.log("exportClass('"+pClass+"')");
+  var vClassJS = getClassJSON(pClass);
+  var vClassTypeHash = getClassTypeJSON();
+  vClassJS["sClassType"] = vClassTypeHash[pClass];
+
+}
+
 function importClass(pJSDB) {
-  alert("importClass(pJSDB) is not implemented yet");
+  console.log("importClass('"+pClass+"')");
 };
 
 function getTemplate4File(pFile) {
+  // pFile ignored
+  var vTemplate = getValueDOM("tTplHTML") || "undefined Template";
+  return vTemplate;
+};
+
+function X_getTemplate4File(pFile) {
+  // Loading File does not work with pFile as Parameter
   var vTemplate = getValueDOM("tTplHTML");
   if (existsFileJS(pFile)) {
     var vTPLfilename = getTemplateFilename(pFile);
@@ -300,7 +316,7 @@ function getTemplate4File(pFile) {
 
 function getTemplateFilename(pFile) {
   var vTPLfilename = "";
-  if (vJSON_JS["FileList"] && vJSON_JS["FileList"][pFile] && vJSON_JS["FileList"][pFile]["tTemplateHTML"]) {
+  if (existsFileJS(pFile)) {
     vTPLfilename = vJSON_JS["FileList"][pFile]["tTemplateHTML"];
   } else {
     console.log("ERROR: getTemplateFilename('"+pFile+"') Filename of Template not defined");
@@ -435,13 +451,13 @@ function getPageTypeTemplate4Code(pPageTypeID) {
   var vButton2 = "";
   var vOutHash = null;
   var vBID
-  if (vJSON_JS && vJSON_JS["PageType"] && vJSON_JS["PageType"][pPageTypeID]) {
+  if (existsPageTypeJS(pPageTypeID)) {
     var vPT = vJSON_JS["PageType"][pPageTypeID];
     vPageTpl = vPT["template"];
     vOutHash = getButtonDefinition4Code(vPT["HEADER_BUTTON1"]);
-    vButton1 = vOutHash["button-html"];
+    vButton1 = vOutHash["tButtonDefHTML"];
     vOutHash = getButtonDefinition4Code(vPT["HEADER_BUTTON2"]);
-    vButton2 = vOutHash["button-html"];
+    vButton2 = vOutHash["tButtonDefHTML"];
   } else {
     console.log("getPageTypeTemplate4Code('"+pPageTypeID+"') Template was UNDEFINED");
     vPageTpl = getValueDOM("tTplPAGE");
@@ -455,31 +471,43 @@ function getButtonDefinition4Code(pButtonID) {
     console.log("getButtonDefinition4Code('"+pButtonID+"')");
     var vOutHash = {
           "BUTTON_ID":pButtonID,
+          "BUTTON_TITLE":firstUpperCase(pButtonID.toLowerCase()),
           "button-type":"",
-          "button-html":""
+          "tButtonDefHTML":""
         };
     var vOut = "";
-    if (pButtonID) {
-      if (vJSON_JS && vJSON_JS["ButtonList"] && vJSON_JS["ButtonList"][pButtonID]) {
-        var vBT = vJSON_JS["ButtonList"][pButtonID];
-        vOut = vBT["button-html"];
+    if (pButtonID && (pButtonID != "")) {
+      if (pButtonID == pButtonID.toUpperCase()) {
+        var vBT;
+        if (existsButtonJS(pButtonID)) {
+          //console.log("Button ["+pButtonID+"] exists for Code Generation");
+          vBT = vJSON_JS["ButtonList"][pButtonID];
+        } else {
+          alert("Button ["+pButtonID+"] is undefined, a default button will be created for you!");
+          vBT = getDefaultButtonHash(pButtonID);
+          vJSON_JS["ButtonList"][pButtonID] = vBT;
+          updateButtonJSON2Form();
+        };
+        // It is a predefined Button in ButtonList
+        vOut = vBT["tButtonDefHTML"];
         vBT["counter"]++;
         vOut = replaceString(vOut,"___COUNTER___",vBT["counter"]);
+        vOut = replaceString(vOut,"___BUTTON_TITLE___",vBT["BUTTON_TITLE"]);
         vOutHash["button-type"] = "BUTTON";
       } else {
-        console.log("Button-LINK: getButtonDefinition4Code('"+pButtonID+"') - Definition of Button pButtonID does not exist\nUse '"+pButtonID+"' as Page-ID");
-        vOut = getValueDOM("tTplBUTTON");
+        console.log("Button-LINK: getButtonDefinition4Code('"+pButtonID+"') - ID is used as Page-ID '"+pButtonID+"'");
+        vOut = getValueDOM("tTplPageLinkBUTTON");
         //pButtonID is a regarded as Page-ID, because a definition for the Button does not exist in ButtonList
         var vTitle = getPageTitle4ID(pButtonID);
         vOut = replaceString(vOut,"___LINK_PAGE_ID___",pButtonID);
-        vOut = replaceString(vOut,"___BUTTON_TEXT___",vTitle);
+        vOut = replaceString(vOut,"___BUTTON_TITLE___",vTitle);
         vCounter++;
         vOut = replaceString(vOut,"___COUNTER___",vCounter);
         vOutHash["button-type"] = "LINK";
         //vOut = replaceString(vOut,"__BUTTON_ID__",pButtonID);
       };
       vOut = replaceString(vOut,"___BUTTON_ID___",pButtonID.toUpperCase());
-      vOutHash["button-html"] = vOut;
+      vOutHash["tButtonDefHTML"] = vOut;
     } else {
       console.log("ERROR: getButtonDefinition4Code(pButtonID) - pButtonID UNDEFINED");
     };
@@ -490,7 +518,7 @@ function getButtonDefinition4Code(pButtonID) {
 function getPageTitle4ID(pPageID) {
   var vTitle = "Title '"+pPageID+"'?";
   if (pPageID) {
-    if (vJSON_JS && vJSON_JS["PageList"] && vJSON_JS["PageList"][pPageID]) {
+    if (existsPageJS(pPageID)) {
       vTitle = vJSON_JS["PageList"][pPageID]["PAGE_TITLE"];
     } else {
       console.log("getPageTitle4ID('"+pPageID+"') - Page for Page-ID is UNDEFINED!");
@@ -525,6 +553,7 @@ function parameterHasClassDef(pPar) {
 };
 
 function edit2JSparams(pEditParams) {
+  console.log("Split Params and Check with edit2JSparams('"+pEditParams+"') ");
   var vParArr = pEditParams.split(",");
   var vParOut = [];
   var vParam = "";
@@ -619,9 +648,9 @@ function replaceCodeMainVars(pOutput,pClass) {
   var vClassJS = getClassJSON(vClass);
   var vClassname 		= vClassJS["tClassname"];
 	var vClassFile  	= getClassFile4ClassJSON(vClassJS);
-  var vSuperClassDef = getValueDOM("tSuperClass");
-  var vSuperClassProtoDef = getValueDOM("tSuperClassProto");
-  var vMethodDefPrefix = ""; 
+  var vSuperClassDef = getValueDOM("tTplSuperClass");
+  var vSuperClassProtoDef = getValueDOM("tTplSuperClassProto");
+  var vMethodDefPrefix = "";
   if (vClassJS["tSuperClassname"] == "") {
     vSuperClassDef = "	// no superclass defined\n";
     vSuperClassProtoDef = "	// no superclass defined\n";
@@ -650,15 +679,25 @@ function replaceCodeMainVars(pOutput,pClass) {
 function replaceAttributes4Code(pOutput,pClass) {
   var vOutput = pOutput || "undefined pOutput";
   var vClass = pClass || getValueDOM("tClassname");
-  var vAttribArray    = getAttribArray(vClass);
+  var vAttribArray    = getAttribNameArray(vClass);
+  var vClassJS = getClassJSON(vClass);
+  var vTemplate = getValueDOM("tTplAttribute");
+  var vAttribDef = "";
+  var vID = "";
   var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
   for (var i=0; i<vAttribArray.length; i++) {
     //alert(vAttribArray[i]);
-    if (vAttribArray[i].indexOf("=")>0) {
-      vAttribConstructor += "\tthis."+vAttribArray[i]+";\n";
-    };
+    vID = vAttribArray[i];
+
+    vAttribDef = vTemplate; // init with AttribTemplate
+    // replace Attribute Name
+    vAttribDef = replaceString(vAttribDef,"___ATTRIB_NAME___",vID);
+    // replace Attribute Default/Init Value
+    vAttribDef = replaceString(vAttribDef,"___ATTRIB_DEFAULT___",vClassJS["AttribDefault"][vID]);
+    // replace Attribute Comment
+    vAttribDef = replaceString(vAttribDef,"___ATTRIB_COMMENT___",vClassJS["AttribComment"][vID]);
   };
-  vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribConstructor);
+  vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribDef);
   return vOutput;
 };
 
@@ -752,9 +791,15 @@ function createLinkedMethodDefinitions() {
 function exportTemplatesJSON() {
   //var vOut = getCode4JSON_JS(vJSON_TPL);
   updateForm2TemplateJSON();
+  vJSON_TPL["init_type"] = "TPL"; // Type is set to Templates
+  vJSON_TPL["mod_date"] = getDateTime(); // set Export Date of Templates
   createCode4JSON_JS(vJSON_TPL,"code_templates","Database Templates");
   $( "#tabJSON" ).trigger( "click" );
+};
 
+function importTemplatesJSON() {
+  //var vOut = getCode4JSON_JS(vJSON_TPL);
+  updateTemplatesJSON2Form();
 };
 
 function updateTemplatesJSON2Form() {

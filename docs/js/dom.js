@@ -136,6 +136,8 @@ function createFileSelect(pFileArr) {
     };
   };
   write2value("tFilename",vName);
+  writeFileTitle(vName);
+  createElementSelect();
 };
 
 function createAttribTypeSelect() {
@@ -163,6 +165,7 @@ function createClassSelect(pArray) {
   var vArraySupCla = insertArray1Empty(vArray);
   write2innerHTML("sClassList",vOptions);
   write2innerHTML("sClassCode",vOptions);
+  write2innerHTML("sAppClassHTML",vOptions);
   vOptions = createOptions4Array(vArraySupCla);
   write2innerHTML("sSuperClassname",vOptions);
   write2value("sSuperClassname",getValueDOM("tSuperClassname"));
@@ -257,12 +260,13 @@ function createDatabaseSelect(pArray) {
 };
 
 
-function createClassTypeSelect(pArray) {
+function createSelector4Array2ID(pID,pArray) {
   // get all Methods in JSON Database of all Classes
-  console.log("createClassTypeSelect-Call");
-  var vArray = pArray || getAllClassesArray();  //classes.js 418
-  var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sClassList",vOptions)
+  console.log("createSelector4Array2ID('"+pID+"',pArray)");
+  if (pID && pArray) {
+    var vOptions = createOptions4Array(pArray);
+    write2innerHTML(pID,vOptions);
+  }
 };
 
 function createButtonSelect(pArray) {
@@ -342,4 +346,4 @@ function createMethodSelect4JSON() {
 function writeClassTitle(pClassName) {
   write2innerHTML("titleClassName",pClassName);
   write2innerHTML("codeClassName",pClassName);
-}
+};

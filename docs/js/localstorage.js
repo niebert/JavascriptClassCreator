@@ -1,3 +1,8 @@
+function autoSaveJSON() {
+  console.log("autoSaveJSON()-Call");
+  //saveJSON2LocalStorage("json");
+};
+
 function loadLocalStorage(pType,pVar) {
   var vLS="load";
   var vRet = undefined;

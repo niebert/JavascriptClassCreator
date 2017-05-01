@@ -183,7 +183,7 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
   updateFormGlobal2JSON();
   clearPageTypeForm();
   initMenuPageType("MenuPage");
-}
+};
 
 function setDefaultSelectors() {
   // init the selector settings from vJSON_JS

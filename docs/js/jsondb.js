@@ -145,7 +145,7 @@ function getElementsHash4Form(pHash,pFile) {
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
   console.log("updateAttributesJS()-Call called after adding a new Attribute");
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vAttName = vClassJS["sAttribList"] || "";
   write2value("sAttribList",vAttName);
   selectJSAttribs();
@@ -294,7 +294,7 @@ function saveID4HashPath2JSON(pHashPath,pValue) {
 
 function deleteClassForm() {
   console.log("deleteAttributeForm()");
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sClassList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -311,7 +311,7 @@ function deleteClassForm() {
 
 function deleteAttributeForm() {
   console.log("deleteAttributeForm()");
-  vClassJSON = getClassJSON;
+  vClassJSON = getClassJSON();
   var vMethodName = getValueDOM("sAttribList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -327,24 +327,37 @@ function deleteAttributeForm() {
 
 
 function saveAttributeForm() {
-  console.log("saveAttributeForm()");
-  var vClassJSON = getClassJSON;
-  saveAttribJSON();
+  var vName = getValueDOM("tAttribName");
+  console.log("saveAttributeForm('"+vName+"')");
+  var vClassJSON = getClassJSON();
+  vClassJSON["AttribType"][vName]    = getValueDOM("tAttribType") || "";
+  vClassJSON["AttribDefault"][vName] = getValueDOM("tAttribDefault") || "";
+  vClassJSON["AttribComment"][vName] = getValueDOM("tAttribComment") || "";
+  updateAttribListJSON2Form();
+  vClassJSON["sAttribList"] = vName;
+  createAttribSelect();
+  write2value("sAttribList",vName);
+};
+
+function updateAttribListJSON2Form() {
+  var vClassJSON = getClassJSON();
+  var vAttHash = vClassJSON["AttribDefault"];
   var vOut = "";
   var vCR = "";
-  var vAttHash = vClassJSON["AttribDefault"];
+  var vLine = "";
   for (var iName in vAttHash) {
     if (vAttHash.hasOwnProperty(iName)) {
-      vOut += vCR + iName + " = " + vAttHash[iName];
+      vLine = vCR + iName + " = " + vAttHash[iName];
+      vLine = vLine.replace(/\s+=\s+/,"=");
+      vOut += vLine;
       vCR = "\n";
     };
   };
   write2value("tAttributes",vOut);
-  createAttribSelect(vOut);
-}
+};
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
-  var vClassJSON = getClassJSON;
+  var vClassJSON = getClassJSON();
   var vAttribName     = pAttName    || getValueDOM("tAttribName")    || "";
   var vAttribType     = pAttType    || getValueDOM("tAttribType")    || "";
   var vAttribDefault  = pAttDefault || getValueDOM("tAttribDefault") || "";
@@ -388,7 +401,7 @@ function loadMethodJSON (pMethodName) {
 
 function deleteMethodForm() {
   console.log("deleteAttributeForm()");
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sMethodList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -435,7 +448,7 @@ function write2JSON(pID,pValue) {
 }
 
 function saveMethodJSON(pMethodName) {
-  var vClassJSON = getClassJSON;
+  var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   vMethodName = pMethodName || vMethodCall;
   vMethodName = getMethodName(vMethodName);
@@ -629,9 +642,12 @@ function getAttribJSON4Form(pClass) {
   var vClassJS = getClassJSON(vClass);
   var vAttDefault = vClassJS["AttribDefault"];
   var vAttArr = [];
+  var vLine = "";
   for (var iAtt in vAttDefault) {
     if (vAttDefault.hasOwnProperty(iAtt)) {
-      vAttArr.push(iAtt + " = "+vAttDefault[iAtt]);
+      vLine = iAtt + " = "+vAttDefault[iAtt];
+      vLine = vLine.replace(/\s+=\s+/,"=");
+      vAttArr.push(vLine);
     };
   };
   vOut = vAttArr.join("\n");

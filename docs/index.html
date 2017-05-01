@@ -466,13 +466,6 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
         <br><b>UML-Type Super Class:</b> <font id="labSuperClassTypeUML" color="blue"></font>
     		</td>
     	</tr>
-    	<!-- <tr>
-    		<td colspan=2 align="center">
-    		<b>DOM Type:</b> <input name="tDOMType" value="DIV" type="text">
-    		<b>DOM Display:</b> <input name="tDOMDisplay" value="DOMDISPLAY" type="text">
-    		<b>DOM Edit:</b> <input name="tDOMEdit" value="DOMEDIT" type="text">
-    		</td>
-    	</tr> -->
     	<tr>
     		<td>
     		<b>Author of Class:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
@@ -484,7 +477,7 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
     	<tr>
     		<td>
     			<b>Attributes</b>
-          <input name="bUpdateAttribs" value=" Update Attributes " onclick="updateForm2AttribJSON()" type="button">
+          <input name="bEditAttribs" value=" Edit Attributes " onclick="showAttributes()" type="button">
           <br>
     			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">aDoc = null
 aName = "DisApp"
@@ -496,7 +489,7 @@ aFuzzyController = new FuzzyController()
     		</td>
     		<td>
     			<b>Methods</b>
-          <input name="bUpdateMethods" value=" Update Methods " onclick="updateForm2MethodJSON()" type="button">
+          <input name="bEditMethods" value=" Edit Methods " onclick="editMethodes" type="button">
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
@@ -534,9 +527,9 @@ submitPage(pPageID)
           </tr>
             <tr>
               <td colspan="2" align="center">
-              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="myAttrib" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
+              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
             <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
-            = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="default_value_def" onchange="updateAttribType4Form()" style="font-family: monospace">
+            = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form()" style="font-family: monospace">
           </td>
         </tr>
         <tr>
@@ -552,7 +545,7 @@ submitPage(pPageID)
     </tr>
       <tr>
         <td colspan="2" align="center">
-          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="undefined_comment" style="font-family: monospace" onchange="updateAttribTypeComment4Form()" >
+          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribTypeComment4Form()" >
         </td>
       	</tr>
       </tbody>

@@ -52,7 +52,7 @@ function createMethodSelect() {
 
 
 function createAttribSelect() { // TA=TextArea
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vClass = getValueDOM("tClassname");
   var vArray = getAttribNameArray();
   var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
@@ -89,7 +89,7 @@ function updateForm_DOM2JSON() {
 function updateDOM_JSON2Form() {
   // get all Value from DOM and save Values  in JSON Database of selected Class
   var vClassName = getSelectedClassID();
-  var vClassJS = getClassJSON;
+  var vClassJS = getClassJSON();
   var vContent = "";
   console.log("updateDOM_JSON2Form()-Call: vDOM_ID in JSON stored in Form");
   for (var i = 0; i < vDOM_ID.length; i++) {
@@ -345,5 +345,7 @@ function createMethodSelect4JSON() {
 
 function writeClassTitle(pClassName) {
   write2innerHTML("titleClassName",pClassName);
+  write2innerHTML("titleClassAttributes",pClassName);
+  write2innerHTML("titleClassMethods",pClassName);
   write2innerHTML("codeClassName",pClassName);
 };

@@ -74,12 +74,14 @@ function showClassTab(pClass) {
 function showAttributes(pClass) {
   var vClass = pClass || getSelectedClassID();
   $( "#tabAttributes" ).trigger( "click" );
+  updateForm2AttribJSON();
   createAttribTypeSelect();
 }
 
 function showMethods(pClass) {
   var vClass = pClass || getSelectedClassID();
   $( "#tabMethods" ).trigger( "click" );
+  updateForm2MethodJSON();
 }
 
 function updateFormElement2JSON(pFile) {
@@ -669,11 +671,11 @@ function selectJSAttribType() {
   saveJSON2LocalStorage();
 };
 
-function selectJSAttribs() {
+function selectJSAttribs(pAttribName) {
   var vClassJSON = getClassJSON();
   saveAttribJSON();
   //get SELECT AttribName value
-  var vAttribName = getValueDOM("sAttribList");
+  var vAttribName = pAttribName || getValueDOM("sAttribList");
   console.log("selectJSAttribs() - AttribName='"+vAttribName+"'");
   var vID = "";
   var vValue = "";

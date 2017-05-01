@@ -934,6 +934,14 @@ function createNewAttribJS(pName,pClass) {
     var vSuccess = createNewAttributeForm(vName,vType,vValue,vComment,vClass);
     //alert("");
     updateAttributesJS(); //jsondb.js:57 no code in function body
+    if (vSuccess) {
+      //write2value("sAttribList",vName);
+      console.log("createNewAttribJS('"+vName+"','"+vClass+"') Call: selectJSAttribs('"+vName+"')");
+      vClassJS["sAttribList"] = vName;
+      write2value("sAttribList",vName);
+      selectJSAttribs(vName);
+      alert("Attribute '"+vName+"' created!");
+    };
   }
 };
 
@@ -942,23 +950,30 @@ function createNewAttributeForm(pName,pType,pValue,pComment,pClass) {
     var vClass = pClass || getSelectedClassID();
     console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"','"+vClass+"')");
     var vClassJS = getClassJSON();
-    var vClassName = getSelectedClassID();
-    var vAttrDef = pName + " = " + pValue;
-    var vAttributes = document.fCreator.tAttributes;
-    //var vAttribs = reduceVarName(vAttributes.value);
-    var vAttribs = reduceVarName(vAttributes.value);
-    getValueDOM("tAttributes");
-    var vAttribs = reduceVarName(vAttributes.value);
-    if (vAttribs == "") {
-      vAttributes.value = vAttrDef;
+    var vSuccess = true;
+    if (vClassJS) {
+      vSuccess = true;
+      var vClassName = getSelectedClassID();
+      var vAttrDef = pName + " = " + pValue;
+      var vAttributes = document.fCreator.tAttributes;
+      //var vAttribs = reduceVarName(vAttributes.value);
+      var vAttribs = reduceVarName(vAttributes.value);
+      getValueDOM("tAttributes");
+      var vAttribs = reduceVarName(vAttributes.value);
+      if (vAttribs == "") {
+        vAttributes.value = vAttrDef;
+      } else {
+        vAttributes.value += "\n"+vAttrDef;
+      };
+      saveAttribJSON(pName,pType,pValue,pComment);
+      //set the Selector "sAttribList" for the Attributes on the tab "Attributes"
+      updateForm2JSON(vClassName);
+      console.log("Set ['sAttribList'] as selected Attribute to '"+pName+"'");
+      vClassJS["sAttribList"] = pName;
     } else {
-      vAttributes.value += "\n"+vAttrDef;
+      vSuccess = false;
     };
-    saveAttribJSON(pName,pType,pValue,pComment);
-    //set the Selector "sAttribList" for the Attributes on the tab "Attributes"
-    updateForm2JSON(vClassName);
-    console.log("Set ['sAttribList'] as selected Attribute to '"+pName+"'");
-    vClassJS["sAttribList"] = pName;
+    return vSuccess;
 };
 
 function createNewMethodJS(pClass) {

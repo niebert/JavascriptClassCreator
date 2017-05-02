@@ -1253,6 +1253,7 @@ function getAttribDefaultHash(pAttributes) {
     if (vFound > 0) {
       vVar = reduceVarName(vLine.substr(0,vFound+1))
       vValue = vLine.substr(vFound+1,vLine.length);
+      vValue = vValue.replace(/^\s+/,"");
       if (vVar != "") {
         vAttribHash[vVar] = vValue;
       } else {

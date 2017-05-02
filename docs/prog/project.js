@@ -378,11 +378,11 @@ vDatabase['project'] = {
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aParamHash = {}",
-            "tMethods": "init(pDoc:Document)\nparseLink4HTML()\nparseLink(pLink:String)\ngetLink():String\nsetValue(pVar,pValue)\ngetValue(pVar)\ndeleteValue(pVar)",
+            "tMethods": "init(pDoc:Document)\nparseURL(pLink:String)\ngetURL():String\nsetValue(pVar,pValue)\ngetValue(pVar)\ndeleteValue(pVar)",
             "sAttribList": "aVars",
             "tAttribName": "aVars",
             "tAttribType": "Hash",
-            "tAttribComment": "Attribute: 'aVars' Type: 'Hash' stores ... ",
+            "tAttribComment": "Attribute: 'aVars' Type: 'Hash' stores parameters of the URL",
             "tAttribDefault": " {}",
             "sAttribTypeList": "Hash",
             "tMethodName": "init(pDoc:Document)",
@@ -405,7 +405,7 @@ vDatabase['project'] = {
             "MethodComment": {
                 "init": "init extract the link with parameters from document.location.search and store aLink",
                 "parseURL": "parses the URL stores the variables in 'aVar' e.g. ..&lastname=Niehaus&... stores aVars['name']='Niehaus'",
-                "getLink": "Comment for getLink",
+                "getURL": "Comment for getURL",
                 "setValue": "Comment for setValue",
                 "getValue": "Comment for getValue",
                 "deleteValue": "Comment for deleteValue"
@@ -413,9 +413,9 @@ vDatabase['project'] = {
             "MethodReturn": {
                 "init": "",
                 "parseURL": "",
-                "getLink": "String",
+                "getURL": "String",
                 "setValue": "",
-                "getValue": "",
+                "getValue": "String",
                 "deleteValue": ""
             },
             "MethodCode": {

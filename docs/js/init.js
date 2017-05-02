@@ -162,6 +162,7 @@ function initCodeCreator() {
   setClassSelectorDefault(vSelectedClass);
   createMethodSelect();
   createFileSelect();
+  createAttribTypeSelect();
   setDefaultSelectors();
 };
 

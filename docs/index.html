@@ -9,6 +9,7 @@
    var vDebug = "";  //Debug Value: "ClassType" or "Method"
    var vSelectedClass = "Undefined";
 
+   // contains the project JSON
    var vJSON_JS   = {};
    // Contains a list of loaded JSON Files - access a JSON via vDatabase["myJSON"]
    var vDatabase = {};
@@ -591,6 +592,8 @@ submitPage(pPageID)
           <b>Method Definition:</b>
           <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
+          <b>Return:</b>
+          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn()"></select>
           <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
           <hr>
            <b>Method Comment</b><br>

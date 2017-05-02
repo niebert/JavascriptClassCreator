@@ -323,6 +323,25 @@ function selectFileJS(pFileID) {
   write2value("tFilename",vFileID);
 };
 
+function selectJSMethodReturn(pReturnID) {
+  var vReturnID = pReturnID || getValueDOM("sReturnList");
+  console.log("selectJSMethodReturn('"+vReturnID+"')");
+  var vClass = getSelectedClassID();
+  if (existsClassJS(vClass)) {
+    var vMethodName = selectedMethodName();
+    var vClassJS = getClassJSON();
+    if (vClassJS["MethodReturn"].hasOwnProperty(vMethodName)) {
+      vClassJS["MethodReturn"][vMethodName] = vReturnID;
+      var vCall = vMethodName+"("+vClassJS["MethodParameter"][vMethodName]+")";
+      if (vReturnID != "") {
+        vCall += ":"+vReturnID;
+      };
+      write2value("tMethodName",vCall);
+      updateMethodsJSON2Form();
+    };
+  }
+
+}
 
 function selectPageJS(pPageID) {
   var vPageID = pPageID || getValueDOM("sPageHTML");
@@ -812,8 +831,10 @@ function selectJSMethods() {
   //load method code from  vJSON_JS if exists
   //and write method code to TEXTAREA
   loadMethodJSON(vMethodName);
+  var vMethodReturn = getMethodReturn4Call(vMethodHash[vMethodName]);
   write2value("tMethodName",vMethodHash[vMethodName]);
   write2value("titleMethodName",vMethodHash[vMethodName]);
+  write2value("sReturnList",vMethodReturn);
   saveJSON2LocalStorage();
 };
 

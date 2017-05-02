@@ -66,10 +66,14 @@ function createAttribSelect() { // TA=TextArea
   var vSelectedAtt = vClassJS["sAttribList"] || vArray[0] || "";
   console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
   var vOptions = createOptions4Array(vArray);
+  var vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
+  var vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
+  var vAttType = vClassJS["AttribType"][vSelectedAtt] || getValueDOM("tAttribType") || "";
+  write2value("sAttribTypeList",vAttType);
   write2innerHTML("sAttribList",vOptions);
   write2value("tAttribName",vSelectedAtt);
-  write2value("tAttribDefault",vAttDefaultHash[vSelectedAtt] || "");
-  write2value("tAttribComment",vAttCommentHash[vSelectedAtt] || "");
+  write2value("tAttribDefault",vAttDefault);
+  write2value("tAttribComment",vAttComment);
 };
 
 function getSelectedClassID() {
@@ -153,13 +157,15 @@ function createAttribTypeSelect() {
   var vArray = insertArray1Empty(vArr)
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
-  var vName =  "";
-  if (vArray.length>0) {
-    vName = vArray[0];
-  };
-  write2value("tAttribName",vName);
+  write2innerHTML("sReturnList",vOptions);
+  var vName = getValueDOM("tAttribName");
   var vAttribHash = getForm2AttribDefaultHash(); //classes.js:484
   write2value("tAttribDefault",vAttribHash[vName]);
+  var vMethodname = getValueDOM("sMethodList") || "";
+  var vClassJS = getClassJSON();
+  if (vClassJS.hasOwnProperty("MethodReturn") &&  vClassJS["MethodReturn"].hasOwnProperty(vMethodname)) {
+    write2value("sReturnList",vClassJS["MethodReturn"][vMethodname]);
+  }
 };
 
 function createClassSelect(pArray) {

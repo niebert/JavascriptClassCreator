@@ -236,7 +236,7 @@ function importProjectJSON() {
         var vTextFromFileLoaded = fileLoadedEvent.target.result;
         //document.getElementById("inputTextToSave").value = textFromFileLoaded;
         //alert("textFromFileLoaded="+textFromFileLoaded);
-        loadProjectJSON(fileToLoad.name,vTextFromFileLoaded);
+        importProjectJSON_do(fileToLoad.name,vTextFromFileLoaded);
       };
     fileReader.readAsText(fileToLoad, "UTF-8");
   } else {
@@ -245,7 +245,7 @@ function importProjectJSON() {
 }
 
 
-function loadProjectJSON(pProjectFile,pContent) {
+function importProjectJSON_do(pProjectFile,pContent) {
   var vContent = pContent || "{'name':'"+pProjectFile+"'}";
   //alert(vContent);
   vContent = removeDBPrefix(vContent);
@@ -265,6 +265,10 @@ function loadProjectJSON(pProjectFile,pContent) {
           alert("Import JSON file of Type: "+vTypeJS+"");
           importClass(vJSDB);
         break;
+        case "TPL":
+          alert("Import JSON file of Type: "+vTypeJS+"");
+          importTemplatesJSON_do(vJSDB);
+        break;
         case "DB":
           var vDBname = vJSDB["name"] || "DBundefined";
           alert("Import JSON Database '"+vDBname+"' of Type: "+vTypeJS+"");
@@ -272,7 +276,8 @@ function loadProjectJSON(pProjectFile,pContent) {
           vJSON_JS["DatabaseList"][vDBname] = vJSDB;
         break;
         default:
-          alert("Import to Databases of Type: "+vTypeJS+"");
+          var vDBname = pProjectFile;
+          alert("Import to Database '"+vDBname+"' of Type: "+vTypeJS+"");
       }
     }
   }
@@ -287,7 +292,37 @@ function exportClass(pClass) {
 }
 
 function importClass(pJSDB) {
-  console.log("importClass('"+pClass+"')");
+  var vClass = pJSONDB["tClassname"] || "UndefClass";
+  var vClassType = pJSONDB["sClassType"] || "";
+  console.log("importClass(pJSDB) for Class '"+vClass+"' ClassType='"+vClassType+"'");
+  if (existsClassJS(vClass)) {
+    var vCheck = confirm("Class '"+vClass + "' exists.\nDo you really want to import the class\nand overwrite the existing definition?");
+    if (vCheck == false) {
+      alert("Import Class '"+vClass+"' cancelled!");
+    } else {
+      // Set ClassType for Class
+      vJSON_JS["ClassType"][vClass] = vClassType;
+      // Set Class in vJSON_JS for vClass
+      vJSON_JS["ClassList"][vClass] = vJSDB;
+    };
+  }
+};
+
+function importDatabase(pDBname,pJSDB) {
+  var vDBname = pJSONDB["name"] || pDBname || "UndefDB";
+  var vClassType = pJSONDB["sClassType"] || "";
+  console.log("importClass(pJSDB) for Database '"+vDatabase+"' DatabaseType='"+vDatabaseType+"'");
+  if (existsDatabaseJS(vDBname)) {
+    var vCheck = confirm("Database '"+vDBname + "' exists.\nDo you really want to import the JSON file\nand overwrite the existing database?");
+    if (vCheck == false) {
+      alert("Import Database '"+vDBname+"' cancelled!");
+    } else {
+      // Set Database in Global vDatabase Hash
+      vDatabase[vDBname] = vJSDB;
+      // Import JSON for the Database vDatabase
+      vJSON_JS["DatabaseList"][vDBname] = vJSDB;
+    };
+  }
 };
 
 function getTemplate4File(pFile) {

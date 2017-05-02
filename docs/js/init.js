@@ -115,6 +115,7 @@ function initCodeCreator() {
   var vDB = null;
   var vSelectedClass = getValueDOM("tClassname");
   console.log("initCodeCreator() Selected Class ["+vSelectedClass+"]");
+  loadProjectJSON();
   if (typeof(Storage) != "undefined") {
      //alert("Local Storage");
      loadLocalStorage("dom");
@@ -129,7 +130,9 @@ function initCodeCreator() {
        updateJSON2Form(vSelectedClass);
        console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
-        if ((vJSON_JS["init_type"]) && vJSON_JS["init_type"] == "JSCC") {
+        if (vJSON_JS.hasOwnProperty("ClassList") && vJSON_JS.hasOwnProperty("FileList")) {
+          console.log("vJSON_JS was loaded from Library prog/project.js");
+        } else if ((vJSON_JS["init_type"]) && vJSON_JS["init_type"] == "JSCC") {
           console.log("vJSON_JS was loaded from Library prog/project.js");
         } else {
           console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");

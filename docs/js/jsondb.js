@@ -83,13 +83,13 @@ function updateFormFileID2JSON(pID) {
 
 function checkFileHTML(pFile) {
   if (vJSON_JS["FileList"]) {
-    console.log("FileList exists");
+    debugLog("File","FileList exists");
   } else {
     vJSON_JS["FileList"] = {};
-    console.log("create vJSON_JS['FileList']");
+    debugLog("File","create vJSON_JS['FileList']");
   };
   if (vJSON_JS["FileList"][pFile]) {
-    console.log("FileList['"+pFile+"'] exists");
+    debugLog("File","FileList['"+pFile+"'] exists");
   } else {
     vJSON_JS["FileList"][pFile] = {}
   };
@@ -97,22 +97,22 @@ function checkFileHTML(pFile) {
   for (var i = 0; i < vDOM_File.length; i++) {
     vID = vDOM_File[i];
     if (vJSON_JS["FileList"][pFile][vID]) {
-      console.log("FileList['"+pFile+"']['"+vID+"'] exists");
+      debugLog("File","FileList['"+pFile+"']['"+vID+"'] exists");
     } else {
-      console.log("FileList['"+pFile+"']['"+vID+"'] created");
+      debugLog("File","FileList['"+pFile+"']['"+vID+"'] created");
       vJSON_JS["FileList"][pFile][vID] = getValueDOM(vID);
     };
   };
   if (vJSON_JS["FileList"][pFile]["elements"]) {
-    console.log("FileList['"+pFile+"']['elements'] exists");
+    debugLog("File","FileList['"+pFile+"']['elements'] exists");
   } else {
-    console.log("FileList['"+pFile+"']['elements'] created");
+    debugLog("File","FileList['"+pFile+"']['elements'] created");
     vJSON_JS["FileList"][pFile]["elements"] = getElementsHash4Form({},pFile);
   };
   var vElemHash = vJSON_JS["FileList"][pFile]["elements"];
   var vElemArrID = getArray4HashID(vElemHash,pFile);
   if (vJSON_JS["FileList"][pFile]["tElementID"]) {
-    console.log("FileList['"+pFile+"']['tElementID'] exists");
+    debugLog("File","FileList['"+pFile+"']['tElementID'] exists");
     if (vJSON_JS["FileList"][pFile]["tElementID"] == "") {
       if (vElemArrID.length > 0) {
         vJSON_JS["FileList"][pFile]["tElementID"] = vElemArrID[0];
@@ -120,7 +120,7 @@ function checkFileHTML(pFile) {
       };
     };
   } else {
-    console.log("FileList['"+pFile+"']['tElementID'] undefined");
+    debugLog("File","FileList['"+pFile+"']['tElementID'] undefined");
   }
 };
 
@@ -133,7 +133,7 @@ function getElementsHash4Form(pHash,pFile) {
   var vOutHash = {}
   for (var i = 0; i < vArrID.length; i++) {
     if (vHash.hasOwnProperty(vArrID[i])) {
-      console.log("ID ["+vArrID[i]+"] exists "+vFile);
+      debugLog("File","ID ["+vArrID[i]+"] exists "+vFile);
       vOutHash[vArrID[i]] = vHash[vArrID[i]];
     } else {
       vOutHash[vArrID[i]] = getDefaultElementString(vFile,vArrID[i]);
@@ -144,7 +144,7 @@ function getElementsHash4Form(pHash,pFile) {
 
 function  updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
-  console.log("updateAttributesJS()-Call called after adding a new Attribute");
+  debugLog("Attrib","updateAttributesJS()-Call called after adding a new Attribute");
   var vClassJS = getClassJSON();
   var vAttName = vClassJS["sAttribList"] || "";
   write2value("sAttribList",vAttName);
@@ -156,7 +156,7 @@ function  updateMethodsJS() {
 };
 
 function updateJSLibraries() {
-  console.log("updateJSLibraries");
+  console.log("updateJSLibraries undefined");
 };
 
 function updateHTMLFiles() {
@@ -166,20 +166,21 @@ function updateHTMLFiles() {
 }
 
 function updateJSAttribs() {
+  debugLog("Attrib","updateJSAttribs()-Call");
   updateForm2AttribJSON();
   createAttribTypeSelect();
   createAttribSelect();
 };
 
 function updateJSMethods() {
-  console.log("updateJSMethods()");
+  debugLog("Method","updateJSMethods()");
   var vMethodNameArr   = getMethodNameArray();
   var vMethodHash      = getMethodHash();
   var vMethodNameArray = getMethodNameArray();
   var vMethodArray     = getMethodArray();
   vMethodArray = checkJSMethods(vMethodArray);
   // load tMethods definitions and create the options of the SELECT Box
-  console.log("Update JS Methods");
+  debugLog("Method","Update JS Methods");
   var vOptions = createOptions4Array(vMethodNameArr);
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
@@ -188,7 +189,7 @@ function updateJSMethods() {
       loadMethodJSON(vMethodName);
     } else {
       loadMethodJSON(vMethodNameArray[0]);
-      console.log("updateJSMethods()-Call  '"+vMethodName+"' undefined in MethodArray");
+      debugLog("Method","updateJSMethods()-Call  '"+vMethodName+"' undefined in MethodArray");
     }
   };
   // id="sMethodList" of Select Box
@@ -202,13 +203,13 @@ function loadAttribJSON (pAttribName) {
   write2value("tAttribName",vAttribName);
   vAttribName = getAttribName(vAttribName); //without Parameters
   if (vAttribName != "") {
-    console.log("loadAttribJSON() Call - Attribute '"+vAttribName+"' defined");
+    debugLog("Attrib","loadAttribJSON() Call - Attribute '"+vAttribName+"' defined");
     write2value("sAttribTypeList", vClassJSON["AttribType"][vAttribName] || "");
     write2value("tAttribDefault",  vClassJSON["AttribDefault"][vAttribName] || "");
     write2value("tAttribComment",  vClassJSON["AttribComment"][vAttribName] || "");
   } else {
     alert("loadAttribJSON() Call - Attrib Name undefined");
-    console.log("loadAttribJSON() Call - Attrib Name undefined");
+    debugLog("Attrib","loadAttribJSON() Call - Attrib Name undefined");
   };
 };
 
@@ -219,13 +220,13 @@ function save3LevelID2JSON(pListID,pHashID,pID,pValue) {
         if (vJSON_JS[pListID][pHashID][pID]) {
             vJSON_JS[pListID][pHashID][pID] = pValue;
         } else {
-          console.log("vJSON_JS['"+pListID+"']['"+pHashID+"']['"+pID+"'] was undefined!");
+          console.log("ERROR: vJSON_JS['"+pListID+"']['"+pHashID+"']['"+pID+"'] was undefined!");
         };
       } else {
-        console.log("vJSON_JS['"+pListID+"']['"+pHashID+"'] was undefined!");
+        console.log("ERROR: vJSON_JS['"+pListID+"']['"+pHashID+"'] was undefined!");
       };
     } else {
-      console.log("vJSON_JS['"+pListID+"'] was undefined!");
+      console.log("ERROR: vJSON_JS['"+pListID+"'] was undefined!");
     };
 };
 
@@ -293,7 +294,7 @@ function saveID4HashPath2JSON(pHashPath,pValue) {
 }
 
 function deleteClassForm() {
-  console.log("deleteAttributeForm()");
+  console.log("deleteClassForm()");
   var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sClassList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
@@ -330,13 +331,20 @@ function saveAttributeForm() {
   var vName = getValueDOM("tAttribName");
   console.log("saveAttributeForm('"+vName+"')");
   var vClassJSON = getClassJSON();
-  vClassJSON["AttribType"][vName]    = getValueDOM("tAttribType") || "";
-  vClassJSON["AttribDefault"][vName] = getValueDOM("tAttribDefault") || "";
-  vClassJSON["AttribComment"][vName] = getValueDOM("tAttribComment") || "";
+  var vArrID = ["AttribType","AttribDefault","AttribComment"];
+  var vID = "";
+  for (var i = 0; i < vArrID.length; i++) {
+    vID = vArrID[i];
+    vClassJSON[vID][vName] = getValueDOM("t"+vID) || "";
+  };
   updateAttribListJSON2Form();
   vClassJSON["sAttribList"] = vName;
   createAttribSelect();
   write2value("sAttribList",vName);
+  for (var i = 0; i < vArrID.length; i++) {
+    vID = vArrID[i];
+    write2value("t"+vID,vClassJSON[vID][vName]);
+  };
 };
 
 function updateAttribListJSON2Form() {
@@ -357,6 +365,7 @@ function updateAttribListJSON2Form() {
 };
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
+  debugLog("Attrib","saveAttribJSON('"+pAttName+"','"+pAttType+"','"+pAttDefault+"','"+pAttComment+"')");
   var vClassJSON = getClassJSON();
   var vAttribName     = pAttName    || getValueDOM("tAttribName")    || "";
   var vAttribType     = pAttType    || getValueDOM("tAttribType")    || "";
@@ -368,12 +377,12 @@ function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
     vClassJSON["AttribDefault"][vAttribName] = vAttribDefault;
     vClassJSON["AttribComment"][vAttribName] = vAttribComment;
   } else {
-    console.log("saveAttribJSON() Call - Attrib Name undefined");
+    console.log("ERROR: saveAttribJSON() Call - Attrib Name undefined");
   };
 };
 
 function updateJSON2selectAttrib(pClass) {
-  console.log("updateJSON2selectAttrib('"+pClass+"')");
+  debugLog("Attrib","updateJSON2selectAttrib('"+pClass+"')");
   var vClassHash = vJSON_JS["ClassList"][pClass];
   if (vClassHash) {
     var vAttHash = vClassHash["Att"]
@@ -390,17 +399,17 @@ function loadMethodJSON (pMethodName) {
   write2innerHTML("titleMethodName",vMethodCall);
   vMethodName = getMethodName(vMethodName); //without Parameters
   if (vMethodName != "") {
-    console.log("loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
+    debugLog("Method","loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
     write2editor("MethodCode",vClassJSON["MethodCode"][vMethodName] || "");
     write2value("tMethodComment",vClassJSON["MethodComment"][vMethodName] || "");
   } else {
     alert("loadMethodJSON() Call - Method Name undefined");
-    console.log("loadMethodJSON() Call - Method Name undefined");
+    debugLog("Method","loadMethodJSON() Call - Method Name undefined");
   };
 };
 
 function deleteMethodForm() {
-  console.log("deleteAttributeForm()");
+  debugLog("Attrib","deleteAttributeForm()");
   var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sMethodList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
@@ -434,7 +443,7 @@ function saveMethodCallJS(pClass) {
       vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
       updateJSMethods();
     } else {
-      console.log("saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
+      debugLog("Method","saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
       createNewMethodJS(pClass);
     }
   };
@@ -461,7 +470,7 @@ function saveMethodJSON(pMethodName) {
     vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
     vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
   } else {
-    console.log("saveMethodJSON() Call - Method Name undefined");
+    console.log("ERROR: saveMethodJSON() Call - Method Name undefined");
   };
 };
 
@@ -469,11 +478,11 @@ function checkClassJSON(pClassJSON) {
   var vClassJS = pClassJSON || getSelectedClassJSON(); // Global Variable
   // The function check if all variables in the Class are defined
   if (vClassJS) {
-    console.log("Check Properties of Class");
+    debugLog("Class","checkClassJSON(pClassJSON) - Check Properties of Class");
     for (var i = 0; i < vDOM_ID.length; i++) {
       var vID = vDOM_ID[i];
       if (vClassJS.hasOwnProperty(vID)) {
-        //console.log("checkClassJSON() - Class['"+vID+"'] defined");
+        //debugLog("Class","checkClassJSON() - Class['"+vID+"'] defined");
       } else {
         console.log("WARNING: checkClassJSON() - Class['"+vID+"'] undefined");
         switch (vID) {
@@ -504,7 +513,7 @@ function checkClassJSON(pClassJSON) {
 };
 
 function updateForm2MethodComment() {
-  console.log("updateForm2MethodComment()-Call");
+  debugLog("Method","updateForm2MethodComment()-Call");
   var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodName = getMethodName(vMethodCall);
@@ -513,7 +522,7 @@ function updateForm2MethodComment() {
 };
 
 function updateForm2MethodNameParam() {
-  console.log("updateForm2MethodNameParam()-Call");
+  debugLog("Method","updateForm2MethodNameParam()-Call");
   var vClassJSON = getClassJSON();
   var vMethodCall = getValueDOM("tMethodName");
   var vMethodCode = getEditorValue("iMethodCode");
@@ -533,7 +542,7 @@ function updateForm2MethodNameParam() {
 function updateFileHTML2Form(pFile) {
   var vFile = pFile || getSelectedFileID();
   var vContent = "";
-  console.log("updateFileHTML2Form('"+vFile+"')");
+  debugLog("File","updateFileHTML2Form('"+vFile+"')");
   // updates form content in DOM with File content
   updateDOM_JSON2Form(vFile);
   updateGlobalJSON2Form(vFile);
@@ -658,13 +667,13 @@ function updateForm2AttribJSON(pClass) {
   var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vAttributes = getValueDOM("tAttributes");
-  console.log("updateForm2AttribJSON('"+vClass+"') with Attributes="+vAttributes);
+  debugLog("Attrib","updateForm2AttribJSON('"+vClass+"') with Attributes="+vAttributes);
   var vAttHash = getForm2AttribDefaultHash(vClass); //classes.js:484
   vClassJS["AttribDefault"] = vAttHash || {};
   var vAttTypeHash = getAttribTypeHash(vAttHash) || {}; // classes.js:336
   // Define Hash in Attribute Hash if undefined
   defineHashIfUndefined(vAttTypeHash,"AttribType",vClassJS);
-  console.log("CALL in updateForm2AttribJSON('"+vClass+"') DEBUG-LOG");
+  debugLog("Attrib","CALL in updateForm2AttribJSON('"+vClass+"') DEBUG-LOG");
   defineHashIfEmpty(vAttTypeHash,"AttribType",vClassJS);
   var vAttCommentHash = getAttribCommentHash(vAttHash) || {}; // classes.js:356
   defineHashIfUndefined(vAttCommentHash,"AttribComment",vClassJS);
@@ -673,7 +682,7 @@ function updateForm2AttribJSON(pClass) {
 
 function updateForm2MethodJSON(pClass) {
   var vClass = pClass || getSelectedClassID();
-  console.log("updateForm2MethodJSON('"+vClass+"')");
+  debugLog("Method","updateForm2MethodJSON('"+vClass+"')");
   var vClassJS = getClassJSON();
   saveMethodCallJS(vClass); // saves the definition of the method call
   var vMethArr = getMethodNameArray(); //classes.js:275
@@ -706,7 +715,7 @@ function updateForm2MethodJSON(pClass) {
     if (getCheckBox("checkInitCode")) {
       vCode =  "// Code for " + vMethArr[i]+"()";
       vMethName = vMethArr[i];
-      vCode = getReturnCodeInit(vMethName,vMethReturn[vMethName],Code);
+      vCode = getReturnCodeInit(vMethName,vMethReturn[vMethName],vCode);
     } else {
       vCode = "";
     };
@@ -829,14 +838,14 @@ function updateForm2JSON(pClass,pClassType) {
 function defineHashIfUndefined(pHash,pHashListID,pClassJS) {
   var vClassJS = pClassJS || getClassJSON();
   if (vClassJS[pHashListID]) {
-    console.log("defineHashIfUndefined(pHash,'"+pHashListID+"',pClassJS) Hash '"+pHashListID+"' exists");
+    debugLog("Class","defineHashIfUndefined(pHash,'"+pHashListID+"',pClassJS) Hash '"+pHashListID+"' exists");
   } else {
     vClassJS[pHashListID] = {};
   };
   for (var iAttName in pHash) {
     if (vClassJS[pHashListID][iAttName]) {
         //vClassJSON[pHashListID][iAttName];
-        console.log(pHashListID+"['"+iAttName+"'] defined");
+        debugLog("Class",pHashListID+"['"+iAttName+"'] defined");
     } else {
       console.log(pHashListID+"['"+iAttName+"'] undefined set to '"+pHash[iAttName]+"'");
       vClassJS[pHashListID][iAttName] = pHash[iAttName];
@@ -852,9 +861,9 @@ function defineHashIfEmpty(pHash,pHashListID,pClassJS) {
     vValue = vClassJS[pHashListID][iAttName];
     if (vValue != "") {
         //vClassJSON[pHashListID][iAttName];
-        console.log(pHashListID+"['"+iAttName+"']='"+vValue+"' is not empty");
+        debugLog("Attrib",pHashListID+"['"+iAttName+"']='"+vValue+"' is not empty");
     } else {
-      console.log(pHashListID+"['"+iAttName+"']='' empty - set to default value'"+pHash[iAttName]+"'");
+      debugLog("Attrib",pHashListID+"['"+iAttName+"']='' empty - set to default value'"+pHash[iAttName]+"'");
       vClassJS[pHashListID][iAttName] = pHash[iAttName];
     };
   };
@@ -862,11 +871,11 @@ function defineHashIfEmpty(pHash,pHashListID,pClassJS) {
 
 function defineHash(pHash,pHashListID,pClassJS) {
   var vClassJS = pClassJS || getClassJSON();
-  console.log("defineHash(pHash,'"+pHashListID+"',pClassJS)");
+  debugLog("Attrib","defineHash(pHash,'"+pHashListID+"',pClassJS)");
   defineHashIfUndefined(pHash,pHashListID,pClassJS);
   var vValue = "";
   for (var iAttName in pHash) {
-    console.log(pHashListID+"['"+iAttName+"']='"+pHash[iAttName]+"' is defined");
+    debugLog("Attrib",pHashListID+"['"+iAttName+"']='"+pHash[iAttName]+"' is defined");
     vClassJS[pHashListID][iAttName] = pHash[iAttName];
   };
 };

@@ -334,10 +334,10 @@ function selectPageJS(pPageID) {
   if (vOldPageID != "") {
     if (vOldContent != vEditContent) {
       console.log("Content of Page CHANGED\nOLD: "+vOldContent+"\nNEW: "+vEditContent);
-      var vSaveOK = confirm("Content of Page ["+vOldPageID+"] changed.\nDo you want to save the Page Definition?");
-      if (vSaveOK == true) {
-        save2LevelID2JSON("PageContent",vOldPageID,vEditContent);
-      };
+      //var vSaveOK = confirm("Content of Page ["+vOldPageID+"] changed.\nDo you want to save the Page Definition?");
+      //if (vSaveOK == true) {
+      //  save2LevelID2JSON("PageContent",vOldPageID,vEditContent);
+      //};
     } else {
       console.log("Content of Page unchanged");
       //setEditorValue("iPageHTML",)

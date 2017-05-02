@@ -6,12 +6,12 @@
    <meta http-equiv="content-language" content="de">
    <meta http-equiv="desktop-type" content="tasks">
    <script type="text/javascript">
-
+   var vDebug = "";  //Debug Value: "ClassType" or "Method"
    var vSelectedClass = "Undefined";
 
    var vJSON_JS   = {};
-   //var vClassJSON = {};
-   // Contains the JSON File for a specific class
+   // Contains a list of loaded JSON Files - access a JSON via vDatabase["myJSON"]
+   var vDatabase = {};
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
@@ -28,7 +28,28 @@
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
    </script>
-   <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
+   <!-- load the project.js file - result is stored in vDatabase['JSCC'] -->
+   <script language="javascript" src="prog/project.js"></script>
+
+   <script type="text/javascript">
+      // Check if JavascriptClassCreator JSCC Database is loaded with project.js
+      var vDB = "project";
+      if (vDatabase.hasOwnProperty(vDB)) {
+        if (vDatabase[vDB].hasOwnProperty("init_type")) {
+          var vTypeDB = vDatabase[vDB]["init_type"];
+          if (vTypeDB == "JSCC") {
+            console.log("JSON Database for JSCC '"+vDB+".js' defined!");
+            vJSON_JS = vDatabase[vDB];
+          } else {
+            console.log("ERROR: init_type='"+vTypeDB+"' for JSON is not 'JSCC'");
+          };
+        };
+      } else {
+        console.log("JSON Database for JSCC '"+vDB+".js' was NOT loaded!");
+      };
+   </script>
+ <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
+
    <script language="javascript" src="js/blob.js"></script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
@@ -719,8 +740,9 @@ submitPage(pPageID)
             <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
           <br>
           <b>Load Project JSON:</b>
-            <input type="file" id="myImportFile" onchange="importProjectJSON()">
-            <input name="bImportProject" value="Import Project" onclick="importProjectJSON()" type="button">
+          <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->
+          <input type="file" id="myImportFile" >
+          <input name="bImportProject" value="Import Project" onclick="importProjectJSON('myImportFile')" type="button">
 
           <hr>
             <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
@@ -754,7 +776,10 @@ submitPage(pPageID)
   <hr>
   <b>Default App Path:</b> <tt>[tDefaultAppPath]</tt><input type="text" id="tDefaultAppPath" name="tDefaultAppPath" value="app_LSAC/" size="35">
   <hr>
-  <b>Template for Main HTML:</b>  <tt>[tTplHTML]</tt><br>
+  <b>Template for Main HTML:</b>  <tt>[tTplHTML]</tt>
+  <input type="file" id="myTemplateFile" >
+  <input name="bImportTPL" value="Load Template" onclick="loadTemplateFileHTML('myTempateFile')" type="button">
+<br>
   <textarea id="tTplHTML" name="tTplHTML" cols="125" rows="10">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
     &lt;head&gt;

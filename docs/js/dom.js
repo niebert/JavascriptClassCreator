@@ -1,3 +1,9 @@
+function debugLog(pDebugID,pMessage) {
+  if (vDebug == pDebugID) {
+    console.log(pMessage);
+  };
+};
+
 function setCheckBox(pID,pValue) {
   var vNode = document.getElementById(pID);
   if (vNode) {

@@ -385,7 +385,10 @@ function showHashContent4LOG(pPrefixLOG,pHash) {
 
 function getForm2ClassTypeHash() {
    var vHash = getClassTypeHash();
-   showHashContent4LOG("getForm2ClassTypeHash():",vHash);
+   // vDebug is a Boolean variable that trigger more console logging
+   if (vDebug == "ClassType") {
+     showHashContent4LOG("getForm2ClassTypeHash():",vHash);
+   };
    return vHash;
 };
 
@@ -1220,6 +1223,10 @@ function existsPageJS(pPageID) {
 
 function existsFileJS(pFileID) {
   return existsListJS("File","FileList",pFileID);
+};
+
+function existsDatabaseJS(pDatabaseID) {
+  return existsListJS("Database","DatabaseList",pDatabaseID);
 };
 
 function existsElementJS(pFileID,pElementID) {

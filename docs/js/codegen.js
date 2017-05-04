@@ -673,18 +673,18 @@ function getCode4Class(pClass) {
     var vClassJS = getClassJSON(vClass);
     var vClassFile  	  = getClassFile4ClassJSON(vClassJS);
     var vSuperClass     = vClassJS["tSuperClass"];
-  	var vMethodHeader   = getValueDOM("tMethodHeader");
-    var vClassTail    	= getValueDOM("tClassTail");
+  	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
+    var vClassTail    	= getValueDOM("tTplClassTail");
   	//var vAttributes 	= document.fCreator.tAttributes.value;
   	//var vMethods    	= document.fCreator.tMethods.value;
   	var vMethodArray    = getMethodArray();
   	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
   	var vMethodConstructor = "	//---Methods----------------------------\n";
-  	vOutput = getValueDOM("tHeader");
+  	vOutput = getValueDOM("tClassHeader");
     vOutput       = replaceCodeMainVars(vOutput,vClass);
-  	vMethodHeader = replaceCodeMainVars(vMethodHeader,vClass);
+  	vMethodHeader = replaceCodeMainVars(vTplMethodHeader,vClass);
     vOutput       = replaceAttributes4Code(vOutput,vClass);
-    vOutput       = replaceMethods4Code(vOutput,vMethodHeader,vClass);
+    vOutput       = replaceMethods4Code(vOutput,vTplMethodHeader,vClass);
   	vClassTail    = replaceString(vClassTail,"___CLASSNAME___",vClassJS["tClassname"]);
   	vOutput += vClassTail;
   } else {
@@ -714,11 +714,14 @@ function replaceCodeMainVars(pOutput,pClass) {
 	} else {
     if (getValueDOM("sPrototype") == "YES") {
       vSuperClassDef = "";
-      vMethodDefPrefix = vClassname + ".prototype";
     } else {
       vSuperClassProtoDef = "";
-      vMethodDefPrefix = "this";
     };
+  };
+  if (getValueDOM("sPrototype") == "YES") {
+    vMethodDefPrefix = vClassname + ".prototype";
+  } else {
+    vMethodDefPrefix = "this";
   };
   vOutput = replaceString(vOutput,"___AUTHOR___",vClassJS["tAuthor"]);
   vOutput = replaceString(vOutput,"___EMAIL___",vClassJS["tEMail"]);
@@ -740,8 +743,8 @@ function replaceAttributes4Code(pOutput,pClass) {
   var vClassJS = getClassJSON(vClass);
   var vTemplate = getValueDOM("tTplAttribute");
   var vAttribDef = "";
+  var vAtts = "";
   var vID = "";
-  var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
   for (var i=0; i<vAttribArray.length; i++) {
     //alert(vAttribArray[i]);
     vID = vAttribArray[i];
@@ -753,23 +756,25 @@ function replaceAttributes4Code(pOutput,pClass) {
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_DEFAULT___",vClassJS["AttribDefault"][vID]);
     // replace Attribute Comment
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_COMMENT___",vClassJS["AttribComment"][vID]);
+    vAtts += vAttribDef;
   };
-  vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAttribDef);
+  vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAtts);
   return vOutput;
 };
 
-function replaceMethods4Code(pOutput,pMethodHeader,pClass) {
+function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
   var vOutput = pOutput || "undefined pOutput";
   var vClass = pClass || getValueDOM("tClassname");
   var vClassJS = getClassJSON(vClass);
   var vMethodArray = getMethodArray();
-  var vMethodHeader = pMethodHeader || "undefined MethodHeader";
-  var vMethod = vMethodHeader;
+  var vTplMethodHeader = pTplMethodHeader || "undefined Template MethodHeader";
+  var vMethod = vTplMethodHeader;
   var vMethodname = "";
   var vMethodAllParams = "";
   var vMethodParamsClass = "";
   var vSplitArray;
-  var vOutMeth = getValueDOM("tMethodsHeaderTpl");
+  // Now OutMeth is colleacting all Method Definitions
+  var vOutMeth = getValueDOM("tTplMethodsHeadComment");
   vOutMeth = replaceString(vOutMeth,"___CLASSNAME___",vClassJS["tClassname"]);
   for (var i=0; i<vMethodArray.length; i++) {
     // start with clean MethodHeader Template for each Method Definition

@@ -185,12 +185,12 @@ function createJSClass()
 	var vSuperClassname = document.fCreator.tSuperClassname.value;
 	var vAuthor     	= document.fCreator.tAuthor.value;
 	var vEMail      	= document.fCreator.tEMail.value;
-	var vHeader     	= document.fCreator.tHeader.value;
+	var vHeader     	= document.fCreator.tClassHeader.value;
 	var vSuperClass     = document.fCreator.tSuperClass.value;
 	var vMethodHeader   = document.fCreator.tMethodHeader.value;
 	var vAttributes 	= document.fCreator.tAttributes.value;
 	var vMethods    	= document.fCreator.tMethods.value;
-	var vClassTail    	= document.fCreator.tClassTail.value;
+	var vClassTail    	= document.fCreator.tTplClassTail.value;
 	var vAttribArray    = vAttributes.split(/\n/);
 	var vMethodArray    = vMethods.split(/\n/);
 	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
@@ -449,7 +449,7 @@ public class MeineKlasse1 extends Oberklasse {
 	the source code according to your requirements and constraints.
 	<hr>
  		<b>Class Header</b><br>
-			<textarea name="tHeader" cols="125" rows="10">//#################################################################
+			<textarea name="tClassHeader" cols="125" rows="10">//#################################################################
 //# Javascript Class: ___CLASSNAME___()
 //#       SuperClass: ___SUPERCLASSNAME___
 //#   Class Filename: ___CLASSFILENAME___
@@ -552,7 +552,7 @@ ___ATTRIBUTES___
 	<tr>
 		<td colspan="2" align="center">
  		<b>Class Tail</b><br>
-			<textarea name="tClassTail" cols="125" rows="3">
+			<textarea name="tTplClassTail" cols="125" rows="3">
 };
 //-------------------------------------------
 //---End Definition of Class-----------------

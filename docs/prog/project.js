@@ -1,13 +1,13 @@
 vDatabase['project'] = {
     "init_type": "JSCC",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/04/04 16:00:14",
+    "mod_date": "2017/04/04 19:12:24",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
     "tPages": "welcome|Welcome|DefaultPage|home\nhome|Home|MenuPage|\nsetting|Settings|OptionsPage|home\nsave|Save|SaveDialog|home\nquit|Quit App|ConfirmPage|home\nlogin|Login|LoginPage|quit\n    ",
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
-    "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">___BUTTON_TITLE___</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"alert('Click on ___BUTTON_TITLE___');\" data-theme=\"a\">___BUTTON_TITLE___</a>\nSUBMIT|Submit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"alert('Submit Data ___BUTTON_TITLE___');\" data-theme=\"a\">___BUTTON_TITLE___</a>\n      ",
+    "tButtons": "||\n||\n||",
     "sPageTypeHTML": "",
     "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
@@ -404,9 +404,9 @@ vDatabase['project'] = {
             "tAttribComment": "Attribute: 'aVars' Type: 'Hash' stores all URL parameters ",
             "tAttribDefault": "{}",
             "sAttribTypeList": "Hash",
-            "tMethodHeader": "calcSize()",
-            "tMethodComment": "calculates the number of variables defined in the URL parameters, stores result in length",
-            "sMethodList": "calcSize",
+            "tMethodHeader": "getEditTableHTML(pPrefixID:String):String",
+            "tMethodComment": "creates a Edit HTML table with two column for key and value of the parameter hash aVars.\nThe keys of aVars are used as IDs for the HTML form.\nAn optional ID prefix as parameter can be used to create a unique ID for the DOM elements\nAll parameters are visible in an input field.",
+            "sMethodList": "getEditTableHTML",
             "tArrayLoop": "",
             "tMethodLoop": "",
             "AttribDefault": {
@@ -469,11 +469,11 @@ vDatabase['project'] = {
                 "getParam4URL": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + encodeURLparam(iID) + \"=\" + encodeURLparam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
                 "decodeParam": "pParam = pParam.replace(/\\+/g,  \" \");\npParam = decodeURIComponent(pParam);\nreturn pParam;\n",
                 "encodeParam": "var vParam = encodeURIComponent(pParam);\nvParam = vParam.replace(/'/g,\"%27\").replace(/\"/g,\"%22\");\nreturn vParam;",
-                "getTableHTML": "",
-                "getEditTableHTML": "",
+                "getTableHTML": "var vOut = \"\";\nvar vHash = this.aVars;\nvOut += \"<table border=1>\";\nvar vWrapCode = true;\nfor (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut += \"<tr>\";\n      vOut += \"<td>\";\n      vOut += \"<b>\"+iID+\"</b>\";\n      vOut += \"</td>\";\n      vOut += \"<td>\";\n      // second parameter vWrapCode = true for non textarea use; \n      vOut += this.encodeHTML(vHash[iID],vWrapCode);\n      vOut += \"</td>\";\n      vOut += \"</tr>\";\n    };\n};\nvOut += \"</table>\";\nreturn vOut;",
+                "getEditTableHTML": "var vPrefixID = pPredixID || \"\";\nvar vOut = \"\";\nvar vHash = this.aVars;\nvOut += \"<table border=1>\";\nvar vRows = 1;\nvar vContent = \"\";\nvar vMaxRows = 10;\nvar vWrapCode = false;\nfor (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vContent = this.encodeHTML(vHash[iID],vWrapCode);\n      vRows = (vHash[iID].split(\"\\n\")).length;\n      if (vRows > vMaxRows) {\n          vRows = vMaxRows;\n      };\n      vOut += \"<tr>\";\n      vOut += \"<td>\";\n      vOut += \"<b>\"+iID+\"</b>\";\n      vOut += \"</td>\";\n      vOut += \"<td>\";\n      // second parameter vWrapCode = true for non textarea use; \n      vOut += \"<textarea id='\"+vPrefix+iID+\"'' cols='90' rows='\"+vRows+\"''>\";\n      vOut += vContent;\n      vOut += \"</textarea>\";\n      vOut += \"</td>\";\n      vOut += \"</tr>\";\n    };\n};\nvOut += \"</table>\";\nreturn vOut;",
                 "calcSize": "var vRet = 0;\nif (this.aVars) {\n    vRet = keys(this.aVars).length;\n} else {\n    console.log(\"ERROR: variable '\"+pVar+' does not exist in LinkParam\");\n};\nreturn vRet;",
                 "encodeHTML": "var vValue = pValue || \"\";\nif (vValue != \"\") {\n    vValue = vValue.replace(/</g,\"&lt;\");\n    vValue = vValue.replace(/>/g,\"&gt;\");\n    vValue = vValue.replace(/&/g,\"&amp;\");\n};\nif (pWrapCode && (pWrapCode == true)) {\n    vValue = \"<pre><code>\"+vValue+\"</code></pre>\";\n};\nreturn vValue",
-                "exists": "var vRet = false;\nif (pVar) {\nvRet = this.aVars.hasOwnProperty(pVar)    \n};\nreturn vRet;\n"
+                "exists": "var vRet = false;\nif (pVar) {\n   vRet = this.aVars.hasOwnProperty(pVar)    \n};\nreturn vRet;\n"
             },
             "MethodParameter": {
                 "init": "pDoc:Document",
@@ -502,12 +502,18 @@ vDatabase['project'] = {
         "QUIT": {
             "BUTTON_ID": "QUIT",
             "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 0
+            "counter": 1
         },
         "OK": {
             "BUTTON_ID": "OK",
             "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
-            "counter": 0
+            "counter": 1
+        },
+        "CANCEL": {
+            "BUTTON_ID": "CANCEL",
+            "BUTTON_TITLE": "Cancel",
+            "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
+            "counter": 2
         }
     },
     "SelectedTypePage": "SaveDialog",

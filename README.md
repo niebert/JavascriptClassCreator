@@ -173,8 +173,9 @@ With the following enumeration the purpose of the folders is explained. JSCC-fol
 7. JSCC-folder ___/jquery___ contains the JQuery libraries and images
 8. JSCC-folder ___/js___ contains the Javascript libraries for JSCC
 9. JSCC-folder ___/prog___ contains the JSON files for the programming project
-10. JSCC-folder ___/uglify___ contain the code compressor.
-11. JSCC-folder ___/uml___ contains the UML diagram generation, called from JSCC.
+10. JSCC-folder ___/srv___ contains the HTML files that emulate and server and the server response to a client request
+11. JSCC-folder ___/uglify___ contain the code compressor.
+12. JSCC-folder ___/uml___ contains the UML diagram generation, called from JSCC based on JointJS.
 
 ## Status of Software
 ### Release Status

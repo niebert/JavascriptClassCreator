@@ -6,7 +6,7 @@
    <meta http-equiv="content-language" content="de">
    <meta http-equiv="desktop-type" content="tasks">
    <script type="text/javascript">
-   var vDebug = "";  //Debug Value: "ClassType" or "Method"
+   var vDebug = "ALL";  //Debug Value: "ALL", "Class", "Method", "Attrib", "Button" "File"
    var vSelectedClass = "Undefined";
 
    // contains the project JSON
@@ -283,7 +283,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
               <b>
-                Pages
+                Pages:
+                <font color="blue" id="titleFileNamePages">FileName</font>
               </b>
             </font>
           </td>
@@ -315,7 +316,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
                   <b>
-                    HTML Elements
+                    HTML Elements:
+                    <font color="blue" id="titleFileNameElements">FileName</font>
                   </b>
             </font>
         </td>
@@ -581,7 +583,7 @@ submitPage(pPageID)
             <font size="+2">
               <b>
                 Method Definition:
-                <font color="blue" class="titleClassName" id="titleClassNameMethod">FileName</font>
+                <font color="blue" class="titleClassName" id="titleClassNameMethod">Class</font>
               </b>
             </font>
         </td>
@@ -742,13 +744,13 @@ submitPage(pPageID)
             <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
           <hr>
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
-          <b>Generate Project JSON:</b>
+          <b>Export JSON:</b>
           <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) alert('Format: JSON') else alert('Format: JS')" checked="checked">
           JS-Export
           <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
           <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
-          <br>
-          <b>Load Project JSON:</b>
+          <hr>
+          <b>Load JSON:</b>
           <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->
           <input type="file" id="myImportFile" >
           <input name="bImportProject" value="Import Project" onclick="importProjectJSON('myImportFile')" type="button">

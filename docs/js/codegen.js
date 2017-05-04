@@ -39,7 +39,7 @@ function compressCodeJS() {
 
 function createProjectJSON() {
   //hide("bSaveJSON");
-  var vUsePrefix = getCheckBox("checkExportJSON");
+  var vUsePrefix = getCheckBox("checkExportJS");
   var vExportFile = "project";
   updateForm2JSON(getValueDOM("tClassname"));
   saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON",vUsePrefix);
@@ -115,10 +115,11 @@ function writeFilenameWithPath4DB(pDB) {
   return vPath;
 };
 
-function saveCode4JSON_JS(pJSONDB,pDB,pTitle) {
+function saveCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
   // creates the JSON String (stringify) and saves to HDD
+  var vUsePrefix = pUsePrefix || getCheckBox("checkExportJS")
   var vFileName = getSaveFilename4DB(pDB);
-  createCode4JSON_JS(pJSONDB,pDB,pTitle);
+  createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix);
   var vContent = getEditorValue("iJSONDB");
   saveFile2HDD(vFileName,vContent)
 }
@@ -129,7 +130,7 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
   var vDB = pDB || "project"; //means vJSON_JS will be export as project JSON
   // set modification data of JSON
   pJSONDB["mod_date"] = getDateTime();
-  var vUsePrefix = getCheckBox("checkExportJSON");
+  var vUsePrefix = getCheckBox("checkExportJS");
   var vContent = getCode4JSON_JS(pJSONDB,vUsePrefix);
   var vType = "JSON";
   var vMode =  "ace/mode/json";
@@ -541,7 +542,8 @@ function getButtonDefinition4Code(pButtonID) {
           alert("Button ["+pButtonID+"] is undefined, a default button will be created for you!");
           vBT = getDefaultButtonHash(pButtonID);
           vJSON_JS["ButtonList"][pButtonID] = vBT;
-          updateButtonJSON2Form();
+          var vArrID = getArray4HashID(vJSON_JS["ButtonList"]);
+          updateButtonJSON2Form(vArrID);
         };
         // It is a predefined Button in ButtonList
         vOut = vBT["tButtonDefHTML"];
@@ -563,10 +565,10 @@ function getButtonDefinition4Code(pButtonID) {
       };
       vOut = replaceString(vOut,"___BUTTON_ID___",pButtonID.toUpperCase());
       vOutHash["tButtonDefHTML"] = vOut;
+      console.log("Button Definition:\nvOut="+vOut);
     } else {
       console.log("ERROR: getButtonDefinition4Code(pButtonID) - pButtonID UNDEFINED");
     };
-    console.log("Button Definition:\nvOut="+vOut);
     return vOutHash;
 };
 

@@ -1,6 +1,8 @@
 function debugLog(pDebugID,pMessage) {
   if (vDebug == pDebugID) {
     console.log(pMessage);
+  } else if (vDebug == "ALL"){
+    console.log(pMessage);  
   };
 };
 

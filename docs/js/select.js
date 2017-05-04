@@ -145,6 +145,8 @@ function writeFileTitle(pFileName) {
   console.log("writeFileTitle('"+pFileName+"')");
   write2innerHTML("titleFileName",pFileName);
   write2innerHTML("titleFileNameTab",pFileName);
+  write2innerHTML("titleFileNamePages",pFileName);
+  write2innerHTML("titleFileNameElements",pFileName);
 };
 
 function updateFileSelectors(pFileName) {

@@ -47,6 +47,7 @@ function selectFilenameHTML_do(pFile) {
     };
   };
   writeFileTitle(vFile);
+  checkMainAppClass4File();
   //updateFileSelectors(vFile);
   //setFileSelectorDefault(vFile);
   createCode4JSON_JS(vJSON_JS);
@@ -143,6 +144,7 @@ function getElementNameArray(pFile) {
 function writeFileTitle(pFileName) {
   console.log("writeFileTitle('"+pFileName+"')");
   write2innerHTML("titleFileName",pFileName);
+  write2innerHTML("titleFileNameTab",pFileName);
 };
 
 function updateFileSelectors(pFileName) {
@@ -278,8 +280,7 @@ function getAttribNameArrayJSON(pClassName) {
 
 function updateMethodSelector(pClassName) {
   var vArr = getMethodNameArrayJSON(pClassName);
-  var vOptions = createOptions4Array(vArr);
-  write2innerHTML("sMethodList",vOptions);
+  write2options("sMethodList",vArr);
 }
 
 function getMethodNameArrayJSON(pClassName) {
@@ -328,7 +329,7 @@ function selectJSMethodReturn(pReturnID) {
   console.log("selectJSMethodReturn('"+vReturnID+"')");
   var vClass = getSelectedClassID();
   if (existsClassJS(vClass)) {
-    var vMethodName = selectedMethodName();
+    var vMethodName = getSelectedMethodID();
     var vClassJS = getClassJSON();
     if (vClassJS["MethodReturn"].hasOwnProperty(vMethodName)) {
       vClassJS["MethodReturn"][vMethodName] = vReturnID;
@@ -336,7 +337,7 @@ function selectJSMethodReturn(pReturnID) {
       if (vReturnID != "") {
         vCall += ":"+vReturnID;
       };
-      write2value("tMethodName",vCall);
+      write2value("tMethodHeader",vCall);
       updateMethodsJSON2Form();
     };
   }
@@ -623,9 +624,9 @@ function updateFileForm2JSON(pFileName) {
 };
 
 function updateFileJSON2Form(pFileName) {
-  console.log("updateFileJSON2Form('"+pFileName+"')");
   var vID = "";
   if (pFileName) {
+    console.log("updateFileJSON2Form('"+pFileName+"')");
     if (vJSON_JS["FileList"][pFileName]) {
       console.log("updateFileJSON2Form() - vJSON_JS['FileList']['"+pFileName+"'] exists!");
     } else {
@@ -642,6 +643,8 @@ function updateFileJSON2Form(pFileName) {
     console.log("updateFileJSON2Form() tElementID='"+vElementID+"'");
     write2value("sElementList",vElementID);
     selectElementJS(vElementID);
+  } else {
+    console.log("ERROR: updateFileJSON2Form('pFileName') pFileName undefined");
   };
 };
 
@@ -823,7 +826,7 @@ function saveDatabaseJSON() {
 function selectJSMethods() {
   //alert("Select Method");
   //save current Method
-  saveMethodJSON();
+  saveMethodJSON_do();
   //get SELECT MethodName value
   var vMethodName = getValueDOM("sMethodList");
   // set MethodName Input Window
@@ -832,7 +835,7 @@ function selectJSMethods() {
   //and write method code to TEXTAREA
   loadMethodJSON(vMethodName);
   var vMethodReturn = getMethodReturn4Call(vMethodHash[vMethodName]);
-  write2value("tMethodName",vMethodHash[vMethodName]);
+  write2value("tMethodHeader",vMethodHash[vMethodName]);
   write2value("titleMethodName",vMethodHash[vMethodName]);
   write2value("sReturnList",vMethodReturn);
   saveJSON2LocalStorage();

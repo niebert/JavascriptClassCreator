@@ -182,8 +182,8 @@ function updateJSMethods() {
   // load tMethods definitions and create the options of the SELECT Box
   debugLog("Method","Update JS Methods");
   var vOptions = createOptions4Array(vMethodNameArr);
-  var vMethodCall = getValueDOM("tMethodName");
-  var vMethodName = getMethodName(vMethodCall);
+  var vMethodHeader= getValueDOM("tMethodHeader");
+  var vMethodName = getMethodName(vMethodHeader);
   if (vMethodName != "") {
     if (vMethodHash[vMethodName]) {
       loadMethodJSON(vMethodName);
@@ -312,7 +312,7 @@ function deleteClassForm() {
 
 function deleteAttributeForm() {
   console.log("deleteAttributeForm()");
-  vClassJSON = getClassJSON();
+  var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sAttribList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if(vOK == true) {
@@ -345,6 +345,7 @@ function saveAttributeForm() {
     vID = vArrID[i];
     write2value("t"+vID,vClassJSON[vID][vName]);
   };
+  alert("Attribute '"+vName+"' saved!");
 };
 
 function updateAttribListJSON2Form() {
@@ -376,10 +377,27 @@ function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
     vClassJSON["AttribType"][vAttribName]    = vAttribType;
     vClassJSON["AttribDefault"][vAttribName] = vAttribDefault;
     vClassJSON["AttribComment"][vAttribName] = vAttribComment;
+    console.log("Attribute '"+vAttribName+"' saved!");
   } else {
     console.log("ERROR: saveAttribJSON() Call - Attrib Name undefined");
   };
 };
+
+function getMethodHeader4Name(pMethName,pClass) {
+  var vMethHeader = "";
+  var vClass = pClass || getSelectedClassID();
+  var vClassJS = getClassJSON(vClass);
+  if (vClassJS.hasOwnProperty("MethodParameter")) {
+    if (vClassJS.MethodParameter.hasOwnProperty("MethodParameter")) {
+
+    } else {
+      console.log("ERROR: getMethodHeader4Name(pMethName,pClass) MethodParameter undefined");
+    };
+  } else {
+    console.log("ERROR: getMethodHeader4Name(pMethName,pClass) MethodParameter undefined");
+  };
+  return vMethHeader;
+}
 
 function updateJSON2selectAttrib(pClass) {
   debugLog("Attrib","updateJSON2selectAttrib('"+pClass+"')");
@@ -391,12 +409,12 @@ function updateJSON2selectAttrib(pClass) {
 
 function loadMethodJSON (pMethodName) {
   var vClassJSON = getClassJSON();
-  var vMethodName = getValueDOM("tMethodName");
+  var vMethodName = getValueDOM("tMethodHeader");
   vMethodName = pMethodName || vMethodName;
   var vMethodHash = getMethodHash();
-  var vMethodCall = vMethodHash[vMethodName] || pMethodName + "(???)";
-  write2value("tMethodName",vMethodCall);
-  write2innerHTML("titleMethodName",vMethodCall);
+  var vMethodHeader= vMethodHash[vMethodName] || pMethodName + "(???)";
+  write2value("tMethodHeader",vMethodHeader);
+  write2innerHTML("titleMethodName",vMethodHeader);
   vMethodName = getMethodName(vMethodName); //without Parameters
   if (vMethodName != "") {
     debugLog("Method","loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
@@ -427,20 +445,20 @@ function deleteMethodForm() {
 
 function saveMethodCallJS(pClass) {
   var vClassJSON = getClassJSON(pClass);
-  var vMethodCall = getValueDOM("tMethodName");
-  var vMethodName = getMethodName(vMethodCall);
+  var vMethodHeader= getValueDOM("tMethodHeader");
+  var vMethodName = getMethodName(vMethodHeader);
   var vMethodHash = getMethodHash();
   var vMethodCode    = getEditorValue("iMethodCode");
   var vMethodComment = getValueDOM("tMethodComment");
   if (vMethodName != "") {
     if (vMethodHash[vMethodName]) {
-      vMethodHash[vMethodName] = vMethodCall;
+      vMethodHash[vMethodName] = vMethodHeader;
       write2JSON("tMethods",convertHash2String(vMethodHash));
       //vClassJSON = getClassJSON();
       vClassJSON["MethodCode"][vMethodName] = vMethodCode;
       vClassJSON["MethodComment"][vMethodName] = vMethodComment;
-      vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
-      vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
+      vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodHeader);
+      vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodHeader);
       updateJSMethods();
     } else {
       debugLog("Method","saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
@@ -454,24 +472,43 @@ function write2JSON(pID,pValue) {
   var vClassJSON = getClassJSON();
   vClassJSON[pID] = pValue;
   write2value(pID,pValue);
-}
+};
 
-function saveMethodJSON(pMethodName) {
+function saveMethodJSON(pMethodHeader) {
+  var vMethodHeader = pMethodHeader || getValueDOM("tMethodHeader");
+  var vMethodName = getSelectedMethodID();
+  var vErrorMSG = saveMethodJSON_do(vMethodHeader);
+  if (vErrorMSG == "") {
+    alert("Method '"+vMethodName+"' saved!")
+  } else {
+    alert(vErrorMSG);
+  };
+};
+
+function getSelectedMethodID(pMethodHeader) {
+  var vMethodHeader= pMethodHeader|| getValueDOM("tMethodHeader");
+  var vMethodName = getMethodName(vMethodHeader) || "";
+  return vMethodName;
+};
+
+function saveMethodJSON_do(pMethodHeader) {
+  var vErrorMSG = "";
   var vClassJSON = getClassJSON();
-  var vMethodCall = getValueDOM("tMethodName");
-  vMethodName = pMethodName || vMethodCall;
-  vMethodName = getMethodName(vMethodName);
-  var vMethodCode     = getValueDOM("tMethodCode");
+  var vMethodHeader= pMethodHeader || getValueDOM("tMethodHeader");
+  var vMethodName = getSelectedMethodID(vMethodHeader);
+  var vMethodCode     = getEditorValue("iMethodCode");
   var vMethodComment  = getValueDOM("tMethodComment");
   if (vMethodName != "") {
     checkClassJSON(vClassJSON);
     vClassJSON["MethodCode"][vMethodName] = vMethodCode;
     vClassJSON["MethodComment"][vMethodName] = vMethodComment;
-    vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
-    vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodCall);
+    vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodHeader);
+    vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodHeader);
+    console.log("Method '"+vMethodName+"' saved!");
   } else {
-    console.log("ERROR: saveMethodJSON() Call - Method Name undefined");
+    vErrorMSG = "ERROR: saveMethodJSON() Call - Method Name undefined!";
   };
+  return vErrorMSG;
 };
 
 function checkClassJSON(pClassJSON) {
@@ -515,8 +552,8 @@ function checkClassJSON(pClassJSON) {
 function updateForm2MethodComment() {
   debugLog("Method","updateForm2MethodComment()-Call");
   var vClassJSON = getClassJSON();
-  var vMethodCall = getValueDOM("tMethodName");
-  var vMethodName = getMethodName(vMethodCall);
+  var vMethodHeader= getValueDOM("tMethodHeader");
+  var vMethodName = getMethodName(vMethodHeader);
   var vMethodComment = getValueDOM("tMethodComment");
   vClassJSON["MethodComment"][vMethodName] = vMethodComment;
 };
@@ -524,12 +561,12 @@ function updateForm2MethodComment() {
 function updateForm2MethodNameParam() {
   debugLog("Method","updateForm2MethodNameParam()-Call");
   var vClassJSON = getClassJSON();
-  var vMethodCall = getValueDOM("tMethodName");
+  var vMethodHeader= getValueDOM("tMethodHeader");
   var vMethodCode = getEditorValue("iMethodCode");
-  var vMethodName = getMethodName(vMethodCall);
-  vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodCall);
+  var vMethodName = getMethodName(vMethodHeader);
+  vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodHeader);
   var vOldMethodRet = vClassJSON["MethodReturn"][vMethodName];
-  var vMethodRet = getMethodReturn4Call(vMethodCall);
+  var vMethodRet = getMethodReturn4Call(vMethodHeader);
   if (vOldMethodRet != "") {
     if (vOldMethodRet != vMethodRet) {
       vMethodCode = changeReturnType4Code(vMethodCode,vOldMethodRet,vMethodRet);
@@ -759,14 +796,17 @@ function getMethodJSON4Form(pClass) {
   var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vMethPars = vClassJS["MethodParameter"];
-  var vMethRet  = vClassJS["MethodParameter"];
+  var vMethRet  = vClassJS["MethodReturn"];
   var vMethArr = [];
   var vMethDef = "";
   for (var iMeth in vMethPars) {
     if (vMethPars.hasOwnProperty(iMeth)) {
       vMethDef = iMeth+"("+vMethPars[iMeth]+")"
       if (vMethRet.hasOwnProperty(iMeth)) {
-        vMethDef += ":"+ vMethRet[iMeth];
+        var vRetClass = reduceVarName(vMethRet[iMeth]);
+        if (vRetClass != "") {
+          vMethDef += ":"+ vMethRet[iMeth];
+        };
       };
       vMethArr.push(vMethDef);
     };

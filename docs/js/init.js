@@ -33,12 +33,12 @@ vDOM_File.push("tElementHTML"); // Content of Element Definition
 vDOM_File.push("tFilename"); // Is the Filename
 vDOM_File.push("sAppClassHTML"); // is the main App that is instantiated when a web site is loaded.
 vDOM_File.push("tAppInitCall"); // Init Call when App is started
-vDOM_File.push("tTemplateHTML"); // Template for HTML-File
+vDOM_File.push("tTemplateHTML"); // UNUSED Template for HTML-File (unused currently - later to use more than one basic HTML template for different Look&Feels)
 vDOM_File.push("tPageIDs"); // Used Pages in HTML-File
 
 //-------------------------------
 vDOM_TPL.push("tDefaultAppPath"); // default is "app_LSAC/" needed as path to store the exported files for the WebApp.
-vDOM_TPL.push("tTplHTML"); // template for "app.html" main file
+vDOM_TPL.push("tTplHTML"); // Main template for file generation of "index.html", "app.html", ... Source Template: tpl/Default.html
 vDOM_TPL.push("tTplSCRIPT"); // Script Tag for import Javascript Libraries
 vDOM_TPL.push("tTplSCRIPTSTANDALONE"); // Script Tag for injection of Javascript code in ___JSCODE___
 vDOM_TPL.push("tTplPAGE");  // Template for a DIV page of app.html (iterate for all pages of App)
@@ -95,7 +95,7 @@ vDOM_ID.push("tAttribDefault");
 vTYPE_ID.push("String");
 vDOM_ID.push("sAttribTypeList");
 vTYPE_ID.push("Select");
-vDOM_ID.push("tMethodName");
+vDOM_ID.push("tMethodHeader");
 vTYPE_ID.push("String");
 vDOM_ID.push("tMethodComment");
 vTYPE_ID.push("Textarea");
@@ -191,12 +191,17 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
 
 function setDefaultSelectors() {
   // init the selector settings from vJSON_JS
+  checkMainAppClass4File();
   var vClassJS = getClassJSON();
+  var vClassID = vJSON_JS["SelectedClass"] || "";
   var vFileID = vJSON_JS["SelectedFile"] || "";
   var vElementID = vJSON_JS["SelectedElement"] || "";
   var vPageID = vJSON_JS["SelectedPage"] || "";
   var vPageTypeID = vJSON_JS["SelectedPageType"] || "";
   var vButtonID = vJSON_JS["SelectedButton"] || "";
+  if (vClassID != "") {
+    selectClass_do(vClassID);
+  };
   if (vFileID != "") {
     selectFileJS(vFileID);
     write2value("sFileHTML",vFileID);
@@ -222,7 +227,24 @@ function setDefaultSelectors() {
     selectButtonJS(vButtonID);
     write2value("sButtonHTML",vButtonID);
   };
-}
+  var vAttribName = getValueDOM("tAttribName");
+  if (vAttribName != "") {
+    write2value("sAttribList",vAttribName);
+  }
+};
+
+function checkMainAppClass4File() {
+  console.log("checkMainAppClass4File()");
+  var vMainClass4File = getValueDOM("sAppClassHTML") || "";
+  var vMainInitCall4File = getValueDOM("tAppInitCall") || "";
+  if (vMainClass4File == "") {
+    write2value("sAppClassHTML","App");
+  };
+  if (vMainInitCall4File == "") {
+    write2value("tAppInitCall","init(document,vDatabase)");
+  }
+};
+
 
 function initLabelsHTML() {
   var vSep = " | ";

@@ -77,26 +77,42 @@ Future application of UglifyJS will allow cross compilation of generation of gen
 
 ### HTML Files - HTML Templates
 
-**(ListHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
+**(FileList) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project. The key to access the JSON definition of the file is just the filename itself.
+
+**Remark:** Using a filename as a key has the advantage that the you do not have to handle a the mapping of the filename to the key of the hash **FileList**. But approach has the disadvantage, that you cannot access the appropriate object in a JSON tree by the dot-notation of an tree.
+* ___vJSON_JS["FileList"]___ is equivalent to ___vJSON_JS.FileList___ but
+* ___vJSON_JS["FileList"]["app.html"]___ or ___vJSON_JS.FileList["app.html"]___  is the only way to address the JSON object of the file ___app.html___ correctly. ___vJSON_JS.FileList.app.html___ addresses a ___html___-object as suboject of the ___app___-object, and this object does not exist in the JSON tree in general.
 
 **Example:** The web-based software *DisApp* contains two HTML-files:
-* **<tt>index.html</tt>** for login to the server the JSON element can be access by ___JSCC.ListHTML["index.html"]___ ).
-* **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. ___JSCC.ListHTML["app.html"]___).
-* **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. ___JSCC.ListHTML["submit.html"]___).
+* **<tt>index.html</tt>** for login to the server the JSON element can be access by ___JSCC.FileList["index.html"]___ ).
+* **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. ___JSCC.FileList["app.html"]___).
+* **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. ___JSCC.FileList["submit.html"]___).
 
-In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
+In traditional software development HTML pages can be regarded as windows with a certain content, that are opened and closed within the software. The HTML file defines the Graphical User Interface (GUI) of the app in these windows.
 
 
-**(TemplateHTML) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project.
+**(Templates) Parent: (JSCC)** is an *JS Object* of all Templates, used for the project. The templates can be edited and exported form JSCC to you own harddrive for sharing these templates with others. Templates are not stored in the ___project.json___ file because a developer wants to replace the templates for Javascript code generation and for the exported HTML-files by templates that match with the cooperate identity of an institution or agency. So if institutions or developing teams collaborate for creating or maintaining a certain WebApp then the share the  ___project.json___ and keep their templates.
 
 **Example:** The web-based software *DisApp* contains two HTML-files:
-* **<tt>Login</tt>** is the template for login screens to the server the JSON element can be access by <tt>JSCC.TemplateHTML["Login"]</tt> ).
-* **<tt>Main</tt>** is the window that will be opened by <tt>index.html</tt>, which imports the standard libraries for all main HTML file used for *DisApp*  (e.g. <tt>JSCC.TemplateHTML["Main"]</tt>). In the example the HTML page <tt>submit.html</tt> and <tt>app.html</tt> are created with this HTML template.
+* **<tt>Login</tt>** is the file <tt>index.html</tt> for login screens to the server and so the JSON element can be access by <tt>JSCC.TemplateHTML["Login"]</tt> ).
+* **<tt>Main</tt>** is the window with <tt>app.html</tt> that will be opened by <tt>index.html</tt>.
 
-In traditional software development HTML pages can be regarded as windows with a certain content, that is opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
+Both files use the same HTML template for all main HTML file used for *DisApp*  (e.g. <tt>JSCC.vDOM_TPL["tMainHTML"]</tt>). The export of the main template is stored in ___tpl/Default.html___. Alter this file and load that into JSCC to create your own look and feel for the WebApp. If you generate new HTML files in ___JSCC___ and add this file to the ___project.json___, then this new file will be generated with the same basic template too. E.g. a new HTML page <tt>submit.html</tt> will share the same look and feel of <tt>app.html</tt> and  <tt>index.html</tt>, because they share the same HTML template.
+
+
+For this demo of JSCC the following main template is based on the following themes and icons:
+* OS-Inspired jQuery Mobile theme by Tait Brown. Resources at [GitHub page](https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme).
+* iOS style Icons by Joseph Wain at [http://www.glyphish.com](http://www.glyphish.com). Licensed under the Creative Commons Attribution 3.0 United States License.
+
+#### Rationals for template driven development
+In traditional software development HTML pages can be regarded as windows with a certain content, that are opened up and closed within the software. The HTML page defines the Graphical User Interface (GUI) of these windows.
+
+The classes in the project define the behaviour of the WebApp, the methods of the Javascript classes are called from GUI elements.
 
 When we consider the object oriented programming concept we have classes in instances of the classes (objects). Similar to this concept we create HTML files as templates, that contain certain markers, that are replaced by user-defined content.
-The markers three preceding underscores before and after the identifier. In Identifier itself consist of uppercase characters only with 3 underscores before and after the uppercase name of the identifier. Only uppercase characters and single separating underscores are allowed as identifiers. An example of a marker will look like thislook like this:
+
+#### Markers and identifiers for Replace Operation in Files
+The markers three preceding underscores before and after the identifier. An identifier itself consists of uppercase characters only with 3 underscores before and after the uppercase name of the identifier. Only uppercase characters and single separating underscores are allowed as identifiers. An example of a marker will look like thislook like this:
 
 **Examples Marker:**  The marker
 
@@ -134,6 +150,8 @@ A page contains elements. These elements could be a
 * a text or
 * larger section of HTML, that are used on multiple pages.
 These elements with a unique ID (e.g. ___HTML_TITLE___) are replaced in all page contents of all HTML files. This leads to the fact, that definition of DOM elements in layout, wording and event handling can be defined accross HTML files of the web app.
+
+Also language dependencies for header buttons can be handle by ___Elements___, because the elements are globally replaced in the HTML page.
 
 
 ### FileHTML
@@ -245,3 +263,5 @@ Special thanks to the following individual developers and teams of OpenSource Ja
 * [Inheritage for JavaScript with protoypes](http://phrogz.net/js/classes/OOPinJS2.html) by Gavin Kistner
 * [3 ways to define a JavaScript class](https://www.phpied.com/3-ways-to-define-a-javascript-class/) by Stoyan Stefanov
 * [JQuery](https://jqueryui.com) is used for the theme and standard operations in the Document Object Model (DOM) of HTML-pages. The [JQuery-Themeroller](https://jqueryui.com/themeroller/) was used to create a JQuery theme for JSCC.
+* OS-Inspired jQuery Mobile theme by Tait Brown. Resources at [GitHub page](https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme).
+* iOS style Icons by Joseph Wain at glyphish.com. Licensed under the Creative Commons Attribution 3.0 United States License.

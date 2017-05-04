@@ -39,12 +39,14 @@ function compressCodeJS() {
 
 function createProjectJSON() {
   //hide("bSaveJSON");
+  var vUsePrefix = getCheckBox("checkExportJSON");
   var vExportFile = "project";
   updateForm2JSON(getValueDOM("tClassname"));
-  saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON");
+  saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON",vUsePrefix);
 };
 
-function createDatabaseJSON() {
+function createDatabaseJSON(pUsePrefix) {
+  var vUsePrefix = pUsePrefix || getCheckBox("checkUsePrefix");
   var vDB = getValueDOM("sDatabases");
   if (vDB == "") {
     //vDB = "project";
@@ -53,7 +55,7 @@ function createDatabaseJSON() {
     createProjectJSON();
   } else {
     var vType = "JSON"; //i.e. JS or JSON
-    if (getCheckBox("checkUsePrefix") == true) {
+    if (vUsePrefix == true) {
       vType = "JS";
     };
     var vFileDB = writeFilenameWithPath4DB(vDB);
@@ -76,19 +78,21 @@ function write2exportedDB(pDB) {
   };
 };
 
-function getSaveFilename4DB(pDB) {
+function getSaveFilename4DB(pDB,pUsePrefix) {
+  var vUsePrefix = pUsePrefix || getCheckBox("checkUsePrefix");
   var vDB = pDB || "";
-  var vExtension = getExtension4DB(vDB);
+  var vExtension = getExtension4DB(vDB,vUsePrefix);
   if (vDB != "") {
     vDB = vDB.replace(/[^A-Za-z0-9_\.]/g,"_");
   };
   return vDB+vExtension;
 }
 
-function getExtension4DB(pDB) {
+function getExtension4DB(pDB,pUsePrefix) {
+  var vUsePrefix = pUsePrefix || getCheckBox("checkUsePrefix");
   var vDB = pDB || "";
   var vExtension = ".json";
-  if (getCheckBox("checkUsePrefix") == true) {
+  if (vUsePrefix == true) {
     vExtension = ".js";
   };
   if (vDB == "") {
@@ -125,10 +129,11 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
   var vDB = pDB || "project"; //means vJSON_JS will be export as project JSON
   // set modification data of JSON
   pJSONDB["mod_date"] = getDateTime();
-  var vContent = getCode4JSON_JS(pJSONDB);
+  var vUsePrefix = getCheckBox("checkExportJSON");
+  var vContent = getCode4JSON_JS(pJSONDB,vUsePrefix);
   var vType = "JSON";
   var vMode =  "ace/mode/json";
-  if (getCheckBox("checkUsePrefix") == true) {
+  if (vUsePrefix == true) {
     vType = "JS";
     vContent = getExportPrefix4DB(vDB)+vContent;
     vMode =  "ace/mode/javascript";
@@ -140,7 +145,7 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
     // Write the selected DB into innerHTML of DOM and into value of "tExportedJSON"
     write2exportedDB(vDB);
     if (vTitle != "") {
-      alert("JSON '"+vTitle+"' exported. File: '"+vExportFile+"'");
+      alert(vType+"-File '"+vTitle+"' exported. File: '"+vExportFile+"'");
     };
     //document.fCreator.tJSONDB.value = getCode4JSON_JS(pJSONDB);
   } else {
@@ -244,6 +249,14 @@ function importProjectJSON() {
   };
 }
 
+function cloneJSON(pJSON) {
+  var vJSON = {};
+  if (pJSON) {
+    vJSON = JSON.parse(JSON.stringify(pJSON));
+  } else {
+    console.log("ERROR: cloneJSON(pJSON) - pJSON undefined!");
+  }
+}
 
 function importProjectJSON_do(pProjectFile,pContent) {
   var vContent = pContent || "{'name':'"+pProjectFile+"'}";
@@ -263,6 +276,10 @@ function importProjectJSON_do(pProjectFile,pContent) {
         break;
         case "CLASS":
           alert("Import JSON file of Type: "+vTypeJS+"");
+          if (vJSONDB.hasOwnProperty("init_type")) {
+            // init_type is not necessary to have in vJSON_JS["ClassList"] so delete value key pair
+            delete vJSONDB["init_type"];
+          };
           importClass(vJSDB);
         break;
         case "TPL":
@@ -288,8 +305,11 @@ function exportClass(pClass) {
   var vClassJS = getClassJSON(pClass);
   var vClassTypeHash = getClassTypeJSON();
   vClassJS["sClassType"] = vClassTypeHash[pClass];
-
-}
+  vClassJS["tDate"] = getDateTime();
+  var vExportClassJS = cloneJSON(vClassJS);
+  vExportClassJS["init_type"] = "CLASS";
+  setEditorValue("iJSONDB", getCode4JSON_JS(vExportClassJS));
+};
 
 function importClass(pJSDB) {
   var vClass = pJSONDB["tClassname"] || "UndefClass";
@@ -313,7 +333,7 @@ function importDatabase(pDBname,pJSDB) {
   var vClassType = pJSONDB["sClassType"] || "";
   console.log("importClass(pJSDB) for Database '"+vDatabase+"' DatabaseType='"+vDatabaseType+"'");
   if (existsDatabaseJS(vDBname)) {
-    var vCheck = confirm("Database '"+vDBname + "' exists.\nDo you really want to import the JSON file\nand overwrite the existing database?");
+    var vCheck = confirm("Database '"+vDBname + "' exists.\nDo you really want to import the JSON file\nand overwrite the existing databasen?");
     if (vCheck == false) {
       alert("Import Database '"+vDBname+"' cancelled!");
     } else {

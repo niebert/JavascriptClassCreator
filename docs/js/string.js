@@ -57,6 +57,56 @@ function reduceVarName(pName) {
   return vName;
 };
 
+
+function encodeHashCR(pHash) {
+  var vRetHash = {};
+  if (pHash) {
+    for (var iID in pHash) {
+      if (pHash.hasOwnProperty(iID)) {
+        vRetHash[iID] = encodeCR(pHash[iID]);
+      };
+    }
+  };
+  return vRetHash;
+};
+
+function decodeHashCR(pHash) {
+  var vRetHash = {};
+  if (pHash) {
+    for (var iID in pHash) {
+      if (pHash.hasOwnProperty(iID)) {
+        vRetHash[iID] = decodeCR(pHash[iID]);
+      };
+    }
+  };
+  return vRetHash;
+};
+
+function encodeCR(pString) {
+	if (pString) {
+		if (pString != "") {
+			pString = replaceString(pString,"\n","\\n");
+		};
+		return pString
+	} else {
+		console.log("encodeCR(pString) pString undefined");
+		return "";
+	}
+};
+
+function decodeCR(pString) {
+	if (pString) {
+		if (pString != "") {
+			pString = replaceString(pString,"\\n","\n");
+		};
+		return pString
+	} else {
+		console.log("decodeCR(pString) pString undefined");
+		return "";
+	}
+};
+
+
 function removeSpaces(pString) {
 	if (pString) {
 		if (pString != "") {

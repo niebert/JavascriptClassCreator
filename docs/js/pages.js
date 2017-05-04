@@ -77,11 +77,12 @@ function deleteElementHTML() {
   var vElementID = getValueDOM("sElementList");
   var vFile = getSelectedFilenameHTML();
   console.log("deleteElementHTML('"+vElementID+"')");
-  if (existsElementJS(vElementID)) {
+  if (existsElementJS(vElementID,vFile)) {
     var vOK = confirm("Do you want to delete Element ["+vElementID+"]?");
     if(vOK == true) {
-      delete vJSON_JS["FileList"][vFile]["elements"][vElementID]
+      delete vJSON_JS["FileList"][vFile]["elements"][vElementID];
       var vArrID = createArray4HashID(vJSON_JS["FileList"][vFile]["elements"]);
+      console.log(vArrID.join(","));
       updateElementJSON2Form(vArrID);
     };
   } else {
@@ -196,9 +197,10 @@ function updatePageTypeJSON2Form(pArrID) {
 
 function updateElementJSON2Form(pArrID) {
   if (pArrID) {
-    console.log("updateElementJSON2Form('"+pArrID+"')");
+    console.log("updateElementJSON2Form('pArrID')");
     write2value("tElementIDs",getElement4tElementIDsForm(pArrID));
-    createElementSelect(pArrID);
+    var vElemString = pArrID.join("|");
+    createElementSelect(vElemString); // takes a pipe separted Element String as Input
   } else {
     console.log("ERROR: updateElementJSON2Form(pArrID) - pArrID undefined");
   };
@@ -222,10 +224,11 @@ function getButton4tButtonsForm(pArrID) {
   var vLine = "";
   var vID = "";
   var vRECDEF = vButtonRECDEF;
+  var vHashCR = encodeHashCR(vHash);
   if (pArrID) {
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
-      vLine = getHash2RecordLine(vRECDEF,vHash[vID]);
+      vLine = getHash2RecordLine(vRECDEF,vHashCR[vID]);
       console.log("getButton4tButtonsForm(pArrID) "+vLine);
       vArr.push(vLine);
     }
@@ -255,6 +258,12 @@ function getElement4tElementIDsForm(pArrID) {
     };
   };
   return vArr.join("|");
+};
+
+function updateForm2ButtonsJSON() {
+  console.log("updateForm2ButtonsJSON()");
+  vJSON_JS["ButtonList"] = getButtonArrayWithHashes();
+  // getValueDOM("tButtons")
 };
 
 function getPageType4tPageTypeForm(pArrID) {
@@ -331,9 +340,14 @@ function getButtonListHash() {
     }; // vHash populated
     vID = vHash["BUTTON_ID"];
     vListHash[vID] = vHash;
+    vValue = vListHash["tButtonDefHTML"];
+    vValue = replaceString(vValue,"\\n","\n");
+    vListHash["tButtonDefHTML"] = vValue;
   };
   return vListHash;
 };
+
+
 
 function getGlobalLibArray() {
   return getTextareaArray("tLibraries");
@@ -617,8 +631,11 @@ function removeExtensionJS4Array(pArrDB) {
 function getButtonArrayWithHashes() {
   var vLineArr = getString2Array(getValueDOM("tButtons"));
   var vRetArr = [];
+  var vHash;
   for (var i = 0; i < vLineArr.length; i++) {
-    vRetArr.push(getRecordLine2Hash(vButtonRECDEF,vLineArr[i]));
+    vHash = getRecordLine2Hash(vButtonRECDEF,vLineArr[i]);
+    // must convert String for newline "\\n" to "\n"
+    vRetArr.push(decodeHashCR(vHash));
   };
   console.log("getButtonArray()-Call - "+vRetArr.length+" Buttons with splitted [tButtons]");
   return vRetArr;
@@ -1229,13 +1246,13 @@ function existsDatabaseJS(pDatabaseID) {
   return existsListJS("Database","DatabaseList",pDatabaseID);
 };
 
-function existsElementJS(pFileID,pElementID) {
+function existsElementJS(pElementID,pFileID) {
   var vExists = false;
-  var vFile = pFileID || getValueDOM("tFilename");
+  var vFile = pFileID || getValueDOM("sFileList");
   var vElementList = getElementListHash(vFile);
   if (existsFileJS(vFile)) {
-    var vElemHash = vJSON_JS["FileList"][vFile]["elements"]
-    if (vElemHash) {
+    if (vJSON_JS["FileList"][vFile].hasOwnProperty("elements")) {
+      var vElemHash = vJSON_JS["FileList"][vFile]["elements"];
       if (vElemHash.hasOwnProperty(pElementID)) {
           vExists = true;
       };

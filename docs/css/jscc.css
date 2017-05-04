@@ -35,12 +35,17 @@ a:hover {
   background: #993333;
   color: #FFFFFF;
 }
-.renamebutton {
+.tabbutton {
   background: #3366cc;
   color: #FFFFFF;
 }
-.viewbutton {
+
+.renamebutton {
   background: #85a3e0;
+  color: #FFFFFF;
+}
+.viewbutton {
+  background: #3366cc;
   color: #FFFFFF;
 }
 .cDeleteBT {

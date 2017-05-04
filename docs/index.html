@@ -31,23 +31,14 @@
    </script>
    <!-- load the project.js file - result is stored in vDatabase['JSCC'] -->
    <script language="javascript" src="prog/project.js"></script>
-
+   <!-- file.js must be loaded for the function loadProjectJS(pDB) -->
+   <script language="javascript" src="js/file.js"></script>
    <script type="text/javascript">
       // Check if JavascriptClassCreator JSCC Database is loaded with project.js
-      var vDB = "project";
-      if (vDatabase.hasOwnProperty(vDB)) {
-        if (vDatabase[vDB].hasOwnProperty("init_type")) {
-          var vTypeDB = vDatabase[vDB]["init_type"];
-          if (vTypeDB == "JSCC") {
-            console.log("JSON Database for JSCC '"+vDB+".js' defined!");
-            vJSON_JS = vDatabase[vDB];
-          } else {
-            console.log("ERROR: init_type='"+vTypeDB+"' for JSON is not 'JSCC'");
-          };
-        };
-      } else {
-        console.log("JSON Database for JSCC '"+vDB+".js' was NOT loaded!");
-      };
+      loadProjectJS("project"); // Use JavaScript-file without extension ".js" see file.js:
+      //alert("URL: "+document.location + document.location.search+"\n"+
+      //      "Link: "+document.location + "\n" +
+      //      "Parameter: " + document.location.search);
    </script>
  <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
 
@@ -56,7 +47,6 @@
    <script language="javascript" src="js/codegen.js"></script>
    <script language="javascript" src="js/date.js"></script>
    <script language="javascript" src="js/dom.js"></script>
-   <script language="javascript" src="js/file.js"></script>
    <!-- FileSaver Library by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
    <script language="javascript" src="js/filesaver.js"></script>
    <script language="javascript" src="js/iframe.js"></script>
@@ -259,7 +249,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
         <td  colspan="2" bgcolor="#C0C0C0" align="center">
           <font size="+2">
             <b>
-              HTML
+              HTML:
+              <font color="blue" id="titleFileNameTab">FileName</font>
             </b>
           </font>
         </td>
@@ -454,7 +445,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
               <font size="+2">
                 <b>
-                  Class Definition
+                  Class Definition:
+                  <font color="blue" id="titleClassNameTab">FileName</font>
                 </b>
               </font>
       		</td>
@@ -499,7 +491,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
     	<tr>
     		<td>
     			<b>Attributes</b>
-          <input name="bEditAttribs" value=" Edit Attributes " onclick="showAttributes()" type="button">
+          <span class="ui-icon ui-icon-pencil"></span>
+          <input name="bEditAttribs" value=" Edit Attributes " class="tabbutton" onclick="showAttributes()" type="button">
           <br>
     			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">aDoc = null
 aName = "DisApp"
@@ -511,7 +504,8 @@ aFuzzyController = new FuzzyController()
     		</td>
     		<td>
     			<b>Methods</b>
-          <input name="bEditMethods" value=" Edit Methods " onclick="editMethodes" type="button">
+          <span class="ui-icon ui-icon-pencil"></span>
+          <input name="bEditMethods" value=" Edit Methods "  class="tabbutton" onclick="showMethods()" type="button">
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
@@ -534,7 +528,12 @@ submitPage(pPageID)
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-              <font size="+2"><b>Attribute Definition</b></font>
+              <font size="+2">
+                <b>
+                  Attribute Definition:
+                  <font color="blue" class="titleClassName" id="titleClassNameAttrib">FileName</font>
+                </b>
+              </font>
       		</td>
         </tr>
           <tr>
@@ -579,7 +578,12 @@ submitPage(pPageID)
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-            <font size="+2"><b>Method Definition</b></font>
+            <font size="+2">
+              <b>
+                Method Definition:
+                <font color="blue" class="titleClassName" id="titleClassNameMethod">FileName</font>
+              </b>
+            </font>
         </td>
       </tr>
       <tr>
@@ -587,17 +591,17 @@ submitPage(pPageID)
           <b>Method:</b>
           <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
           <input id name="bDeleteMethodDef" class="deletebutton" value="Delete" onclick="deleteMethodForm()" type="button">
-          <input id name="bSaveMethodDef" value="Save" onclick="updateForm2MethodJSON()" type="button">
+          <input id name="bSaveMethodDef" value="Save" onclick="saveMethodJSON()" type="button">
           <hr>
           <b>Method Definition:</b>
-          <input id="tMethodName" name="tMethodName" type="text" size="48" value="" style="font-family: monospace">
+          <input id="tMethodHeader" name="tMethodHeader" type="text" size="48" value="" style="font-family: monospace">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
           <b>Return:</b>
-          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn()"></select>
+          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
           <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
           <hr>
            <b>Method Comment</b><br>
-             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="5" onchange="updateForm2MethodComment()" style="font-family: monospace">  </textarea>
+             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="3" onchange="updateForm2MethodComment()" style="font-family: monospace"> </textarea>
            </td>
          </tr>
          <tr>
@@ -739,8 +743,10 @@ submitPage(pPageID)
           <hr>
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
           <b>Generate Project JSON:</b>
+          <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) alert('Format: JSON') else alert('Format: JS')" checked="checked">
+          JS-Export
           <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
-            <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
+          <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
           <br>
           <b>Load Project JSON:</b>
           <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->

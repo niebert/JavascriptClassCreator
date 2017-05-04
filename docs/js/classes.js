@@ -451,10 +451,10 @@ function createNewElement(pFile) {
   var vFile = pFile || getValueDOM("tFilename");
   if (existsFileJS(vFile)) {
     var vNewElementID = getValueDOM("tElementID");
-    if (existsElementJS(vFile,vNewElementID)) {
+    if (existsElementJS(vNewElementID,vFile)) {
       alert("Create New Element ["+vNewElementID+"] was NOT successful. Element exists already for file '"+vFile+"'!");
     } else {
-      createElementJS(vFile,vNewElementID);
+      createElementJS(vNewElementID,vFile);
     }
   } else {
     console.log("ERROR: createNewElement('"+vFile+"') not successful, '"+vFile+"' does not exist in FileList.");
@@ -463,7 +463,7 @@ function createNewElement(pFile) {
 
 function createElementJS(pFile,pElementID) {
   if (existsFileJS(pFile)) {
-    if (existsElementJS(vFile,vNewElementID)) {
+    if (existsElementJS(vNewElementID,pFile)) {
       debugLog("File","Create New Element ["+pElementID+"] was NOT successful. Element exists already for file '"+pFile+"'!");
     } else {
       vJSON_JS["FileList"][vFile]["elements"][vNewElementID] = getDefaultElementString(vFile,vNewElementID);
@@ -941,6 +941,7 @@ function createNewAttribJS(pName,pClass) {
       write2value("sAttribList",vName);
       selectJSAttribs(vName);
       alert("Attribute '"+vName+"' created!");
+      autoSaveJSON();
     };
   }
 };
@@ -981,7 +982,7 @@ function createNewMethodJS(pClass) {
   console.log("createNewMethodJS('"+vClass+"')");
   var vClassJSON = getClassJSON(vClass);
   // get name of Attributes
-  var vMethCall = getValueDOM("tMethodName");
+  var vMethCall = getValueDOM("tMethodHeader");
   var vName = getName4Method(vMethCall);
   vName = reduceVarName(vName);
   if (vName == "") {
@@ -994,9 +995,10 @@ function createNewMethodJS(pClass) {
     //var vType = getValueDOM("sAttribTypeList");
     if (vClassJSON) {
       checkClassJSON(vClassJSON);
+      var vContent = "";
       vClassJSON["MethodParameter"][vName] = getMethodParameter4Call(vMethCall);
       vClassJSON["MethodReturn"][vName] = getMethodReturn4Call(vMethCall);
-      vClassJSON["MethodCode"][vName] = "";
+      vClassJSON["MethodCode"][vName] = vContent;
       vClassJSON["MethodComment"][vName] = "";
       var vMethodList = getValueDOM("tMethods");
       vMethodList = removeEmptyLines(vMethodList);
@@ -1008,71 +1010,78 @@ function createNewMethodJS(pClass) {
       write2value("tMethods",vMethodList);
       createMethodSelect(); //dom.js:13
       updateMethodsJS();
+      write2value("sMethodList",vName);
+      write2value("tMethodHeader",vMethodHeader);
+      setEditorValue("iMethodCode",vContent);
+      write2value("tMethodCode",vContent);
+      autoSaveJSON();
+      alert("Method '"+vName+"(...)' saved!");
     } else {
       console.log("ERROR: createNewMethodJS('"+vClass+"') vClassJSON of '"+vClass+"' undefined");
     }
   }
 };
 
-function getMethodParameter4Call(pMethCall) {
+function getMethodParameter4Call(pMethHead) {
   var vParam = "";
   var vErrorCount = 0;
-  if (pMethCall) {
-    var vOpenBracketPos = pMethCall.indexOf("(");
+  if (pMethHead) {
+    var vOpenBracketPos = pMethHead.indexOf("(");
      if (vOpenBracketPos > 0) {
-       var vCloseBracketPos = pMethCall.lastIndexOf(")");
+       var vCloseBracketPos = pMethHead.lastIndexOf(")");
        if (vCloseBracketPos > 0) {
          if (vOpenBracketPos < vCloseBracketPos) {
-           debugLog("Method","check '"+pMethCall+"' is well defined!");
-           vParam = pMethCall.substring(vOpenBracketPos+1,vCloseBracketPos);
+           debugLog("Method","check '"+pMethHead+"' is well defined!");
+           vParam = pMethHead.substring(vOpenBracketPos+1,vCloseBracketPos);
          } else {
-           debugLog("Method","Closing Bracket before opening Bracket in '"+pMethCall+"'");
+           debugLog("Method","Closing Bracket before opening Bracket in '"+pMethHead+"'");
          };
        } else {
          vErrorCount++;
-         console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethCall);
+         console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethHead);
        };
      } else {
        vErrorCount++;
-       console.log("ERROR: Method definition error!\n No opening bracket!\n"+pMethCall);
+       console.log("ERROR: Method definition error!\n No opening bracket!\n"+pMethHead);
      }
   } else {
-    console.log("ERROR: pMethCall in getMethodParameter4Call(pMethCall) undefined!");
+    console.log("ERROR: pMethHead in getMethodParameter4Call(pMethHead) undefined!");
   }
   return vParam;
 }
 
-function getMethodReturn4Call(pMethCall) {
-  debugLog("Method","getMethodReturn4Call('"+pMethCall+"')");
+function getMethodReturn4Call(pMethHead) {
+  debugLog("Method","getMethodReturn4Call('"+pMethHead+"')");
   var vReturn = "";
   var vErrorCount = 0;
-  if (pMethCall) {
-    var vOpenBracketPos = pMethCall.indexOf("(");
+  if (pMethHead) {
+    var vOpenBracketPos = pMethHead.indexOf("(");
      if (vOpenBracketPos > 0) {
-       var vCloseBracketPos = pMethCall.lastIndexOf(")");
+       var vCloseBracketPos = pMethHead.lastIndexOf(")");
        if (vCloseBracketPos > 0) {
          if (vOpenBracketPos < vCloseBracketPos) {
-           debugLog("Method","getMethodReturn4Call('"+pMethCall+"') Parameter well defined for '"+pMethCall+"'");
-           vReturn = pMethCall.substring(vCloseBracketPos+1,pMethCall.length);
+           debugLog("Method","getMethodReturn4Call('"+pMethHead+"') Parameter well defined for '"+pMethHead+"'");
+           vReturn = pMethHead.substring(vCloseBracketPos+1,pMethHead.length);
            if (vReturn.indexOf(":")>=0) {
              vReturn = vReturn.substring(vReturn.indexOf(":")+1,vReturn.length)
            };
            vReturn = vReturn.replace(/\s/g,"");
-           debugLog("Method","getMethodReturn4Call('"+pMethCall+"') Return Class: '"+vReturn+"'");
+           debugLog("Method","getMethodReturn4Call('"+pMethHead+"') Return Class: '"+vReturn+"'");
          } else {
-           console.log("ERROR: Closing Bracket before opening Bracket in '"+pMethCall+"'");
+           console.log("ERROR: Closing Bracket before opening Bracket in '"+pMethHead+"'");
          };
        } else {
          vErrorCount++;
-         console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethCall);
+         console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethHead);
        };
      } else {
        vErrorCount++;
-       console.log("ERROR: Method definition error!\n No opening bracket!\n"+pMethCall);
+       console.log("ERROR: Method definition error!\n No opening bracket!\n"+pMethHead);
      }
   } else {
-    console.log("ERROR: pMethCall in getMethodReturn4Call(pMethCall) undefined!");
-  }
+    console.log("ERROR: pMethHead in getMethodReturn4Call(pMethHead) undefined!");
+  };
+  console.log("Method Return '"+vReturn+"'");
   return vReturn;
 }
 
@@ -1721,11 +1730,10 @@ function updateClasses() {
       //vJSON_JS["ClassList"][vClassName]["sClassType"] = vClassType;
     };
   };
-  // create the Class Selector Option of all existing classes
-  var vOptions = createOptions4Array(vOptionArray);
   // set SelectSelect Op
   write2value("sClassList",vJSON_JS["SelectedClass"]);
   //write2value("tClassList",vOptionArray.join("\n"));
+  // create the Class Selector Option of all existing classes
   updateClassSelector();
 };
 

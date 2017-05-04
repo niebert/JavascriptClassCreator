@@ -41,17 +41,23 @@ function createOptions4Array(pArray) {
   return vOptions;
 };
 
+function write2options(pID,pArrID) {
+  console.log("write2options('"+pID+"',pArrID)");
+  var vArray = pArrID || [];
+  vArray.sort();
+  write2innerHTML(pID,createOptions4Array(vArray));
+};
+
 function createMethodSelect() {
   // get all Methods in JSON Database of all Classes
   var vClassJSON = getClassJSON();
   console.log("createMethodSelect()-Call");
   var vArray = getMethodNameArray();
-  var vOptions = createOptions4Array(vArray);
-  write2innerHTML("sMethodList",vOptions);
+  write2options("sMethodList",vArray);
   var vMethHash = getMethodHash();
   var vMethCodeHash = vClassJSON["MethodCode"];
   var vMethCommentHash = vClassJSON["MethodComment"];
-  write2value("tMethodName",vMethHash[vArray[0]] || "");
+  write2value("tMethodHeader",vMethHash[vArray[0]] || "");
   write2value("tMethodCode",vMethCodeHash[vArray[0]] || "");
   write2value("tMethodComment",vMethCommentHash[vArray[0]] || "");
 };
@@ -65,14 +71,20 @@ function createAttribSelect() { // TA=TextArea
   var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
   var vSelectedAtt = vClassJS["sAttribList"] || vArray[0] || "";
   console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
-  var vOptions = createOptions4Array(vArray);
   var vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
   var vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
   var vAttType = vClassJS["AttribType"][vSelectedAtt] || getValueDOM("tAttribType") || "";
+  // Set the Selected Type for the Attribute
   write2value("sAttribTypeList",vAttType);
-  write2innerHTML("sAttribList",vOptions);
+  // create Options for the Attribute Selector
+  write2options("sAttribList",vArray);
+  // set the Selector to the selected attribute
+  write2value("sAttribList",vSelectedAtt);
+  // set the Name of the Attribute
   write2value("tAttribName",vSelectedAtt);
+  // set the default value of the Attribute
   write2value("tAttribDefault",vAttDefault);
+  // set the Comment of the Attribute
   write2value("tAttribComment",vAttComment);
 };
 
@@ -135,6 +147,7 @@ function createFileSelect(pFileArr) {
   if (vArray.length == 0) {
     vArray.push("app.html");
   };
+  vArray.sort();
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sFileList",vOptions);
   write2innerHTML("sFileListHTML",vOptions);
@@ -154,6 +167,7 @@ function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes
   console.log("createAttribTypeSelect()-Call");
   var vArr = getAllClassesArray(); //classes.js 1274
+  vArr.sort();
   var vArray = insertArray1Empty(vArr)
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sAttribTypeList",vOptions);
@@ -357,6 +371,9 @@ function createMethodSelect4JSON() {
 
 function writeClassTitle(pClassName) {
   write2innerHTML("titleClassName",pClassName);
+  write2innerHTML("titleClassNameTab",pClassName);
+  write2innerHTML("titleClassNameAttrib",pClassName);
+  write2innerHTML("titleClassNameMethod",pClassName);
   write2innerHTML("titleClassAttributes",pClassName);
   write2innerHTML("titleClassMethods",pClassName);
   write2innerHTML("codeClassName",pClassName);

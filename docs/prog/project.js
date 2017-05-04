@@ -1,7 +1,7 @@
 vDatabase['project'] = {
     "init_type": "JSCC",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/04/04 14:29:12",
+    "mod_date": "2017/04/04 16:00:14",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -404,9 +404,9 @@ vDatabase['project'] = {
             "tAttribComment": "Attribute: 'aVars' Type: 'Hash' stores all URL parameters ",
             "tAttribDefault": "{}",
             "sAttribTypeList": "Hash",
-            "tMethodHeader": "exists(pVar:String):Boolean",
-            "tMethodComment": "checks if the parameter with variable 'pVar' exists in parameter hash this.aVars",
-            "sMethodList": "exists",
+            "tMethodHeader": "calcSize()",
+            "tMethodComment": "calculates the number of variables defined in the URL parameters, stores result in length",
+            "sMethodList": "calcSize",
             "tArrayLoop": "",
             "tMethodLoop": "",
             "AttribDefault": {
@@ -427,7 +427,7 @@ vDatabase['project'] = {
             "MethodComment": {
                 "init": "init extract the link with parameters from document.location.search and store aLink",
                 "parseURL": "parses the URL stores the variables in 'aVar' e.g. ..&lastname=Niehaus&... stores aVars['name']='Niehaus'",
-                "getURL": "Comment for getURL",
+                "getURL": "Comment for getLink",
                 "getLink4URL": "get the Link part of the URL without the URL parameters",
                 "getParam4URL": "get the parameter string for the URL starting with ? if aVars contains variables",
                 "setValue": "Comment for setValue",
@@ -438,7 +438,6 @@ vDatabase['project'] = {
                 "getTableHTML": "creates a HTML table with two column for key and value of the parameter hash aVars",
                 "getEditTableHTML": "creates a Edit HTML table with two column for key and value of the parameter hash aVars.\nThe keys of aVars are used as IDs for the HTML form.\nAn optional ID prefix as parameter can be used to create a unique ID for the DOM elements\nAll parameters are visible in an input field.",
                 "calcSize": "calculates the number of variables defined in the URL parameters, stores result in length",
-                "getURL": "Comment for getLink",
                 "encodeHTML": "Encodes source code for HTML-Output in as code or textarea in the following way:\n 1) Replace \"&\" character with \"&amp;\"\n 2) Replace \"<\" character with \"&lt;\"\n 3) Replace \">\" character with \"&gt;\"\nThe converted pValue will wrapped with <pre> and <code> tags for direct display as HTML \nand without code tag wrapper if the code is written as inner HTML and value to a textarea.",
                 "exists": "checks if the parameter with variable 'pVar' exists in parameter hash this.aVars"
             },
@@ -456,7 +455,6 @@ vDatabase['project'] = {
                 "getTableHTML": "String",
                 "getEditTableHTML": "String",
                 "calcSize": "",
-                "getURL": "String",
                 "encodeHTML": "String",
                 "exists": "Boolean"
             },
@@ -468,12 +466,12 @@ vDatabase['project'] = {
                 "getValue": "var vRet = \"\";\nif (this.aVars.hasOwnProperty(pVar)) {\n    vRet = this.aVars[pVar]\n} else {\n    console.log(\"ERROR: variable '\"+pVar+' does not exist in LinkParam\");\n};\nreturn vRet;",
                 "deleteValue": "var vRet = false;\nif (this.aVars.hasOwnProperty(pVar)) {\n    delete this.aVars[pVar];\n    vRet = true;\n    this.calcSize();\n};\nreturn vRet;",
                 "getLink4URL": "return this.aLink;",
-                "getParam4URL": "",
+                "getParam4URL": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + encodeURLparam(iID) + \"=\" + encodeURLparam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
                 "decodeParam": "pParam = pParam.replace(/\\+/g,  \" \");\npParam = decodeURIComponent(pParam);\nreturn pParam;\n",
                 "encodeParam": "var vParam = encodeURIComponent(pParam);\nvParam = vParam.replace(/'/g,\"%27\").replace(/\"/g,\"%22\");\nreturn vParam;",
                 "getTableHTML": "",
                 "getEditTableHTML": "",
-                "calcSize": "var vRet = \"\";\nif (this.aVars.hasOwnProperty(pVar)) {\n    vRet = this.aVars[pVar]\n} else {\n    console.log(\"ERROR: variable '\"+pVar+' does not exist in LinkParam\");\n};\nreturn vRet;",
+                "calcSize": "var vRet = 0;\nif (this.aVars) {\n    vRet = keys(this.aVars).length;\n} else {\n    console.log(\"ERROR: variable '\"+pVar+' does not exist in LinkParam\");\n};\nreturn vRet;",
                 "encodeHTML": "var vValue = pValue || \"\";\nif (vValue != \"\") {\n    vValue = vValue.replace(/</g,\"&lt;\");\n    vValue = vValue.replace(/>/g,\"&gt;\");\n    vValue = vValue.replace(/&/g,\"&amp;\");\n};\nif (pWrapCode && (pWrapCode == true)) {\n    vValue = \"<pre><code>\"+vValue+\"</code></pre>\";\n};\nreturn vValue",
                 "exists": "var vRet = false;\nif (pVar) {\nvRet = this.aVars.hasOwnProperty(pVar)    \n};\nreturn vRet;\n"
             },

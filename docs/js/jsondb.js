@@ -345,6 +345,7 @@ function saveAttributeForm() {
     vID = vArrID[i];
     write2value("t"+vID,vClassJSON[vID][vName]);
   };
+  autoSaveJSON();
   alert("Attribute '"+vName+"' saved!");
 };
 
@@ -418,7 +419,11 @@ function loadMethodJSON (pMethodName) {
   vMethodName = getMethodName(vMethodName); //without Parameters
   if (vMethodName != "") {
     debugLog("Method","loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
-    write2editor("MethodCode",vClassJSON["MethodCode"][vMethodName] || "");
+    var vCode = vClassJSON["MethodCode"][vMethodName] || "";
+    if (vClassJSON["MethodCode"][vMethodName]) {
+      write2value("tMethodCode",vCode);
+      setEditorValue("iMethodCode",vCode);
+    };
     write2value("tMethodComment",vClassJSON["MethodComment"][vMethodName] || "");
   } else {
     alert("loadMethodJSON() Call - Method Name undefined");
@@ -474,12 +479,13 @@ function write2JSON(pID,pValue) {
   write2value(pID,pValue);
 };
 
-function saveMethodJSON(pMethodHeader) {
+function saveMethodForm(pMethodHeader) {
   var vMethodHeader = pMethodHeader || getValueDOM("tMethodHeader");
   var vMethodName = getSelectedMethodID();
-  var vErrorMSG = saveMethodJSON_do(vMethodHeader);
+  var vErrorMSG = saveMethodJSON(vMethodHeader);
   if (vErrorMSG == "") {
-    alert("Method '"+vMethodName+"' saved!")
+    autoSaveJSON();
+    alert("Method '"+vMethodName+"' saved!");
   } else {
     alert(vErrorMSG);
   };
@@ -491,7 +497,7 @@ function getSelectedMethodID(pMethodHeader) {
   return vMethodName;
 };
 
-function saveMethodJSON_do(pMethodHeader) {
+function saveMethodJSON(pMethodHeader) {
   var vErrorMSG = "";
   var vClassJSON = getClassJSON();
   var vMethodHeader= pMethodHeader || getValueDOM("tMethodHeader");
@@ -599,7 +605,33 @@ function updateJSON2Form(pClass,pFile) {
   // load the defined Attribute from Form
   updateJSON2FormVariable(vClass,"tAttributes");
   updateJSON2FormVariable(vClass,"tMethods");
+  updateJSON2EditorContent();
   // updateForm2MissingJSON(pClass);
+};
+
+function updateJSON2EditorContent(pClass,pFile) {
+  var vClass = pClass || getSelectedClassID();
+  var vFile  = pFile  || getSelectedFileID();
+  var vMethodName = getSelectedMethodID() || "";
+  console.log("updateJSON2Form('"+vClass+"','"+vFile+"')");
+  var vContent = "";
+  var vID = "";
+  if (vMethodName != "") {
+    console.log("updateJSON2EditorContent: [MethodCode]!");
+    vContent = vJSON_JS["ClassList"][vClass]["MethodCode"][vMethodName];
+    write2value("tMethodCode",vContent);
+    setEditorValue("iMethodCode",vContent);
+  };
+  //var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
+  for (var i = 1; i < vEdIDArr.length; i++) {
+    vID = vEdIDArr[i];
+    vContent = vJSON_JS["t"+vID];
+    if (vContent) {
+      console.log("updateJSON2EditorContent: copy Editor Content from JSON to textarea and editor [i"+vID+"] !");
+      write2value("i"+vID,vContent);
+      setEditorValue("i"+vID,vContent);
+    };
+  };
 };
 
 function updateJSON2FormVariable(pClass,pVarname) {
@@ -658,6 +690,41 @@ function getString4JSONVariable(pClass,pVarname) {
   };
   return vOut;
 };
+
+function copyEditorValue2TextArea() {
+  // temporary editors "iMainHTML" "iJSONDB" "iOutput"
+  //var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
+  var vContent = "";
+  var vID = "";
+  for (var i = 0; i < vEdIDArr.length; i++) {
+    vID = vEdIDArr[i];
+    vContent = getEditorValue("i"+vID);
+    if (vContent) {
+      console.log("copyEditorValue2TextArea(): copy Editor Content for [i"+vID+"] to textarea!");
+      write2value("t"+vID,vContent);
+    };
+  };
+};
+
+function updateEditorValue2JSON() {
+  // temporary editors "iMainHTML" "iJSONDB" "iOutput"
+  //var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
+  var vContent = "";
+  var vClass = getSelectedClassID();
+  var vID = "MethodCode";
+  vContent = getEditorValue("i"+vID);
+  vJSON_JS["ClassList"][vClass]["t"+vID] = vContent;
+  for (var i = 1; i < vEdIDArr.length; i++) {
+    vID = vEdIDArr[i];
+    vContent = getEditorValue("i"+vID);
+    if (vContent) {
+      console.log("copyEditorValue2TextArea(): copy Editor Content for [i"+vID+"] to textarea!");
+      write2value("t"+vID,vContent);
+      vJSON_JS["t"+vID] = vContent;
+    };
+  };
+};
+
 
 function updateForm2MissingJSON(pClass) {
   var vAttHash = getForm2AttribDefaultHash(pClass); //classes.js:484

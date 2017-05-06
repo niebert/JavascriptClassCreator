@@ -45,14 +45,26 @@ function createProjectJSON() {
   saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON",vUsePrefix);
 };
 
+function resetCodeGenCounter() {
+  console.log("resetCodeGenCounter()");
+  vCounter = 0;
+  var vButtonList = vJSON_JS["ButtonList"];
+  for (var iID in vButtonList) {
+    if (vButtonList.hasOwnProperty(iID)) {
+      vButtonList[iID]["counter"] = 0;
+    };
+  };
+};
+
 function createDatabaseJSON(pUsePrefix) {
   var vUsePrefix = pUsePrefix || getCheckBox("checkUsePrefix");
   var vDB = getValueDOM("sDatabases");
   if (vDB == "") {
     //vDB = "project";
     console.log("WARNING: createDatabaseJSON() vDB undefined");
-    alert("No Database was selected! Will export [Project JSON]");
-    createProjectJSON();
+    alert("No Database was selected! Please select a database first");
+    //alert("No Database was selected! Will export [Project JSON]");
+    //createProjectJSON();
   } else {
     var vType = "JSON"; //i.e. JS or JSON
     if (vUsePrefix == true) {
@@ -65,14 +77,14 @@ function createDatabaseJSON(pUsePrefix) {
     alert("Exported Database: '"+vFileDB+"' Format: '"+vType+"'");
     var vFileName = getSaveFilename4DB(vDB);
     var vContent = getEditorValue("iJSONDB");
-    saveFile2HDD(vFileName,pContent);
+    saveFile2HDD(vFileName,vContent);
   };
 };
 
-function write2exportedDB(pDB) {
+function write2exportedDB(pDB,pUsePrefix) {
   var vDB = pDB || "";
   if (vDB != "") {
-    var vFileDB = writeFilenameWithPath4DB(vDB);
+    var vFileDB = writeFilenameWithPath4DB(vDB,pUsePrefix);
     write2innerHTML("labExportFile",vFileDB);
     write2value("tExportedJSON",vDB);
   };
@@ -99,13 +111,13 @@ function getExtension4DB(pDB,pUsePrefix) {
     vExtension = "";
   };
   return vExtension;
-}
+};
 
-function writeFilenameWithPath4DB(pDB) {
+function writeFilenameWithPath4DB(pDB,pUsePrefix) {
   var vDB = pDB || "";
   var vPath = "";
-  var vExtension = getExtension4DB(vDB);
-  if (vJSON_JS["DatabaseList"][vDB]) {
+  var vExtension = getExtension4DB(vDB,pUsePrefix);
+  if (existsDatabaseJS(vDB)) {
     console.log("writeFilenameWithPath4DB()-Call: Database ["+vDB+"] exists");
     vPath = getValueDOM("tDefaultAppPath")+"db/";  // this is the default app_Path
   } else {
@@ -118,19 +130,19 @@ function writeFilenameWithPath4DB(pDB) {
 function saveCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
   // creates the JSON String (stringify) and saves to HDD
   var vUsePrefix = pUsePrefix || getCheckBox("checkExportJS")
-  var vFileName = getSaveFilename4DB(pDB);
-  createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix);
+  var vFileName = getSaveFilename4DB(pDB,vUsePrefix);
+  createCode4JSON_JS(pJSONDB,pDB,pTitle,vUsePrefix);
   var vContent = getEditorValue("iJSONDB");
   saveFile2HDD(vFileName,vContent)
 }
 
-function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
+function createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
   // creates the JSON String (stringify)
+  var vUsePrefix = pUsePrefix || getCheckBox("checkExportJS");
   var vTitle = pTitle || "";
   var vDB = pDB || "project"; //means vJSON_JS will be export as project JSON
   // set modification data of JSON
   pJSONDB["mod_date"] = getDateTime();
-  var vUsePrefix = getCheckBox("checkExportJS");
   var vContent = getCode4JSON_JS(pJSONDB,vUsePrefix);
   var vType = "JSON";
   var vMode =  "ace/mode/json";
@@ -139,12 +151,12 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle) {
     vContent = getExportPrefix4DB(vDB)+vContent;
     vMode =  "ace/mode/javascript";
   };
-  var vExportFile = writeFilenameWithPath4DB(vDB);
+  var vExportFile = writeFilenameWithPath4DB(vDB,vUsePrefix);
   if (pJSONDB) {
     console.log("Create JSON Code from vJSON_JS Title: '"+vTitle+"' - File: '"+vExportFile+"' - Type: '"+vType+"'");
     write2editor("JSONDB",vContent,vMode);
     // Write the selected DB into innerHTML of DOM and into value of "tExportedJSON"
-    write2exportedDB(vDB);
+    write2exportedDB(vDB,vUsePrefix);
     if (vTitle != "") {
       alert(vType+"-File '"+vTitle+"' exported. File: '"+vExportFile+"'");
     };
@@ -224,12 +236,12 @@ function replaceElements4HTML(pHTML,pFile) {
   return pHTML;
 };
 
-function loadProjectJSON(pProjectFile) {
-  console.log("loadProjectJSON('"+pProjectFile+"')");
+function loadProjectJSON4File(pProjectFile) {
+  console.log("loadProjectJSON4File('"+pProjectFile+"')");
   if (pProjectFile) {
     readFile2Editor(pProjectFile,"iOutput");
   } else {
-    console.log("ERROR: loadProjectJSON(pProjectFile)-Call pProjectFile undefined!");
+    console.log("ERROR: loadProjectJSON4File(pProjectFile)-Call pProjectFile undefined!");
   }
 };
 
@@ -329,8 +341,8 @@ function importClass(pJSDB) {
   }
 };
 
-function importDatabase(pDBname,pJSDB) {
-  var vDBname = pJSONDB["name"] || pDBname || "UndefDB";
+function importDatabase(pDBname,pJSONDB) {
+  var vDBname = pJSONDB["name"] || removeExtension4File(pDBname) || "UndefDB";
   var vClassType = pJSONDB["sClassType"] || "";
   console.log("importClass(pJSDB) for Database '"+vDatabase+"' DatabaseType='"+vDatabaseType+"'");
   if (existsDatabaseJS(vDBname)) {
@@ -524,24 +536,25 @@ function getPageTypeTemplate4Code(pPageTypeID) {
 };
 
 function getButtonDefinition4Code(pButtonID) {
-    console.log("getButtonDefinition4Code('"+pButtonID+"')");
+    var vButtonID = pButtonID || "";
+    console.log("getButtonDefinition4Code('"+vButtonID+"')");
     var vOutHash = {
-          "BUTTON_ID":pButtonID,
-          "BUTTON_TITLE":firstUpperCase(pButtonID.toLowerCase()),
+          "BUTTON_ID":vButtonID,
+          "BUTTON_TITLE":firstUpperCase(vButtonID.toLowerCase()),
           "button-type":"",
           "tButtonDefHTML":""
         };
     var vOut = "";
-    if (pButtonID && (pButtonID != "")) {
-      if (pButtonID == pButtonID.toUpperCase()) {
+    if (vButtonID != "") {
+      if (vButtonID == vButtonID.toUpperCase()) {
         var vBT;
-        if (existsButtonJS(pButtonID)) {
+        if (existsButtonJS(vButtonID)) {
           //console.log("Button ["+pButtonID+"] exists for Code Generation");
-          vBT = vJSON_JS["ButtonList"][pButtonID];
+          vBT = vJSON_JS["ButtonList"][vButtonID];
         } else {
-          alert("Button ["+pButtonID+"] is undefined, a default button will be created for you!");
-          vBT = getDefaultButtonHash(pButtonID);
-          vJSON_JS["ButtonList"][pButtonID] = vBT;
+          alert("Button ["+vButtonID+"] is undefined, a default button will be created for you!");
+          vBT = getDefaultButtonHash(vButtonID);
+          vJSON_JS["ButtonList"][vButtonID] = vBT;
           var vArrID = getArray4HashID(vJSON_JS["ButtonList"]);
           updateButtonJSON2Form(vArrID);
         };
@@ -552,18 +565,18 @@ function getButtonDefinition4Code(pButtonID) {
         vOut = replaceString(vOut,"___BUTTON_TITLE___",vBT["BUTTON_TITLE"]);
         vOutHash["button-type"] = "BUTTON";
       } else {
-        console.log("Button-LINK: getButtonDefinition4Code('"+pButtonID+"') - ID is used as Page-ID '"+pButtonID+"'");
+        console.log("Button-LINK: getButtonDefinition4Code('"+vButtonID+"') - ID is used as Page-ID '"+vButtonID+"'");
         vOut = getValueDOM("tTplPageLinkBUTTON");
         //pButtonID is a regarded as Page-ID, because a definition for the Button does not exist in ButtonList
-        var vTitle = getPageTitle4ID(pButtonID);
-        vOut = replaceString(vOut,"___LINK_PAGE_ID___",pButtonID);
+        var vTitle = getPageTitle4ID(vButtonID);
+        vOut = replaceString(vOut,"___LINK_PAGE_ID___",vButtonID);
         vOut = replaceString(vOut,"___BUTTON_TITLE___",vTitle);
         vCounter++;
         vOut = replaceString(vOut,"___COUNTER___",vCounter);
         vOutHash["button-type"] = "LINK";
         //vOut = replaceString(vOut,"__BUTTON_ID__",pButtonID);
       };
-      vOut = replaceString(vOut,"___BUTTON_ID___",pButtonID.toUpperCase());
+      vOut = replaceString(vOut,"___BUTTON_ID___",vButtonID.toUpperCase());
       vOutHash["tButtonDefHTML"] = vOut;
       console.log("Button Definition:\nvOut="+vOut);
     } else {
@@ -649,6 +662,7 @@ function displayUML() {
 };
 
 function saveCode4Class() {
+  console.log("saveCode4Class()");
   var vCode = getEditorValue("iOutput");
   var vClass = getSelectedClassID();
   var vPath = getValueDOM("tDefaultAppPath");
@@ -658,8 +672,8 @@ function saveCode4Class() {
   saveFile2HDD(vFileHDD,vCode);
 }
 
-function createCode4Class() {
-  var vClass = getSelectedClassID();
+function createCode4Class(pClass) {
+  var vClass = pClass || getSelectedClassID();
   console.log("createCode4Class() '"+vClass+"'");
   var vCode = getCode4Class(vClass);
   write2editor("Output",vCode);
@@ -756,6 +770,8 @@ function replaceAttributes4Code(pOutput,pClass) {
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_DEFAULT___",vClassJS["AttribDefault"][vID]);
     // replace Attribute Comment
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_COMMENT___",vClassJS["AttribComment"][vID]);
+    // replace Attribute Type
+    vAttribDef = replaceString(vAttribDef,"___ATTRIB_TYPE___",vClassJS["AttribType"][vID]);
     vAtts += vAttribDef;
   };
   vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAtts);
@@ -847,7 +863,6 @@ function createLinkedMethodDefinitions() {
 			vMethodConstructor += "\tthis."+vSplitArray[0]+"\t = "+vSplitArray[0]+"_"+vClassname+";\n";
 		};
 	};
-
 };
 
 function exportTemplatesJSON() {
@@ -861,6 +876,7 @@ function exportTemplatesJSON() {
 
 function importTemplatesJSON() {
   //var vOut = getCode4JSON_JS(vJSON_TPL);
+  var vContent =
   updateTemplatesJSON2Form();
 };
 

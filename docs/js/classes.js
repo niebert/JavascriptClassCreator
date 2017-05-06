@@ -1012,6 +1012,7 @@ function createNewMethodJS(pClass) {
       updateMethodsJS();
       write2value("sMethodList",vName);
       write2value("tMethodHeader",vMethodHeader);
+      write2innerHTML("titleMethodName",vMethodHeader);
       setEditorValue("iMethodCode",vContent);
       write2value("tMethodCode",vContent);
       autoSaveJSON();
@@ -1183,7 +1184,7 @@ function updateAttribTypeComment4Form() {
 }
 
 function getComment4Attrib(pName,pValue) {
-  return "Attribute: '" +pName + "' Type: '"+ determineAttType(pValue)+"' stores ... ";
+  return "the attribute '" +pName + "' stores in '"+ determineAttType(pValue)+"' ... ";
 }
 
 function determineAttType(pValue) {

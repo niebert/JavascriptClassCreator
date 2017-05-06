@@ -1,5 +1,17 @@
+function saveLocalStorageForm() {
+  updateEditorValue2JSON();
+  saveLocalStorage('all');
+  alert("SAVE:\nProject saved in LocalStorage of your Browser");
+};
+
+function clearLocalStorageForm() {
+  clearLocalStorage('all');
+  alert("CLEAR:\nProject deleted in LocalStorage of your Browser\nNext reload will load the default settings of JSCC!\nExport your Project and Templates to save your edits in 'Export'-Tab");
+};
+
 function autoSaveJSON() {
   console.log("autoSaveJSON()-Call");
+  saveLocalStorage("all");
   //saveJSON2LocalStorage("json");
 };
 
@@ -67,7 +79,7 @@ function saveLocalStorage(pType,pVar,pContent) {
       saveDOM2LocalStorage();
     break;
     case "json":
-      //saveLocalStorage("json","vJSON_JS")
+      //saveLocalStorage("json","vJSON_JS");
       var vContent = "";
       if (pVar) {  // pVar is the DBname
         vParLog += ","+pVar;
@@ -133,6 +145,7 @@ function clearLocalStorage(pType,pVar) {
 function saveDOM2LocalStorage() {
   saveLocalStorage4ArrayID(vDOM_ID);
   saveLocalStorage4ArrayID(vDOM_Global);
+  saveLocalStorage4ArrayID(vDOM_TPL);
 };
 
 function saveLocalStorage4ArrayID(pArrayID) {
@@ -157,6 +170,7 @@ function saveLocalStorage4ArrayID(pArrayID) {
 function loadLocalStorage2DOM() {
   loadLocalStorage4ArrayID(vDOM_ID);
   loadLocalStorage4ArrayID(vDOM_Global);
+  loadLocalStorage4ArrayID(vDOM_TPL);
 };
 
 function loadLocalStorage4ArrayID(pArrayID) {

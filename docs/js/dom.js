@@ -2,7 +2,7 @@ function debugLog(pDebugID,pMessage) {
   if (vDebug == pDebugID) {
     console.log(pMessage);
   } else if (vDebug == "ALL"){
-    console.log(pMessage);  
+    console.log(pMessage);
   };
 };
 
@@ -59,9 +59,13 @@ function createMethodSelect() {
   var vMethHash = getMethodHash();
   var vMethCodeHash = vClassJSON["MethodCode"];
   var vMethCommentHash = vClassJSON["MethodComment"];
-  write2value("tMethodHeader",vMethHash[vArray[0]] || "");
-  write2value("tMethodCode",vMethCodeHash[vArray[0]] || "");
-  write2value("tMethodComment",vMethCommentHash[vArray[0]] || "");
+  var vMethID = vArray[0];
+  vClassJSON["sMethodList"] = vMethID;
+  var vMethodHeader = vMethHash[vMethID] || "";
+  write2value("tMethodHeader",vMethodHeader);
+  write2innerHTML("titleMethodName",vMethodHeader);
+  write2value("tMethodCode",vMethCodeHash[vMethID] || "");
+  write2value("tMethodComment",vMethCommentHash[vMethID] || "");
 };
 
 
@@ -327,8 +331,9 @@ function setSelectedButton(pArray,pButtonID) {
   };
 };
 
-function createHeaderButtonSelect(pArray) {
+function createHeaderButtonSelect(pButtArrID) {
   // get all Methods in JSON Database of all Classes
+  var vButtArrID = pButtArrID || getArray4HashID(vJSON_JS["ButtonList"]);
   console.log("createHeaderButtonSelect-Call");
   var vOptions = "";
   var vButtonID = "";
@@ -336,8 +341,8 @@ function createHeaderButtonSelect(pArray) {
   var vCR = "";
   // Insert the defined Header Buttons
   var vPrefix = "Button: ";
-  for (var i = 0; i < pArray.length; i++) {
-    vButtonID = pArray[i];
+  for (var i = 0; i < vButtArrID.length; i++) {
+    vButtonID = vButtArrID[i];
     if (vButtonID == "") {
       vOptions += vCR + getHeadOption("",vButtonID);
     } else {

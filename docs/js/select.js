@@ -340,6 +340,7 @@ function selectJSMethodReturn(pReturnID) {
         vCall += ":"+vReturnID;
       };
       write2value("tMethodHeader",vCall);
+      write2innerHTML("titleMethodName",vCall);
       updateMethodsJSON2Form();
     };
   }
@@ -778,6 +779,7 @@ function selectDatabaseJSON() {
   var vDB = getValueDOM("sDatabases");
   if (vDB) {
     write2value("tExportedJSON",vDB);
+    write2exportedDB(pDB,getCheckBox("checkUsePrefix"));
     console.log("Database: '"+vDB+"' selected!");
     selectDatabase(vDB);
   } else {
@@ -826,19 +828,23 @@ function saveDatabaseJSON() {
 }
 
 function selectJSMethods() {
+  var vClass = getSelectedClassID();
   //alert("Select Method");
   //save current Method
-  saveMethodJSON_do();
+  saveMethodJSON();
   //get SELECT MethodName value
   var vMethodName = getValueDOM("sMethodList");
   // set MethodName Input Window
   var vMethodHash = getMethodHash();
+  if (existsClassJS(vClass)) {
+    vJSON_JS["ClassList"][vClass]["sMethodList"] = vMethodName;
+  };
   //load method code from  vJSON_JS if exists
   //and write method code to TEXTAREA
   loadMethodJSON(vMethodName);
   var vMethodReturn = getMethodReturn4Call(vMethodHash[vMethodName]);
   write2value("tMethodHeader",vMethodHash[vMethodName]);
-  write2value("titleMethodName",vMethodHash[vMethodName]);
+  write2innerHTML("titleMethodName",vMethodHash[vMethodName]);
   write2value("sReturnList",vMethodReturn);
   saveJSON2LocalStorage();
 };

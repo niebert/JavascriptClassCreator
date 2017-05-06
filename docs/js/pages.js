@@ -224,7 +224,7 @@ function getButton4tButtonsForm(pArrID) {
   var vLine = "";
   var vID = "";
   var vRECDEF = vButtonRECDEF;
-  var vHashCR = encodeHashCR(vHash);
+  var vHashCR = encodeNewHashCR(vHash);
   if (pArrID) {
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
@@ -266,6 +266,23 @@ function updateForm2ButtonsJSON() {
   // getValueDOM("tButtons")
 };
 
+function updateForm2DatabasesJSON() {
+  console.log("updateForm2DatabasesJSON()");
+  var vDatabaseList = vJSON_JS["DatabaseList"];
+  var vFormDB = getDatabaseArray();
+  var vDB = "";
+  for (var i = 0; i < vFormDB.length; i++) {
+    vDB = vFormDB[i];
+    if (existsDatabaseJS(vDB)) {
+      console.log("Database: '"+vDB+"' exists!");
+    } else {
+      vJSON_JS["DatabaseList"][vDB] = getDefaultDatabaseJSON(vDB,"Title "+vDB);
+    };
+  }
+  // getValueDOM("tButtons")
+};
+
+
 function getPageType4tPageTypeForm(pArrID) {
   console.log("getPageType4tPageTypeForm(pArrID) pArrID.length="+pArrID.length);
   var vHash = vJSON_JS["PageType"];
@@ -286,6 +303,24 @@ function getPageType4tPageTypeForm(pArrID) {
   return vArr.join("\n");
 };
 
+function getDatabases4tDatabasesForm(pArrID) {
+  var vHash = vJSON_JS["DatabaseList"];
+  var vArr = [];
+  var vLine = "";
+  var vID = "";
+  if (pArrID) {
+    for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      console.log("get DatabaseType for Form '"+vID+"'");
+      vLine = getHash2RecordLine(vDatabaseRECDEF,vHash[vID]);
+      vArr.push(vLine);
+    }
+  } else {
+    console.log("ERROR: getDatabases4tDatabaseForm(pArrID) - pArrID undefined");
+  };
+  return vArr.join("\n");
+};
+
 
 function getPages4tPagesForm(pArrID) {
   var vHash = vJSON_JS["PageList"];
@@ -295,7 +330,7 @@ function getPages4tPagesForm(pArrID) {
   if (pArrID) {
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
-      console.log("get PageType for Form '"+vID+"'");
+      console.log("get Page for Form '"+vID+"'");
       vLine = getHash2RecordLine(vPageRECDEF,vHash[vID]);
       vArr.push(vLine);
     }
@@ -604,6 +639,78 @@ function getTextareaArray(pTextareaID) {
   var vArrDB = getString2Array(vDatabases);
   return removeExtensionJS4Array(vArrDB);
 }
+
+function getDefaultDatabase() {
+  return getString2Array(getValueDOM("tDatabases"))
+};
+
+function updateDataseList2Form(pExtenstion) {
+  var vExtension = pExtension || ".js";
+  var vArrDB = getDataseListJSON(vExtension);
+  write2value("tDatabases",vArrDB.join("\n"));
+};
+
+function getDataseListJSON(pExtenstion) {
+  var vExtension = pExtension || ".js";
+  var vArrDB = getArray4HashID(vJSON_JS["DatabaseList"]);
+  for (var i = 0; i < vArrDB.length; i++) {
+    vArrDB[i] += vExtension;
+  };
+  return vArrDB;
+}
+
+function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
+  var vDBname = pDBname || db_undefined;
+  var vTitle = pTitle || "Title of DB "+pDB;
+  var vArrID = pArrID || ["yesno1","freetext1","yesno2"];
+  var vDB = {};
+  vDB["init_type"] = "DB";
+  vDB["name"] = vDBname;
+  vDB["file"] = "db/"+vDBname+".js";
+  vDB["dbtitle"] = vTitle;
+  vDB["init_data"] = getDateTime();
+  vDB["mod_data"] = getDateTime();
+  vDB["format"] = {};
+  var vID = "";
+  for (var i = 0; i < vArrID.length; i++) {
+    var vHash = {};
+    vID = vArrID[i];
+    vHash["title"] = "Title of ID "+vID;
+    vHash["input"] = getMarker4ID("DB_"+vID);
+    vHash["output"] = "___ID_VALUE___";
+    vDB["format"][vArrID[i]] = vHash;
+  };
+  vDB["data"] = [];
+  vDB["data"]["submitted"] = getDefaultDataDB(vArrID,vDBname+ ": submitted ",1,3);
+  vDB["data"]["local"] = getDefaultDataDB(vArrID,vDBname+ ": unsubmitted ",4,5);
+  return vDB
+};
+
+function getDefaultDataDB(pArrID,pStart,pEnd) {
+  var vStart = pStart || 0;
+  var vEnd = pEnd || 2;
+  var vData = [];
+  var vHash = {};
+  var vID = "";
+  for (var iCount = vStart; iCount <= vEnd; iCount++) {
+    for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      vHash[vID] = pPrefix + "value ("+iCount+") of ID ‘"+vID+"’";
+    };
+    vData.push(vHash);
+  };
+  return vData;
+}
+
+function getMarker4ID(pID) {
+  var vID = reduceVarName(pID);
+  if (vID != "") {
+    vID = vID.replace(/[0-9]/g,"");
+    vID = vID.toUpperCase();
+    vID = "___"+vID+"___";
+  };
+  return vID;
+};
 
 function updateForm2DatabasesJSON() {
   updateFormID2JSON('tDatabases');
@@ -1223,6 +1330,7 @@ function savePageHTML() {
   console.log("savePageHTML() - Page ["+vID+"]");
   save2LevelID2JSON("PageContent",vID,getEditorValue("iPageHTML"));
   saveJSON2LocalStorage("json");
+  autoSaveJSON();
   alert("Page ['"+vID+"'] saved!");
 }
 
@@ -1231,6 +1339,7 @@ function savePageTypeHTML() {
   console.log("savePageTypeHTML() - Page Type ["+vID+"]");
   save2LevelID2JSON("PageType",vID,"template",getEditorValue("iPageTypeHTML"));
   saveJSON2LocalStorage("json");
+  autoSaveJSON();
   alert("Page Type ['"+vID+"'] saved!");
 }
 

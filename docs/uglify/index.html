@@ -30,8 +30,13 @@
 	<div class="col i i-input">
 <textarea id="in" rows="15" cols="80" spellcheck="false" tabindex="1" autofocus="" style="white-space: pre;word-wrap: normal;overflow-x: scroll;">// Your code goes here
 </textarea>
+<script language="javascript" src="js/linkparam.js"></script>
 
 <script>
+var vLinkParam = new LinkParam();
+vLinkParam.init(document);
+
+document.write(vLinkParam.getTableHTML());
 
 function getWinOpener() {
   var vWinOpener = window.opener;

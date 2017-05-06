@@ -63,8 +63,17 @@ function reduceVarName(pName) {
   return vName;
 };
 
-
 function encodeHashCR(pHash) {
+  if (pHash) {
+    for (var iID in pHash) {
+      if (pHash.hasOwnProperty(iID)) {
+        pHash[iID] = encodeCR(pHash[iID]);
+      };
+    }
+  };
+};
+
+function encodeNewHashCR(pHash) {
   var vRetHash = {};
   if (pHash) {
     for (var iID in pHash) {
@@ -75,6 +84,14 @@ function encodeHashCR(pHash) {
   };
   return vRetHash;
 };
+
+function removeExtension4File(pFilename) {
+	var vFilename = pFilename || "";
+	if (vFilename != "") {
+		vFilename = vFilename.replace(/\.[^/.]+$/, "");
+	};
+	return vFilename
+}
 
 function decodeHashCR(pHash) {
   var vRetHash = {};
@@ -93,11 +110,11 @@ function encodeCR(pString) {
 		if (pString != "") {
 			pString = replaceString(pString,"\n","\\n");
 		};
-		return pString
 	} else {
 		console.log("encodeCR(pString) pString undefined");
-		return "";
+		pString = "UnDefEncodeCR";
 	}
+	return pString
 };
 
 function decodeCR(pString) {

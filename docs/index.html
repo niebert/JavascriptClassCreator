@@ -6,7 +6,7 @@
    <meta http-equiv="content-language" content="de">
    <meta http-equiv="desktop-type" content="tasks">
    <script type="text/javascript">
-   var vDebug = "ALL";  //Debug Value: "ALL", "Class", "Method", "Attrib", "Button" "File"
+   var vDebug = "";  //Debug Value: "ALL", "Class", "Method", "Attrib", "Button" "File"
    var vSelectedClass = "Undefined";
 
    // contains the project JSON
@@ -25,6 +25,8 @@
    var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2","template"]; // variables that are stored for all page types
    //var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+   var vDatabaseRECDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
+   var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
@@ -97,8 +99,8 @@
       <select id="sClassList" name="sClassList" onchange="selectClass(this.value)">
       </select>
     </b>
-    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorage('all')" value="Save Local Storage">
-    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorage('all')" value="Clear Local Storage">
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorageForm()" value="Save">
+    <input type="button" class="ui-button ui-corner-all ui-widget" onclick="clearLocalStorageForm()" value="Clear Local Storage">
 <br>
 <div id="tabs">
 	<ul>
@@ -109,7 +111,7 @@
 		<li><a id="tabAttributes" href="#tabs-Attributes">Attributes</a></li>
     <li><a id="tabMethods" href="#tabs-Methods">Methods</a></li>
     <li><a id="tabFileClass" href="#tabs-FileClass">Files/Classes</a></li>
-    <li><a id="tabJSON" href="#tabs-JSON">JSON/DB</a></li>
+    <li><a id="tabExport" href="#tabs-Export">Export</a></li>
     <li><a id="tabCode" href="#tabs-Code">Code</a></li>
 	</ul>
   <!-- MAIN -->
@@ -592,8 +594,8 @@ submitPage(pPageID)
       		<td colspan="2" align="center">
           <b>Method:</b>
           <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
-          <input id name="bDeleteMethodDef" class="deletebutton" value="Delete" onclick="deleteMethodForm()" type="button">
-          <input id name="bSaveMethodDef" value="Save" onclick="saveMethodJSON()" type="button">
+          <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
+          <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
           <hr>
           <b>Method Definition:</b>
           <input id="tMethodHeader" name="tMethodHeader" type="text" size="48" value="" style="font-family: monospace">
@@ -609,6 +611,7 @@ submitPage(pPageID)
          <tr>
          		<td colspan="2" align="center">
           <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
+          <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
           <br>
           <b>Loop Calls:</b>
           <input id="tArrayLoop" name="tArrayLoop" type="text" size="20" value="myArray" style="font-family: monospace">
@@ -620,7 +623,7 @@ submitPage(pPageID)
           <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
           <br>
             <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
-	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none">    </textarea>
+	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" Xstyle="font-family: monospace;display:none"></textarea>
            <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
            </td>
       	</tr>
@@ -718,18 +721,18 @@ submitPage(pPageID)
   </div>
 
   <!-- TAB JSON Export -->
-  <div id="tabs-JSON" class="tabmenu" style="background-color:#f2f2f2">
+  <div id="tabs-Export" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1"  width="90%">
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-            <font size="+2"><b>JSON Code</b></font>
+            <font size="+2"><b>Export/Import JSON</b></font>
         </td>
       </tr>
       <tr>
       		<td colspan="2" align="center">
             <b>
-            Select JSON Database
+            Select App Database:
             <select id="sDatabases" name="sDatabases" onchange="selectDatabaseJSON()">
               <option>UndefDB</option>
             </select>
@@ -923,7 +926,7 @@ ___JSCODE___
 <b>Comment Prefix:</b>  <tt>[tCommentPrefix]</tt> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
 <b>Comment Box Prefix:</b> <input type="text" id="tCommentBoxPrefix" name="tCommentBoxPrefix" value="#" size="5">
 <hr>
-  <b>Class Header</b> <tt>[tHeader]</tt><br>
+  <b>Class Header</b> <tt>[tClassHeader]</tt><br>
     <textarea id="tClassHeader" name="tClassHeader" cols="125" rows="10">//#################################################################
 //# Javascript Class: ___CLASSNAME___()
 //#       SuperClass: ___SUPERCLASSNAME___
@@ -974,10 +977,7 @@ ___SUPERCLASS___
     //---------------------------------------------------------------------
     //---Attributes of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
-___ATTRIBUTES___
-
-___METHODS___
-
+___ATTRIBUTES______METHODS___
     //---------------------------------------------------------------------
     //---END Constructor of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
@@ -988,7 +988,7 @@ ___METHODSPROTOTYPE___
     <hr>
     <b>Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
     <textarea id="tTplAttribute" name="tTplAttribute" cols="125" rows="2">
-      //---___ATTRIB_NAME___: ___ATTRIB_COMMENT___
+      //---___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
       this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
     </textarea>
     <hr>
@@ -1003,7 +1003,7 @@ ___METHODSPROTOTYPE___
 <b>Method Prefix:</b>  <tt>[tMethodPrefix]</tt> <input type="text" id="tMethodPrefix" name="tMethodPrefix" value="this." size="7">
 <b>Comment Box Prefix:</b> <input type="text" id="tMethodPrefixProto" name="tMethodPrefixProto" value="___CLASSNAME___.prototype." size="28">
   <hr>
-  <b>Inherit from SuperClass (Prototype definition)</b> <tt>[tSuperClassProto]</tt><br>
+  <b>Inherit from SuperClass (Prototype definition)</b> <tt>[tTplSuperClassProto]</tt><br>
 <textarea id="tTplSuperClassProto" name="tTplSuperClassProto" cols="125" rows="3">//--------------------------------------
 //---Super Class------------------------
 // Inheritance: '___CLASSNAME___' inherits from '___SUPERCLASSNAME___'
@@ -1026,7 +1026,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
     //--------------------------------------
   </textarea>
 <hr>
-<b>Class Tail</b>  <tt>[tClassTail]</tt><br>
+<b>Class Tail</b>  <tt>[tTplClassTail]</tt><br>
   <textarea id="tTplClassTail" name="tTplClassTail" cols="125" rows="3">
 
 //-------------------------------------------

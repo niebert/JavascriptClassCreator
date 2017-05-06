@@ -18,6 +18,7 @@ vDOM_Global.push("sPageHTML"); // Selector for PageID
 vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
 //vDOM_Global.push("sButtonHeader1"); // Selector for ButtonHeader 1
 //vDOM_Global.push("sButtonHeader2"); // Selector for ButtonHeader 2
+vDOM_Global.push("tMethodCode");
 vDOM_Global.push("tLibraries");
 vDOM_Global.push("tDatabases"); // List of all included Databases
 vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases
@@ -47,16 +48,16 @@ vDOM_TPL.push("tTplMENUITEM"); // Definition of a single Menu Item replace IDs _
 vDOM_TPL.push("tTplPageLinkBUTTON"); // Definition of Header Buttons of an App, to link between pages
 vDOM_TPL.push("tDefaultBUTTON"); // Default button that must be edited by user, contains an alert as event handler
 vDOM_TPL.push("tTplQUIT"); // Main Quit Button (red) which will close the window
-vDOM_TPL.push("tHeader"); // Class Header for Javascript Classes
+vDOM_TPL.push("tClassHeader"); // Class Header for Javascript Classes
 vDOM_TPL.push("tMethodsHeaderTpl"); // Contains the methods header of definitions of methods
 vDOM_TPL.push("tTplSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
 vDOM_TPL.push("tTplSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
-vDOM_TPL.push("tClassTail"); // Defines the End of the Class Definition
+vDOM_TPL.push("tTplClassTail"); // Defines the End of the Class Definition
 vDOM_TPL.push("tTplAttribute"); // Defines the Attributes definition in a Constructor
-vDOM_TPL.push("tMethodHeader"); // Defines the comments before each Method definition
+vDOM_TPL.push("tTplMethodHeader"); // Defines the comments before each Method definition
 vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
 vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach
-vDOM_TPL.push("tClassTail"); // Defines the template appended at the end of class definition
+vDOM_TPL.push("tTplClassTail"); // Defines the template appended at the end of class definition
 vDOM_TPL.push("tTplLoopArray"); // Defines the Code for Loop over an Array
 vDOM_TPL.push("tTplLoopHash"); // Defines the Code for Loop over Hash-IDs
 vDOM_TPL.push("tCommentPrefix");  // Default is '//' as Javascript comment
@@ -101,6 +102,8 @@ vDOM_ID.push("tMethodComment");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("sMethodList");
 vTYPE_ID.push("String");
+vDOM_ID.push("tMethodCode"); // Stores the EditorContent
+vTYPE_ID.push("Textarea");
 //vTYPE_ID.push("Select");
 vDOM_ID.push("tArrayLoop");
 vTYPE_ID.push("Textarea");
@@ -113,30 +116,35 @@ function initCodeCreator() {
   // if Local Storage is supported by Browser try to Load JSON DB with Classes
   console.log("initCodeCreator()-Call");
   var vDB = null;
+  var vLocalStorageLoad = false;
   var vSelectedClass = getValueDOM("tClassname");
   console.log("initCodeCreator() Selected Class ["+vSelectedClass+"]");
-  loadProjectJSON();
+  //loadProjectJSON();
   if (typeof(Storage) != "undefined") {
      //alert("Local Storage");
      loadLocalStorage("dom");
      vDB = loadLocalStorage("json");
      if (vDB) {
-       console.log("JSON Database exists in Local Storage");
+       console.log("initCodeCreator(): JSCC Project exists as JSON in Local Storage");
        top.vJSON_JS = vDB;
        vSelectedClass = top.vJSON_JS["SelectedClass"] || "";
        vSelectedFile  = top.vJSON_JS["SelectedFile"]  || "";
-       clearForm4Class(vSelectedClass);
-       clearForm4File(vSelectedFile);
-       updateJSON2Form(vSelectedClass);
-       console.log("Selected Class ["+vSelectedClass+"] in JSON Database");
+       vLocalStorageLoad = true;
+
+       //clearForm4Class(vSelectedClass);
+       //clearForm4File(vSelectedFile);
+       //updateJSON2Form(vSelectedClass);
+
+       console.log("initCodeCreator() Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
         if (vJSON_JS.hasOwnProperty("ClassList") && vJSON_JS.hasOwnProperty("FileList")) {
-          console.log("vJSON_JS was loaded from Library prog/project.js");
+          console.log("initCodeCreator() vJSON_JS was loaded from Library prog/project.js");
         } else if ((vJSON_JS["init_type"]) && vJSON_JS["init_type"] == "JSCC") {
-          console.log("vJSON_JS was loaded from Library prog/project.js");
+          console.log("initCodeCreator() - Typ vJSON_JS was loaded from Library prog/project.js");
         } else {
           console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
           top.vJSON_JS["init_type"] = "JSCC";
+          top.vJSON_JS["init_version"] = "1";
           top.vJSON_JS["init_date"] = getDateTime();
           top.vJSON_JS["mod_date"] = "";
           loadForm2JSON(vSelectedClass);
@@ -146,24 +154,25 @@ function initCodeCreator() {
       alert("Sorry, your browser does not support Local Storage...");
   };
   updateSelectors(); //select.js:140
-  //document.fCreator.sClassList.value;
-  //initClassJS(vSelectedClass);
   checkInterface4Class(vSelectedClass);
   updateClasses();
-  //vClassJSON = vJSON_JS["ClassList"][vSelectedClass];
-  //initLocalDB("vJSON_JS",pJSONDB)
   initLabelsHTML();
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
-  initEditorContent();
+  initEditorContent(vSelectedClass); //iframe.js:80
+  //Hack: MethodCode is not properly initialized, when Data is coming from LocalStorage
+  var vMethodCodeSave = getMethodCode4Editor(vSelectedClass);
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
   populateForm2TemplateJSON();
   createClassSelect();
   setClassSelectorDefault(vSelectedClass);
-  createMethodSelect();
   createFileSelect();
+  createMethodSelect();
   createAttribTypeSelect();
   setDefaultSelectors();
+  if (vLocalStorageLoad) {
+    write2value("tMethodCode",vMethodCodeSave);
+  };
 };
 
 function loadForm2JSON(pSelectedClass,pSelectedFile) {
@@ -248,6 +257,7 @@ function checkMainAppClass4File() {
 
 function initLabelsHTML() {
   var vSep = " | ";
+  write2innerHTML("labelDatabaseRecord",vDatabaseRECDEF.join(vSep));
   write2innerHTML("labelPageRecord",vPageRECDEF.join(vSep));
   write2innerHTML("labelPageTypeRecord",vPageTypeRECDEF.join(vSep));
   write2innerHTML("labelButtonRecord",vButtonRECDEF.join(vSep));
@@ -498,12 +508,11 @@ function initDatabaseJS_do(pDatabase) {
     if (top.vJSON_JS["DatabaseList"][pDatabase]) {
       console.log("Database '"+pDatabase+"' exists in JSON DB");
     } else {
-      top.vJSON_JS["DatabaseList"][pDatabase] = "{\n  \"name\": \""+pDatabase+"\"\n}";
+      top.vJSON_JS["DatabaseList"][pDatabase] = getDefaultDatabaseJSON(pDatabase);
       console.log("Database '"+pDatabase+"' created and updated from HTML Form with default values");
     };
   };
-}
-
+};
 
 function initFormSelectors() {
   // get current ClassName

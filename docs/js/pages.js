@@ -224,7 +224,8 @@ function getButton4tButtonsForm(pArrID) {
   var vLine = "";
   var vID = "";
   var vRECDEF = vButtonRECDEF;
-  var vHashCR = encodeNewHashCR(vHash);
+  //var vHashCR = encodeNewHashCR(vHash);
+  vHashCR = vHash
   if (pArrID) {
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];

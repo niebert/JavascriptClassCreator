@@ -1,5 +1,6 @@
 vDatabase['project'] = {
     "init_type": "JSCC",
+    "init_version": "1",
     "init_date": "2017/03/05 18:13:28",
     "mod_date": "2017/04/05 7:26:15",
     "sStandalone": "YES",
@@ -536,7 +537,12 @@ vDatabase['project'] = {
             "HEADER_BUTTON2": "save",
             "template": "     <!-- Page: ___PAGE_ID___     Page Type: OptionsPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
-        "ConfirmPage": "template",
+        "ConfirmPage": {
+          "page-type": "ConfirmPage",
+          "HEADER_BUTTON1": "home",
+          "HEADER_BUTTON2": "CANCEL",
+          "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+        },
         "SaveDialog": {
             "page-type": "SaveDialog",
             "HEADER_BUTTON1": "home",

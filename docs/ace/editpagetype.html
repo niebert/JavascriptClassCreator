@@ -30,9 +30,9 @@
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/html");
-    var vPageTypeID = top.getValueDOM("sPageTypeHTML");
+    var vPageTypeID = (top.getValueDOM("sPageTypeHTML") || "");
     if (vPageTypeID == "") {
-      editor.setValue("",-1);
+      editor.setValue(" ",-1);
     } else {
       editor.setValue(top.getValueDOM("tPageTypeHTML"),-1);
     };

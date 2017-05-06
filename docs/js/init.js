@@ -114,6 +114,7 @@ vTYPE_ID.push("String");
 
 function initCodeCreator() {
   // if Local Storage is supported by Browser try to Load JSON DB with Classes
+  var vRestoreForm = {}; // use to restore editor content
   console.log("initCodeCreator()-Call");
   var vDB = null;
   var vLocalStorageLoad = false;
@@ -130,7 +131,6 @@ function initCodeCreator() {
        vSelectedClass = top.vJSON_JS["SelectedClass"] || "";
        vSelectedFile  = top.vJSON_JS["SelectedFile"]  || "";
        vLocalStorageLoad = true;
-
        //clearForm4Class(vSelectedClass);
        //clearForm4File(vSelectedFile);
        //updateJSON2Form(vSelectedClass);
@@ -144,7 +144,7 @@ function initCodeCreator() {
         } else {
           console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
           top.vJSON_JS["init_type"] = "JSCC";
-          top.vJSON_JS["init_version"] = "1";
+          top.vJSON_JS["init_version"] = vJSCC_Version;
           top.vJSON_JS["init_date"] = getDateTime();
           top.vJSON_JS["mod_date"] = "";
           loadForm2JSON(vSelectedClass);
@@ -160,7 +160,7 @@ function initCodeCreator() {
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   initEditorContent(vSelectedClass); //iframe.js:80
   //Hack: MethodCode is not properly initialized, when Data is coming from LocalStorage
-  var vMethodCodeSave = getMethodCode4Editor(vSelectedClass);
+  vRestoreForm["tMethodCode"] = getMethodCode4Editor(vSelectedClass);
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
   populateForm2TemplateJSON();
@@ -170,7 +170,7 @@ function initCodeCreator() {
   createMethodSelect();
   createAttribTypeSelect();
   setDefaultSelectors();
-  if (vLocalStorageLoad) {
+  if (vLocalStorageLoad == true) {
     write2value("tMethodCode",vMethodCodeSave);
   };
 };

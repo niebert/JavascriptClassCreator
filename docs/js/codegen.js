@@ -235,7 +235,17 @@ function getHTML4File(pFile,pStandalone) {
     // Insert Generated Pages
     vHTML = replaceString(vHTML,"___PAGES___",getPagesHTML4Code(pFile)+"\n");
     vHTML = replaceElements4HTML(vHTML,pFile);
+    vHTML = replaceAppLaucher4HTML(vHTML,pFile);
     return vHTML;
+};
+function replaceAppLaucher4HTML(pHTML,pFile) {
+  if (existsFileJS(pFile)) {
+    var vAppClass = vJSON_JS["FileList"][pFile]["sAppClassHTML"];
+    var vAppInitCall = vJSON_JS["FileList"][pFile]["tAppInitCall"];
+    pHTML = replaceString(pHTML,"___APP_CLASS___",vAppClass);
+    pHTML = replaceString(pHTML,"___APP_INIT_CALL___",vAppInitCall);
+  };
+  return pHTML;
 };
 
 function replaceElements4HTML(pHTML,pFile) {
@@ -650,12 +660,28 @@ function getPageTitle4ID(pPageID) {
   return vTitle; //
 };
 
-function getDatabasesHTML() {
-  var vSCRIPT = getValueDOM("tTplSCRIPT");
+function getDatabasesHTML(pStandalone) {
   var vArrDB = getDatabaseArray();
-  var vOut = "      <!-- JSON Databases -->\n";
-  for (var i = 0; i < vArrDB.length; i++) {
-    vOut += replaceString(vSCRIPT,"___LIBRARY___","db/"+vArrDB[i]+".js");
+  var vOut = "\n<!-- JSON Databases -->\n";
+  if (pStandalone) {
+    var vSCRIPT = getValueDOM("tTplSCRIPTSTANDALONE");
+    vOutJS = "";
+    for (var i = 0; i < vArrDB.length; i++) {
+      if (existsDatabaseJS(vArrDB[i])) {
+        vOutJS += "\n//---- JSON 'db/"+vArrDB[i]+".js' ----\n";
+        vOutJS += "\nvDatabase['"+vArrDB[i]+"'] = ";
+        vOutJS += stringifyJSON(vJSON_JS["DatabaseList"][vArrDB[i]]);
+        vOutJS += ";\n";
+      };
+    };
+    vOut += replaceString(vSCRIPT,"___JSCODE___",vOutJS);
+
+  } else {
+    var vSCRIPT = getValueDOM("tTplSCRIPT");
+    vOut = "      <!-- JSON Databases -->\n";
+    for (var i = 0; i < vArrDB.length; i++) {
+      vOut += replaceString(vSCRIPT,"___LIBRARY___","db/"+vArrDB[i]+".js");
+    };
   };
   return vOut;
 };
@@ -766,7 +792,7 @@ function getCode4Class(pClass) {
     var vClassTail    	= getValueDOM("tTplClassTail");
   	//var vAttributes 	= document.fCreator.tAttributes.value;
   	//var vMethods    	= document.fCreator.tMethods.value;
-  	var vMethodArray    = getMethodArray();
+  	var vMethodArray    = getMethodArray(vClass);
   	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
   	var vMethodConstructor = "	//---Methods----------------------------\n";
   	vOutput = getValueDOM("tClassHeader");
@@ -830,7 +856,7 @@ function getMethodComments4Constructor(pClass) {
   var vOutput = "";
   var vClass = pClass || getValueDOM("tClassname");
   var vClassJS = getClassJSON(vClass);
-  var vMethodArray = getMethodArray();
+  var vMethodArray = getMethodArray(vClass);
   var vTplMethodHeader = getValueDOM("tTplMethodConstructorComment");
   var vMethod = vTplMethodHeader;
   var vMethodname = "";

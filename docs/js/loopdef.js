@@ -13,7 +13,7 @@ function insertCommentReturn() {
 
 function appendLoopDefinition() {
   // get Array or Hash
-  var vArrayType = getValueDOM("sArrayType");
+  var vArrayType = getValueDOM("sLoopType");
   // get Template
   var vTemplate = "";
   if (vArrayType == "Array") {
@@ -22,17 +22,17 @@ function appendLoopDefinition() {
     vTemplate = getValueDOM("tTplLoopHash");
   };
   // Replace ArrayName
-  var vArrayName = getValueDOM("tArrayLoop");
-  if (vArrayName == "") {
+  var vArrayName = getValueDOM("tLoopObject");
+  if (reduceVarName(vArrayName) == "") {
     vArrayName = "vMy"+vArrayType;
-    write2value("tArrayLoop",vArrayName);
+    write2value("tLoopObject",vArrayName);
   };
-  vTemplate = replaceString(vTemplate,"___LOOPARRAY___",vArrayName);
+  vTemplate = replaceString(vTemplate,"___LOOPOBJECT___",vArrayName);
   // Replace MethodCall
-  var vMethodName = getValueDOM("tMethodLoop");
-  if (vMethodName == "") {
-    vMethodName = "myMethod(pPar1,pPar2)";
-    write2value("tMethodLoop",vMethodName);
+  var vMethodName = getValueDOM("tLoopMethod");
+  if (reduceVarName(vMethodName) == "") {
+    vMethodName = "init()";
+    write2value("tLoopMethod",vMethodName);
   };
   vTemplate = replaceString(vTemplate,"___LOOPMETHOD___",vMethodName);
   insert2editor("MethodCode","\n"+vTemplate);

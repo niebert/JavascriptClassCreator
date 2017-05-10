@@ -21,10 +21,11 @@ function checkInterface4Class(pClassName) {
     updateJSON2Form();
   };
   if (vSuperClassType == "Abstract") {
-    //inherit the method interface
+    //inherit the attribute and method interface
     inheritAttributesDefinitions(vChain);
     //inherit defined methods from parent abstract class and
-    //create an interface for methods, i.e. methods with an empty code
+    //create an interface for methods with an empty code ONLY,
+    // other methods with a defined code are inherited as usual
     inheritMethodsAbstract(vChain);
     //Update Form with inherited
     updateAttribJSON2Form(pClassName);
@@ -119,7 +120,7 @@ function inheritAbstractMethods4Class(pClassJS,pInheritJS) {
             copyArrID4Hash(["MethodReturn"],iMeth,pInheritJS,pClassJS);
           };
       } else {
-        vCode = vInheritCode[iMath] || "";
+        vCode = vInheritCode[iMeth] || "";
         vCode = reduceVarName(vCode) || "";
         if (vCode == "") {
           debugLog("Method","Inherit [Parameter,Return,Comment]: for Method Return for "+iMeth+"()");
@@ -244,6 +245,9 @@ function getDefaultClassHash(pClass,pClassType) {
   pClass = reduceVarName(pClass);
   vClassType = reduceVarName(vClassType)
   var vRetClass = {};
+  vRetClass["JSCC_type"] = "CLASS";
+  vRetClass["JSCC_init_date"] = getDate();
+  vRetClass["JSCC_mod_date"] = getDate();
   for (var i = 0; i < vDOM_ID.length; i++) {
     vRetClass[vDOM_ID[i]] = "";
   };
@@ -254,7 +258,6 @@ function getDefaultClassHash(pClass,pClassType) {
   vRetClass["sClassType"][pClass] = vClassType;
   vRetClass["tEMail"] = getValueDOM("tEMail") || "anonymous@example.com";
   vRetClass["tAuthor"] = getValueDOM("tAuthor") || "My Name";
-  vRetClass["tDate"] = getDate();
   // "myMethod(p1,p2)" stores the code in vRetClass["MethodCode"]["myMethod"]
   // and stores the comment in vRetClass["MethodComment"]["myMethod"]
   vRetClass["AttribType"] = {};
@@ -374,7 +377,7 @@ function getInhertitChain(pClassName) {
               };
   var vSuperClassname = getSuperClassname4Class(pClassName);
   if (vSuperClassname != "") {
-    getInhertitedClass(vSuperClassname,vInheritance);
+    getInheritedClass(vSuperClassname,vInheritance);
   };
   // hash "visited" shows visited Classes in the inherit chain
   // this is necessary, to identify a loop in the chain
@@ -386,14 +389,14 @@ function getInhertitChain(pClassName) {
   return vInheritance;
 };
 
-function getInhertitedClass(pClassName,pInheritance) {
+function getInheritedClass(pClassName,pInheritance) {
   // hash "visited" shows visited Classes in the inherit chain
   // this is necessary, to identify a loop in the chain
   // e.g. Class1 ->super-> Class2 ->super-> Class3 ->super->Class1 (revited)
   // the following "if" checks for the possible loop
   if (pInheritance["visited"][pClassName]) {
     var vLoopChain = (pInheritance["chain"]).join("->");
-    alert("ERROR: Loop identified in Inheritance chain!\n"+vLoopChain);
+    console.log("stop inherit chain "+vLoopChain);
   } else {
     // append pClass to the chain
     pInheritance["chain"].push(pClassName);
@@ -403,7 +406,7 @@ function getInhertitedClass(pClassName,pInheritance) {
     var vSuperClassname = getSuperClassname4Class(pClassName);
     if (vSuperClassname != "") {
       // class has a superclass check the chain for superclass
-      getInhertitedClass(vSuperClassname,pInheritance);
+      getInheritedClass(vSuperClassname,pInheritance);
     };
   };
 };
@@ -519,7 +522,39 @@ function setAuthorEmail() {
       write2value("tEMail","anonymous@example.com");
     };
   };
-}
+};
+function updateJSON2tMethods(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  var vOut = "";
+  if (existsClassJS(vClass)) {
+    var vArr = getMethodArrayJSON(pClass);
+    if (vArr.length > 0) {
+      vOut = vArr.join("\n");
+    };
+  };
+  write2value("tMethods",vOut);
+};
+
+function updateJSON2tAttributes(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  var vOut = "";
+  if (existsClassJS(vClass)) {
+    var vArr = [];
+    var vLine = "";
+    var vHash = vJSON_JS["ClassList"][vClass]["AttribDefault"];
+    for (var iAtt in vHash) {
+      if (vHash.hasOwnProperty(iAtt)) {
+        vLine = iAtt + " = " + vHash[iAtt];
+        vArr.push(vLine)
+      };
+    };
+    if (vArr.length > 0) {
+      vOut = vArr.join("\n");
+    };
+  };
+  // by calling createJSON2tClassList() any missing ClassType-Definitions are written in tClassList
+  write2value("tAttributes", vOut);
+};
 
 function updateJSON2tClassList() {
   // update the Selectors sClassType in vJSON_JS["ClassList"] with ClassTypes defined in tClassList
@@ -1011,8 +1046,8 @@ function createNewMethodJS(pClass) {
       createMethodSelect(); //dom.js:13
       updateMethodsJS();
       write2value("sMethodList",vName);
-      write2value("tMethodHeader",vMethodHeader);
-      write2innerHTML("titleMethodName",vMethodHeader);
+      write2value("tMethodHeader",vMethCall);
+      write2innerHTML("titleMethodName",vMethCall);
       setEditorValue("iMethodCode",vContent);
       write2value("tMethodCode",vContent);
       autoSaveJSON();
@@ -1170,9 +1205,20 @@ function updateAttribType4Form() {
   write2value("tAttribType",vType);
 }
 
-function updateAttribTypeComment4Form() {
+function updateAttribComment2JSON() {
   var vName = getValueDOM("tAttribName");
+  var vComment = getValueDOM("tAttribComment");
+  if (existsAttribForm(vName)) {
+    debugLog("Attrib","updateAttribTypeComment4Form() - Variable exisits - no update of Attritbute Type and Comment");
+  } else {
+    saveID4HashPath2JSON("ClassList."+getSelectedClassID()+".AttribComment."+vName,vComment);
+  };
+};
+
+function updateAttribTypeComment4Form(pAttribName) {
+  var vName = pAttribName || getValueDOM("tAttribName");
   var vDefault = getValueDOM("tAttribDefault");
+  var vComment = getValueDOM("tAttribComment");
   if (existsAttribForm(vName)) {
     debugLog("Attrib","updateAttribTypeComment4Form() - Variable exisits - no update of Attritbute Type and Comment");
   } else {
@@ -1295,7 +1341,7 @@ function getAttribDefaultArray() {
   return vAttribArray;
 }
 
-function getMethodArray() {
+function getMethodArray4Form() {
   var vMethods = getValueDOM("tMethods");
   vMethods = removeEmptyLines(vMethods);
   var vMethodArray    = vMethods.split(/\n/);
@@ -1309,6 +1355,45 @@ function getMethodArray() {
   }
 	return vRetArr;
 };
+
+
+function getMethodArray(pClass) {
+  var vRetArr = [];
+  if (pClass) {
+    if (existsClassJS(pClass)) {
+      vRetArr = getMethodArrayJSON(pClass);
+    } else {
+      console.log("getMethodArray('"+pClass+"') pClass does not exist");
+    };
+  } else {
+    vRetArr = getMethodArray4Form();
+  };
+  return vRetArr;
+};
+
+function getMethodArrayJSON(pClass) {
+  var vRetArr = [];
+  var vMethodArray = getMethodNameArrayJSON(pClass);
+  var vClassJS = getClassJSON(pClass);
+  var vMethRet = vClassJS["MethodReturn"];
+  var vMethPar = vClassJS["MethodParameter"];
+  var vRetClass = "";
+  var vID = "";
+  var vMethodDef = "";
+  for (var i = 0; i < vMethodArray.length; i++) {
+    vID = vMethodArray[i] || "";
+    if (vID != "") {
+      vRetClass = vMethRet[vID] || "";
+      if (vRetClass != "") {
+        vRetClass = ":"+vRetClass;
+      };
+      // Now create the Method Definition String and push to Return Array vRetArr
+      vMethodDef = vID + "("+(vMethPar[vID] || "")+")"+vRetClass;
+      vRetArr.push(vMethodDef);
+    };
+  }
+  return vRetArr;
+}
 
 function getName4Method(pMethodWithParams) {
   var vLine = getName4SepChar("(",pMethodWithParams);
@@ -1544,9 +1629,20 @@ function getAllClassesArray() {
   return getString2ClassArray(vClassString);
 }
 
-function getAllFilesArray() {
+function getAllFilesArrayForm() {
   var vHTMLfilesString = getValueDOM("tHTMLfiles");
   return getString2Array(vHTMLfilesString);
+};
+
+function getAllFilesArray() {
+  var vHash = vJSON_JS["FileList"];
+  var vArr = [];
+  for (var iFile in vHash) {
+    if (vHash.hasOwnProperty(iFile)) {
+      vArr.push(iFile);
+    };
+  };
+  return vArr;
 };
 
 function getString2ClassArray(pString) {

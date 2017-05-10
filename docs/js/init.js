@@ -106,9 +106,9 @@ vTYPE_ID.push("String");
 vDOM_ID.push("tMethodCode"); // Stores the EditorContent
 vTYPE_ID.push("Textarea");
 //vTYPE_ID.push("Select");
-vDOM_ID.push("tArrayLoop");
+vDOM_ID.push("tLoopObject");
 vTYPE_ID.push("Textarea");
-vDOM_ID.push("tMethodLoop");
+vDOM_ID.push("tLoopMethod");
 vTYPE_ID.push("String");
 //vDOM_ID.push("");
 
@@ -170,7 +170,9 @@ function initCodeCreator() {
   //Hack: MethodCode is not properly initialized, when Data is coming from LocalStorage
   vRestoreForm["tMethodCode"] = getMethodCode4Editor(vSelectedClass);
   vRestoreForm["tPageTypeHTML"] = getPageTypeCode4Editor(vSelectedPageType);
-  vRestoreForm["tSuperClassname"] = vJSON_JS["ClassList"][vSelectedClass]["tSuperClassname"] || "";
+  for (var i = 0; i < vDOM_ID.length; i++) {
+    vRestoreForm[vDOM_ID[i]] = vJSON_JS["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
+  };
   getPageTypeCode4Editor(vSelectedPageType)
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
@@ -189,7 +191,11 @@ function initCodeCreator() {
     write2value("tPageTypeHTML",vRestoreForm["tPageTypeHTML"]);
     //write2value("tSuperClassname",vRestoreForm["tSuperClassname"]);
     //write2value("sSuperClassname",vRestoreForm["tSuperClassname"]);
+    //for (var i = 0; i < vDOM_ID.length; i++) {
+    //  write2value(vDOM_ID[i],vRestoreForm[vDOM_ID[i]]);
+    //};
     selectSuperClass(vRestoreForm["tSuperClassname"]);
+    updateJSON2tMethods(vSelectedPageType);
   };
 };
 

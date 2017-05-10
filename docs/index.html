@@ -147,17 +147,7 @@
           <b>List of defined Classes</b>
           <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
           <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace">DOMVar = Red
-DOMVarList = Red
-CheckBoxList = Red
-FuzzyLayer= Yellow
-FuzzyController = Yellow
-DatabaseList = Green
-Database = Green
-AppAbstract = Abstract
-Server = Blue
-App = Blue
-          </textarea>
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace"></textarea>
   		</td>
   	<!-- </tr>
     <tr> -->
@@ -178,23 +168,20 @@ Hash = {}</textarea>
     <b>JSON Databases</b>
     <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
     <br>
-    <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">db_mydata.js
-db_disapp.js</textarea>
+    <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">
+    </textarea>
 <br>
 <b>Global Libaries</b>
 <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateJSLibraries()" type="button">
 <br>
-<textarea name="tLibraries" id="tLibraries" cols="45" rows="5" style="font-family: monospace">string.js
-localstorage.js
-writedom.js</textarea>
+<textarea name="tLibraries" id="tLibraries" cols="45" rows="5" style="font-family: monospace"></textarea>
     </td>
     <td align="center">
       <b>HTML Files</b>
       <input name="bUpdateLibraries" value=" Update HTML Files " onclick="updateHTMLFiles()" type="button">
       <br>
-      <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">index.html
-app.html
-submit.html</textarea>
+      <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">
+      </textarea>
     </td>
   </tr>
   <tr>
@@ -207,12 +194,7 @@ submit.html</textarea>
         <tt id="labelPageRecord">-</tt>
       </font>
       <br>
-      <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">welcome|Welcome|DefaultPage|home
-home|Home|MenuPage|
-setting|Settings|OptionsPage|home
-save|Save|SaveDialog|home
-quit|Quit App|ConfirmPage|home
-login|Login|LoginPage|quit
+      <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">
     </textarea>
     </td>
     <td align="center">
@@ -238,14 +220,15 @@ SaveDialog|home|CANCEL
     <td colspan="2" align="center">
       <b>Buttons</b>
       <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
-      -- <b>Format:</b>
-      <tt id="labelButtonRecord">-</tt>
+      &nbsp;
+      <font size="-2">
+        <b>Format:</b>
+        <tt id="labelButtonRecord">-</tt>
+        </font>
       <br>
 
-    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">QUIT|Quit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c"&gt;___BUTTON_TITLE___&lt;/a&gt;
-OK|OK|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('Click on ___BUTTON_TITLE___');" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
-SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('Submit Data ___BUTTON_TITLE___');" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
-      </textarea>
+    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">
+    </textarea>
     </td>
   </tr>
   </tbody>
@@ -510,13 +493,8 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
           <span class="ui-icon ui-icon-pencil"></span>
           <input name="bEditAttribs" value=" Edit Attributes " class="tabbutton" onclick="showAttributes()" type="button">
           <br>
-    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">aDoc = null
-aName = "DisApp"
-aServer = new Server("___SERVER_URL___")
-aDatabaseList = new DatabaseList()
-aCurrentPage = "welcome"
-aFuzzyController = new FuzzyController()
-</textarea>
+    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">
+          </textarea>
     		</td>
     		<td>
     			<b>Methods</b>
@@ -525,13 +503,7 @@ aFuzzyController = new FuzzyController()
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">init(pDoc:Document)
-load():Boolean
-save():Boolean
-calcRisk()
-calcResponse()
-gotoPage(pPageID)
-submitPage(pPageID)
+    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">
     			</textarea>
         </td>
       </tr>
@@ -564,7 +536,7 @@ submitPage(pPageID)
           </tr>
             <tr>
               <td colspan="2" align="center">
-              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" onchange="updateAttribTypeComment4Form()" style="font-family: monospace">
+              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" onchange="updateAttribComment2JSON()" style="font-family: monospace">
             <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
             = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form()" style="font-family: monospace">
           </td>
@@ -582,7 +554,7 @@ submitPage(pPageID)
     </tr>
       <tr>
         <td colspan="2" align="center">
-          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribTypeComment4Form()" >
+          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribComment2JSON()" >
         </td>
       	</tr>
       </tbody>
@@ -626,16 +598,16 @@ submitPage(pPageID)
           <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
           <br>
           <b>Loop Calls:</b>
-          <input id="tArrayLoop" name="tArrayLoop" type="text" size="20" value="myArray" style="font-family: monospace">
-          <input id="tMethodLoop" name="tMethodLoop" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace">
-          <select id="sArrayType" name="sArrayType" >
-            <option>Array</option>
+          <input id="tLoopObject" name="tLoopObject" type="text" size="20" value="myHash" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+          <input id="tLoopMethod" name="tLoopMethod" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+          <select id="sLoopType" name="sLoopType" >
             <option>Hash</option>
+            <option>Array</option>
           </select>
           <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
           <br>
             <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
-	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" Xstyle="font-family: monospace;display:none"></textarea>
+	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
            <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
            </td>
       	</tr>
@@ -1099,16 +1071,18 @@ ___METHODCODE___
 <hr>
   <b>Template Loop Array</b> <tt>[tTplLoopArray]</tt> <br>
   <textarea id="tTplLoopArray" name="tTplLoopArray" cols="125" rows="4">
-    for (var i = 0; i < ___LOOPARRAY___.length; i++) {
-      ___LOOPARRAY___[i].___LOOPMETHOD___;
+    for (var i = 0; i < ___LOOPOBJECT___.length; i++) {
+      ___LOOPOBJECT___[i]___LOOPMETHOD___;
     };
   </textarea>
 <hr>
   <b>Template Loop Hash</b> <tt>[tTplLoopHash]</tt> <br>
   <textarea id="tTplLoopHash" name="tTplLoopHash" cols="125" rows="4">
-    for (vKey in ___LOOPARRAY___) {
-      ___LOOPARRAY___[vKey].___LOOPMETHOD___;
-    };
+for (var vKey in ___LOOPOBJECT___) {
+  if (___LOOPOBJECT___.hasOwnProperty(vKey)) {
+    ___LOOPOBJECT___[vKey]___LOOPMETHOD___;
+  }
+};
   </textarea>
 </div>
 <div id="result" style="color:red">

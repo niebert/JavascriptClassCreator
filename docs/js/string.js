@@ -130,7 +130,7 @@ function createIndentDefault(pText,pIndent) {
 	};
 	pText = vArr.join("\n");
 	pText = createIndent(pText,pIndent);
-	console.log("createIndentDefault(pText,pIndent)\n"+pText);
+	//console.log("createIndentDefault(pText,pIndent)\n"+pText);
 	return pText;
 }
 function createIndent(pText,pIndent) {

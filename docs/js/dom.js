@@ -180,7 +180,11 @@ function createAttribTypeSelect() {
   write2innerHTML("sReturnList",vOptions);
   var vName = getValueDOM("tAttribName");
   var vAttribHash = getForm2AttribDefaultHash(); //classes.js:484
-  write2value("tAttribDefault",vAttribHash[vName]);
+  var vAttDefault = vAttribHash[vName] || "";
+  if (reduceVarName(vName) == "") {
+    vAttDefault = "";
+  };
+  write2value("tAttribDefault",vAttDefault);
   var vMethodname = getValueDOM("sMethodList") || "";
   var vClassJS = getClassJSON();
   if (vClassJS.hasOwnProperty("MethodReturn") &&  vClassJS["MethodReturn"].hasOwnProperty(vMethodname)) {

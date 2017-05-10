@@ -106,8 +106,12 @@ function updateFormPageTypes2JSON() {
 
 function updateFormID2JSON(pID) {
   var vClass 	= getValueDOM("tClassname");
-  console.log("updateFormID2JSON('"+pID+"')-Call with Classname: '"+vClass+"'");
-  vJSON_JS["ClassList"][vClass][pID] = getValueDOM(pID);
+  if (existsClassJS(vClass)) {
+    console.log("updateFormID2JSON('"+pID+"')-Call with Classname: '"+vClass+"'");
+    vJSON_JS["ClassList"][vClass][pID] = getValueDOM(pID);
+  } else {
+    console.log("ERROR: updateFormID2JSON('"+pID+"')-Call undefined Class: '"+vClass+"'");
+  };
 };
 
 function getSelectedFilenameHTML() {
@@ -961,9 +965,15 @@ function getReturnVariableDef(pRetType) {
   return vRetVarDef;
 };
 
+function updateFormLoopDef2JSON() {
+  var vClassJS = getSelectedClassJSON();
+  vClassJS["tLoopObject"] = getValueDOM("tLoopObject");
+  vClassJS["tLoopMethod"] = getValueDOM("tLoopMethod");
+}
 
 function updateForm2JSON(pClass,pClassType) {
-  updateFileForm2JSON();
+  var vFile = getSelectedFileID();
+  updateFileForm2JSON(vFile);
   var vClass = pClass || getSelectedClassID();
   //var vClassTypeHash = getForm2ClassTypeHash();
   var vClassType = getFormClassType4Class(vClass) || "";

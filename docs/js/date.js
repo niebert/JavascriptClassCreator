@@ -24,3 +24,8 @@ function getDateTime() {
 	vOut += vNow.getHours() + vSep + outTime(vNow.getMinutes()) + vSep + outTime(vNow.getSeconds());
 	return vOut;
 }
+
+function getTimeIndex() {
+	var d = new Date();
+  return d.getTime();
+};

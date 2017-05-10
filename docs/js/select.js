@@ -231,7 +231,7 @@ function selectSuperClass(pSuperClass) {
     write2innerHTML("labSuperClassTypeUML",vSuperClassType);
     updateFormID2JSON('tSuperClassname')
   } else {
-    alert("ERROR: You cannot select the '"+vClassName+"' as SuperClass");
+    console.log("ERROR: You cannot select the '"+vClassName+"' as SuperClass");
     selectSuperClass(" ");
   }
 }
@@ -339,12 +339,18 @@ function selectJSMethodReturn(pReturnID) {
       if (vReturnID != "") {
         vCall += ":"+vReturnID;
       };
+      var vCode = vClassJS["MethodCode"][vMethodName];
+      var vComment = vClassJS["MethodComment"][vMethodName];
       write2value("tMethodHeader",vCall);
+      write2value("tMethodCode",vCode);
+      write2value("tMethodComment",vClassJS["MethodComment"][vMethodName]);
+      vClassJS["tMethodHeader"] = vCall;
+      vClassJS["tMethodCode"] = vCode;
+      vClassJS["tMethodComment"] = vComment;
       write2innerHTML("titleMethodName",vCall);
       updateMethodsJSON2Form();
     };
-  }
-
+  };
 }
 
 function selectPageJS(pPageID) {
@@ -707,12 +713,13 @@ function selectJSAttribs(pAttribName) {
   var vAttArr = ["AttribComment","AttribType","AttribDefault"];
   for (var i = 0; i < vAttArr.length; i++) {
     vID = vAttArr[i];
-    vValue = vClassJSON[vID][vAttribName] || " " || "Undefined vClassJSON['"+vID+"']['"+vAttribName+"']";
+    vValue = vClassJSON[vID][vAttribName] || "";
     console.log("["+vID+"]='"+vValue+"'");
-    write2value("t"+vID,vValue)
+    write2value("t"+vID,vValue);
   };
   write2value("tAttribName",vAttribName);
-  write2value("sAttribTypeList",vClassJSON["AttribType"][vAttribName]);
+  var vAttribType = (vClassJSON["AttribType"][vAttribName] || " ");
+  write2value("sAttribTypeList",vAttribType);
   //load method code from  vJSON_JS if exists
   //loadAttribJSON(vAttribName);
   saveJSON2LocalStorage();

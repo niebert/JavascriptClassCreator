@@ -2,16 +2,16 @@ vDatabase['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/04/03 17:58:02",
+    "mod_date": "2017/04/05 7:26:15",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
     "tPages": "welcome|Welcome|DefaultPage|home\nhome|Home|MenuPage|\nsetting|Settings|OptionsPage|home\nsave|Save|SaveDialog|home\nquit|Quit App|ConfirmPage|home\nlogin|Login|LoginPage|quit\n    ",
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
-    "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|       <!-- header button: '___BUTTON_TITLE___' -->___CR___       <a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
+    "tButtons": "||\n||\n||",
     "sPageTypeHTML": "ConfirmPage",
     "sPageHTML": "setting",
-    "sButtonHTML": "QUIT",
+    "sButtonHTML": "",
     "tLibraries": "string.js\nlocalstorage.js\nwritedom.js",
     "tDatabases": "db_mydata.js\ndb_disapp.js",
     "tExportPrefix": "vDatabase['___DB___'] = ",
@@ -19,10 +19,10 @@ vDatabase['project'] = {
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
-    "SelectedClass": "DatabaseList",
+    "SelectedClass": "LinkParam",
     "SelectedPage": "setting",
     "SelectedPageType": "ConfirmPage",
-    "SelectedButton": "QUIT",
+    "SelectedButton": "",
     "ClassType": {
         "DOMVar": "Red",
         "DOMVarList": "Red",
@@ -44,8 +44,8 @@ vDatabase['project'] = {
             "tDate": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aDoc = null\naName = \"DisApp\"\naServer = new Server(\"___SERVER_URL___\")\naDatabaseList = new DatabaseList()\naCurrentPage = \"welcome\"\naFuzzyController = new FuzzyController()\naLinkParam = new LinkParam()",
-            "tMethods": "init(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\ncalcRisk()\ncalcResponse()\ngotoPage(pPageID)\nsubmitPage(pPageID)",
+            "tAttributes": "aDoc = null\naName = \"DisApp\"\naServer = new Server(\"___SERVER_URL___\")\naDatabaseList = new DatabaseList()\naCurrentPage = \"welcome\"\naFuzzyController = new FuzzyController()",
+            "tMethods": "init(pDoc:Document)\nload():Boolean\nsave():Boolean\ncalcRisk()\ncalcResponse()\ngotoPage(pPageID)\nsubmitPage(pPageID)",
             "sAttribList": "aDoc",
             "tAttribName": "aDoc",
             "tAttribType": "",
@@ -64,8 +64,7 @@ vDatabase['project'] = {
                 "aServer": "new Server(\"___SERVER_URL___\")",
                 "aDatabaseList": "new DatabaseList()",
                 "aCurrentPage": "\"welcome\"",
-                "aFuzzyController": "new FuzzyController()",
-                "aLinkParam": "new LinkParam()"
+                "aFuzzyController": "new FuzzyController()"
             },
             "AttribType": {
                 "aDoc": "",
@@ -73,8 +72,7 @@ vDatabase['project'] = {
                 "aServer": "Server",
                 "aDatabaseList": "DatabaseList",
                 "aCurrentPage": "String",
-                "aFuzzyController": "FuzzyController",
-                "aLinkParam": "LinkParam"
+                "aFuzzyController": "FuzzyController"
             },
             "MethodName": {},
             "MethodReturn": {
@@ -96,9 +94,9 @@ vDatabase['project'] = {
                 "submitPage": ""
             },
             "MethodComment": {
-                "init": "1) inits the App with the document\n2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam\n3) inits all the database in aDatabaseList",
-                "load": "load Databases and DOMVars from LocalStorage if the exist in local storage",
-                "save": "save Databases and DOMVars to LocalStorage",
+                "init": "Comment for init",
+                "load": "Comment for load",
+                "save": "Comment for save",
                 "calcRisk": "Comment for calcRisk",
                 "calcResponse": "Comment for calcResponse",
                 "gotoPage": "Comment for gotoPage",
@@ -108,77 +106,55 @@ vDatabase['project'] = {
                 "aDoc": "Attribute: 'aDoc' Type: '' stores ... ",
                 "aName": "Attribute: 'aName' Type: 'String' stores ... ",
                 "aServer": "Attribute: 'aServer' Type: 'Server' stores ... ",
-                "aDatabaseList": "stores all databases loaded in the app",
+                "aDatabaseList": "Attribute: 'aDatabaseList' Type: 'DatabaseList' stores ... ",
                 "aCurrentPage": "Attribute: 'aCurrentPage' Type: 'String' stores ... ",
-                "aFuzzyController": "Attribute: 'aFuzzyController' Type: 'FuzzyController' stores ... ",
-                "aLinkParam": "stores all parameters from the URL in aLinkParam.aVars"
+                "aFuzzyController": "Attribute: 'aFuzzyController' Type: 'FuzzyController' stores ... "
             },
             "MethodParameter": {
-                "init": "pDoc:Document,pDatabase:Hash",
+                "init": "pDoc:Document",
                 "load": "",
                 "save": "",
                 "calcRisk": "",
                 "calcResponse": "",
                 "gotoPage": "pPageID",
                 "submitPage": "pPageID"
-            },
-            "tMethodCode": ""
+            }
         },
         "AppAbstract": {
-            "tClassname": "AppAbstract",
-            "tSuperClassname": "",
-            "sClassType": "Abstract",
-            "tDate": "",
-            "tAuthor": "Engelbert Niehaus",
-            "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aLinkParam = new LinkParam()\naDatabaseList = new DatabaseList()",
-            "tMethods": "init(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean",
-            "sAttribList": "aLinkParam",
-            "tAttribName": "aLinkParam",
-            "tAttribType": "",
-            "tAttribComment": "stores all parameters from the URL in aLinkParam.aVars",
-            "tAttribDefault": "new LinkParam()",
-            "sAttribTypeList": "LinkParam",
-            "tMethodHeader": "init(pDoc:Document,pDatabase:Hash)",
-            "tMethodComment": "1) inits the App with the document\n2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam\n3) inits all the database in aDatabaseList",
-            "tMethodCode": "this.aDoc = pDoc || document;\nthis.aDatabaseList.init(pDatabase);",
-            "tArrayLoop": "",
-            "tMethodLoop": "",
-            "AttribName": {},
-            "AttribDefault": {
-                "aLinkParam": "new LinkParam()",
-                "aDatabaseList": "new DatabaseList()"
-            },
-            "AttribType": {
-                "aLinkParam": "LinkParam",
-                "aDatabaseList": "DatabaseList"
-            },
-            "MethodName": {},
-            "MethodReturn": {
-                "init": "",
-                "load": "Boolean",
-                "save": "Boolean"
-            },
-            "MethodCode": {
-                "init": "this.aDoc = pDoc || document;\nthis.aDatabaseList.init(pDatabase);",
-                "load": "this.aDatabaseList.load()\nthis.aDOMVarList.load()",
-                "save": "this.aDatabaseList.save()\nthis.aDOMVarList.save()"
-            },
-            "MethodComment": {
-                "init": "1) inits the App with the document\n2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam\n3) inits all the database in aDatabaseList",
-                "load": "load Databases and DOMVars from LocalStorage if the exist in local storage",
-                "save": "save Databases and DOMVars to LocalStorage"
-            },
-            "AttribComment": {
-                "aLinkParam": "stores all parameters from the URL in aLinkParam.aVars",
-                "aDatabaseList": "stores all databases loaded in the app"
-            },
-            "MethodParameter": {
-                "init": "pDoc:Document,pDatabase:Hash",
-                "load": "",
-                "save": ""
-            },
-            "sMethodList": "init"
+			"tClassname": "AppAbstract",
+			"tSuperClassname": "",
+			"sClassType": "Abstract",
+			"tDate": "28.4.2017",
+			"tAuthor": "Engelbert Niehaus",
+			"tEMail": "niehaus@uni-landau.de",
+			"tAttributes": "",
+			"tMethods": "",
+			"sAttribList": "aLinkParam",
+			"tAttribName": "",
+			"tAttribType": "",
+			"tAttribComment": "",
+			"tAttribDefault": "",
+			"sAttribTypeList": "",
+			"tMethodHeader": "",
+			"tMethodComment": "",
+			"tMethodCode": "",
+			"tLoopObject": "vMyHash",
+			"tLoopMethod": ".init()",
+			"AttribName": {},
+			"AttribDefault": {
+				"aLinkParam": "new LinkParam()"
+			},
+			"AttribType": {
+				"aLinkParam": "LinkParam"
+			},
+			"MethodName": {},
+			"MethodReturn": {},
+			"MethodCode": {},
+			"MethodComment": {},
+			"AttribComment": {
+				"aLinkParam": "stores all parameters from the URL in aLinkParam.aVars"
+			},
+			"MethodParameter": {},
         },
         "DOMVar": {
             "tClassname": "DOMVar",
@@ -342,117 +318,60 @@ vDatabase['project'] = {
             "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aDBListHash = {}",
-            "tMethods": "init(pDatabase:Hash)\nload()\nsave()",
-            "sAttribList": "aDBListHash",
-            "tAttribName": "aDBListHash",
-            "tAttribType": "Hash",
-            "tAttribComment": "the attribute 'aDBListHash' stores in 'Hash' ... ",
-            "tAttribDefault": "{}",
-            "sAttribTypeList": "Hash",
-            "tMethodHeader": "load()",
-            "tMethodComment": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-            "tMethodCode": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].load();\n};\n",
-            "sMethodList": "init",
-            "tArrayLoop": "this.aDBList",
-            "tMethodLoop": "load()",
+            "tAttributes": "",
+            "tMethods": "",
+            "sAttribList": "",
+            "tAttribName": "",
+            "tAttribType": "",
+            "tAttribComment": "",
+            "tAttribDefault": "",
+            "sAttribTypeList": "",
+            "tMethodHeader": "",
+            "tMethodComment": "",
+  			"tMethodCode": "",
+            "sMethodList": "",
+            "tLoopObject": "vMyHash",
+            "tLoopMethod": ".init()",
             "AttribName": {},
-            "AttribDefault": {
-                "aDBListHash": "{}"
-            },
-            "AttribType": {
-                "aDBList:Hash": "Hash",
-                "aDBListHash": "Hash"
-            },
+            "AttribDefault": {},
+            "AttribType": {},
             "MethodName": {},
-            "MethodReturn": {
-                "init": "",
-                "load": "",
-                "save": ""
-            },
-            "MethodCode": {
-                "init": "if (pDatabase) {\n    for (vKey in pDatabase) {\n      aDBList[vKey] = new Database();  \n      aDBList[vKey].init(pDatabase[vKey]);\n    };\n}  ",
-                "load": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].load();\n};\n",
-                "save": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].save();\n};\n"
-            },
-            "MethodComment": {
-                "init": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-                "load": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-                "save": "save all Databases in the List of all databases defined by this.aDBList"
-            },
-            "AttribComment": {
-                "aDBList:Hash": "Hash of all Databases. Elements of Hash are objects of class Database()",
-                "aDBListHash": "the attribute 'aDBListHash' stores in 'Hash' ... "
-            },
-            "MethodParameter": {
-                "init": "pDatabase:Hash",
-                "load": "",
-                "save": ""
-            },
-            "aDBListHash": "Hash of all Databases. Elements of Hash are objects of class Database()"
+            "MethodReturn": {},
+            "MethodCode": {},
+            "MethodComment": {},
+            "AttribComment": {},
+            "MethodParameter": {}
         },
         "Database": {
             "tClassname": "Database",
             "tSuperClassname": "",
             "sClassType": "Green",
-            "tDate": "",
+            "tDate": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aSourceDB = {}\naDB = {}",
-            "tMethods": "init(pDB)\ncheckFormat()\nload():Boolean\nsave():Boolean",
-            "sAttribList": "aDB",
-            "tAttribName": "aDB",
-            "tAttribType": "Hash",
-            "tAttribComment": "the attribute 'aDB' stores current DB with Offine Data",
-            "tAttribDefault": "{}",
+            "tAttributes": "",
+            "tMethods": "",
+            "sAttribList": "",
+            "tAttribName": "",
+            "tAttribType": "",
+            "tAttribComment": "",
+            "tAttribDefault": "",
             "sAttribTypeList": "",
-            "tMethodHeader": "load():Boolean",
-            "tMethodComment": "loads the Database from LocalStorage of the browser and store the DB in this.aDB. \nAfter load it calls checkFormat() to check, if the format of the database is still \nthe same as in this.aSourceDB. The checkFormat() is introduced to make the App robust against alterations of \nthe database format from the App-provider.\nThe return value is Boolean. It determines if the load()-operation from the LocalStorage was successful.",
-            "sMethodList": "checkFormat",
-            "tMethodCode": "var vRetBoolean = false;\n// Code for load\n\nreturn vRetBoolean;",
+            "tMethodHeader": "",
+            "tMethodComment": "",
+            "sMethodList": "",
+  			"tMethodCode": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
-	    "AttribName": {},
-            "AttribDefault": {
-                "aSourceDB": "{}",
-                "aDB": "{}"
-            },
-            "AttribType": {
-                "aSourceDB": "Hash",
-                "aDB": "Hash"
-            },
+            "AttribName": {},
+            "AttribDefault": {},
+            "AttribType": {},
             "MethodName": {},
-            "MethodReturn": {
-                "init": "",
-                "checkFormat": "",
-                "load": "Boolean",
-                "save": "Boolean"
-            },
-            "MethodCode": {
-                "init": "this.aSourceDB = pDB",
-                "checkFormat": "",
-                "load": "var vRetBoolean = false;\n// Code for load\n\nreturn vRetBoolean;",
-                "save": ""
-            },
-            "MethodComment": {
-                "init": "DatabaseList.init calls this init-method with a single Database in JSON format. \nThe database is the init format of DB and is may contain a newer DB format that previous selected data",
-                "checkFormat": "compares the format of this.aSourceDB and this.aDB and look for changes in the Database format.\nthis.aSourceDB contains the newer format of the App provider. this.aDB will be altered according to changes in \nthis.aSourceDB. If this.aDB does not exist after loading from LocalStorage, checkFormat() will use aSourceDB for aDB to collect data.",
-                "load": "loads the Database from LocalStorage of the browser and store the DB in this.aDB. \nAfter load it calls checkFormat() to check, if the format of the database is still \nthe same as in this.aSourceDB. The checkFormat() is introduced to make the App robust against alterations of \nthe database format from the App-provider.\nThe return value is Boolean. It determines if the load()-operation from the LocalStorage was successful.",
-                "save": "saves the Database this.aDB to LocalStorage of the browser. JSON.stringify is used to create a string from\nthe hash in this.aDB and this string is stored in the LocalStorage. The return value is Boolean.\nThe boolean determines if the save()-method was performed successfully.\n"
-            },
-            "AttribComment": {
-                "aSourceDB": "the attribute 'aSourceDB' stores the init Database with current DB format ",
-                "aDB": "the attribute 'aDB' stores current DB with Offine Data"
-            },
-            "MethodParameter": {
-                "init": "pDB",
-                "checkFormat": "",
-                "load": "",
-                "save": ""
-            },
-            "JSCC_type": "CLASS",
-            "JSCC_version": "1",
-            "JSCC_mod_date": "2017/04/03 17:32:38"
+            "MethodReturn": {},
+            "MethodCode": {},
+            "MethodComment": {},
+            "AttribComment": {},
+            "MethodParameter": {}
         },
         "Server": {
             "tClassname": "Server",
@@ -503,7 +422,7 @@ vDatabase['project'] = {
             "tMethodHeader": "calcSize()",
             "tMethodComment": "calculates the number of variables defined in the URL parameters, stores result in length",
             "sMethodList": "calcSize",
-  		"tMethodCode": "var vRet = 0;\nif (this.aVars) {\n    var vHash = this.aVars;\n    for (var key in vHash) {\n        vRet++;\n    };\n} else {\n    console.log(\"ERROR: variable '\"+pVar+\"' does not exist in LinkParam\");\n};\nreturn vRet;",
+  			"tMethodCode": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribDefault": {
@@ -759,6 +678,5 @@ vDatabase['project'] = {
         "Float": "0.0",
         "Array": "[]",
         "Hash": "{}"
-    },
-    "tMethodCode": "if (pDatabase) {\n    for (vKey in pDatabase) {\n      aDBList[vKey] = new Database();  \n      aDBList[vKey].init(pDatabase[vKey]);\n    };\n}  "
+    }
 }

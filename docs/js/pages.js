@@ -746,11 +746,11 @@ function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
     vID = vArrID[i];
     vHash["title"] = "Title of ID "+vID;
     vHash["input"] = getMarker4ID("DB_"+vID);
-    vHash["output"] = "___ID_VALUE___";
+    vHash["output"] = getMarker4ID("DB_ID_VALUE");
     vHash["mandatory"] = true;
     vDB["format"][vArrID[i]] = vHash;
   };
-  vDB["data"] = [];
+  vDB["data"] = {};
   vDB["data"]["submitted"] = getDefaultDataDB(vArrID,vDBname+ ": submitted ",1,3);
   vDB["data"]["local"] = getDefaultDataDB(vArrID,vDBname+ ": unsubmitted ",4,5);
   return vDB
@@ -759,15 +759,18 @@ function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
 function getDefaultDataDB(pArrID,pStart,pEnd) {
   var vStart = pStart || 0;
   var vEnd = pEnd || 2;
-  var vData = [];
+  var vData = {};
   var vHash = {};
+  var vDBID_Prefix = "ID"+getTimeIndex()+"N";
   var vID = "";
+  var vDBID = "";
   for (var iCount = vStart; iCount <= vEnd; iCount++) {
+    vDBID = vDBID_Prefix+iCount;
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
-      vHash[vID] = pPrefix + "value ("+iCount+") of ID ‘"+vID+"’";
+      vHash[vID] = "("+iCount+") record ["+vDBID+"] value of ID ‘"+vID+"’";
     };
-    vData.push(vHash);
+    vData[vDBID] = vHash;
   };
   return vData;
 }

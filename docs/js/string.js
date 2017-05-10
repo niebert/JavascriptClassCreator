@@ -106,26 +106,52 @@ function decodeHashCR(pHash) {
 };
 
 function encodeCR(pString) {
-	if (pString) {
+	//console.log("encodeCR('"+pString+"')");
+	if (typeof(pString) == "string") {
 		if (pString != "") {
-			pString = replaceString(pString,"\n","\\n");
+			pString = replaceString(pString,"\n","___CR___");
+		} else {
+			//console.log("pString is empty - nothiung to do");
 		};
 	} else {
-		console.log("encodeCR(pString) pString undefined");
-		pString = "UnDefEncodeCR";
-	}
+		console.log("encodeCR("+pString+") nothing to pString  is of type '"+typeof(pString)+"'");
+	};
+	//console.log("encodeCR('"+pString+"') OUTPUT");
 	return pString
 };
 
+function createIndentDefault(pText,pIndent) {
+	var vArr = pText.split("\n");
+	var vLine = "";
+	for (var i = 0; i < vArr.length; i++) {
+		vLine = vArr[i];
+		vLine = vLine.replace(/^\s+/,"");
+		vArr[i] = vLine;
+	};
+	pText = vArr.join("\n");
+	pText = createIndent(pText,pIndent);
+	console.log("createIndentDefault(pText,pIndent)\n"+pText);
+	return pText;
+}
+function createIndent(pText,pIndent) {
+	var vIndent = pIndent || "\t";
+	if (pText) {
+		return vIndent+replaceString(pText,"\n","\n"+vIndent);
+	} else {
+		console.log("ERROR: createIndent(pText,pIndent) - pText undefined");
+		return "";
+	}
+}
+
 function decodeCR(pString) {
-	if (pString) {
+	if (typeof(pString) == "string") {
 		if (pString != "") {
-			pString = replaceString(pString,"\\n","\n");
+			pString = replaceString(pString,"___CR___","\n");
 		};
 		return pString
 	} else {
-		console.log("decodeCR(pString) pString undefined");
-		return "";
+		console.log("decodeCR("+pString+") nothing to pString  is of type '"+typeof(pString)+"'");
+		return pString;
 	}
 };
 

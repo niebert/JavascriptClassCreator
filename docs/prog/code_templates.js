@@ -22,6 +22,6 @@ vDatabase['code_templates'] = {
     "tTplLoopHash": "    for (vKey in ___LOOPARRAY___) {\n      ___LOOPARRAY___[vKey].___LOOPMETHOD___;\n    };\n  ",
     "tCommentPrefix": "//",
     "tCommentBoxPrefix": "#",
-    "init_type": "TPL",
+    "JSCC_type": "TPL",
     "mod_date": "2017/04/04 20:14:49"
 }

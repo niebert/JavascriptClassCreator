@@ -3,6 +3,50 @@
 // vClassJSON contains the current class
 // vSelectedClass is the ClassName of the Class that is currently edited
 // vJSON_JS["ClassList"][vSelectedClass]  is equal to vClassJSON
+function stringifyJSON(pJSON) {
+  return JSON.stringify(pJSON, null, 4);
+};
+
+function X_stringifyJSON(pJSON) {
+  var vContent = "";
+  if (pJSON) {
+    vContent = JSON.stringify(pJSON, null, 4);
+    console.log("stringifyJSON(pJSON)\n"+vContent);
+  };
+  return vContent;
+};
+
+function cloneJSON(pJSON) {
+  var vJSON = {};
+  if (pJSON) {
+    vJSON = JSON.parse(JSON.stringify(pJSON));
+  } else {
+    console.log("ERROR: cloneJSON(pJSON) - pJSON undefined!");
+  };
+  return vJSON
+};
+
+function checkDatabaseListJSON() {
+  var vArrDB = getDatabaseListJSON();
+  console.log("checkDatabaseListJSON() vArrDB.length="+vArrDB.length);
+  for (var i = 0; i < vArrDB.length; i++) {
+    checkDatabaseJSON(vArrDB[i])
+  };
+};
+
+function checkDatabaseJSON(pDB) {
+  var vDB = pDB || "";
+  console.log("checkDatabaseJSON('"+vDB+"')");
+  vDB = reduceVarName(vDB);
+  if (vDB != "") {
+    if (vJSON_JS["DatabaseList"].hasOwnProperty(vDB)) {
+      console.log("Database["+vDB+"] exists");
+    } else {
+      vJSON_JS["DatabaseList"][vDB] = getDefaultDatabaseJSON(vDB);
+      console.log("Database["+vDB+"] initialized with getDefaultDatabaseJSON('"+vDB+"')");
+    };
+  };
+};
 
 function loadLocalStorage2JSON() {
   // main Load JSON function
@@ -23,13 +67,13 @@ function saveJSON2LocalStorage() {
 };
 
 
-function stringifyJSON(pJSONDB) {
-  var vJSON = "";
-  if (pJSONDB) {
-    vJSON = JSON.stringify(pJSONDB);
-  };
-  return vJSON;
-};
+// function stringifyJSON(pJSONDB) {
+//   var vJSON = "";
+//   if (pJSONDB) {
+//     vJSON = JSON.stringify(pJSONDB);
+//   };
+//   return vJSON;
+// };
 
 
 function loadClassJSON() {
@@ -50,7 +94,7 @@ function saveClassJSON() {
   console.log("saveClassJSON()-Call");
   var vClass 	= getValueDOM("tClassname");
   for (var i = 0; i < vDOM_ID.length; i++) {
-    vJSON_JS[vClass][vDOM_ID[i]] = getValueDOM(vDOM_ID[i]);
+    vJSON_JS["ClassList"][vClass][vDOM_ID[i]] = getValueDOM(vDOM_ID[i]);
   };
   saveLocalDB("vJSON_JS",vJSON_JS);
 };

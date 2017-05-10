@@ -70,23 +70,43 @@ function createDatabaseJSON(pUsePrefix) {
     if (vUsePrefix == true) {
       vType = "JS";
     };
-    var vFileDB = writeFilenameWithPath4DB(vDB);
+    var vFileDB = getFilenameWithPath4DB(vDB);
     write2exportedDB(vDB);
     // sExportPrefix = "JSON" means do not use the export prefix, it is pure JSON,
     selectDatabase();
     alert("Exported Database: '"+vFileDB+"' Format: '"+vType+"'");
     var vFileName = getSaveFilename4DB(vDB);
-    var vContent = getEditorValue("iJSONDB");
+    var vContent = getDatabaseJSON2String(vDB);
+    write2editor(iJSONDB,vContent);
     saveFile2HDD(vFileName,vContent);
   };
+};
+
+function getDatabaseJSON2String(pDB) {
+  var vDB = pDB || "";
+  var vContent = "";
+  if (existsDatabaseJS(vDB)) {
+    vContent = stringifyJSON(vJSON_JS["DatabaseList"][vDB]);
+  } else {
+    vContent = "// Database ["+vDB+"] undefined in vJSON_JS['DatabaseList']";
+  };
+  console.log("st");
+
+};
+function setFilenameExportJSON(pFilename) {
+  var vFilename = pFilename || "";
+  write2innerHTML("labExportFile",vFilename);
 };
 
 function write2exportedDB(pDB,pUsePrefix) {
   var vDB = pDB || "";
   if (vDB != "") {
-    var vFileDB = writeFilenameWithPath4DB(vDB,pUsePrefix);
-    write2innerHTML("labExportFile",vFileDB);
+    var vFileDB = getFilenameWithPath4DB(vDB,pUsePrefix);
+    setFilenameExportJSON(vFileDB);
     write2value("tExportedJSON",vDB);
+  } else {
+    write2innerHTML("labExportFile","");
+    write2value("tExportedJSON","");
   };
 };
 
@@ -113,17 +133,20 @@ function getExtension4DB(pDB,pUsePrefix) {
   return vExtension;
 };
 
-function writeFilenameWithPath4DB(pDB,pUsePrefix) {
+function getFilenameWithPath4DB(pDB,pUsePrefix) {
   var vDB = pDB || "";
   var vPath = "";
   var vExtension = getExtension4DB(vDB,pUsePrefix);
-  if (existsDatabaseJS(vDB)) {
-    console.log("writeFilenameWithPath4DB()-Call: Database ["+vDB+"] exists");
+  if (vDB == "") {
+    vExtension = "";
+    vPath = "";
+  } else if (existsDatabaseJS(vDB)) {
+    console.log("getFilenameWithPath4DB()-Call: Database ["+vDB+"] exists");
     vPath = getValueDOM("tDefaultAppPath")+"db/";  // this is the default app_Path
   } else {
     vPath = "prog/";
   };
-  vPath += vDB + vExtension
+  vPath += vDB + vExtension;
   return vPath;
 };
 
@@ -151,7 +174,7 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
     vContent = getExportPrefix4DB(vDB)+vContent;
     vMode =  "ace/mode/javascript";
   };
-  var vExportFile = writeFilenameWithPath4DB(vDB,vUsePrefix);
+  var vExportFile = getFilenameWithPath4DB(vDB,vUsePrefix);
   if (pJSONDB) {
     console.log("Create JSON Code from vJSON_JS Title: '"+vTitle+"' - File: '"+vExportFile+"' - Type: '"+vType+"'");
     write2editor("JSONDB",vContent,vMode);
@@ -190,15 +213,6 @@ function exportHTML4File(pFile,pStandalone) {
   //write2value("tMainHTML",vHTML);
   write2editor("MainHTML",vHTML);
 };
-
-function saveCode4Class() {
-  var vClassID = getSelectedClassID();
-  var vFilename = vClassID.toLowerCase()+".js";
-  var vContent = getEditorValue("iOutput");
-  alert("Save Javascript Class File to '"+getValueDOM("tDefaultAppPath")+"js/"+vFilename+"' in your WebApp");
-  saveFile2HDD(vFilename,pContent)
-  //vreadFileTXT("tpl/index.html");
-}
 
 
 function exportMainHTML() {
@@ -254,21 +268,13 @@ function importProjectJSON() {
         var vTextFromFileLoaded = fileLoadedEvent.target.result;
         //document.getElementById("inputTextToSave").value = textFromFileLoaded;
         //alert("textFromFileLoaded="+textFromFileLoaded);
+        setFilenameExportJSON(fileToLoad.name);
         importProjectJSON_do(fileToLoad.name,vTextFromFileLoaded);
       };
     fileReader.readAsText(fileToLoad, "UTF-8");
   } else {
     alert("File is missing");
   };
-}
-
-function cloneJSON(pJSON) {
-  var vJSON = {};
-  if (pJSON) {
-    vJSON = JSON.parse(JSON.stringify(pJSON));
-  } else {
-    console.log("ERROR: cloneJSON(pJSON) - pJSON undefined!");
-  }
 }
 
 function importProjectJSON_do(pProjectFile,pContent) {
@@ -278,7 +284,7 @@ function importProjectJSON_do(pProjectFile,pContent) {
   if (vContent) {
     var vJSDB = JSON.parse(vContent);
     if (vJSDB) {
-      var vTypeJS = vJSDB["init_type"] || "JSON";
+      var vTypeJS = vJSDB["JSCC_type"] || "JSON";
       switch (vTypeJS) {
         case "JSCC":
           alert("Import JSON file of Type: "+vTypeJS+"");
@@ -289,10 +295,10 @@ function importProjectJSON_do(pProjectFile,pContent) {
         break;
         case "CLASS":
           alert("Import JSON file of Type: "+vTypeJS+"");
-          if (vJSONDB.hasOwnProperty("init_type")) {
-            // init_type is not necessary to have in vJSON_JS["ClassList"] so delete value key pair
-            delete vJSONDB["init_type"];
-          };
+          // if (vJSONDB.hasOwnProperty("JSCC_type")) {
+          //   // JSCC_type is not necessary to have in vJSON_JS["ClassList"] so delete value key pair
+          //   delete vJSONDB["JSCC_type"];
+          // };
           importClass(vJSDB);
         break;
         case "TPL":
@@ -312,16 +318,61 @@ function importProjectJSON_do(pProjectFile,pContent) {
     }
   }
 }
+function exportClass2Editor(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  console.log("exportClass2Editor('"+vClass+"')");
+  var vClassJSON = vJSON_JS["ClassList"][vClass];
+  vClassJSON["JSCC_type"] = "CLASS";
+  vClassJSON["JSCC_version"] = vJSCC_Version;
+  //vClassJSON["JSCC_init_date"] is defined getDefaultClassHash() in classes.js:241
+  vClassJSON["JSCC_mod_date"] = getDateTime(); //update export time
+  var vCode = stringifyJSON(vClassJSON);
+  if (getCheckBox("checkExportJS")) {
+    vCode = "vJSON_JS['ClassList']['"+vClass+"'] = " + vCode;
+  };
+  setEditorValue("iJSONDB", vCode);
+};
 
-function exportClass(pClass) {
-  console.log("exportClass('"+pClass+"')");
-  var vClassJS = getClassJSON(pClass);
+function exportClassJSON(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  console.log("exportClassJSON('"+vClass+"')");
+  exportClass2Editor(vClass);
+  var vCode = getEditorValue("iJSONDB");
+  var vClass = getSelectedClassID();
+  var vExtension = "_jscc.json";
+  var vPrefix = "";
+  if (getCheckBox("checkExportJS")) {
+    vExtension = "_jscc.js";
+    //vPrefix += "if (!(vDatabase.hasOwnProperty('ClassList'))) {vDatabase['ClassList'] = {}};";
+    vPrefix += "vDatabase['ClassList']['"+vClass+"'] = ";
+  };
+  var vPath = "prog/";
+  var vFileHDD = vClass.toLowerCase() + vExtension;
+  var vFilePathHDD = vPath + vFileHDD;
+  if (existsClassJS(vClass)) {
+    exportClass2Editor(vClass);
+  	alert("Javascript Class ["+vClass+"] created!\nJSCC-File: '"+vFilePathHDD+"'\nuse filename '"+vFilePathHDD+"'!");
+    setFilenameExportJSON(vFilePathHDD);
+    saveFile2HDD(vFileHDD,vCode);
+  } else {
+    alert("ERROR: Class ["+vCLass+"] does not exist!\nexportClassJSON('"+vClass+"')");
+  };
+}
+
+
+function X_exportClass2Editor(pClass) {
+  console.log("exportClass2Editor('"+vClass+"')");
+  var vClassJS = getClassJSON(vClass);
   var vClassTypeHash = getClassTypeJSON();
-  vClassJS["sClassType"] = vClassTypeHash[pClass];
-  vClassJS["tDate"] = getDateTime();
+  vClassJS["sClassType"] = vClassTypeHash[vClass];
+  vClassJS["JSCC_mod_date"] = getDateTime();
   var vExportClassJS = cloneJSON(vClassJS);
-  vExportClassJS["init_type"] = "CLASS";
-  setEditorValue("iJSONDB", getCode4JSON_JS(vExportClassJS));
+  vExportClassJS["JSCC_type"] = "CLASS";
+  var vCode = getCode4JSON_JS(vExportClassJS);
+  if (getCheckBox("checkExportJS")) {
+    vCode = "vJSON_JS['ClassList']['"+vClass+"'] = " + vCode;
+  };
+  setEditorValue("iJSONDB", vCode);
 };
 
 function importClass(pJSDB) {
@@ -648,6 +699,9 @@ function displayCompress() {
       };
     };
     var vParam = "?autoclose=1";
+    if (getCheckBox("cCompOptions") == true) {
+      vParam = "?autoclose=0";
+    };
     vWinCompress = window.open("uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
 };
 
@@ -661,14 +715,32 @@ function displayUML() {
     vWinUML = window.open("uml/index.html","wUML","width=900,height=600");
 };
 
+
+function X_saveCode4Class() {
+  var vClassID = getSelectedClassID();
+  var vFilename = vClassID.toLowerCase()+".js";
+  if (existsClassJS())
+  createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix)
+  var vContent = getEditorValue("iOutput");
+  alert("Save Javascript Class File to '"+getValueDOM("tDefaultAppPath")+"js/"+vFilename+"' in your WebApp");
+  saveFile2HDD(vFilename,pContent)
+  //vreadFileTXT("tpl/index.html");
+}
+
+
 function saveCode4Class() {
-  console.log("saveCode4Class()");
-  var vCode = getEditorValue("iOutput");
+  console.log("saveCode4Class() export the Javascript Code - NOT the JSCC JSON");
   var vClass = getSelectedClassID();
+  exportClass2Editor(vClass);
+  var vCode = getEditorValue("iOutput");
+  var vMinInsert = "";
+  if (getCheckBox("checkCompressCode")) {
+    vMinInsert = ".min"
+  };
   var vPath = getValueDOM("tDefaultAppPath");
-  var vFileHDD = vClass.toLowerCase() + ".js";
+  var vFileHDD = vClass.toLowerCase() + vMinInsert + ".js";
   var vFilePathHDD = vPath + "js/" + vFileHDD;
-	alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vFilePathHDD+"'!");
+  alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vFilePathHDD+"'!");
   saveFile2HDD(vFileHDD,vCode);
 }
 
@@ -677,6 +749,9 @@ function createCode4Class(pClass) {
   console.log("createCode4Class() '"+vClass+"'");
   var vCode = getCode4Class(vClass);
   write2editor("Output",vCode);
+  if (getCheckBox("checkCompressCode")) {
+    compressCode4Class();
+  };
 };
 
 function getCode4Class(pClass) {
@@ -750,6 +825,70 @@ function replaceCodeMainVars(pOutput,pClass) {
   return vOutput;
 };
 
+function getMethodComments4Constructor(pClass) {
+  console.log("getMethodComments4Constructor('"+pClass+"')");
+  var vOutput = "";
+  var vClass = pClass || getValueDOM("tClassname");
+  var vClassJS = getClassJSON(vClass);
+  var vMethodArray = getMethodArray();
+  var vTplMethodHeader = getValueDOM("tTplMethodConstructorComment");
+  var vMethod = vTplMethodHeader;
+  var vMethodname = "";
+  var vMethodAllParams = "";
+  var vMethodParamsClass = "";
+  var vSplitArray;
+  // Now OutMeth is colleacting all Method Definitions
+  for (var i=0; i<vMethodArray.length; i++) {
+    // start with clean MethodHeader Template for each Method Definition
+    vMethod = vTplMethodHeader;
+    var vOpenBracketPos = vMethodArray[i].indexOf("(");
+    if (vOpenBracketPos >0) {
+      vSplitArray = vMethodArray[i].split("(");
+      var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
+      if (vCloseBracketPos<0) {
+        alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
+      } else {
+        vMethodParamsClass = vSplitArray[1].substring(0,vCloseBracketPos);
+        vMethodAllParams = edit2JSparams(vMethodParamsClass);
+      };
+      var vMethName = vSplitArray[0];
+      console.log("getMethodComments4Constructor('"+pClass+"') - Method: '"+vMethName+"'");
+      var vReturn = vClassJS["MethodReturn"][vMethName];
+      var vReturnColon = "";
+      var vReturnComment = "";
+      if (vReturn != "") {
+        vReturnColon = ":"+vReturn;
+        vReturnComment = "Return: "+vReturn;
+      };
+      //----- Parameter Comments lines -----
+      var vParArr = vMethodParamsClass.split(",");
+      var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix"); //"\t//";
+      var vCommentBoxPrefix = "      ";
+      var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix;
+      var vParameterComment = vParArr.join(vComPrefix);
+      //---- Replace all Method specific variable in MethodHeader ----
+      vMethod = replaceString(vMethod,"___METHODDEF___",vMethodArray[i]);
+      vMethod = replaceString(vMethod,"___METHODCALL___",vMethName+"("+vMethodAllParams+")");
+      vMethod = replaceString(vMethod,"___METHODNAME___",vMethName);
+      vMethod = replaceString(vMethod,"___RETURNCOMMENT___",vReturnComment);
+      vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
+      vMethod = replaceString(vMethod,"___PARAMETERDEF___",vParameterComment);
+      var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vSplitArray[0]+"' do?";
+      vMethodComment = createIndentDefault(vMethodComment,vCommentPrefix+vCommentBoxPrefix);
+      vMethod = replaceString(vMethod,"___METHODCOMMENT___",vMethodComment);
+      var vMethodCode = getMethodCode(vMethodArray[i]) || "//----------- INSERT YOUR CODE HERE ---------------";
+      vOutput += vMethod;
+      //vOutput += vTplMethodHeader;
+    } else {
+      //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
+    };
+  };
+  vOutput = "\n"+getValueDOM("tTplMethodsHeadComment")+vOutput;
+  vOutput = replaceString(vOutput,"___CLASSNAME___",vClassJS["tClassname"]);
+  vOutput = createIndentDefault(vOutput,"\t");
+  return vOutput;
+}
+
 function replaceAttributes4Code(pOutput,pClass) {
   var vOutput = pOutput || "undefined pOutput";
   var vClass = pClass || getValueDOM("tClassname");
@@ -774,6 +913,7 @@ function replaceAttributes4Code(pOutput,pClass) {
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_TYPE___",vClassJS["AttribType"][vID]);
     vAtts += vAttribDef;
   };
+  vAtts = createIndentDefault(vAtts,"\t");
   vOutput = replaceString(vOutput,"___ATTRIBUTES___",vAtts);
   return vOutput;
 };
@@ -789,7 +929,7 @@ function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
   var vMethodAllParams = "";
   var vMethodParamsClass = "";
   var vSplitArray;
-  // Now OutMeth is colleacting all Method Definitions
+  // Now OutMeth is collecting all Method Definitions - Prototype-def and this-def
   var vOutMeth = getValueDOM("tTplMethodsHeadComment");
   vOutMeth = replaceString(vOutMeth,"___CLASSNAME___",vClassJS["tClassname"]);
   for (var i=0; i<vMethodArray.length; i++) {
@@ -815,8 +955,8 @@ function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
       };
       //----- Parameter Comments lines -----
       var vParArr = vMethodParamsClass.split(",");
-      var vCommentPrefix = "//";
-      var vCommentBoxPrefix = "#";
+      var vCommentPrefix = getValueDOM("tCommentPrefix");
+      var vCommentBoxPrefix = getValueDOM("tCommentBoxPrefix");
       var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix+"    ";
       var vParameterComment = vParArr.join(vComPrefix);
       //---- Replace all Method specific variable in MethodHeader ----
@@ -827,10 +967,10 @@ function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
       vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
       vMethod = replaceString(vMethod,"___PARAMETERDEF___",vParameterComment);
       var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vSplitArray[0]+"' do?";
-      vMethodComment     = replaceString(vMethodComment,"\n","\n//#    ");
+      vMethodComment     = replaceString(vMethodComment,"\n","\n"+vComPrefix);
       vMethod = replaceString(vMethod,"___METHODCOMMENT___",vMethodComment);
       var vMethodCode = getMethodCode(vMethodArray[i]) || "//----------- INSERT YOUR CODE HERE ---------------";
-      vMethodCode = "\t"+replaceString(vMethodCode,"\n","\n\t");
+      vMethodCode = createIndent(vMethodCode,"\t"); //"\t"+replaceString(vMethodCode,"\n","\n\t");
       vMethod = replaceString(vMethod,"___METHODCODE___",vMethodCode);
       vOutMeth += vMethod;
       //vSplitArray = vMethodArray[i].split("(");
@@ -841,7 +981,7 @@ function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
   if (getValueDOM("sPrototype") == "YES") {
     console.log("Methods are defined with Prototype approach");
     vOutput = replaceString(vOutput,"___METHODSPROTOTYPE___",vOutMeth);
-    vOutput = replaceString(vOutput,"___METHODS___","");
+    vOutput = replaceString(vOutput,"___METHODS___",getMethodComments4Constructor(vClass));
   } else {
     console.log("Methods are NOT defined with Prototype approach");
     var vArr = vOutMeth.split("\n");
@@ -868,7 +1008,7 @@ function createLinkedMethodDefinitions() {
 function exportTemplatesJSON() {
   //var vOut = getCode4JSON_JS(vJSON_TPL);
   updateForm2TemplateJSON();
-  vJSON_TPL["init_type"] = "TPL"; // Type is set to Templates
+  vJSON_TPL["JSCC_type"] = "TPL"; // Type is set to Templates
   vJSON_TPL["mod_date"] = getDateTime(); // set Export Date of Templates
   createCode4JSON_JS(vJSON_TPL,"code_templates","Database Templates");
   $( "#tabJSON" ).trigger( "click" );

@@ -36,7 +36,7 @@
 var vLinkParam = new LinkParam();
 vLinkParam.init(document);
 
-document.write(vLinkParam.getTableHTML());
+//document.write(vLinkParam.getTableHTML());
 
 function getWinOpener() {
   var vWinOpener = window.opener;
@@ -180,7 +180,18 @@ function updateParentContent() {
 function compressCloseWin() {
 	updateParentContent();
 	window.close();
-}
+};
+
+function onLoadCompressor() {
+	var vAutoClose = vLinkParam.getValue("autoclose");
+	if (vAutoClose == 1) {
+		//alert("AutoClose");
+		compressCloseWin();
+	} else {
+		console.log("View Compressor Options");
+	}
+};
+setTimeout("onLoadCompressor()",200);
 </script>
 
 </body></html>

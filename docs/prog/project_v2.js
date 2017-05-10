@@ -1,5 +1,5 @@
 vDatabase['project'] = {
-    "init_type": "JSCC",
+    "JSCC_type": "JSCC",
     "init_date": "2017/03/05 18:13:28",
     "mod_date": "2017/04/05 6:39:59",
     "sStandalone": "YES",

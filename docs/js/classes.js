@@ -1525,7 +1525,9 @@ function getButtonArray() {
 };
 
 function getButton1EmptyArray() {
-  var vArr = getButtonArray();
+  //var vButtList = getArray4HashID(vJSON_JS["ButtonList"])
+  var vArr = getArray4HashID(vJSON_JS["ButtonList"]);
+  // getButtonArray();
   return insertArray1Empty(vArr);
 };
 

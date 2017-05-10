@@ -1,6 +1,6 @@
 vDatabase['project'] = {
-    "init_type": "JSCC",
-    "init_version": "1",
+    "JSCC_type": "JSCC",
+    "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
     "mod_date": "2017/04/05 7:26:15",
     "sStandalone": "YES",
@@ -496,17 +496,17 @@ vDatabase['project'] = {
         }
     },
     "DatabaseList": {
-        "db_mydata": "{\n  \"name\": \"db_mydata\"\n}",
-        "db_disapp": "{\n  \"name\": \"db_disapp\"\n}"
     },
     "ButtonList": {
         "QUIT": {
-            "BUTTON_ID": "QUIT",
-            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
+          "BUTTON_ID": "QUIT",
+          "BUTTON_TITLE": "Quit",
+          "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
             "counter": 2
         },
         "OK": {
             "BUTTON_ID": "OK",
+            "BUTTON_TITLE": "OK",
             "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>",
             "counter": 1
         },

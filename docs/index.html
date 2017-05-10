@@ -14,6 +14,12 @@
    var vJSON_JS   = {};
    // Contains a list of loaded JSON Files - access a JSON via vDatabase["myJSON"]
    var vDatabase = {};
+   vDatabase["ClassList"] = {};
+   vDatabase["FileList"] = {};
+   vDatabase["PageList"] = {};
+   vDatabase["PageTypeList"] = {};
+   vDatabase["ButtonList"] = {};
+   vDatabase["DatabaseList"] = {};
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
@@ -433,10 +439,15 @@ SUBMIT|Submit|&lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="alert('
     <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
     <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
     <b>Button-Title:</b>
-    <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonJSON4ID2Form(this.id)">
+    <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonEditForm2JSON()">
     <br>
-    <b>HTML:</b>
-    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90" onchange="updateButtonJSON4ID2Form(this.id)">
+    <b style="align:center">HTML Definition for Button:</b> <tt>[tButtonDefHTML]</tt>
+    <br>Replaces <tt>___BUTTON_ID___</tt>, <tt>___BUTTON_TITLE___</tt> and global elements
+    <!--
+    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90" onchange="updateButtonEditForm2JSON()">
+    -->
+    <textarea name="tButtonDefHTML" id="tButtonDefHTML" rows="3" cols="85" style="font-family: monospace" size="90" onchange="updateButtonEditForm2JSON()" wrap="off">
+    </textarea>
   </td>
 </tr>
 </tbody>
@@ -655,8 +666,15 @@ submitPage(pPageID)
           </select>
 
           <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
+          <b>
+            Compress Code:
+          </b>
+          <input type="checkbox" id="checkCompressCode" name="checkCompressCode">
+          <!--
           <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
-          <input name="bSaveButtonClass" value=" Export " onclick="saveCode4Class()" type="button">
+         -->
+         <input name="bExportClassJSON" value=" Export JSON" onclick="exportClassJSON()" type="button">
+         <input name="bSaveButtonClass" value=" Export JS" onclick="saveCode4Class()" type="button">
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
@@ -742,22 +760,23 @@ submitPage(pPageID)
           <b>
             DB-Prefix:
           </b>
-            <input type="checkbox" id="checkUsePrefix" name="checkUsePrefix" onchange="createDatabaseJSON()">
-            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDatabase['___DB___'] = " size="30" onchange="createDatabaseJSON()">
+            <input type="checkbox" id="checkUsePrefix" name="checkUsePrefix" onchange="selectDatabaseJSON()">
+            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDatabase['___DB___'] = " size="30" onchange="createDatabaseJSON()"  checked="checked">
             <input name="bSaveDB" value=" Save DB " onclick="updateForm2Database()" type="button">
             <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
           <hr>
           <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
           <b>Export JSON:</b>
-          <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) alert('Format: JSON') else alert('Format: JS')" checked="checked">
+          <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) {alert('Format: JS')} else {alert('Format: JSON')}" checked="checked">
           JS-Export
+          <input name="bSaveClassJSON" value="Export Class" onclick="exportClassJSON()" type="button">
           <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
           <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
           <hr>
           <b>Load JSON:</b>
           <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->
           <input type="file" id="myImportFile" >
-          <input name="bImportProject" value="Import Project" onclick="importProjectJSON('myImportFile')" type="button">
+          <input name="bImportProject" value="Import JSON" onclick="importProjectJSON('myImportFile')" type="button">
 
           <hr>
             <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
@@ -925,7 +944,7 @@ ___JSCODE___
 </textarea>
 <hr>
 <b>Comment Prefix:</b>  <tt>[tCommentPrefix]</tt> <input type="text" id="tCommentPrefix" name="tCommentPrefix" value="//" size="5">
-<b>Comment Box Prefix:</b> <input type="text" id="tCommentBoxPrefix" name="tCommentBoxPrefix" value="#" size="5">
+<b>Comment Box Prefix:</b> <tt>[tCommentBoxPrefix]</tt> <input type="text" id="tCommentBoxPrefix" name="tCommentBoxPrefix" value="#" size="5">
 <hr>
   <b>Class Header</b> <tt>[tClassHeader]</tt><br>
     <textarea id="tClassHeader" name="tClassHeader" cols="125" rows="10">//#################################################################
@@ -966,8 +985,8 @@ ___JSCODE___
 // this approach allows to overwrite the method definition of single instances dynamically.
 //---------------------------------------------------------------------
 // (2) A prototype definition of methods for '___CLASSNAME___' will be set by
-// use the method's name and extend it with '____CLASSNAME___'.
-//    ____CLASSNAME___.prototype.my_method = function (pPar1,pPar2)
+// use the method's name and extend it with '___CLASSNAME___'.
+//    ___CLASSNAME___.prototype.my_method = function (pPar1,pPar2)
 // This approach consumes less memory for instances.
 //---------------------------------------------------------------------
 
@@ -978,7 +997,11 @@ ___SUPERCLASS___
     //---------------------------------------------------------------------
     //---Attributes of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
-___ATTRIBUTES______METHODS___
+___ATTRIBUTES___
+    //---------------------------------------------------------------------
+    //---Methods of Class "___CLASSNAME___()"
+    //---------------------------------------------------------------------
+___METHODS___
     //---------------------------------------------------------------------
     //---END Constructor of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
@@ -989,11 +1012,18 @@ ___METHODSPROTOTYPE___
     <hr>
     <b>Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
     <textarea id="tTplAttribute" name="tTplAttribute" cols="125" rows="2">
-      //---___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
-      this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
-    </textarea>
+//---___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
+this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
+</textarea>
     <hr>
-    <b>Methods Header</b> <tt>[tMethodsHeaderTpl]</tt><br>
+      <b>Method Constructor Comment</b> <tt>[tTplMethodConstructorComment]</tt><br>
+        <textarea id="tTplMethodConstructorComment" name="tTplMethodConstructorComment" cols="125" rows="4">
+//----Method: ___CLASSNAME___.___METHODDEF___-----
+// ___METHODNAME___(___METHODPARAMETERS___)  ___RETURNCOMMENT___
+___METHODCOMMENT___
+</textarea>
+    <hr>
+    <b>Methods Head Comment</b> <tt>[tTplMethodsHeadComment]</tt><br>
 <textarea id="tTplMethodsHeadComment" name="tTplMethodsHeadComment" cols="125" rows="3">
 
 //---------------------------------------------------------------------
@@ -1002,7 +1032,7 @@ ___METHODSPROTOTYPE___
 </textarea>
 <hr>
 <b>Method Prefix:</b>  <tt>[tMethodPrefix]</tt> <input type="text" id="tMethodPrefix" name="tMethodPrefix" value="this." size="7">
-<b>Comment Box Prefix:</b> <input type="text" id="tMethodPrefixProto" name="tMethodPrefixProto" value="___CLASSNAME___.prototype." size="28">
+<b>Prototype Method Prefix:</b> <tt>[tMethodPrefixProto]</tt> <input type="text" id="tMethodPrefixProto" name="tMethodPrefixProto" value="___CLASSNAME___.prototype." size="28">
   <hr>
   <b>Inherit from SuperClass (Prototype definition)</b> <tt>[tTplSuperClassProto]</tt><br>
 <textarea id="tTplSuperClassProto" name="tTplSuperClassProto" cols="125" rows="3">//--------------------------------------
@@ -1067,15 +1097,15 @@ ___METHODCODE___
 
 </textarea>
 <hr>
-  <b>Template Loop Array</b><br>
-  <textarea id="tTplLoopArray" name="tTplLoopArray" cols="125" rows="10">
+  <b>Template Loop Array</b> <tt>[tTplLoopArray]</tt> <br>
+  <textarea id="tTplLoopArray" name="tTplLoopArray" cols="125" rows="4">
     for (var i = 0; i < ___LOOPARRAY___.length; i++) {
       ___LOOPARRAY___[i].___LOOPMETHOD___;
     };
   </textarea>
 <hr>
-  <b>Template Loop Hash</b><br>
-  <textarea id="tTplLoopHash" name="tTplLoopHash" cols="125" rows="10">
+  <b>Template Loop Hash</b> <tt>[tTplLoopHash]</tt> <br>
+  <textarea id="tTplLoopHash" name="tTplLoopHash" cols="125" rows="4">
     for (vKey in ___LOOPARRAY___) {
       ___LOOPARRAY___[vKey].___LOOPMETHOD___;
     };

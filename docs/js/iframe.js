@@ -73,6 +73,22 @@ function writePage2Editor() {
   write2value("tPageID",vID);
 }
 
+function getPageTypeCode4Editor(pPageTypeID) {
+  var vID = pPageTypeID || vJSON_JS["sPageTypeHTML"] || getValueDOM("sPageTypeHTML") || "";
+  var vValue;
+  if (vJSON_JS["PageType"][vID]) {
+    if (vJSON_JS["PageType"][vID]["template"]) {
+      console.log("PageType template for ["+vID+"] FOUND");
+      vValue = vJSON_JS["PageType"][vID]["template"];
+    }
+  } else {
+    console.log("PagType content for ["+vID+"] undefined");
+  };
+  return vValue
+}
+
+
+
 function getMethodCode4Editor(pClass) {
   var vValue = "MethodCode for '"+pClass+"' undefined";
   if (vJSON_JS["ClassList"][pClass]) {
@@ -112,13 +128,14 @@ function writeMethodCode2Editor(pClass) {
 
 function writePageType2Editor() {
   var vID = getValueDOM("sPageTypeHTML");
-  var vValue = "PageType '"+vID+"' undefined";
-  if (vJSON_JS["PageType"] && vJSON_JS["PageType"][vID]) {
-    vValue = vJSON_JS["PageType"][vID]["template"];
-  };
   //setEditorValue("iPageHTML",vValue);
-  write2value("tPageTypeHTML",vValue);
-  write2value("tPageTypeID",vID);
+  var vValue = getPageTypeCode4Editor(vID);
+  if (vValue) {
+    write2value("tPageTypeHTML",vValue);
+    write2value("tPageTypeID",vID);
+  } else {
+    console.log("writePageType2Editor() Content undefined");
+  }
 }
 
 

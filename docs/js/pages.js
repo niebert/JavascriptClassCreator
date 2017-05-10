@@ -206,6 +206,31 @@ function updateElementJSON2Form(pArrID) {
   };
 };
 
+function getButtonMapID2JSON() {
+  // var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML"];
+  // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
+  var vMapID = {};
+  vMapID["tButtonID"] = "BUTTON_ID";
+  vMapID["tButtonTitle"] = "BUTTON_TITLE";
+  vMapID["tButtonDefHTML"] = "tButtonDefHTML";
+  return vMapID;
+}
+
+function updateButtonEditForm2JSON(pID) {
+  var vMapID = getButtonMapID2JSON();
+  var vButtonID = getValueDOM("tButtonname");
+  vButtonID = reduceVarName(vButtonID) || "";
+  if (vButtonID != "") {
+    var vMapID = getButtonMapID2JSON();
+    for (var iID in vMapID) {
+      if (vMapID.hasOwnProperty(iID)) {
+        vJSON_JS["ButtonList"][vButtonID][vMapID[iID]] = getValueDOM(iID) || "undefined DOM Content of "+iID;
+      };
+    };
+  };
+  var vArrID = getArray4HashID(vJSON_JS["ButtonList"]);
+  updateButtonJSON2Form(vArrID);
+}
 
 function updateButtonJSON2Form(pArrID) {
   var vArrID = pArrID || getArray4HashID(vJSON_JS["ButtonList"]);
@@ -219,22 +244,21 @@ function updateButtonJSON2Form(pArrID) {
 };
 
 function getButton4tButtonsForm(pArrID) {
+  console.log("getButton4tButtonsForm(["+pArrID.join(",")+"])");
+  var vArrID = pArrID || getArray4HashID(vJSON_JS["ButtonList"]);
   var vHash = vJSON_JS["ButtonList"];
   var vArr = [];
   var vLine = "";
   var vID = "";
   var vRECDEF = vButtonRECDEF;
   //var vHashCR = encodeNewHashCR(vHash);
-  vHashCR = vHash
-  if (pArrID) {
-    for (var i = 0; i < pArrID.length; i++) {
-      vID = pArrID[i];
-      vLine = getHash2RecordLine(vRECDEF,vHashCR[vID]);
+  for (var i = 0; i < vArrID.length; i++) {
+    vID = vArrID[i];
+    if (vHash.hasOwnProperty(vID)) {
+      vLine = getHashCR2RecordLine(vRECDEF,vHash[vID]);
       console.log("getButton4tButtonsForm(pArrID) "+vLine);
       vArr.push(vLine);
     }
-  } else {
-    console.log("ERROR: getButton4tButtonsForm(pArrID) - pArrID undefined");
   };
   return vArr.join("\n");
 };
@@ -368,7 +392,7 @@ function getButtonListHash() {
     for (var k = 0; k < vButtonRECDEF.length; k++) {
       vID = vButtonRECDEF[k];
       if (k < vButtArr.length) {
-        vValue = vButtArr[k];
+        vValue = decodeCR(vButtArr[k]);
       } else {
         vValue = "undefined "+vID;
       };
@@ -617,6 +641,19 @@ function getRecordLine2Hash(pRecord,pLine) {
    return vHash;
 };
 
+function getHashCR2RecordLine(pRecord,pHash) {
+   //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
+   console.log("getHashCR2RecordLine()");
+   var vOutHash = {};
+   for (var iID in pHash) {
+     if (pHash.hasOwnProperty(iID)) {
+       vOutHash[iID] = encodeCR(pHash[iID]);
+     };
+   };
+   return getHash2RecordLine(pRecord,vOutHash);
+};
+
+
 function getHash2RecordLine(pRecord,pHash) {
    //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
    console.log("getHash2RecordLine()");
@@ -641,7 +678,38 @@ function getTextareaArray(pTextareaID) {
   return removeExtensionJS4Array(vArrDB);
 }
 
-function getDefaultDatabase() {
+function getDatabaseListJSON() {
+  var vDBList = vJSON_JS["DatabaseList"];
+  var vDBHash = {};
+  var vID = "";
+  // create a hash with the DBnames with DBnames as
+  for (var i = 0; i < vDBList.length; i++) {
+    // removes blanks and other characters in vID so that the vID is a variable name
+    vID = reduceVarName(vDBList[i]);
+    vDBHash[vID] = vID;
+  };
+  // get all databases from "tDatabases" in project JSON file vJSON_JS and split as array
+  var vDatbasesString = vJSON_JS["tDatabases"];
+  console.log("getDatabaseListJSON():\n"+vDatbasesString);
+  var vArrDB = getString2Array(vDatbasesString);
+  for (var i = 0; i < vArrDB.length; i++) {
+    // removes blanks and other characters in vID so that the vID is a variable name
+    vID = removeExtension4File(vArrDB[i]);
+    vDBHash[vID] = vID;
+  };
+  //console.log("getDatabaseListJSON(): JSON\n"+stringifyJSON(vDBHash));
+  // application of hash removes double entries in a list of arrays
+  // export the hash IDs of vDBList to
+  var vRetArr = [];
+  for (var iID in vDBHash) {
+    if (vDBHash.hasOwnProperty(iID)) {
+      vRetArr.push(iID);
+    };
+  };
+  return vRetArr;
+};
+
+function getDatabaseListForm() {
   return getString2Array(getValueDOM("tDatabases"))
 };
 
@@ -662,15 +730,15 @@ function getDataseListJSON(pExtenstion) {
 
 function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
   var vDBname = pDBname || db_undefined;
-  var vTitle = pTitle || "Title of DB "+pDB;
+  var vTitle = pTitle || "Title of DB "+vDBname;
   var vArrID = pArrID || ["yesno1","freetext1","yesno2"];
   var vDB = {};
-  vDB["init_type"] = "DB";
+  vDB["JSCC_type"] = "DB";
   vDB["name"] = vDBname;
   vDB["file"] = "db/"+vDBname+".js";
   vDB["dbtitle"] = vTitle;
-  vDB["init_data"] = getDateTime();
-  vDB["mod_data"] = getDateTime();
+  vDB["JSCC_init_date"] = getDateTime();
+  vDB["JSCC_mod_date"] = getDateTime();
   vDB["format"] = {};
   var vID = "";
   for (var i = 0; i < vArrID.length; i++) {
@@ -679,6 +747,7 @@ function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
     vHash["title"] = "Title of ID "+vID;
     vHash["input"] = getMarker4ID("DB_"+vID);
     vHash["output"] = "___ID_VALUE___";
+    vHash["mandatory"] = true;
     vDB["format"][vArrID[i]] = vHash;
   };
   vDB["data"] = [];
@@ -720,7 +789,7 @@ function updateForm2DatabasesJSON() {
   var vDB = "";
   for (var i = 0; i < vNameDB.length; i++) {
     vDB = vNameDB[i];
-    vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || "{\n  \"name\": \""+vDB+"\"\n}";
+    vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || getDefaultDatabaseJSON(vDB);
   };
   vJSON_JS["DatabaseList"] =  vDBHash;
   createDatabaseSelect(vNameDB);
@@ -792,7 +861,7 @@ function createButtonJS(pButtonHash) {
 };
 
 function createNewButton() {
-  console.log("Click New - create a new Button with [+]");
+  console.log("createNewButton() Click New - create a new Button with [+]");
   if (askCreateNew("Button",getValueDOM("tButtonID"))) {
     createNewButton_do()
   };
@@ -805,10 +874,10 @@ function askCreateNew(pName,pID) {
 
 function createNewButton_do() {
   console.log("Create a new Button with [+]");
-  var vNewButtonID = getValueDOM("tButtonID");
-  var vNewButtonTitle = getValueDOM("tButtonTitle");
-  var vNewButtonDefHTML = getValueDOM("tButtonDefHTML");
   var vErrorMSG = "";
+  var vNewButtonID = getValueDOM("tButtonID");
+  var vNewButtonHash = getDefaultButtonHash(vNewButtonID);
+  //alert(vNewButtonHash["tButtonDefHTML"]);
   var vSuccess = false;
   var vCount = 0;
   if (vNewButtonID == "") {
@@ -818,33 +887,22 @@ function createNewButton_do() {
   if (existsButtonJS(vNewButtonID)) {
     vCount++;
     vErrorMSG = "\n("+vCount+") Button ["+vNewButtonID+"] already defined!"
-  };
-  if (vNewButtonDefHTML == "") {
-    vCount++;
-    vErrorMSG = "\n("+vCount+") Title of Button ["+vNewButtonID+"] is undefined!"
+    selectButtonJS(vNewButtonID);
   };
   if (vErrorMSG == "") {
     //write2value("tButtonID", vNewButtonName);
-    var vNewButtonHash = {
-      "BUTTON_ID":vNewButtonID,
-      "BUTTON_TITLE":vNewButtonTitle,
-      "tButtonDefHTML": vNewButtonDefHTML
-    };
-    vFailed = createButtonJS(vNewButtonHash);
-    //vFailed == true means Button exists,
-    if (vFailed) {
-      alert("Create New Button ["+vNewButtonID+"] was NOT successful. Button already exists!");
-      selectButtonJS(vNewButtonID);
-    } else {
-      console.log("successful createButtonJS()-Call");
-      vJSON_JS["ButtonList"][vNewButtonID] = vNewButtonHash;
-      write2value("tButtons", getButtonListString());
-      createButtonSelect();
-      //updateButtons();
-      //updateJSON2Form(vNewButtonName);
-      vSuccess = true;
-      //$( "#tabClass" ).trigger( "click" );
-    };
+    //vFailed = createButtonJS(vNewButtonHash);
+    vJSON_JS["ButtonList"][vNewButtonID] = vNewButtonHash;
+    write2value("tButtonID",vNewButtonHash["BUTTON_ID"] );
+    write2value("tButtonTitle",vNewButtonHash["BUTTON_TITLE"] );
+    write2value("tButtonDefHTML",vNewButtonHash["tButtonDefHTML"]);
+    write2value("sButtonHTML",vNewButtonID);
+    console.log("successful createButtonJS()-Call");
+    write2value("tButtons", getButtonListStringCR());
+    createButtonSelect();
+    //selectButtonJS(vNewButtonID);
+    //write2value("tButtonDefHTML",vNewButton[]);
+    vSuccess = true;
   } else {
     vErrorMSG = "ERROR Create New Button:"+vErrorMSG;
     alert(vErrorMSG);
@@ -852,6 +910,24 @@ function createNewButton_do() {
   };
   return vSuccess;
 };
+
+function writeMapButtonJSON2Form(pNewButtonID) {
+  if (vJSON_JS["ButtonList"][pNewButtonID]) {
+    var vNewButtonHash = vJSON_JS["ButtonList"][pNewButtonID];
+    var vMapID = getButtonMapID2JSON();
+    var vID = "";
+    for (var iID in vMapID) {
+      if (vMapID.hasOwnProperty(iID)) {
+        vID = vMapID[iID];
+        //write2value(iID,vJSON_JS["ButtonList"][vNewButtonID][vID])
+        console.log("write2value('"+iID+"','"+vNewButtonHash[vID]+"')");
+        write2value(iID,vNewButtonHash[vID]);
+      };
+    };
+  } else {
+    console.log("writeMapButtonJSON2Form('"+pNewButtonID+"')");
+  }
+}
 
 function createNewFile() {
   console.log("Click New - create a new Page with [+]");
@@ -1134,9 +1210,15 @@ function getPageListString() {
 };
 
 
-function getButtonListString() {
+function getButtonListStringCR() {
   var vCutColsAtEnd = 1;
-  return getHash4Record2String(vButtonRECDEF,vJSON_JS["ButtonList"],vCutColsAtEnd);
+  var vButtonList = cloneJSON(vJSON_JS["ButtonList"]);
+  for (var iID in vButtonList) {
+    if (vButtonList.hasOwnProperty(iID)) {
+      vButtonList[iID] = encodeCR(vButtonList[iID]);
+    };
+  };
+  return getHash4Record2String(vButtonRECDEF,vButtonList,vCutColsAtEnd);
 };
 
 function getPageTypeString() {
@@ -1383,7 +1465,7 @@ function existsListJS(pName,pListID,pID) {
     if (vJSON_JS[pListID]) {
       if (vJSON_JS[pListID][pID]) {
         vReturn = true;
-        console.log(pName+" with '"+pID+"' is a user-defined in vJSON_JS["+pListID+"].");
+        console.log(pName+" with  ID '"+pID+"' exists in vJSON_JS["+pListID+"].");
       };
     };
   };

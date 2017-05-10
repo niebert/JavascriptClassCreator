@@ -776,14 +776,23 @@ function removePrefix4DB(pContent) {
 }
 
 function selectDatabaseJSON() {
-  var vDB = getValueDOM("sDatabases");
-  if (vDB) {
-    write2value("tExportedJSON",vDB);
-    write2exportedDB(pDB,getCheckBox("checkUsePrefix"));
-    console.log("Database: '"+vDB+"' selected!");
-    selectDatabase(vDB);
+  var vDBname = getValueDOM("sDatabases");
+  console.log("selectDatabaseJSON('"+vDBname+"')");
+  if (existsDatabaseJS(vDBname)) {
+    var vDB = vJSON_JS["DatabaseList"][vDBname];
+    var vExportPrefix = "";
+    if (getCheckBox("checkUsePrefix") == true) {
+      vExportPrefix = getExportPrefix4DB(vDBname);
+    };
+    //console.log("DB['"+vDBname+"'] = "+stringifyJSON(vDB));
+    write2editor("JSONDB",vExportPrefix + stringifyJSON(vDB));
+    // ExportPrefix = "JSON" means: do not use the export prefix, it is pure JSON,
+    write2exportedDB(vDBname,getCheckBox("checkUsePrefix"));
+    console.log("Database: '"+vDBname+"' selected!");
+    //selectDatabase(vDBname);
   } else {
-    console.log("WARNING: selectDatabaseJSON() vDB undefined!");
+    writeFilenameWithPath4DB("",getCheckBox("checkUsePrefix"));
+    console.log("WARNING: selectDatabaseJSON() vDBname undefined!");
   };
 }
 
@@ -795,22 +804,22 @@ function getExportPrefix() {
   return vPrefix;
 };
 
-function selectDatabase(pDB) {
+function selectDatabase(pDBname) {
   //show("bSaveJSON");
-  var vDB = pDB || getValueDOM("sDatabases");
+  var vDBname = pDBname || getValueDOM("sDatabases");
   var vSelExpPref = getExportPrefix();
-  console.log("selectDatabase('"+vDB+"') Type: '"+vSelExpPref+"'");
+  console.log("selectDatabase('"+vDBname+"') Type: '"+vSelExpPref+"'");
   var vContent = "";
   // ExportPrefix = "JSON" means: do not use the export prefix, it is pure JSON,
   var vExportPrefix = "";
   var vExtension = ".json";
   if (getCheckBox("checkUsePrefix") == true) {
-    vExportPrefix = getExportPrefix4DB(vDB);
+    vExportPrefix = getExportPrefix4DB(vDBname);
   };
-  if (vJSON_JS["DatabaseList"][vDB]) {
-    vContent = vJSON_JS["DatabaseList"][vDB];
+  if (vJSON_JS["DatabaseList"][vDBname]) {
+    vContent = stringifyJSON(vJSON_JS["DatabaseList"][vDBname]);
   } else {
-    alert("Database ["+vDB+"] does not exist in call of selectDatabase()");
+    alert("Database ["+vDBname+"] does not exist in call of selectDatabase()");
   };
   setEditorValue("iJSONDB",vExportPrefix + vContent);
 };

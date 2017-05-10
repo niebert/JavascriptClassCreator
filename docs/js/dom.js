@@ -381,7 +381,7 @@ function writeClassTitle(pClassName) {
   write2innerHTML("titleClassNameTab",pClassName);
   write2innerHTML("titleClassNameAttrib",pClassName);
   write2innerHTML("titleClassNameMethod",pClassName);
-  write2innerHTML("titleClassAttributes",pClassName);
-  write2innerHTML("titleClassMethods",pClassName);
+  //write2innerHTML("titleClassAttributes",pClassName);
+  //write2innerHTML("titleClassMethods",pClassName);
   write2innerHTML("codeClassName",pClassName);
 };

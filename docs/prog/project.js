@@ -381,7 +381,7 @@ vDatabase['project'] = {
                 "init": "this.aDatabaseHash = pDatabase;\nfor (var vKey in this.aDatabaseHash) {\n  this.aDBHash[vKey] = new Database();\n  this.aDBHash[vKey].init(this.aDatabase[vKey]);\n};\n",
                 "load": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].load();\n};\n",
                 "save": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].save();\n};\n",
-                "getDBHash4Type":"var vRetHash = {};\nvar vType = \"\";\nfor (var vKey in this.aDBHash) {\n  vType = this.aDBHash[vKey].getType();\n  if (vType==\"pType\") {\n    vRetHash[vKey] = this.aDBHash[vKey];\n  }\n};\n"
+                "getDBHash4Type":"var vRetHash = {};\nvar vType = \"\";\nfor (var vKey in this.aDBHash) {\n  vType = this.aDBHash[vKey].getType();\n  if (vType==\"pType\") {\n    vRetHash[vKey] = this.aDBHash[vKey];\n  }\n};\nreturn vRetHash\n"
             },
             "MethodComment": {
                 "init": "create Database objects for all keys in pDatabase hash in the init the Database in this.aDB",

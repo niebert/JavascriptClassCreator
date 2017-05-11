@@ -1449,7 +1449,10 @@ function existsElementJS(pElementID,pFileID) {
     if (vJSON_JS["FileList"][vFile].hasOwnProperty("elements")) {
       var vElemHash = vJSON_JS["FileList"][vFile]["elements"];
       if (vElemHash.hasOwnProperty(pElementID)) {
+          console.log("Element '"+pElementID+"' exists for file '"+vFile+"'");
           vExists = true;
+      } else {
+        console.log("Element '"+pElementID+"' does NOT exist for file '"+vFile+"'");
       };
     };
   };

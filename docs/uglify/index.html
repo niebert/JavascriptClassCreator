@@ -45,24 +45,30 @@ function getWinOpener() {
 
 var vWinOpener = getWinOpener();
 
-function loadInputCode() {
+function loadInputCode(pEditorID) {
 	var vInputCode = "//lost connection to parent window of JavascriptClassGenerator";
 	var vClassName = "UndefinedClass";
 	if (typeof vWinOpener === "undefined") {
 		console.log("wWinOpener undefined - connection lost");
 	} else {
 		console.log("Parent Editor Content of 'iOutput' loaded");
-		vInputCode = vWinOpener.getEditorValue("iOutput");
+		vInputCode = vWinOpener.getEditorValue(pEditorID);
 		vClassName = vWinOpener.getValueDOM("tClassname");
 	};
-	document.getElementById("in").value = vInputCode;
+	setInputCode(vInputCode);
 	document.getElementById("hClassName").innerHTML = vClassName;
 	console.log("loadInputCode() of Class: '"+vClassName+"'");
 };
 
-loadInputCode();
+function setInputCode(pInputCode) {
+	var vInputCode = pInputCode || "// Code undefined";
+	document.getElementById("in").value = vInputCode;
+};
 
-
+function getOutputCode() {
+	console.log("getOutputCode()");
+	return document.getElementById("out").value || "undefined code";
+};
 
 </script>
 
@@ -167,8 +173,16 @@ loadInputCode();
 
 <script>
 //alert("Onclick="+document.getElementById("btn-go").onclick)
-function updateParentContent() {
+function startCompressor() {
 	document.getElementById("btn-go").onclick();
+	console.log("Function Call: 'go(throw_on_error)'");
+	//alert("Function Call: "+document.getElementById("btn-go").onclick);
+};
+
+function updateParentContent() {
+	loadInputCode("iOutput");
+	startCompressor();
+
 	var vCompCode = document.getElementById("out").value || "undefined code";
 	if (typeof vWinOpener === "undefined") {
 		console.log("wWinOpener undefined - connection lost");

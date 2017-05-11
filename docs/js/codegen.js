@@ -6,36 +6,20 @@ function compressCode4Class() {
   // setEditorValue("iOutput",vCompCode);
 };
 
-function compressCodeJS() {
-  var vCode = getEditorValue("iOutput");
+function compressCodeJS(pCode) {
+  var vCode = pCode || getEditorValue("iOutput");
   console.log("compressCodeJS() length="+vCode.length+" not used in JSCC so far");
-  var vCodeTree = UglifyJS.parse(vCode);
-  vCodeTree.figure_out_scope();
-  var vCompressorOptions = {
-    sequences     : true,  // join consecutive statemets with the “comma operator”
-    properties    : true,  // optimize property access: a["foo"] → a.foo
-    dead_code     : true,  // discard unreachable code
-    drop_debugger : true,  // discard “debugger” statements
-    unsafe        : false, // some unsafe optimizations (see below)
-    conditionals  : true,  // optimize if-s and conditional expressions
-    comparisons   : true,  // optimize comparisons
-    evaluate      : true,  // evaluate constant expressions
-    booleans      : true,  // optimize boolean expressions
-    loops         : true,  // optimize loops
-    unused        : true,  // drop unused variables/functions
-    hoist_funs    : true,  // hoist function declarations
-    hoist_vars    : false, // hoist variable declarations
-    if_return     : true,  // optimize if-s followed by return/continue
-    join_vars     : true,  // join var declarations
-    cascade       : true,  // try to cascade `right` into `left` in sequences
-    side_effects  : true,  // drop side-effect-free statements
-    warnings      : true,  // warn about potentially dangerous optimizations/code
-    global_defs   : {}     // global definitions
+  var vWin = getCompressorWin();
+  if (vWin) {
+    console.log("Window of iFrame 'iCompressor' found");
+    vWin.setInputCode(vCode);
+    vWin.startCompressor();
+    vCode = vWin.getOutputCode();
+  } else {
+    console.log("ERROR: compressCodeJS(pCode) - Compressor [iCompressor] not found in iFrame! return uncompressed code");
   };
-  compressor = UglifyJS.Compressor(vCompressorOptions);
-  ast = ast.transform(compressor);
-  code = ast.print_to_string();
-}
+  return vCode;
+};
 
 function createProjectJSON() {
   //hide("bSaveJSON");
@@ -86,13 +70,45 @@ function getDatabaseJSON2String(pDB) {
   var vDB = pDB || "";
   var vContent = "";
   if (existsDatabaseJS(vDB)) {
-    vContent = stringifyJSON(vJSON_JS["DatabaseList"][vDB]);
+    var vDB_JSON = cloneJSON(vJSON_JS["DatabaseList"][vDB]);
+    replaceElements4Hash(vDB_JSON);
+    vContent = stringifyJSON(vDB_JSON);
   } else {
     vContent = "// Database ["+vDB+"] undefined in vJSON_JS['DatabaseList']";
   };
-  console.log("st");
-
+  console.log("Return the Content of Database ["+vDB+"]");
+  return vContent;
 };
+
+function replaceElements4Hash(pObject,pRecursive_Depth,pFile) {
+  var vFile = pFile || getSelectedFileID();
+  var vRecursive_Depth = pRecursive_Depth || 0;
+  var vMax = 50;
+  if (isHash(pObject)) {
+    vRecursive_Depth++;
+    if (vRecursive_Depth < vMax)
+    for (var iID in pObject) {
+      if (pObject.hasOwnProperty(iID)) {
+        if (isHash(pObject[iID])) {
+          console.log("RECURSIVE: replaceElements4Hash(pObject['"+iID+"'],"+vRecursive_Depth+");");
+          replaceElements4Hash(pObject[iID],vRecursive_Depth);
+        } else if (typeof(pObject[iID]) == "string") {
+          console.log("STRING: replaceElements4Hash(pObject['"+iID+"'],"+vRecursive_Depth+");");
+          pObject[iID] = replaceElements4HTML(pObject[iID],vFile);
+        };
+      };
+    };
+  };
+};
+
+function isHash(pObject) {
+   return pObject && (typeof(pObject)  === "object");
+};
+
+function isArray(pObj) {
+  return isHash(pObj) && (pObj instanceof Array);
+};
+
 function setFilenameExportJSON(pFilename) {
   var vFilename = pFilename || "";
   write2innerHTML("labExportFile",vFilename);
@@ -198,6 +214,18 @@ function getCode4JSON_JS(pJSONDB) {
   return JSON.stringify(pJSONDB, null, 4);
 };
 
+function exportTemplatesJSON() {
+  //var vOut = getCode4JSON_JS(vJSON_TPL);
+  updateForm2TemplateJSON();
+  vJSON_TPL["JSCC_type"] = "TPL"; // Type is set to Templates
+  vJSON_TPL["mod_date"] = getDateTime(); // set Export Date of Templates
+  var vFileName = "code_templates";
+  createCode4JSON_JS(vJSON_TPL,vFileName,"Database Templates");
+  var vFileHDD = getSaveFilename4DB(vFileName,getCheckBox("checkExportJS"));
+  saveFile2HDD(vFileHDD,getEditorValue("iJSONDB"));
+  $( "#tabJSON" ).trigger( "click" );
+};
+
 function exportHTML() {
   var vFile = getValueDOM("sFileHTML");
   var vStandanlone = getValueDOM("sStandalone") || "NO";
@@ -230,6 +258,9 @@ function getHTML4File(pFile,pStandalone) {
     // insert Library Import or Library SCRIPT-Tags with Code
     var vReplace = getDatabasesHTML(pFile,pStandalone);
     vReplace += "\n"+getLibrariesHTML(pFile,pStandalone);
+    if (getCheckBox("checkCompressCode4HTML")) {
+      //vReplace = compressCodeJS(vReplace);
+    };
     //alert("vReplace="+vReplace.substring(0,300))
     vHTML = replaceString(vHTML,"___LIBRARIES___",vReplace);
     // Insert Generated Pages
@@ -249,8 +280,9 @@ function replaceAppLaucher4HTML(pHTML,pFile) {
 };
 
 function replaceElements4HTML(pHTML,pFile) {
-  if (existsFileJS(pFile)) {
-    var vElemHash = vJSON_JS["FileList"][pFile]["elements"];
+  var vFile = pFile || getSelectedFileID();
+  if (existsFileJS(vFile)) {
+    var vElemHash = vJSON_JS["FileList"][vFile]["elements"];
     for (var iElemID in vElemHash) {
       if (vElemHash.hasOwnProperty(iElemID)) {
         pHTML = replaceString(pHTML,"___"+iElemID+"___",vElemHash[iElemID]);
@@ -473,27 +505,63 @@ function getGlobalLibrariesHTML(pFile,pStandalone) {
 
 function getClassLibrariesHTML(pFile,pStandalone) {
   // Parameter pFile can be used to import a dependent set libraries
+  var vCompressed = getCheckBox("checkCompressCode4HTML");
   var vArrJS = getDatabaseArray();
   var vOut = "      <!-- Classes Javascript-Libs -->\n";
   var vCList = vJSON_JS["ClassList"];
+  var vExportBoolean = {};
   for (var iClass in vCList) {
     if (vCList.hasOwnProperty(iClass)) {
-      vOut += getClassHTML4Code(iClass,pStandalone);
-    }
+      vOut += getClassInherit4Code(iClass,pStandalone,vCompressed,vExportBoolean);
+    };
   };
   return vOut;
 }
 
-function getClassHTML4Code(pClass,pStandalone) {
-  var vSCRIPT = "";getValueDOM("tTplSCRIPT");
+function getClassInherit4Code(pClass,pStandalone,pCompressed,pExportBoolean) {
+  var vOut = "";
+  if (pExportBoolean.hasOwnProperty(pClass)) {
+    console.log("getClassInherit4Code('"+pClass+"') already exported");
+  } else {
+    pExportBoolean[pClass] = pClass;
+    if (existsClassJS(pClass)) {
+      var vSuperClassname = getSuperClassname4Class(pClass);
+      if (vSuperClassname != "") {
+        vOut += getClassInherit4Code(vSuperClassname,pStandalone,pCompressed,pExportBoolean);
+      };
+      // Check Aggregations of Class and export these classes first,
+      // so that they are defined, when the code of pClass is defined
+      var vAggHash = getAggregationHash4Class(pClass);
+      for (var iAggClass in vAggHash) {
+        console.log("getClassInherit4Code('"+pClass+"') Aggregation '"+iAggClass+"'");
+        if (vAggHash.hasOwnProperty(iAggClass)) {
+          if (pExportBoolean.hasOwnProperty(iAggClass)) {
+            // export the Aggregation Class "iClass" first
+            console.log("getClassInherit4Code('"+pClass+"') Aggregation '"+iAggClass+"' already exported");
+          } else {
+            console.log("getClassInherit4Code('"+pClass+"') export Aggregation Class '"+iAggClass+"'");
+            vOut += getClassInherit4Code(iAggClass,pStandalone,pCompressed,pExportBoolean);
+          };
+        };
+      };
+      console.log("getClassInherit4Code('"+pClass+"','"+pStandalone+"','"+pCompressed+")");
+      vOut += getClassHTML4Code(pClass,pStandalone,pCompressed);
+    };
+  };
+  return vOut;
+}
+
+function getClassHTML4Code(pClass,pStandalone,pCompressed) {
+  var vCompressed = pCompressed || false;
+  var vSCRIPT = ""; //getValueDOM("tTplSCRIPT");
   var vOut = "";
   if (pStandalone == "YES") {
     vSCRIPT = getValueDOM("tTplSCRIPTSTANDALONE");
-    vOut = replaceString(vSCRIPT,"___JSCODE___",getCode4Class(pClass));
+    vOut += replaceString(vSCRIPT,"___JSCODE___",getCode4Class(pClass,vCompressed));
   } else {
     var vLibName = pClass.toLowerCase();
     vSCRIPT = getValueDOM("tTplSCRIPT");
-    vOut = replaceString(vSCRIPT,"___LIBRARY___","js/"+vLibName+".js");
+    vOut += replaceString(vSCRIPT,"___LIBRARY___","js/"+vLibName+".js");
   };
   return vOut
 }
@@ -544,6 +612,49 @@ function getPageMenu4ID(vPageID) {
   };
   vTPL = replaceString(vTPL,"___MENUITEM_LIST___",vMenuList);
   return vTPL;
+};
+
+function getConnectedPageArr(pArrID) {
+  // vArrID is the results Array for return
+  var vArrID = [];
+  // vHash is introduced to avoid duplicate entries,
+  var vHashID = {};
+  var vID = "";
+  if (pArrID && (pArrID.length) && (pArrID.length > 0)) {
+    // loop over the root pages defined by User in "tPageIDs"
+    for (var i = 0; i < pArrID.length; i++) {
+      vID = pArrID[i];
+      vHashID[vID] = vID;
+      // the child pages of page with id vID and store the new childs in vHashID
+      getChildPageHash(vID,vHashID);
+    };
+  };
+  // convert the keys of vHashID into an array of ids.
+  vArrID = getArray4HashID(vHashID);
+  return vArrID;
+};
+
+function getChildPageHash(pPageID,pHash,pRecursive_Depth) {
+  var vHash = pHash || {};
+  var vRecursive_Depth = pRecursive_Depth || 0;
+  var vMax = 50;
+  var vChildID = {};
+  var vParentID = "";
+  vRecursive_Depth++;
+  // checkif root page ID exists
+  if (existsPageJS(pPageID)) {
+    var vPageList = vJSON_JS["PageList"];
+    for (var iPageID in vPageList) {
+      if (vPageList.hasOwnProperty(iPageID)) {
+        vParentID = vPageList[iPageID]["parent-id"];
+        if (vParentID == pPageID) {
+          vChildID[iPageID] = iPageID;
+          vHash[iPageID] = iPageID;
+        };
+      };
+    };
+    //
+  };
 };
 
 function getChildPageIDs(pParentPageID) {
@@ -660,17 +771,18 @@ function getPageTitle4ID(pPageID) {
   return vTitle; //
 };
 
-function getDatabasesHTML(pStandalone) {
+function getDatabasesHTML(pFile,pStandalone) {
+  console.log("getDatabasesHTML('"+pFile+"','"+pStandalone+"')");
   var vArrDB = getDatabaseArray();
   var vOut = "\n<!-- JSON Databases -->\n";
-  if (pStandalone) {
+  if (pStandalone == "YES") {
     var vSCRIPT = getValueDOM("tTplSCRIPTSTANDALONE");
     vOutJS = "";
     for (var i = 0; i < vArrDB.length; i++) {
       if (existsDatabaseJS(vArrDB[i])) {
         vOutJS += "\n//---- JSON 'db/"+vArrDB[i]+".js' ----\n";
         vOutJS += "\nvDatabase['"+vArrDB[i]+"'] = ";
-        vOutJS += stringifyJSON(vJSON_JS["DatabaseList"][vArrDB[i]]);
+        vOutJS += stringifyDatabaseJSON(vJSON_JS["DatabaseList"][vArrDB[i]]);
         vOutJS += ";\n";
       };
     };
@@ -685,6 +797,16 @@ function getDatabasesHTML(pStandalone) {
   };
   return vOut;
 };
+
+function stringifyDatabaseJSON(pJSON) {
+  var vOut = "// stringifyDatabaseJSON(pJSON) undefined"
+  if (pJSON && isHash(pJSON)) {
+    var vJSON = cloneJSON(pJSON);
+    replaceElements4Hash(vJSON);
+    vOut = stringifyJSON(vJSON);
+  };
+  return vOut;
+}
 
 function parameterHasClassDef(pPar) {
   var vRet = null;
@@ -728,8 +850,13 @@ function displayCompress() {
     if (getCheckBox("cCompOptions") == true) {
       vParam = "?autoclose=0";
     };
-    vWinCompress = window.open("uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
+    vWinCompress = openCompressorWin(vParam);
 };
+
+function openCompressorWin(pParam) {
+  var vParam = pParam || "";
+  return window.open("uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
+}
 
 
 function displayUML() {
@@ -780,9 +907,10 @@ function createCode4Class(pClass) {
   };
 };
 
-function getCode4Class(pClass) {
+function getCode4Class(pClass,pCompressed) {
   var vClass = pClass || "";
-  console.log("getCode4Class('"+vClass+"')");
+  var vCompressed = pCompressed || false;
+  console.log("getCode4Class('"+vClass+"',vCompressed)");
   var vOutput = "";
   if (existsClassJS(vClass)) {
     var vClassJS = getClassJSON(vClass);
@@ -790,9 +918,6 @@ function getCode4Class(pClass) {
     var vSuperClass     = vClassJS["tSuperClass"];
   	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
     var vClassTail    	= getValueDOM("tTplClassTail");
-  	//var vAttributes 	= document.fCreator.tAttributes.value;
-  	//var vMethods    	= document.fCreator.tMethods.value;
-  	var vMethodArray    = getMethodArray(vClass);
   	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
   	var vMethodConstructor = "	//---Methods----------------------------\n";
   	vOutput = getValueDOM("tClassHeader");
@@ -802,6 +927,9 @@ function getCode4Class(pClass) {
     vOutput       = replaceMethods4Code(vOutput,vTplMethodHeader,vClass);
   	vClassTail    = replaceString(vClassTail,"___CLASSNAME___",vClassJS["tClassname"]);
   	vOutput += vClassTail;
+    if (vCompressed) {
+      vOutput = compressCode4Class(vOutput);
+    };
   } else {
     console.log("ERROR: getCode4Class('"+vClass+"') Class does not exist");
     vOutput = "// ERROR: Code for Class '"+vClass+"' does not exist"
@@ -845,7 +973,7 @@ function replaceCodeMainVars(pOutput,pClass) {
   vOutput = replaceString(vOutput,"___SUPERCLASSNAME___",vClassJS["tSuperClassname"]);
   vOutput = replaceString(vOutput,"___CLASSNAME___",vClassJS["tClassname"]);
   vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
-  vOutput = replaceString(vOutput,"___DATE___",vClassJS["tDate"]);
+  vOutput = replaceString(vOutput,"___DATE___",vClassJS["JSCC_mod_date"]);
   vOutput = replaceString(vOutput,"___MODDATE___",getDate());
   vOutput = replaceString(vOutput,"___METHODDEFPREFIX___",vMethodDefPrefix);
   return vOutput;
@@ -918,7 +1046,7 @@ function getMethodComments4Constructor(pClass) {
 function replaceAttributes4Code(pOutput,pClass) {
   var vOutput = pOutput || "undefined pOutput";
   var vClass = pClass || getValueDOM("tClassname");
-  var vAttribArray    = getAttribNameArray(vClass);
+  var vAttribArray    = getAttribNameArrayJSON(vClass);
   var vClassJS = getClassJSON(vClass);
   var vTemplate = getValueDOM("tTplAttribute");
   var vAttribDef = "";
@@ -1031,14 +1159,6 @@ function createLinkedMethodDefinitions() {
 	};
 };
 
-function exportTemplatesJSON() {
-  //var vOut = getCode4JSON_JS(vJSON_TPL);
-  updateForm2TemplateJSON();
-  vJSON_TPL["JSCC_type"] = "TPL"; // Type is set to Templates
-  vJSON_TPL["mod_date"] = getDateTime(); // set Export Date of Templates
-  createCode4JSON_JS(vJSON_TPL,"code_templates","Database Templates");
-  $( "#tabJSON" ).trigger( "click" );
-};
 
 function importTemplatesJSON() {
   //var vOut = getCode4JSON_JS(vJSON_TPL);

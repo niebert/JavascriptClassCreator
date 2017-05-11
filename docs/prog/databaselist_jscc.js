@@ -2,7 +2,7 @@ vJSON_JS['ClassList']['DatabaseList'] = {
     "tClassname": "DatabaseList",
     "tSuperClassname": "",
     "sClassType": "Green",
-    "tDate": "",
+    "JSCC_mod_date": "",
     "tAuthor": "Engelbert Niehaus",
     "tEMail": "niehaus@uni-landau.de",
     "tAttributes": "aDBListHash = {}",
@@ -24,10 +24,10 @@ vJSON_JS['ClassList']['DatabaseList'] = {
         "aDBListHash": "{}"
     },
     "AttribType": {
-        "aDBList:Hash": "Hash",
+         
         "aDBListHash": "Hash"
     },
-    "MethodName": {},
+     
     "MethodReturn": {
         "init": "",
         "load": "",

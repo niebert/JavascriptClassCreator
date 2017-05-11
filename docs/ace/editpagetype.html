@@ -27,6 +27,7 @@
 </pre>
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    var vTextareaID = "tPageTypeHTML";
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/html");
@@ -34,8 +35,13 @@
     if (vPageTypeID == "") {
       editor.setValue(" ",-1);
     } else {
-      editor.setValue(top.getValueDOM("tPageTypeHTML"),-1);
+      //editor.setValue(top.getValueDOM("tPageTypeHTML"),-1);
+      editor.setValue(top.getValueDOM(vTextareaID),-1);
     };
+    editor.getSession().on('change', function() {
+      top.write2value(vTextareaID,editor.getValue());
+    });
+
     //alert("PaegTypeID='"+vPageTypeID+"'");
 </script>
 

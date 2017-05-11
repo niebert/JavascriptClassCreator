@@ -1,13 +1,17 @@
+<!DOCTYPE html>
 <html>
     <head>
+      <meta charset="utf-8"/>
       <title>App LSAC</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
       <meta name="apple-mobile-web-app-capable" content="yes">
-      <link type="text/css"  href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
-      <link type="text/css" href="css/ios_inspired.css" rel="stylesheet" />
+      <link type="text/css" href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+      <link  type="text/css" href="css/ios_inspired.css" rel="stylesheet" />
       <script src="js/jquery-1.7.1.min.js"></script>
 
       <script>
+        // vDatabase contains all loaded Databases as JSON file
+        var vDatabase = {};
         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
          $(".ui-dialog button").live("click", function() {
@@ -18,12 +22,1118 @@
            });
          //--------------END iOS-Inspired------------
       </script>
+
+<!-- JSON Databases -->
+<script type="text/javascript" >
+
+//---- JSON 'db/db_mydata.js' ----
+
+vDatabase['db_mydata'] = {
+    "JSCC_type": "DB",
+    "name": "db_mydata",
+    "file": "db/db_mydata.js",
+    "dbtitle": "Title of DB db_mydata",
+    "JSCC_init_date": "2017/04/04 20:47:01",
+    "JSCC_mod_date": "2017/04/04 20:47:01",
+    "format": {
+        "yesno1": {
+            "title": "Title of ID yesno1",
+            "input": "___DB_YESNO___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        },
+        "freetext1": {
+            "title": "Title of ID freetext1",
+            "input": "___DB_FREETEXT___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        },
+        "yesno2": {
+            "title": "Title of ID yesno2",
+            "input": "___DB_YESNO___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        }
+    },
+    "data": {
+        "submitted": {},
+        "local": {}
+    }
+};
+
+//---- JSON 'db/db_disapp.js' ----
+
+vDatabase['db_disapp'] = {
+    "JSCC_type": "DB",
+    "name": "db_disapp",
+    "file": "db/db_disapp.js",
+    "dbtitle": "Title of DB db_disapp",
+    "JSCC_init_date": "2017/04/04 20:47:01",
+    "JSCC_mod_date": "2017/04/04 20:47:01",
+    "format": {
+        "yesno1": {
+            "title": "Title of ID yesno1",
+            "input": "___DB_YESNO___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        },
+        "freetext1": {
+            "title": "Title of ID freetext1",
+            "input": "___DB_FREETEXT___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        },
+        "yesno2": {
+            "title": "Title of ID yesno2",
+            "input": "___DB_YESNO___",
+            "output": "___DB_ID_VALUE___",
+            "mandatory": true
+        }
+    },
+    "data": {
+        "submitted": {},
+        "local": {}
+    }
+};
+
+</script>
+
+      <!-- JavaScript Libraries -->
+      <script type="text/javascript" src="js/string.js"></script>
+      <script type="text/javascript" src="js/localstorage.js"></script>
+      <script type="text/javascript" src="js/writedom.js"></script>
+
+      <!-- Classes Javascript-Libs -->
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: LinkParam()
+//#       SuperClass:
+//#   Class Filename: linkparam.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/linkparam.js"
+//---------------------------------------------------------------------
+//---Constructor of Class LinkParam()
+// Call the constructor for creating an instance of class LinkParam
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new LinkParam();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of LinkParam, use
+// the attribute name with a leading "this." in the definition of method of LinkParam, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'LinkParam'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'LinkParam' will be set by
+// use the method's name and extend it with 'LinkParam'.
+//    LinkParam.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function LinkParam () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "LinkParam()"
+    //---------------------------------------------------------------------
+	//---size (Integer): Counts the Number of Parameter
+	this.size = 0;
+	//---aVars (Hash): Attribute: 'aVars' Type: 'Hash' stores all URL parameters
+	this.aVars = {};
+	//---aLink (String): Attribute: 'aLink' Type: 'String' stores the Link before '?'
+	this.aLink = "";
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "LinkParam()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "LinkParam()" defined as JS functions
+	//---------------------------------------------------------------------
+	//----Method: LinkParam.init(pDoc:Document)-----
+	// init(pDoc)
+	//      1) inits the App with the document
+	//      2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam
+	//      3) inits all the database in aDatabaseList
+	//----Method: LinkParam.parseURL(pLink:String):String-----
+	// parseURL(pLink)  Return: String
+	//      What does 'parseURL' do?
+	//----Method: LinkParam.getURL(pVarHash:Hash):String-----
+	// getURL(pVarHash)  Return: String
+	//      What does 'getURL' do?
+	//----Method: LinkParam.setValue(pVar:String,pValue:String)-----
+	// setValue(pVar,pValue)
+	//      What does 'setValue' do?
+	//----Method: LinkParam.getValue(pVar:String):String-----
+	// getValue(pVar)  Return: String
+	//      What does 'getValue' do?
+	//----Method: LinkParam.deleteValue(pVar:String)-----
+	// deleteValue(pVar)
+	//      What does 'deleteValue' do?
+	//----Method: LinkParam.getLink4URL():String-----
+	// getLink4URL()  Return: String
+	//      What does 'getLink4URL' do?
+	//----Method: LinkParam.getParam4URL():String-----
+	// getParam4URL()  Return: String
+	//      What does 'getParam4URL' do?
+	//----Method: LinkParam.decodeParam(pParam:String):String-----
+	// decodeParam(pParam)  Return: String
+	//      What does 'decodeParam' do?
+	//----Method: LinkParam.encodeParam(pParam:String)-----
+	// encodeParam(pParam)
+	//      What does 'encodeParam' do?
+	//----Method: LinkParam.getTableHTML():String-----
+	// getTableHTML()  Return: String
+	//      What does 'getTableHTML' do?
+	//----Method: LinkParam.getEditTableHTML(pPrefixID:String):String-----
+	// getEditTableHTML(pPrefixID)  Return: String
+	//      What does 'getEditTableHTML' do?
+	//----Method: LinkParam.calcSize()-----
+	// calcSize()
+	//      What does 'calcSize' do?
+	//----Method: LinkParam.encodeHTML(pValue:String,pWrapCode:Boolean):String-----
+	// encodeHTML(pValue,pWrapCode)  Return: String
+	//      What does 'encodeHTML' do?
+	//----Method: LinkParam.exists(pVar:String):Boolean-----
+	// exists(pVar)  Return: Boolean
+	//      What does 'exists' do?
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "LinkParam()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "LinkParam()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: LinkParam
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DatabaseList()
+//#       SuperClass:
+//#   Class Filename: databaselist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/databaselist.js"
+//---------------------------------------------------------------------
+//---Constructor of Class DatabaseList()
+// Call the constructor for creating an instance of class DatabaseList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DatabaseList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DatabaseList, use
+// the attribute name with a leading "this." in the definition of method of DatabaseList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DatabaseList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DatabaseList' will be set by
+// use the method's name and extend it with 'DatabaseList'.
+//    DatabaseList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DatabaseList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DatabaseList()"
+    //---------------------------------------------------------------------
+	//---aDBListHash (Hash): the attribute 'aDBListHash' stores in 'Hash' ...
+	this.aDBListHash = {};
+	//---aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
+	this.aLinkParam = new LinkParam();
+	//---aDatabaseList (DatabaseList): stores all databases loaded in the app
+	this.aDatabaseList = new DatabaseList();
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "DatabaseList()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "DatabaseList()" defined as JS functions
+	//---------------------------------------------------------------------
+	//----Method: DatabaseList.init(pDoc:Document,pDatabase:Hash)-----
+	// init(pDoc,pDatabase)
+	//      1) inits the App with the document
+	//      2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam
+	//      3) inits all the database in aDatabaseList
+	//----Method: DatabaseList.load():Boolean-----
+	// load()  Return: Boolean
+	//      load Databases and DOMVars from LocalStorage if the exist in local storage
+	//----Method: DatabaseList.save():Boolean-----
+	// save()  Return: Boolean
+	//      save Databases and DOMVars to LocalStorage
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DatabaseList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DatabaseList()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DatabaseList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: AppAbstract()
+//#       SuperClass:
+//#   Class Filename: appabstract.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/appabstract.js"
+//---------------------------------------------------------------------
+//---Constructor of Class AppAbstract()
+// Call the constructor for creating an instance of class AppAbstract
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new AppAbstract();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of AppAbstract, use
+// the attribute name with a leading "this." in the definition of method of AppAbstract, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'AppAbstract'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'AppAbstract' will be set by
+// use the method's name and extend it with 'AppAbstract'.
+//    AppAbstract.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function AppAbstract () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "AppAbstract()"
+    //---------------------------------------------------------------------
+	//---aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
+	this.aLinkParam = new LinkParam();
+	//---aDatabaseList (DatabaseList): stores all databases loaded in the app
+	this.aDatabaseList = new DatabaseList();
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "AppAbstract()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "AppAbstract()" defined as JS functions
+	//---------------------------------------------------------------------
+	//----Method: AppAbstract.init(pDoc:Document,pDatabase:Hash)-----
+	// init(pDoc,pDatabase)
+	//      1) inits the App with the document
+	//      2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam
+	//      3) inits all the database in aDatabaseList
+	//----Method: AppAbstract.load():Boolean-----
+	// load()  Return: Boolean
+	//      load Databases and DOMVars from LocalStorage if the exist in local storage
+	//----Method: AppAbstract.save():Boolean-----
+	// save()  Return: Boolean
+	//      save Databases and DOMVars to LocalStorage
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "AppAbstract()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "AppAbstract()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: AppAbstract
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: Server()
+//#       SuperClass:
+//#   Class Filename: server.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               28.4.2017
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/server.js"
+//---------------------------------------------------------------------
+//---Constructor of Class Server()
+// Call the constructor for creating an instance of class Server
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new Server();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of Server, use
+// the attribute name with a leading "this." in the definition of method of Server, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'Server'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'Server' will be set by
+// use the method's name and extend it with 'Server'.
+//    Server.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function Server () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "Server()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "Server()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "Server()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "Server()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "Server()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: Server
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: FuzzyController()
+//#       SuperClass:
+//#   Class Filename: fuzzycontroller.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/fuzzycontroller.js"
+//---------------------------------------------------------------------
+//---Constructor of Class FuzzyController()
+// Call the constructor for creating an instance of class FuzzyController
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new FuzzyController();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of FuzzyController, use
+// the attribute name with a leading "this." in the definition of method of FuzzyController, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'FuzzyController'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'FuzzyController' will be set by
+// use the method's name and extend it with 'FuzzyController'.
+//    FuzzyController.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function FuzzyController () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "FuzzyController()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "FuzzyController()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "FuzzyController()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "FuzzyController()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "FuzzyController()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: FuzzyController
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: App()
+//#       SuperClass: AppAbstract
+//#   Class Filename: app.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/app.js"
+//---------------------------------------------------------------------
+//---Constructor of Class App()
+// Call the constructor for creating an instance of class App
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new App();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of App, use
+// the attribute name with a leading "this." in the definition of method of App, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'App'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'App' will be set by
+// use the method's name and extend it with 'App'.
+//    App.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+//--------------------------------------
+//---Super Class------------------------
+// Inheritance: 'App' inherits from 'AppAbstract'
+App.prototype = new AppAbstract();
+// Constructor for instances of App has to updated.
+// Otherwise constructor of AppAbstract is called
+App.prototype.constructor=App;
+// see http://phrogz.net/js/classes/OOPinJS2.html for explanation
+//--------------------------------------
+
+
+function App () {
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "App()"
+    //---------------------------------------------------------------------
+	//---aDoc (): Attribute: 'aDoc' Type: '' stores ...
+	this.aDoc = null;
+	//---aName (String): Attribute: 'aName' Type: 'String' stores ...
+	this.aName = "DisApp";
+	//---aServer (Server): Attribute: 'aServer' Type: 'Server' stores ...
+	this.aServer = new Server("File index.html - Content of element SERVER_URL");
+	//---aDatabaseList (DatabaseList): stores all databases loaded in the app
+	this.aDatabaseList = new DatabaseList();
+	//---aCurrentPage (String): Attribute: 'aCurrentPage' Type: 'String' stores ...
+	this.aCurrentPage = "welcome";
+	//---aFuzzyController (FuzzyController): Attribute: 'aFuzzyController' Type: 'FuzzyController' stores ...
+	this.aFuzzyController = new FuzzyController();
+	//---aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
+	this.aLinkParam = new LinkParam();
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "App()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "App()" defined as JS functions
+	//---------------------------------------------------------------------
+	//----Method: App.initDOM(pDoc:Document,pDatabase:Hash)-----
+	// initDOM(pDoc,pDatabase)
+	//      What does 'initDOM' do?
+	//----Method: App.load():Boolean-----
+	// load()  Return: Boolean
+	//      load Databases and DOMVars from LocalStorage if the exist in local storage
+	//----Method: App.save():Boolean-----
+	// save()  Return: Boolean
+	//      save Databases and DOMVars to LocalStorage
+	//----Method: App.event()-----
+	// event()
+	//      What does 'event' do?
+	//----Method: App.gotoPage(pPageID:String)-----
+	// gotoPage(pPageID)
+	//      What does 'gotoPage' do?
+	//----Method: App.gotoURL(pFileHTML:String)-----
+	// gotoURL(pFileHTML)
+	//      What does 'gotoURL' do?
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "App()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "App()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: App
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DOMVar()
+//#       SuperClass:
+//#   Class Filename: domvar.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/domvar.js"
+//---------------------------------------------------------------------
+//---Constructor of Class DOMVar()
+// Call the constructor for creating an instance of class DOMVar
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DOMVar();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DOMVar, use
+// the attribute name with a leading "this." in the definition of method of DOMVar, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DOMVar'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DOMVar' will be set by
+// use the method's name and extend it with 'DOMVar'.
+//    DOMVar.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DOMVar () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DOMVar()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "DOMVar()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "DOMVar()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DOMVar()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DOMVar()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DOMVar
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: DOMVarList()
+//#       SuperClass:
+//#   Class Filename: domvarlist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               28.4.2017
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/domvarlist.js"
+//---------------------------------------------------------------------
+//---Constructor of Class DOMVarList()
+// Call the constructor for creating an instance of class DOMVarList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new DOMVarList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of DOMVarList, use
+// the attribute name with a leading "this." in the definition of method of DOMVarList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'DOMVarList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'DOMVarList' will be set by
+// use the method's name and extend it with 'DOMVarList'.
+//    DOMVarList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function DOMVarList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "DOMVarList()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "DOMVarList()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "DOMVarList()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "DOMVarList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "DOMVarList()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: DOMVarList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: CheckBoxList()
+//#       SuperClass:
+//#   Class Filename: checkboxlist.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               28.4.2017
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/checkboxlist.js"
+//---------------------------------------------------------------------
+//---Constructor of Class CheckBoxList()
+// Call the constructor for creating an instance of class CheckBoxList
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new CheckBoxList();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of CheckBoxList, use
+// the attribute name with a leading "this." in the definition of method of CheckBoxList, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'CheckBoxList'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'CheckBoxList' will be set by
+// use the method's name and extend it with 'CheckBoxList'.
+//    CheckBoxList.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function CheckBoxList () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "CheckBoxList()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "CheckBoxList()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "CheckBoxList()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "CheckBoxList()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "CheckBoxList()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: CheckBoxList
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: FuzzyLayer()
+//#       SuperClass:
+//#   Class Filename: fuzzylayer.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               28.4.2017
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/fuzzylayer.js"
+//---------------------------------------------------------------------
+//---Constructor of Class FuzzyLayer()
+// Call the constructor for creating an instance of class FuzzyLayer
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new FuzzyLayer();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of FuzzyLayer, use
+// the attribute name with a leading "this." in the definition of method of FuzzyLayer, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'FuzzyLayer'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'FuzzyLayer' will be set by
+// use the method's name and extend it with 'FuzzyLayer'.
+//    FuzzyLayer.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function FuzzyLayer () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "FuzzyLayer()"
+    //---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "FuzzyLayer()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "FuzzyLayer()" defined as JS functions
+	//---------------------------------------------------------------------
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "FuzzyLayer()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "FuzzyLayer()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: FuzzyLayer
+//-------------------------------------------
+
+</script>
+<script type="text/javascript" >
+//#################################################################
+//# Javascript Class: Database()
+//#       SuperClass:
+//#   Class Filename: database.js
+//#
+//# Author of Class:      Engelbert Niehaus
+//# email:                niehaus@uni-landau.de
+//# created               2017/04/03 17:32:38
+//# last modifications    11.5.2017
+//# GNU Public License V3 - OpenSource
+//#
+//# created with JavaScript Class Generator by Engelbert Niehaus
+//#     https://niebert.github.io/JavascriptClassGenerator
+//#################################################################
+
+//---------------------------------------------------------------------
+//---Store File in Subdirectory /js and import this Class in HTML-File with
+// SCRIPT-Tag:  LANGUAGE="JavaScript" SRC="js/database.js"
+//---------------------------------------------------------------------
+//---Constructor of Class Database()
+// Call the constructor for creating an instance of class Database
+// by the following command in HTML-file that imports this class
+// var vMyInstance = new Database();
+//---------------------------------------------------------------------
+//----Attributes-------------------------------------------------------
+//---------------------------------------------------------------------
+// If you want to access the attributes of Database, use
+// the attribute name with a leading "this." in the definition of method of Database, e.g.
+// this.aName = "Hello World";
+//---------------------------------------------------------------------
+//----Methods----------------------------------------------------------
+//---------------------------------------------------------------------
+// (1) If you want to assign definitions of methods for single instance of the class 'Database'
+// they are defined with
+//    this.my_method = function (pPar1,pPar2)
+// this approach allows to overwrite the method definition of single instances dynamically.
+//---------------------------------------------------------------------
+// (2) A prototype definition of methods for 'Database' will be set by
+// use the method's name and extend it with 'Database'.
+//    Database.prototype.my_method = function (pPar1,pPar2)
+// This approach consumes less memory for instances.
+//---------------------------------------------------------------------
+
+	// no superclass defined
+
+
+function Database () {
+	// no superclass defined
+
+    //---------------------------------------------------------------------
+    //---Attributes of Class "Database()"
+    //---------------------------------------------------------------------
+	//---aSourceDB (Hash): the attribute 'aSourceDB' stores the init Database with current DB format
+	this.aSourceDB = {};
+	//---aDB (Hash): the attribute 'aDB' stores current DB with Offine Data
+	this.aDB = {};
+
+    //---------------------------------------------------------------------
+    //---Methods of Class "Database()"
+    //---------------------------------------------------------------------
+
+
+	//---------------------------------------------------------------------
+	//---Methods of Class "Database()" defined as JS functions
+	//---------------------------------------------------------------------
+	//----Method: Database.init(pDB)-----
+	// init()
+	//      1) inits the App with the document
+	//      2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam
+	//      3) inits all the database in aDatabaseList
+	//----Method: Database.checkFormat()-----
+	// checkFormat()
+	//      What does 'checkFormat' do?
+	//----Method: Database.load():Boolean-----
+	// load()  Return: Boolean
+	//      load Databases and DOMVars from LocalStorage if the exist in local storage
+	//----Method: Database.save():Boolean-----
+	// save()  Return: Boolean
+	//      save Databases and DOMVars to LocalStorage
+
+    //---------------------------------------------------------------------
+    //---END Constructor of Class "Database()"
+    //---------------------------------------------------------------------
+}
+
+
+//---------------------------------------------------------------------
+//---Methods of Class "Database()" defined as JS functions
+//---------------------------------------------------------------------
+
+
+//-------------------------------------------
+//---End Definition of Class-----------------
+// JS Class: Database
+//-------------------------------------------
+
+</script>
+
       <script>
          //-----INIT DisApp -----
           var vDebug = 0;
+          var vApp = new App();
        </script>
        <script src="js/jquery.mobile-1.2.0.min.js"></script>
-       <link type="text/css" href="css/ios_post.css" rel="stylesheet" />
+       <link href="css/ios_post.css" rel="stylesheet" />
      </head>
     <body>
 
@@ -37,7 +1147,7 @@
      <div data-role="page" id="welcome">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Home' -->
-       <a href="#" id="bHOME8" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+       <a href="#" id="bHOME1" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
             <h1>Welcome</h1>
 
@@ -52,16 +1162,22 @@
      <div data-role="page" id="home">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Welcome' -->
-       <a href="#" id="bWELCOME9" onclick="$.mobile.changePage( '#welcome', { transition: 'slideup', changeHash: false });return false" data-theme="a">Welcome</a>
+       <a href="#" id="bWELCOME2" onclick="$.mobile.changePage( '#welcome', { transition: 'slideup', changeHash: false });return false" data-theme="a">Welcome</a>
 
             <h1>Home</h1>
-                  <!-- header button: 'Title 'QUIT'?' -->
-       <a href="#" id="bQUIT10" onclick="$.mobile.changePage( '#QUIT', { transition: 'slideup', changeHash: false });return false" data-theme="a">Title 'QUIT'?</a>
-
+           <a href="#" id="bQUIT3" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c">Quit</a>
        </div>
          <!-- /header -->
        <div data-role="content">
           Content for Page 'home'
+             <ul data-role="listview" data-inset="true">
+       <li><a href="#welcome">Welcome</a></li>
+  <li><a href="#setting">Settings</a></li>
+  <li><a href="#save">Save</a></li>
+  <li><a href="#quit">Quit App</a></li>
+
+	</ul>
+
        </div>
     <!-- /page ID: home -->
     </div>
@@ -69,11 +1185,11 @@
      <div data-role="page" id="setting">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Home' -->
-       <a href="#" id="bHOME11" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+       <a href="#" id="bHOME3" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
             <h1>Settings</h1>
                   <!-- header button: 'Save' -->
-       <a href="#" id="bSAVE12" onclick="$.mobile.changePage( '#save', { transition: 'slideup', changeHash: false });return false" data-theme="a">Save</a>
+       <a href="#" id="bSAVE4" onclick="$.mobile.changePage( '#save', { transition: 'slideup', changeHash: false });return false" data-theme="a">Save</a>
 
        </div>
          <!-- /header -->
@@ -85,8 +1201,12 @@
      <!-- Page: save     Page Type: SaveDialog -->
      <div data-role="page" id="save">
          <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME5" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
             <h1>Save</h1>
+                  <!-- header button: 'Cancel' -->
+       <a href="#" class="b_CANCEL" id="b_CANCEL5" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
 
        </div>
          <!-- /header -->
@@ -99,11 +1219,11 @@
      <div data-role="page" id="quit">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Home' -->
-       <a href="#" id="bHOME13" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+       <a href="#" id="bHOME6" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
             <h1>Quit App</h1>
-                  <!-- header button: 'Title 'OK'?' -->
-       <a href="#" id="bOK14" onclick="$.mobile.changePage( '#OK', { transition: 'slideup', changeHash: false });return false" data-theme="a">Title 'OK'?</a>
+                  <!-- header button: 'Cancel' -->
+       <a href="#" class="b_CANCEL" id="b_CANCEL6" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
 
        </div>
          <!-- /header -->
@@ -115,8 +1235,12 @@
      <!-- Page: login     Page Type: LoginPage -->
      <div data-role="page" id="login">
          <div data-role="header" data-position="fixed">
+                  <!-- header button: 'Home' -->
+       <a href="#" id="bHOME7" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
             <h1>Login</h1>
+                  <!-- header button: 'Cancel' -->
+       <a href="#" class="b_CANCEL" id="b_CANCEL7" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
 
        </div>
          <!-- /header -->
@@ -143,11 +1267,12 @@
 =============================================
  -->
     <script type="text/javascript">
-       var vQueryHash = readQueryParams();
+       // var vQueryHash = readQueryParams();
        var vOnlineMode = false;
        var vApp = new App();
-       vApp.init(document,vQueryHash);
-       checkOnlineMode();
+       vApp.init(document,vDatabase);
+       // checkOnlineMode();
       </script>
     </body>
 </html>
+  

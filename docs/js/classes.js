@@ -464,16 +464,19 @@ function createNewElement(pFile) {
   }
 };
 
-function createElementJS(pFile,pElementID) {
+function createElementJS(pFile,pNewElementID) {
+  var vNewElementID = pNewElementID || "";
   if (existsFileJS(pFile)) {
     if (existsElementJS(vNewElementID,pFile)) {
       debugLog("File","Create New Element ["+pElementID+"] was NOT successful. Element exists already for file '"+pFile+"'!");
     } else {
-      vJSON_JS["FileList"][vFile]["elements"][vNewElementID] = getDefaultElementString(vFile,vNewElementID);
-      var vElemArrID = getElementNameArray();
-      vElemArrID.push(pElementID);
-      write2value("tElementIDs",vElemArrID.join("|"));
-      createElementSelect();
+      var vElementHash = vJSON_JS["FileList"][vFile]["elements"]
+      vElementHash[vNewElementID] = getDefaultElementString(vFile,vNewElementID);
+      var vElemArrID = getArray4HashID(vElementHash);
+      //vElemArrID.push(vNewElementID);
+      var vElemStr = vElemArrID.join("|");
+      write2value("tElementIDs",vElemStr);
+      createElementSelect(vElemStr);
     };
   };
 };
@@ -523,6 +526,30 @@ function setAuthorEmail() {
     };
   };
 };
+
+function getAggregationHash4Class(pClass) {
+  var vAggHash = {};
+  var vClassList = vJSON_JS["ClassList"];
+  if (existsClassJS(pClass)) {
+    if (vClassList.hasOwnProperty(pClass)) {
+      vHash = vClassList[pClass]["AttribType"];
+      //logJSON(vHash);
+      for (var iAttribType in vHash) {
+        if (vHash.hasOwnProperty(iAttribType)) {
+          // Check if AttribType is a defined Class
+          var vAttribType = vHash[iAttribType];
+          if (vClassList.hasOwnProperty(vAttribType)) {
+            vAggHash[vAttribType] = vAttribType;
+            console.log("AGGREGATION: found \n["+pClass+"] with Attribute ["+vAttribType+"]");
+          };
+        };
+      };
+    };
+  };
+  return vAggHash;
+};
+
+
 function updateJSON2tMethods(pClass) {
   var vClass = pClass || getSelectedClassID();
   var vOut = "";
@@ -717,7 +744,7 @@ function initClassJS_undefined(pClass) {
           case "tEMail":
             vHash[vID] = getValueDOM("tMainEMail");
           break;
-          case "tDate":
+          case "JSCC_mod_date":
             vHash[vID] = getDate();
           break;
           default:
@@ -726,7 +753,7 @@ function initClassJS_undefined(pClass) {
         //console.log("initClassJS_undefined('"+pClass+"') - ['"+vID+"'] created");
       };
     };
-    var vArrID = ["AttribName","AttribDefault","AttribType","MethodName","MethodReturn","MethodCode","MethodComment"];
+    var vArrID = ["AttribName","AttribDefault","AttribType","MethodReturn","MethodCode","MethodComment"];
     for (var i = 0; i < vArrID.length; i++) {
       vID = vArrID[i];
       if (vHash.hasOwnProperty(vID)) {

@@ -2,7 +2,7 @@ vJSON_JS['ClassList']['AppAbstract'] = {
     "tClassname": "AppAbstract",
     "tSuperClassname": "",
     "sClassType": "Abstract",
-    "tDate": "28.4.2017",
+    "JSCC_mod_date": "28.4.2017",
     "tAuthor": "Engelbert Niehaus",
     "tEMail": "niehaus@uni-landau.de",
     "tAttributes": "",
@@ -24,7 +24,7 @@ vJSON_JS['ClassList']['AppAbstract'] = {
     "AttribType": {
         "aLinkParam": "LinkParam"
     },
-    "MethodName": {},
+     
     "MethodReturn": {},
     "MethodCode": {},
     "MethodComment": {},

@@ -194,6 +194,7 @@ function loadLocalStorage4ArrayID(pArrayID) {
 function clearLocalStorage4DOM() {
   clearLocalStorage4ArrayID(vDOM_ID);
   clearLocalStorage4ArrayID(vDOM_Global);
+  clearLocalStorage4ArrayID(vDOM_TPL);
 };
 
 function clearLocalStorage4ArrayID(pArrayID) {

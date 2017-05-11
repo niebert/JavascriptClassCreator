@@ -27,10 +27,14 @@
 </pre>
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    var vTextareaID = "tPageHTML";
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/html");
-    editor.setValue(top.getValueDOM("tPageHTML"),-1);
+    editor.setValue(top.getValueDOM(vTextareaID),-1);
+    editor.getSession().on('change', function() {
+      top.write2value(vTextareaID,editor.getValue());
+    });
 </script>
 
 </body>

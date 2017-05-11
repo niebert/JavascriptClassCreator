@@ -16,9 +16,10 @@ try {
 
   //---get Filename for Output--------
   vFileName = vWinOpener.getValueDOM("sFileList") || "";
+  console.log("Emulator File '"+vFileName+"'");
   if (vFileName != "") {
     //---set Export File----------------
-    vWinOpener.write2value("sFileHTML");
+    console.log("Filename '"+vFileName+"' opened in emulator '"+document.location.href+"'");
   } else {
     console.log("vFileName for Output undefined");
   };

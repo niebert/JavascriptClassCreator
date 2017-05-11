@@ -36,6 +36,10 @@ function getIFrameWindow(pIFrameName) {
   return vWin;
 };
 
+function getCompressorWin() {
+  return getIFrameWindow("iCompressor");
+};
+
 function getIFrameEditor(pIFrameName) {
   //var vDoc = getIFrameDocument(pIFrameName);
   var vWin = getIFrameWindow(pIFrameName);

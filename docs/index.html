@@ -329,7 +329,7 @@ SaveDialog|home|CANCEL
           <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
           <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
           <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
-          <iframe id="iElementHTML"  src="ace/editfilehtml.html" width="90%" height="100"></iframe>
+          <iframe id="iElementHTML"  src="ace/editelement.html" width="90%" height="100"></iframe>
         </td>
       </tr>
       <tr>
@@ -352,6 +352,10 @@ SaveDialog|home|CANCEL
               <option value="YES">YES</option>
               <option value="NO">NO</option>
             </select>
+            <b>
+              Compress Code:
+            </b>
+            <input type="checkbox" id="checkCompressCode4HTML" name="checkCompressCode4HTML">
             <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
             <br>
             <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
@@ -636,12 +640,12 @@ SaveDialog|home|CANCEL
             <option value="YES">YES</option>
             <option value="NO">NO</option>
           </select>
-
-          <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
           <b>
             Compress Code:
           </b>
           <input type="checkbox" id="checkCompressCode" name="checkCompressCode">
+
+          <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
           <!--
           <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
          -->
@@ -650,7 +654,8 @@ SaveDialog|home|CANCEL
           <hr>
           <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
         	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
-      		</td>
+          <iframe id="iCompressor"  src="uglify/index.html" width="90%" height="200" onload="console.log('Compressor loaded in iFrame iCompressor')"></iframe>
+        	</td>
         </tr>
       </tbody>
     </table>

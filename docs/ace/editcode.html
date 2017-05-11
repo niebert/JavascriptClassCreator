@@ -23,11 +23,15 @@
 <pre id="editor"></pre>
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
+    var vTextareaID = "tOutput";
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
     editor.session.setMode("ace/mode/javascript");
     //alert(window.name);
-    editor.setValue(top.getValueDOM("tOutput"),-1);
+    editor.setValue(top.getValueDOM(vTextareaID),-1);
+    editor.getSession().on('change', function() {
+      top.write2value(vTextareaID,editor.getValue());
+    });
 </script>
 
 </body>

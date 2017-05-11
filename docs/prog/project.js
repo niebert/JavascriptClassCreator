@@ -2,7 +2,7 @@ vDatabase['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/04/03 17:58:02",
+    "mod_date": "2017/04/04 20:54:31",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -41,20 +41,20 @@ vDatabase['project'] = {
             "tClassname": "App",
             "tSuperClassname": "AppAbstract",
             "sClassType": "Blue",
-            "tDate": "",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aDoc = null\naName = \"DisApp\"\naServer = new Server(\"___SERVER_URL___\")\naDatabaseList = new DatabaseList()\naCurrentPage = \"welcome\"\naFuzzyController = new FuzzyController()\naLinkParam = new LinkParam()",
-            "tMethods": "init(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\ncalcRisk()\ncalcResponse()\ngotoPage(pPageID)\nsubmitPage(pPageID)",
+            "tMethods": "initDOM(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\nevent()\ngotoPage(pPageID:String)\ngotoURL(pFileHTML:String)",
             "sAttribList": "aDoc",
             "tAttribName": "aDoc",
-            "tAttribType": "",
+            "tAttribType": "Document",
             "tAttribComment": "Attribute: 'aDoc' Type: '' stores ... ",
             "tAttribDefault": "null",
             "sAttribTypeList": "",
-            "tMethodHeader": "calcResponse()",
-            "tMethodComment": "Comment for calcResponse",
-            "sMethodList": "calcResponse",
+            "tMethodHeader": "event()",
+            "tMethodComment": "this is the event handler of the App. The handler gets the button or link as parameter, which determines the event handler for event",
+            "sMethodList": "event",
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
@@ -76,7 +76,6 @@ vDatabase['project'] = {
                 "aFuzzyController": "FuzzyController",
                 "aLinkParam": "LinkParam"
             },
-            "MethodName": {},
             "MethodReturn": {
                 "init": "",
                 "load": "Boolean",
@@ -84,25 +83,26 @@ vDatabase['project'] = {
                 "calcRisk": "",
                 "calcResponse": "",
                 "gotoPage": "",
-                "submitPage": ""
+                "submitPage": "",
+                "event": "",
+                "initDOM": "",
+                "gotoURL": ""
             },
             "MethodCode": {
-                "init": "",
+                "initDOM": "",
                 "load": "",
                 "save": "",
-                "calcRisk": "",
-                "calcResponse": "",
+                "event": "",
                 "gotoPage": "",
-                "submitPage": ""
+                "gotoURL": ""
             },
             "MethodComment": {
-                "init": "1) inits the App with the document\n2) calls an init on the LinkParameter so that the parameters of the link are available in aLinkParam\n3) inits all the database in aDatabaseList",
+                "initDOM": "1) inits the DOM content of the App and writes dynamic content into the Document Object Model of the HTML-file\n2) populates the content with the current records of the databases 3) the LinkParameter are available at this time of the call initDOM is called from the init() Method defined in AppAbstract",
                 "load": "load Databases and DOMVars from LocalStorage if the exist in local storage",
                 "save": "save Databases and DOMVars to LocalStorage",
-                "calcRisk": "Comment for calcRisk",
-                "calcResponse": "Comment for calcResponse",
-                "gotoPage": "Comment for gotoPage",
-                "submitPage": "Comment for submitPage"
+                "event": "this is the event handler of the App. The handler gets the button or link as parameter, which determines the event handler for event",
+                "gotoPage": "goto a certain page of the App File",
+                "gotoURL": "navigate to page on the same host in the same window (in general another file of the app)"
             },
             "AttribComment": {
                 "aDoc": "Attribute: 'aDoc' Type: '' stores ... ",
@@ -114,13 +114,12 @@ vDatabase['project'] = {
                 "aLinkParam": "stores all parameters from the URL in aLinkParam.aVars"
             },
             "MethodParameter": {
-                "init": "pDoc:Document,pDatabase:Hash",
+                "initDOM": "pDoc:Document,pDatabase:Hash",
                 "load": "",
                 "save": "",
-                "calcRisk": "",
-                "calcResponse": "",
-                "gotoPage": "pPageID",
-                "submitPage": "pPageID"
+                "event": "",
+                "gotoPage": "pPageID:String",
+                "gotoURL": "pFileHTML:String"
             },
             "tMethodCode": ""
         },
@@ -128,7 +127,7 @@ vDatabase['project'] = {
             "tClassname": "AppAbstract",
             "tSuperClassname": "",
             "sClassType": "Abstract",
-            "tDate": "",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aLinkParam = new LinkParam()\naDatabaseList = new DatabaseList()",
@@ -153,7 +152,7 @@ vDatabase['project'] = {
                 "aLinkParam": "LinkParam",
                 "aDatabaseList": "DatabaseList"
             },
-            "MethodName": {},
+
             "MethodReturn": {
                 "init": "",
                 "load": "Boolean",
@@ -184,7 +183,7 @@ vDatabase['project'] = {
             "tClassname": "DOMVar",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -197,14 +196,14 @@ vDatabase['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "",
             "tMethodComment": "",
-  			"tMethodCode": "",
-          	"sMethodList": "",
+            "tMethodCode": "",
+            "sMethodList": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -215,7 +214,7 @@ vDatabase['project'] = {
             "tClassname": "DOMVarList",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "28.4.2017",
+            "JSCC_mod_date": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -228,14 +227,14 @@ vDatabase['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "",
             "tMethodComment": "",
-  			"tMethodCode": "",
+            "tMethodCode": "",
             "sMethodList": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -246,7 +245,7 @@ vDatabase['project'] = {
             "tClassname": "CheckBoxList",
             "tSuperClassname": "",
             "sClassType": "Red",
-            "tDate": "28.4.2017",
+            "JSCC_mod_date": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -259,14 +258,14 @@ vDatabase['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "",
             "tMethodComment": "",
-  			"tMethodCode": "",
+            "tMethodCode": "",
             "sMethodList": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -277,7 +276,7 @@ vDatabase['project'] = {
             "tClassname": "FuzzyLayer",
             "tSuperClassname": "",
             "sClassType": "Yellow",
-            "tDate": "28.4.2017",
+            "JSCC_mod_date": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -290,14 +289,14 @@ vDatabase['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "",
             "tMethodComment": "",
-  			"tMethodCode": "",
+            "tMethodCode": "",
             "sMethodList": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -308,7 +307,7 @@ vDatabase['project'] = {
             "tClassname": "FuzzyController",
             "tSuperClassname": "",
             "sClassType": "Yellow",
-            "tDate": "",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -321,14 +320,14 @@ vDatabase['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "",
             "tMethodComment": "",
-  			"tMethodCode": "",
+            "tMethodCode": "",
             "sMethodList": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -339,63 +338,71 @@ vDatabase['project'] = {
             "tClassname": "DatabaseList",
             "tSuperClassname": "",
             "sClassType": "Green",
-            "tDate": "28.4.2017",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aDBListHash = {}",
-            "tMethods": "init(pDatabase:Hash)\nload()\nsave()",
-            "sAttribList": "aDBListHash",
-            "tAttribName": "aDBListHash",
+            "tAttributes": "aDoc=null\naDBHash={}\naDatabaseHash={}",
+            "tMethods": "init(pDoc:Document,pDatabase:Hash)",
+            "sAttribList": "aDatabaseHash",
+            "tAttribName": "aDatabaseHash",
             "tAttribType": "Hash",
-            "tAttribComment": "the attribute 'aDBListHash' stores in 'Hash' ... ",
+            "tAttribComment": "stores all databases in a Hash",
             "tAttribDefault": "{}",
             "sAttribTypeList": "Hash",
-            "tMethodHeader": "load()",
-            "tMethodComment": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-            "tMethodCode": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].load();\n};\n",
+            "tMethodHeader": "init(pDoc:Document,pDatabase:Hash)",
+            "tMethodComment": "Comment for init",
+            "tMethodCode": "",
             "sMethodList": "init",
             "tArrayLoop": "this.aDBList",
             "tMethodLoop": "load()",
             "AttribName": {},
             "AttribDefault": {
-                "aDBListHash": "{}"
-            },
+              "aDoc": "null",
+              "aDatabaseHash": "{}",
+              "aDBHash": "{}"
+          },
             "AttribType": {
-                "aDBList:Hash": "Hash",
-                "aDBListHash": "Hash"
-            },
-            "MethodName": {},
+              "aDoc": "Document",
+              "aDatabaseHash": "Hash",
+              "aDBHash": "Hash"
+          },
+          "AttribComment": {
+            "aDoc": "is the 'document' object",
+            "aDatabaseHash": "stores all databases in the init format in a Hash",
+            "aDBHash": "stores all databases of Class 'Database' in a Hash"
+        },
             "MethodReturn": {
                 "init": "",
-                "load": "",
-                "save": ""
+                "load": "Boolean",
+                "save": "Boolean",
+                "getDBHash4Type":"Hash"
             },
             "MethodCode": {
-                "init": "if (pDatabase) {\n    for (vKey in pDatabase) {\n      aDBList[vKey] = new Database();  \n      aDBList[vKey].init(pDatabase[vKey]);\n    };\n}  ",
-                "load": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].load();\n};\n",
-                "save": "for (var vKey in this.aDBList) {\n  this.aDBList[vKey].save();\n};\n"
+                "init": "this.aDatabaseHash = pDatabase;\nfor (var vKey in this.aDatabaseHash) {\n  this.aDBHash[vKey] = new Database();\n  this.aDBHash[vKey].init(this.aDatabase[vKey]);\n};\n",
+                "load": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].load();\n};\n",
+                "save": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].save();\n};\n",
+                "getDBHash4Type":"var vRetHash = {};\nvar vType = \"\";\nfor (var vKey in this.aDBHash) {\n  vType = this.aDBHash[vKey].getType();\n  if (vType==\"pType\") {\n    vRetHash[vKey] = this.aDBHash[vKey];\n  }\n};\n"
             },
             "MethodComment": {
-                "init": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-                "load": "pDatabase is a Hash of Databases loaded by the Javascript-Tag in the underlying HTML file. \ninit() Loops over all Databases in Hash and creates a Database object for DBs.",
-                "save": "save all Databases in the List of all databases defined by this.aDBList"
-            },
-            "AttribComment": {
-                "aDBList:Hash": "Hash of all Databases. Elements of Hash are objects of class Database()",
-                "aDBListHash": "the attribute 'aDBListHash' stores in 'Hash' ... "
+                "init": "create Database objects for all keys in pDatabase hash in the init the Database in this.aDB",
+                "load": "load Databases and DOMVars from LocalStorage if the exist in local storage",
+                "save": "save Databases and DOMVars to LocalStorage",
+                "getDBHash4Type":"a DatabaseList contains Databases of different types.\nMethod return a Hash of all DBs of a certain Type"
             },
             "MethodParameter": {
-                "init": "pDatabase:Hash",
+                "init": "pDoc:Document,pDatabase:Hash",
                 "load": "",
-                "save": ""
+                "save": "",
+                "getDBHash4Type": "pType:String"
             },
-            "aDBListHash": "Hash of all Databases. Elements of Hash are objects of class Database()"
+            "tLoopObject": "myHash",
+            "tLoopMethod": "myLoopMethod(pID)",
         },
         "Database": {
             "tClassname": "Database",
             "tSuperClassname": "",
             "sClassType": "Green",
-            "tDate": "",
+            "JSCC_mod_date": "2017/04/03 17:32:38",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aSourceDB = {}\naDB = {}",
@@ -412,7 +419,7 @@ vDatabase['project'] = {
             "tMethodCode": "var vRetBoolean = false;\n// Code for load\n\nreturn vRetBoolean;",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
-	    "AttribName": {},
+            "AttribName": {},
             "AttribDefault": {
                 "aSourceDB": "{}",
                 "aDB": "{}"
@@ -421,7 +428,7 @@ vDatabase['project'] = {
                 "aSourceDB": "Hash",
                 "aDB": "Hash"
             },
-            "MethodName": {},
+
             "MethodReturn": {
                 "init": "",
                 "checkFormat": "",
@@ -451,14 +458,13 @@ vDatabase['project'] = {
                 "save": ""
             },
             "JSCC_type": "CLASS",
-            "JSCC_version": "1",
-            "JSCC_mod_date": "2017/04/03 17:32:38"
+            "JSCC_version": "1"
         },
         "Server": {
             "tClassname": "Server",
             "tSuperClassname": "",
             "sClassType": "Blue",
-            "tDate": "28.4.2017",
+            "JSCC_mod_date": "28.4.2017",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "",
@@ -472,13 +478,13 @@ vDatabase['project'] = {
             "tMethodHeader": "",
             "tMethodComment": "",
             "sMethodList": "",
-  			"tMethodCode": "",
+            "tMethodCode": "",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-            "MethodName": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -489,7 +495,7 @@ vDatabase['project'] = {
             "sClassType": "Blue",
             "tClassname": "LinkParam",
             "tSuperClassname": "",
-            "tDate": "",
+            "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "size = 0\naVars = {}\naLink = \"\"",
@@ -503,7 +509,7 @@ vDatabase['project'] = {
             "tMethodHeader": "calcSize()",
             "tMethodComment": "calculates the number of variables defined in the URL parameters, stores result in length",
             "sMethodList": "calcSize",
-  		"tMethodCode": "var vRet = 0;\nif (this.aVars) {\n    var vHash = this.aVars;\n    for (var key in vHash) {\n        vRet++;\n    };\n} else {\n    console.log(\"ERROR: variable '\"+pVar+\"' does not exist in LinkParam\");\n};\nreturn vRet;",
+            "tMethodCode": "var vRet = 0;\nif (this.aVars) {\n    var vHash = this.aVars;\n    for (var key in vHash) {\n        vRet++;\n    };\n} else {\n    console.log(\"ERROR: variable '\"+pVar+\"' does not exist in LinkParam\");\n};\nreturn vRet;",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribDefault": {
@@ -592,13 +598,77 @@ vDatabase['project'] = {
         }
     },
     "DatabaseList": {
+        "db_mydata": {
+            "JSCC_type": "DB",
+            "name": "db_mydata",
+            "file": "db/db_mydata.js",
+            "dbtitle": "Title of DB db_mydata",
+            "JSCC_init_date": "2017/04/04 20:47:01",
+            "JSCC_mod_date": "2017/04/04 20:47:01",
+            "format": {
+                "yesno1": {
+                    "title": "Title of ID yesno1",
+                    "input": "___DB_YESNO___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                },
+                "freetext1": {
+                    "title": "Title of ID freetext1",
+                    "input": "___DB_FREETEXT___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                },
+                "yesno2": {
+                    "title": "Title of ID yesno2",
+                    "input": "___DB_YESNO___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                }
+            },
+            "data": {
+                "submitted": {},
+                "local": {}
+            }
+        },
+        "db_disapp": {
+            "JSCC_type": "DB",
+            "name": "db_disapp",
+            "file": "db/db_disapp.js",
+            "dbtitle": "Title of DB db_disapp",
+            "JSCC_init_date": "2017/04/04 20:47:01",
+            "JSCC_mod_date": "2017/04/04 20:47:01",
+            "format": {
+                "yesno1": {
+                    "title": "Title of ID yesno1",
+                    "input": "___DB_YESNO___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                },
+                "freetext1": {
+                    "title": "Title of ID freetext1",
+                    "input": "___DB_FREETEXT___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                },
+                "yesno2": {
+                    "title": "Title of ID yesno2",
+                    "input": "___DB_YESNO___",
+                    "output": "___DB_ID_VALUE___",
+                    "mandatory": true
+                }
+            },
+            "data": {
+                "submitted": {},
+                "local": {}
+            }
+        }
     },
     "ButtonList": {
         "QUIT": {
-          "BUTTON_ID": "QUIT",
-          "BUTTON_TITLE": "Quit",
-          "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 2
+            "BUTTON_ID": "QUIT",
+            "BUTTON_TITLE": "Quit",
+            "tButtonDefHTML": "<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
+            "counter": 3
         },
         "OK": {
             "BUTTON_ID": "OK",
@@ -610,7 +680,7 @@ vDatabase['project'] = {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
-            "counter": 4
+            "counter": 7
         }
     },
     "SelectedTypePage": "SaveDialog",
@@ -634,10 +704,10 @@ vDatabase['project'] = {
             "template": "     <!-- Page: ___PAGE_ID___     Page Type: OptionsPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "ConfirmPage": {
-          "page-type": "ConfirmPage",
-          "HEADER_BUTTON1": "home",
-          "HEADER_BUTTON2": "CANCEL",
-          "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "page-type": "ConfirmPage",
+            "HEADER_BUTTON1": "home",
+            "HEADER_BUTTON2": "CANCEL",
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "SaveDialog": {
             "page-type": "SaveDialog",
@@ -758,7 +828,8 @@ vDatabase['project'] = {
         "Integer": "0",
         "Float": "0.0",
         "Array": "[]",
-        "Hash": "{}"
+        "Hash": "{}",
+        "Document": "document"
     },
-    "tMethodCode": "if (pDatabase) {\n    for (vKey in pDatabase) {\n      aDBList[vKey] = new Database();  \n      aDBList[vKey].init(pDatabase[vKey]);\n    };\n}  "
+    "tMethodCode": ""
 }

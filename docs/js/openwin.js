@@ -7,11 +7,13 @@ function openWinHTML(pURL,pWinName) {
 function openEmulator(pEmulatorFile) {
   var vEmulatorFile = pEmulatorFile || "emulate.html";
   var vPath = getValueDOM("tDefaultAppPath");
-  var vFileName = getValueDOM("sFileList") || "";
+  var vFileName = getValueDOM("sFileList") || getValueDOM("sFileHTML") || "";
+  console.log("openEmulator('"+vEmulatorFile+"') for File '"+vFileName+"'");
   if (vFileName == "") {
     alert("ERROR: View HTML is not possible. Please select a file first!")
   } else {
-    write2value("sFileHTML",vFileName);
+    console.log("FileName='"+vFileName+"'");
+    //write2value("sFileHTML",vFileName);
     // get previous setting of sStandalone YES/NO
     var vStandanlone = getValueDOM("sStandalone");
     // set sStandalone to "YES"

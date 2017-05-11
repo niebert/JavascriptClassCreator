@@ -74,7 +74,7 @@ vTYPE_ID.push("String");
 vDOM_ID.push("sClassType");
 vTYPE_ID.push("String");
 //vTYPE_ID.push("Select");
-vDOM_ID.push("tDate"); // Generated Date of Class
+vDOM_ID.push("JSCC_mod_date"); // Generated Date of Class
 vTYPE_ID.push("String");
 vDOM_ID.push("tAuthor");
 vTYPE_ID.push("String");

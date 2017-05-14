@@ -12,14 +12,14 @@
 
    // contains the project JSON
    var vJSON_JS   = {};
-   // Contains a list of loaded JSON Files - access a JSON via vDatabase["myJSON"]
-   var vDatabase = {};
-   vDatabase["ClassList"] = {};
-   vDatabase["FileList"] = {};
-   vDatabase["PageList"] = {};
-   vDatabase["PageTypeList"] = {};
-   vDatabase["ButtonList"] = {};
-   vDatabase["DatabaseList"] = {};
+   // Contains a list of loaded JSON Files - access a JSON via vDataJSON["myJSON"]
+   var vDataJSON = {};
+   vDataJSON["ClassList"] = {};
+   vDataJSON["FileList"] = {};
+   vDataJSON["PageList"] = {};
+   vDataJSON["PageTypeList"] = {};
+   vDataJSON["ButtonList"] = {};
+   vDataJSON["DatabaseList"] = {};
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
@@ -32,13 +32,13 @@
    var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2","template"]; // variables that are stored for all page types
    //var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
-   var vDatabaseRECDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
+   var vDataRECDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
    var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
    </script>
-   <!-- load the project.js file - result is stored in vDatabase['JSCC'] -->
+   <!-- load the project.js file - result is stored in vDataJSON['JSCC'] -->
    <script language="javascript" src="prog/project.js"></script>
    <!-- file.js must be loaded for the function loadProjectJS(pDB) -->
    <script language="javascript" src="js/file.js"></script>
@@ -260,7 +260,7 @@ SaveDialog|home|CANCEL
           <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
           <br>
           <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
-          <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDatabase)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+          <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
           <br>
           <div id="divTemplateHTML" style="display:none">
             <b>Template :</b> <input name="tTemplateHTML" id="tTemplateHTML" value="tpl/Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
@@ -532,7 +532,6 @@ SaveDialog|home|CANCEL
             <td colspan="2" align="center">
             <b>Select Attribute</b>
             <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
-              <option></option>
             </select>
             <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
             <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
@@ -553,6 +552,8 @@ SaveDialog|home|CANCEL
         <td align="center">
           <b>Select Type:</b>
           <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
+          create
+          <input type="checkbox" id="checkAttribCreate" name="checkAttribCreate" checked="true">
         </td>
     </tr>
     </tr>
@@ -738,7 +739,7 @@ SaveDialog|home|CANCEL
             DB-Prefix:
           </b>
             <input type="checkbox" id="checkUsePrefix" name="checkUsePrefix" onchange="selectDatabaseJSON()">
-            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDatabase['___DB___'] = " size="30" onchange="createDatabaseJSON()"  checked="checked">
+            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDataJSON['___DB___'] = " size="30" onchange="createDatabaseJSON()"  checked="checked">
             <input name="bSaveDB" value=" Save DB " onclick="updateForm2Database()" type="button">
             <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
           <hr>
@@ -803,8 +804,8 @@ SaveDialog|home|CANCEL
       &lt;script src="js/jquery-1.7.1.min.js"&gt;&lt;/script&gt;
 
       &lt;script&gt;
-        // vDatabase contains all loaded Databases as JSON file
-        var vDatabase = {};
+        // vDataJSON contains all loaded Databases as JSON file
+        var vDataJSON = {};
         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
          $(".ui-dialog button").live("click", function() {

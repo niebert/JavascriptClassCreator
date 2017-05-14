@@ -4,7 +4,7 @@ function loginDisApp() {
   var vUserGroup=encodeURLparam(getValueDOM('app_usergroup'));
   var vEMail=encodeURLparam(getValueDOM('app_email'));
   var vDBselect = getValueDOM('app_database');
-  var vDatabase = encodeURLparam(vDBselect);
+  var vDataJSON = encodeURLparam(vDBselect);
   var vSubmitURL=encodeURLparam(getValueDOM('app_submiturl'));
   saveLocalVar('app_usergroup',vUserGroup);
   saveLocalVar('app_email',vEMail);
@@ -28,7 +28,7 @@ function loginDisApp() {
     vMSG+="Please enter your E-Mail Address <br>\n";
     vAppStartBoolean = false;
   };
-  if (vDatabase =="") {
+  if (vDataJSON =="") {
     vMSG+="Error: Database was not defined";
     vAppStartBoolean = false;
   };
@@ -37,10 +37,10 @@ function loginDisApp() {
     var d = new Date();
     var n = d.getTime();
     if (checkMobil()) {
-          //document.location.href="app.html?username="+vUser+"&database="+vDatabase;
-        openWinHTMLsize("disapp.html?app_submiturl="+vSubmitURL+"&app_usergroup="+vUserGroup+"&app_database="+vDatabase+"&app_email="+vEMail,"500","700");
+          //document.location.href="app.html?username="+vUser+"&database="+vDataJSON;
+        openWinHTMLsize("disapp.html?app_submiturl="+vSubmitURL+"&app_usergroup="+vUserGroup+"&app_database="+vDataJSON+"&app_email="+vEMail,"500","700");
     } else {
-        openWinHTML("disapp.html?app_submiturl="+vSubmitURL+"&app_usergroup="+vUserGroup+"&app_database="+vDatabase+"&app_email="+vEMail);
+        openWinHTML("disapp.html?app_submiturl="+vSubmitURL+"&app_usergroup="+vUserGroup+"&app_database="+vDataJSON+"&app_email="+vEMail);
     };
   } else {
     showErrorMessage(vMSG);

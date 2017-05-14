@@ -141,7 +141,7 @@ function initCodeCreator() {
        vLocalStorageLoad = true;
        //clearForm4Class(vSelectedClass);
        //clearForm4File(vSelectedFile);
-       //updateJSON2Form(vSelectedClass);
+       updateJSON2Form(vSelectedClass);
 
        console.log("initCodeCreator() Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
@@ -195,7 +195,7 @@ function initCodeCreator() {
     //  write2value(vDOM_ID[i],vRestoreForm[vDOM_ID[i]]);
     //};
     selectSuperClass(vRestoreForm["tSuperClassname"]);
-    updateJSON2tMethods(vSelectedPageType);
+    updateJSON2tMethods(vSelectedClass);
   };
 };
 
@@ -274,14 +274,14 @@ function checkMainAppClass4File() {
     write2value("sAppClassHTML","App");
   };
   if (vMainInitCall4File == "") {
-    write2value("tAppInitCall","init(document,vDatabase)");
+    write2value("tAppInitCall","init(document,vDataJSON)");
   }
 };
 
 
 function initLabelsHTML() {
   var vSep = " | ";
-  write2innerHTML("labelDatabaseRecord",vDatabaseRECDEF.join(vSep));
+  //write2innerHTML("labelDatabaseRecord",vDataRECDEF.join(vSep));
   write2innerHTML("labelPageRecord",vPageRECDEF.join(vSep));
   write2innerHTML("labelPageTypeRecord",vPageTypeRECDEF.join(vSep));
   write2innerHTML("labelButtonRecord",vButtonRECDEF.join(vSep));
@@ -497,9 +497,9 @@ function initPageJS_do(pPageHash) {
 
 function initFormDatabaseList() {
   console.log("initFormDatabaseList()");
-   var vDatabaseArr = getDatabaseArray(); //read from tDatabases in  classes.js 413
-   for (var i = 0; i < vDatabaseArr.length; i++) {
-     initDatabaseJS(vDatabaseArr[i]);
+   var vDataJSONArr = getDatabaseArray(); //read from tDatabases in  classes.js 413
+   for (var i = 0; i < vDataJSONArr.length; i++) {
+     initDatabaseJS(vDataJSONArr[i]);
    };
 };
 
@@ -635,19 +635,19 @@ function initPageSelector() {
 };
 
 function initDatabaseSelector() {
-  var vDatabaseArr = [];
-  var vDatabaseList = vJSON_JS["DatabaseList"];
-  for (var iDatabase in vDatabaseList) {
-    if (vDatabaseList.hasOwnProperty(iClass)) {
-      vDatabaseArr.push(iClass);
+  var vDataJSONArr = [];
+  var vDataJSONList = vJSON_JS["DatabaseList"];
+  for (var iDatabase in vDataJSONList) {
+    if (vDataJSONList.hasOwnProperty(iClass)) {
+      vDataJSONArr.push(iClass);
     };
   };
   //ClassList update
   //document.fCreator.tClassList += "\n"+vClass;
-  write2value("tDatabases",vDatabaseArr.join("\n"));
+  write2value("tDatabases",vDataJSONArr.join("\n"));
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
-  createDatabaseSelect(vDatabaseArr);
+  createDatabaseSelect(vDataJSONArr);
 }
 
 

@@ -670,21 +670,27 @@ function selectedAttribName() {
   return getValueDOM("sAttribList");
 }
 
-function setAttribType4Select(pAttribType) {
+function setAttribType4Select(pAttribType,pInitValue) {
     var vSelClass = pAttribType || getValueDOM("sAttribTypeList");
     var vClassDef = "null";
     var vAttribName = getValueDOM("tAttribName");
     console.log("Select Type '"+vSelClass+"' for Attribute '"+vAttribName+"'");
     write2value("tAttribType",vSelClass);
-    if (isBasicClass(vSelClass)) {
-      console.log("Basic Class '"+vSelClass+"' selected for Attribute '"+vAttribName+"'");
-      var vBasicClassHash = getBasicClassHash();
-      //vClassDef = vBasicClassHash[vSelClass];
-      write2value("tAttribDefault",vBasicClassHash[vSelClass]);
+    var vInitValue = pInitValue || "";
+    if (vInitValue == "") {
+      if (isBasicClass(vSelClass)) {
+        console.log("Basic Class '"+vSelClass+"' selected for Attribute '"+vAttribName+"'");
+        var vBasicClassHash = getBasicClassHash();
+        //vClassDef = vBasicClassHash[vSelClass];
+        vInitValue = vBasicClassHash[vSelClass];
+      } else {
+        console.log("Class '"+vSelClass+"' is self-defined for Attribute '"+vAttribName+"' ");
+        vInitValue = "new "+vSelClass+"()";
+      };
     } else {
-      console.log("Class '"+vSelClass+"' is self-defined for Attribute '"+vAttribName+"' ");
-      write2value("tAttribDefault","new "+vSelClass+"()");
+      console.log("Attribute '"+vAttribName+"' was initialized with 'null'");
     };
+    write2value("tAttribDefault",vInitValue);
 };
 
 function selectJSAttribType() {
@@ -694,10 +700,13 @@ function selectJSAttribType() {
   var vAttribName = getValueDOM("sAttribList");
   console.log("Selected ArrayType='"+vAttribType+"' - selectJSAttribType()");
   // set MethodName Input Window
-  //document.fCreator.tAttribType.value = vAttribType;
-  //load method code from  vJSON_JS if exists
-  //and write method code to TEXTAREA
-  setAttribType4Select(vAttribType)
+  if (getCheckBox("checkAttribCreate")) {
+    // init the Attribute with "new <vAttribType>()"
+    setAttribType4Select(vAttribType);
+  } else {
+    // init with "null"
+    setAttribType4Select(vAttribType,"null");
+  };
   saveAttribJSON(vAttribName);
   saveJSON2LocalStorage();
 };

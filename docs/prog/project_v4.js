@@ -1,4 +1,4 @@
-vDatabase['project'] = {
+vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
@@ -14,7 +14,7 @@ vDatabase['project'] = {
     "sButtonHTML": "QUIT",
     "tLibraries": "string.js\nlocalstorage.js\nwritedom.js",
     "tDatabases": "db_mydata.js\ndb_disapp.js",
-    "tExportPrefix": "vDatabase['___DB___'] = ",
+    "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
@@ -733,7 +733,7 @@ vDatabase['project'] = {
             "sElementList": "HTML_TITLE",
             "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "tFilename": "index.html",
-            "tAppInitCall": "init(document,vDatabase)",
+            "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": "welcome",
             "elements": {
                 "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
@@ -751,7 +751,7 @@ vDatabase['project'] = {
             "sElementList": "",
             "tElementHTML": "",
             "tFilename": "",
-            "tAppInitCall": "init(document,vDatabase)",
+            "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
@@ -767,7 +767,7 @@ vDatabase['project'] = {
             "sElementList": "",
             "tElementHTML": "",
             "tFilename": "",
-            "tAppInitCall": "init(document,vDatabase)",
+            "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",

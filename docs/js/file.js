@@ -1,11 +1,11 @@
 function loadProjectJS(pDB) {
   var vDB = pDB  || "project";
-  if (vDatabase.hasOwnProperty(vDB)) {
-    if (vDatabase[vDB].hasOwnProperty("JSCC_type")) {
-      var vTypeDB = vDatabase[vDB]["JSCC_type"];
+  if (vDataJSON.hasOwnProperty(vDB)) {
+    if (vDataJSON[vDB].hasOwnProperty("JSCC_type")) {
+      var vTypeDB = vDataJSON[vDB]["JSCC_type"];
       if (vTypeDB == "JSCC") {
         console.log("JSON Database for JSCC '"+vDB+".js' defined!");
-        vJSON_JS = vDatabase[vDB];
+        vJSON_JS = vDataJSON[vDB];
       } else {
         console.log("ERROR: JSCC_type='"+vTypeDB+"' for JSON is not 'JSCC'");
       };

@@ -293,7 +293,7 @@ function updateForm2ButtonsJSON() {
 
 function updateForm2DatabasesJSON() {
   console.log("updateForm2DatabasesJSON()");
-  var vDatabaseList = vJSON_JS["DatabaseList"];
+  var vDataJSONList = vJSON_JS["DatabaseList"];
   var vFormDB = getDatabaseArray();
   var vDB = "";
   for (var i = 0; i < vFormDB.length; i++) {
@@ -337,7 +337,7 @@ function getDatabases4tDatabasesForm(pArrID) {
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
       console.log("get DatabaseType for Form '"+vID+"'");
-      vLine = getHash2RecordLine(vDatabaseRECDEF,vHash[vID]);
+      vLine = getHash2RecordLine(vDataRECDEF,vHash[vID]);
       vArr.push(vLine);
     }
   } else {
@@ -673,8 +673,8 @@ function getHash2RecordLine(pRecord,pHash) {
 
 
 function getTextareaArray(pTextareaID) {
-  var vDatabases = getValueDOM(pTextareaID);
-  var vArrDB = getString2Array(vDatabases);
+  var vDataJSONs = getValueDOM(pTextareaID);
+  var vArrDB = getString2Array(vDataJSONs);
   return removeExtensionJS4Array(vArrDB);
 }
 

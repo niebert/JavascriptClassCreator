@@ -191,7 +191,7 @@ If you start the [JavascriptClassCreator JSCC](http://niebert.github.io/Javascri
 * ***Code Generation Templates***, that determines the code output of Javascript Classes and HTML pages.
 For both definitions there is a load chain, that assigns an order the loading the content of these definitions.
 1. ***Load Project and Templates from Local Storage***: These definitions are available if the user has stored his settings by pressing ___Save Local Storage___ button in ___JSCC___.
-2. ***Load Project and Templates from ___vDatabase___***:  if users of ___JSCC___ never stored the alterations of the code in ___Local Storage___ of the browser. Then the predefined databases in the hash ___vDatabase___  are used. Accessing a specific JSON database works as usual by ___vDatabase["myjson"]___. If these databases are changed, it is necessary to store the alterations in local storage. Now the local storages does contain a JSON file and new reload in the browser will load data from the local storage.
+2. ***Load Project and Templates from ___vDataJSON___***:  if users of ___JSCC___ never stored the alterations of the code in ___Local Storage___ of the browser. Then the predefined databases in the hash ___vDataJSON___  are used. Accessing a specific JSON database works as usual by ___vDataJSON["myjson"]___. If these databases are changed, it is necessary to store the alterations in local storage. Now the local storages does contain a JSON file and new reload in the browser will load data from the local storage.
 
 ## Client-Server Communication of App
 ### Collected Data in LocalStorage
@@ -231,8 +231,8 @@ Scroll down the ___JSCC___ page in  [docs/index.html](http://niebert.github.io/J
 * You can download the ___JSCC___ infrastructure on you own computer and then replace the template file ___code_templates.js___ in folder ___docs/tpl___. The difference between the extension ___.js___ and ___.json___ is a simple prefix in front of the JSON file, that converts the JSON-file into JavaScript-file. The prefix defines, where the JSON content is stored.
 * JSON: ___{"color":"blue","setting" : "is ok", "header" : "this is my header"}___
 * JS-File with global Variable: ___vMyJSON = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
-* JS-File with Hash: ___vDatabase["myjson"] = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
-With this approach you can access the JSON file in the hash ___vDatabase___ with the ID ___myjson___. This has the advantage, that you can load and access several JSON file through the hash ___vDatabase___  without contamination the root name space of the App/HTML file to much.
+* JS-File with Hash: ___vDataJSON["myjson"] = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
+With this approach you can access the JSON file in the hash ___vDataJSON___ with the ID ___myjson___. This has the advantage, that you can load and access several JSON file through the hash ___vDataJSON___  without contamination the root name space of the App/HTML file to much.
 
 ### ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
@@ -256,6 +256,9 @@ With this approach you can access the JSON file in the hash ___vDatabase___ with
 
 ## Acknowledgement
 Special thanks to the following individual developers and teams of OpenSource JavaScript projects:
+* [SurveyJS](http://surveyjs.org/index.html) for generating a questionnaire for data collection in the webapp.
+* [Hamburger Side Menu](http://www.jqueryscript.net/menu/Basic-Hamburger-Navigation-Menu-jQuery-CSS.html) for generating a header menu that works for mobile and desktop applications. Can be used to design the navigation of the WebApp.
+* [MorrisJS](http://morrisjs.github.io/morris.js/) for visualisation of results for data collections performed with the WebApp.
 * Developer [Mihai Bazon](http://lisperator.net/) create UglifyJS, a great tool to handle and parse Javascript Code and minify the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * The wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is used to minify/compress the exported Javascript code of generated JS Classes (For Online Example of the [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) see source code on https://github.com/Skalman/UglifyJS-online for the Online-Version of the Wrapper.
 * Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)

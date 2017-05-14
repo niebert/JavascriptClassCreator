@@ -385,8 +385,8 @@ function exportClassJSON(pClass) {
   var vPrefix = "";
   if (getCheckBox("checkExportJS")) {
     vExtension = "_jscc.js";
-    //vPrefix += "if (!(vDatabase.hasOwnProperty('ClassList'))) {vDatabase['ClassList'] = {}};";
-    vPrefix += "vDatabase['ClassList']['"+vClass+"'] = ";
+    //vPrefix += "if (!(vDataJSON.hasOwnProperty('ClassList'))) {vDataJSON['ClassList'] = {}};";
+    vPrefix += "vDataJSON['ClassList']['"+vClass+"'] = ";
   };
   var vPath = "prog/";
   var vFileHDD = vClass.toLowerCase() + vExtension;
@@ -437,15 +437,15 @@ function importClass(pJSDB) {
 function importDatabase(pDBname,pJSONDB) {
   var vDBname = pJSONDB["name"] || removeExtension4File(pDBname) || "UndefDB";
   var vClassType = pJSONDB["sClassType"] || "";
-  console.log("importClass(pJSDB) for Database '"+vDatabase+"' DatabaseType='"+vDatabaseType+"'");
+  console.log("importClass(pJSDB) for Database '"+vDataJSON+"' DatabaseType='"+vDataJSONType+"'");
   if (existsDatabaseJS(vDBname)) {
     var vCheck = confirm("Database '"+vDBname + "' exists.\nDo you really want to import the JSON file\nand overwrite the existing databasen?");
     if (vCheck == false) {
       alert("Import Database '"+vDBname+"' cancelled!");
     } else {
-      // Set Database in Global vDatabase Hash
-      vDatabase[vDBname] = vJSDB;
-      // Import JSON for the Database vDatabase
+      // Set Database in Global vDataJSON Hash
+      vDataJSON[vDBname] = vJSDB;
+      // Import JSON for the Database vDataJSON
       vJSON_JS["DatabaseList"][vDBname] = vJSDB;
     };
   }
@@ -781,7 +781,7 @@ function getDatabasesHTML(pFile,pStandalone) {
     for (var i = 0; i < vArrDB.length; i++) {
       if (existsDatabaseJS(vArrDB[i])) {
         vOutJS += "\n//---- JSON 'db/"+vArrDB[i]+".js' ----\n";
-        vOutJS += "\nvDatabase['"+vArrDB[i]+"'] = ";
+        vOutJS += "\nvDataJSON['"+vArrDB[i]+"'] = ";
         vOutJS += stringifyDatabaseJSON(vJSON_JS["DatabaseList"][vArrDB[i]]);
         vOutJS += ";\n";
       };

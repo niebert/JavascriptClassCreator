@@ -655,6 +655,8 @@ function updateJSON2Form(pClass,pFile) {
   updateJSON2FormVariable(vClass,"tMethods");
   updateJSON2EditorContent();
   // updateForm2MissingJSON(pClass);
+  updateJSON2tAttributes();
+  updateJSON2tMethods();
 };
 
 function updateJSON2EditorContent(pClass,pFile) {

@@ -554,7 +554,7 @@ function updateJSON2tMethods(pClass) {
   var vClass = pClass || getSelectedClassID();
   var vOut = "";
   if (existsClassJS(vClass)) {
-    var vArr = getMethodArrayJSON(pClass);
+    var vArr = getMethodArrayJSON(vClass);
     if (vArr.length > 0) {
       vOut = vArr.join("\n");
     };
@@ -1226,6 +1226,8 @@ function getAttribCommentHash(pAttHash) {
   return vHash;
 };
 
+// see selectJSAttribType() too
+
 function updateAttribType4Form() {
   var vDefault = getValueDOM("tAttribDefault");
   var vType = determineAttType(vDefault);
@@ -1401,6 +1403,7 @@ function getMethodArray(pClass) {
 function getMethodArrayJSON(pClass) {
   var vRetArr = [];
   var vMethodArray = getMethodNameArrayJSON(pClass);
+  console.log("getMethodArrayJSON('"+pClass+"') vMethodArray.length="+vMethodArray.length);
   var vClassJS = getClassJSON(pClass);
   var vMethRet = vClassJS["MethodReturn"];
   var vMethPar = vClassJS["MethodParameter"];

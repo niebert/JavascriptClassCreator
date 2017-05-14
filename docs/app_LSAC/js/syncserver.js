@@ -312,8 +312,8 @@ function submitSuccess(pSubmitted,pMessage,pError,pDB) {
 //----------------------------------------
 function submitFeedbackJSON() {
   var vType = "feedback";
-  var vDatabase = vType + vQueryHash["app_database"];
-  submitForm2JSON(vDatabase,vType);
+  var vDataJSON = vType + vQueryHash["app_database"];
+  submitForm2JSON(vDataJSON,vType);
 };
 
 function readType2URLparam(pType) {
@@ -338,8 +338,8 @@ function readFeedback2URLparam() {
 function submitResponseJSON() {
   console.log("submitResponseJSON()-Call");
   var vType = "response";
-  var vDatabase = vType + vQueryHash["app_database"];
-  submitForm2JSON(vDatabase,vType);
+  var vDataJSON = vType + vQueryHash["app_database"];
+  submitForm2JSON(vDataJSON,vType);
 };
 
 function readResponse2URLparam() {

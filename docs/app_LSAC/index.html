@@ -10,8 +10,8 @@
       <script src="js/jquery-1.7.1.min.js"></script>
 
       <script>
-        // vDatabase contains all loaded Databases as JSON file
-        var vDatabase = {};
+        // vDataJSON contains all loaded Databases as JSON file
+        var vDataJSON = {};
         //------------BEGIN iOS-Inspired------------
          // all dialog buttons should close their parent dialog
          $(".ui-dialog button").live("click", function() {
@@ -28,7 +28,7 @@
 
 //---- JSON 'db/db_mydata.js' ----
 
-vDatabase['db_mydata'] = {
+vDataJSON['db_mydata'] = {
     "JSCC_type": "DB",
     "name": "db_mydata",
     "file": "db/db_mydata.js",
@@ -63,7 +63,7 @@ vDatabase['db_mydata'] = {
 
 //---- JSON 'db/db_disapp.js' ----
 
-vDatabase['db_disapp'] = {
+vDataJSON['db_disapp'] = {
     "JSCC_type": "DB",
     "name": "db_disapp",
     "file": "db/db_disapp.js",
@@ -1270,7 +1270,7 @@ function Database () {
        // var vQueryHash = readQueryParams();
        var vOnlineMode = false;
        var vApp = new App();
-       vApp.init(document,vDatabase);
+       vApp.init(document,vDataJSON);
        // checkOnlineMode();
       </script>
     </body>

@@ -19,7 +19,7 @@ vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
 //vDOM_Global.push("sButtonHeader1"); // Selector for ButtonHeader 1
 //vDOM_Global.push("sButtonHeader2"); // Selector for ButtonHeader 2
 vDOM_Global.push("tMethodCode");
-vDOM_Global.push("tLibraries");
+vDOM_Global.push("tGlobalLibs");
 vDOM_Global.push("tDatabases"); // List of all included Databases
 vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases
 vDOM_Global.push("sExportPrefix"); //Checkbox if Export Prefix should be used for Databases. Unchecked i.e. pure JSON export
@@ -49,7 +49,7 @@ vDOM_TPL.push("tTplPageLinkBUTTON"); // Definition of Header Buttons of an App, 
 vDOM_TPL.push("tDefaultBUTTON"); // Default button that must be edited by user, contains an alert as event handler
 vDOM_TPL.push("tTplQUIT"); // Main Quit Button (red) which will close the window
 vDOM_TPL.push("tClassHeader"); // Class Header for Javascript Classes
-vDOM_TPL.push("tMethodsHeaderTpl"); // Contains the methods header of definitions of methods
+vDOM_TPL.push("tTplMethodsHeader"); // Contains the methods header of definitions of methods
 vDOM_TPL.push("tTplSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
 vDOM_TPL.push("tTplSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
 vDOM_TPL.push("tTplClassTail"); // Defines the End of the Class Definition
@@ -141,8 +141,7 @@ function initCodeCreator() {
        vLocalStorageLoad = true;
        //clearForm4Class(vSelectedClass);
        //clearForm4File(vSelectedFile);
-       updateJSON2Form(vSelectedClass);
-
+       updateJSON2Form(vSelectedClass,vSelectedFile);
        console.log("initCodeCreator() Selected Class ["+vSelectedClass+"] in JSON Database");
       } else {
         if (vJSON_JS.hasOwnProperty("ClassList") && vJSON_JS.hasOwnProperty("FileList")) {
@@ -161,6 +160,7 @@ function initCodeCreator() {
   } else {
       alert("Sorry, your browser does not support Local Storage...");
   };
+  updateBasicClassJSON2Form();
   updateSelectors(); //select.js:140
   checkInterface4Class(vSelectedClass);
   updateClasses();
@@ -176,6 +176,7 @@ function initCodeCreator() {
   getPageTypeCode4Editor(vSelectedPageType)
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
+  updateFileListJSON2Form();
   populateForm2TemplateJSON();
   createClassSelect();
   setClassSelectorDefault(vSelectedClass);
@@ -185,6 +186,8 @@ function initCodeCreator() {
   setDefaultSelectors();
   //console.log("checkDatabaseListJSON()-Call");
   updateButtonJSON2Form();
+  updateGlobalLibsJSON2Form();
+  updateDatabasesJSON2Form();
   checkDatabaseListJSON();
   if (vLocalStorageLoad == true) {
     write2value("tMethodCode",vRestoreForm["tMethodCode"]);
@@ -197,6 +200,7 @@ function initCodeCreator() {
     selectSuperClass(vRestoreForm["tSuperClassname"]);
     updateJSON2tMethods(vSelectedClass);
   };
+  loadHTML2iFrame("tpl/index.html");
 };
 
 function loadForm2JSON(pSelectedClass,pSelectedFile) {

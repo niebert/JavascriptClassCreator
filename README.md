@@ -6,12 +6,28 @@
 - [Introduction](#introduction)
 - [UML Diagrams](#uml-diagrams)
 - [Compressing Code](#compressing-code)
-- [Structure of ___JSCC___ projects](#structure-of-jscc-projects)
-  - [JSCC Projects](#jscc-projects)
+- [Structure of ___JSCC___ projects](#structure-of-___jscc___-projects)
+  - [___JSCC___ Projects](#___jscc___-projects)
   - [HTML Files - HTML Templates](#html-files---html-templates)
+    - [Rationals for template driven development](#rationals-for-template-driven-development)
+    - [Markers and identifiers for Replace Operation in Files](#markers-and-identifiers-for-replace-operation-in-files)
   - [Pages (Parent: FileHTML)](#pages-parent-filehtml)
-- [Status of software](#status-of-software)
+  - [Elements on Page (Parent: Page)](#elements-on-page-parent-page)
+  - [FileHTML](#filehtml)
+- [Folders of software](#folders-of-software)
+- [Status of Software](#status-of-software)
   - [Release Status](#release-status)
+  - [Programming Languages](#programming-languages)
+- [Internal Load Chain for Project and Templates](#internal-load-chain-for-project-and-templates)
+- [Client-Server Communication of App](#client-server-communication-of-app)
+  - [Collected Data in LocalStorage](#collected-data-in-localstorage)
+  - [Cross-site scripting - Security Risk](#cross-site-scripting---security-risk)
+  - [Remote Server and Form Submit](#remote-server-and-form-submit)
+  - [Template Driven Code Generation](#template-driven-code-generation)
+    - [View Code Templates](#view-code-templates)
+    - [Edit Code Templates and Export](#edit-code-templates-and-export)
+  - [Loading JSON Data into the App](#loading-json-data-into-the-app)
+    - [Load a single JSON file](#load-a-single-json-file)
   - [ToDo](#todo)
 - [Acknowledgement](#acknowledgement)
 
@@ -167,15 +183,15 @@ With the following enumeration the purpose of the folders is explained. JSCC-fol
 1. JSCC-folder ___/ace___ contains the source of the ACE code editor used in iFrames for JavascriptClassCreator (JSCC)
 2. WebApp-folder ___/app_LSAC___ is the directory in which you can store the generate sources for a specific WebApp. ___LSAC___ is an abbreviation for ***Local Storage and App Cache***.
 3. JSCC-folder ___/css___ contains the Stype Sheets for JavascriptClassCreator (JSCC)
-4. folder ___/exporter4code___ is a template driven code generator that is pure HTML/JS and independent of a specific syntax of an programming languages (not necessary for JSCC)
-5. folder ___/java2javascipt___ allows the import of Java-Classes into JSCC, it parses attributes and method headers of the Java Class (not necessary for JSCC)
-6. folder ___/javascipt2htmlcreator___ contains older framework for WebApps based on frames (not necessary for JSCC)
-7. JSCC-folder ___/jquery___ contains the JQuery libraries and images
-8. JSCC-folder ___/js___ contains the Javascript libraries for JSCC
-9. JSCC-folder ___/prog___ contains the JSON files for the programming project
-10. JSCC-folder ___/srv___ contains the HTML files that emulate and server and the server response to a client request
-11. JSCC-folder ___/uglify___ contain the code compressor.
-12. JSCC-folder ___/uml___ contains the UML diagram generation, called from JSCC based on JointJS.
+4. Plugin folder ___/plugins/exporter4code___ is a template driven code generator that is pure HTML/JS and independent of a specific syntax of an programming languages (not necessary for JSCC)
+5. Plugin folder ___/plugins/java2javascipt___ allows the import of Java-Classes into JSCC, it parses attributes and method headers of the Java Class (not necessary for JSCC)
+6. Plugin folder ___/plugins/javascipt2htmlcreator___ contains older framework for WebApps based on frames (not necessary for JSCC)
+7. Plugin folder ___/plugins/jquery___ contains the JQuery libraries and images for JSCC
+8. JSCC-folder ___/plugins/uglify___ contain the code compressor.
+9. JSCC-folder ___/plugins/uml___ contains the UML diagram generation, called from JSCC based on JointJS.
+10. JSCC-folder ___/js___ contains the Javascript libraries for JSCC
+11. JSCC-folder ___/prog___ contains the JSON files for the programming project
+12. JSCC-folder ___/srv___ contains the HTML files that emulate and server and the server response to a client request
 
 ## Status of Software
 ### Release Status
@@ -234,8 +250,47 @@ Scroll down the ___JSCC___ page in  [docs/index.html](http://niebert.github.io/J
 * JS-File with Hash: ___vDataJSON["myjson"] = {"color":"blue","setting" : "is ok", "header" : "this is my header"}___
 With this approach you can access the JSON file in the hash ___vDataJSON___ with the ID ___myjson___. This has the advantage, that you can load and access several JSON file through the hash ___vDataJSON___  without contamination the root name space of the App/HTML file to much.
 
-### ToDo
-* UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code and export to other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
+## Load JSON Data into the App
+___vDataJSON___ is global hash (Javascript Object), that stores all the loaded JSON data. A single variable is used to store all the JSON data, so that the global name space in the document is not "contaminated" with many JSON database names.
+
+### Load a single JSON file
+A single JSON file can be loaded without any Javascript workaround by assigning the JSON data to a key in  
+* ___vDataJSON["my_data"]={....}___ assigns a hash (Javascript Object) to the key ___"my_data"___ in ___vDataJSON___.
+* JSON databases have always a lower case name.
+
+### Reserved Keys in ___vDataJSON___
+If the first letter is uppercase, then the key is reserved for classes of JSON databases. One example is the  ___"SurveyJS"___-key in ___vDataJSON___. An app could handle more than one survey (e.g. a mobile health app could provide a questionnaire for *blood pressure* with the JSON name ___blood_pressure____ and another questionnaire about *food and weight* with the JSON name ___food___). The format of the questionnaire for *SurveyJS* is
+
+* ___vDataJSON["SurveyJS"]["blood_pressure"]___ (Blood Pressure questionnaire)
+* ___vDataJSON["SurveyJS"]["food"]___ (Food and Weight questionnaire)
+
+### Save JSON Data
+* A JSON file is stored in the Local Storage of the browser (limit 5MB for some browsers)
+* for programming and export function just use ___JSON.stringify(...)___ to generate a string that defines the data structure. E.g. for the JSON data in ___vMyJSON___ the call of ___JSON.stringify(vMyData)___ generates the JSON definition as a string. Store the generated string in a textarea of your HTML file or view the result in the console by  ___console.log(JSON.stringify(vMyData))___.
+* The generated string by ___JSON.stringify(...)___ can be stored in the Local Storage as well.
+
+    ___var vDataString = JSON.stringify(vMyData);___
+    ___localStorage.setItem("mydata",vDataString);___
+
+* Databases from ___vDataJSON___ can be exported in the same way.
+
+   ___var vData = vDataJSON["SurveyJS"]["food"];___
+   ___var vDataString = JSON.stringify(vMyData);___
+   ___localStorage.setItem("food",vDataString);___
+
+* Databases in ___JSCC___ have a root attribute called ___init_type___. With this attribute ___JSCC___ determines the type of JSON structure provided with the JSON file. In general we can not expect a classification of JSON file with that attribute. So programming should determine the type JSON manually.
+* a web app runs in browser which has no write permission to your harddrive. To provide the feature to save a file to the harddrive of the user the ___FileSaver.js___ library can be used (see acknowledgements). The function
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+defines a function to save a file by using the download feature of browsers to store a file in the Download-folder of the browser. Importing ___blob.js___ and ___filesaver.js___ provides this functionality to browsers.
+   <script language="javascript" src="js/blob.js"></script>
+   <script language="javascript" src="js/filesaver.js"></script>
+
+
+## ToDo
+* UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code. The syntax tree AST of the Javascript code can be used to generate other object oriented code of other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for parsing Javascript Code of Classes for exporting to Code2XML with AST and TreeWalker
 * BUG: createButtonSelect() is not implemented, Buttons need an empty first entry

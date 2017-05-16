@@ -291,23 +291,6 @@ function updateForm2ButtonsJSON() {
   // getValueDOM("tButtons")
 };
 
-function updateForm2DatabasesJSON() {
-  console.log("updateForm2DatabasesJSON()");
-  var vDataJSONList = vJSON_JS["DatabaseList"];
-  var vFormDB = getDatabaseArray();
-  var vDB = "";
-  for (var i = 0; i < vFormDB.length; i++) {
-    vDB = vFormDB[i];
-    if (existsDatabaseJS(vDB)) {
-      console.log("Database: '"+vDB+"' exists!");
-    } else {
-      vJSON_JS["DatabaseList"][vDB] = getDefaultDatabaseJSON(vDB,"Title "+vDB);
-    };
-  }
-  // getValueDOM("tButtons")
-};
-
-
 function getPageType4tPageTypeForm(pArrID) {
   console.log("getPageType4tPageTypeForm(pArrID) pArrID.length="+pArrID.length);
   var vHash = vJSON_JS["PageType"];
@@ -410,7 +393,7 @@ function getButtonListHash() {
 
 
 function getGlobalLibArray() {
-  return getTextareaArray("tLibraries");
+  return getTextareaArray("tGlobalLibs");
 }
 
 
@@ -747,6 +730,7 @@ function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
     vHash["title"] = "Title of ID "+vID;
     vHash["input"] = getMarker4ID("DB_"+vID);
     vHash["output"] = getMarker4ID("DB_ID_VALUE");
+    vHash["visible"] = true;
     vHash["mandatory"] = true;
     vDB["format"][vArrID[i]] = vHash;
   };
@@ -756,7 +740,7 @@ function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
   return vDB
 };
 
-function getDefaultDataDB(pArrID,pStart,pEnd) {
+function getDefaultDataDB(pArrID,pDBname,pStart,pEnd) {
   var vStart = pStart || 0;
   var vEnd = pEnd || 2;
   var vData = {};
@@ -766,9 +750,10 @@ function getDefaultDataDB(pArrID,pStart,pEnd) {
   var vDBID = "";
   for (var iCount = vStart; iCount <= vEnd; iCount++) {
     vDBID = vDBID_Prefix+iCount;
+    console.log(pDBname+": "+iCount);
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
-      vHash[vID] = "("+iCount+") record ["+vDBID+"] value of ID ‘"+vID+"’";
+      vHash[vID] = "("+iCount+") '"+pDBname+"' record ["+vDBID+"] value of ID ‘"+vID+"’";
     };
     vData[vDBID] = vHash;
   };
@@ -796,6 +781,28 @@ function updateForm2DatabasesJSON() {
   };
   vJSON_JS["DatabaseList"] =  vDBHash;
   createDatabaseSelect(vNameDB);
+};
+
+function updateDatabasesJSON2Form() {
+  console.log("updateForm2DatabasesJSON()");
+  var vDBList = vJSON_JS["DatabaseList"];
+  var vArrID = getArray4HashID(vDBList);
+  var vDB = "";
+  var vOut = "";
+  var vCR = "";
+
+  for (var i = 0; i < vArrID.length; i++) {
+    vDB = vDBList[vArrID[i]];
+    if (vDB["file"]) {
+      console.log("Database: '"+vDB["file"]+"' exists!");
+      vOut += vCR + vDB["file"];
+      vCR = "\n";
+    } else {
+      console.log("Database for '"+vArrID[i]+"' has not attribute filename!");
+    };
+  };
+  write2value("tDatabases",vOut);
+  // getValueDOM("tButtons")
 };
 
 function removeExtensionJS4Array(pArrDB) {

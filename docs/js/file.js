@@ -122,4 +122,58 @@ function readFileTXT(pFile) {
     }
     rawFile.send(null);
     return vContent;
+};
+
+function filename2id(pFile) {
+  return pFile.replace(/[^a-zA-Z_0-9]/g,"")
+
 }
+
+function loadHTML2iFrame(pFile) {
+  var ifrm = document.createElement("iframe");
+  var vID = filename2id(pFile);
+  ifrm.setAttribute("src", pFile);
+  ifrm.setAttribute("id", vID);
+  ifrm.style.width = "90%";
+  ifrm.style.height = "100px";
+  var vIFrameContainer = document.getElementById("iFrameContainer");
+  var vTitle = document.createElement("b");
+  vTitle.innerHTML = "File: "+pFile;
+  vIFrameContainer.appendChild(vTitle);
+  vIFrameContainer.appendChild(ifrm);
+  //document.body.appendChild(ifrm);
+};
+
+function loadResource( url, type, loadhash ) {
+  // modified from reveal.js
+  if (loadhash.hasOwnProperty(url)) {
+    console.log("Resource '"+url+"' of type '"+type+"' already loaded");
+  } else {
+    console.log("Load Resource '"+url+"' of type '"+type+"'");
+    loadhash(url) = url; // mark as loaded
+    var head = document.querySelector( 'head' );
+  	var resource;
+
+  	if ( type === 'script' ) {
+      resource = document.createElement( 'script' );
+      resource.type = 'text/javascript';
+      resource.src = url;
+  	}	else if ( type === 'stylesheet' ) {
+      resource = document.createElement( 'link' );
+      resource.rel = 'stylesheet';
+      resource.href = url;
+  	};
+
+  	resource.onload = finish;
+
+  	// IE
+  	resource.onreadystatechange = function() {
+  			if ( this.readyState === 'loaded' ) {
+  				finish();
+  			}
+  		}; // onreadystatechange
+
+  	// Normal browsers
+  	head.appendChild( resource );
+  };
+};

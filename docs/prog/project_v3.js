@@ -12,7 +12,7 @@ vDataJSON['project'] = {
     "sPageTypeHTML": "ConfirmPage",
     "sPageHTML": "setting",
     "sButtonHTML": "",
-    "tLibraries": "string.js\nlocalstorage.js\nwritedom.js",
+    "tGlobalLibs": "string.js\nlocalstorage.js\nwritedom.js",
     "tDatabases": "db_mydata.js\ndb_disapp.js",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",

@@ -12,7 +12,7 @@ vDataJSON['project'] = {
     "sPageTypeHTML": "ConfirmPage",
     "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
-    "tLibraries": "string.js\nlocalstorage.js\nwritedom.js",
+    "tGlobalLibs": "string.js\nlocalstorage.js\nwritedom.js",
     "tDatabases": "db_mydata.js\ndb_disapp.js",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",
@@ -614,7 +614,7 @@ vDataJSON['project'] = {
                 },
                 "freetext1": {
                     "title": "Title of ID freetext1",
-                    "input": "___DB_FREETEXT___",
+                    "input": "___DB_TEXTAREA___",
                     "output": "___DB_ID_VALUE___",
                     "mandatory": true
                 },
@@ -646,7 +646,7 @@ vDataJSON['project'] = {
                 },
                 "freetext1": {
                     "title": "Title of ID freetext1",
-                    "input": "___DB_FREETEXT___",
+                    "input": "___DB_TEXTAREA___",
                     "output": "___DB_ID_VALUE___",
                     "mandatory": true
                 },
@@ -768,8 +768,28 @@ vDataJSON['project'] = {
         "quit": "Content for Page 'quit'",
         "login": "Content for Page 'login'"
     },
+    "ElementsDB": {
+      "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB_ID___\" onload=\"vApp.db.setValueDB('___DB___','___DB_ID___','___DB_ID_VALUE___')\"set><option>YES</option><option>NO</option></select>",
+      "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB_ID___'><option>YES</option><option>NO</option></select>"
+    },
+    "GlobalLibList": [
+      {
+        "path":"js/string.js",
+        "import": true
+      },
+      {
+        "path":"js/localstorage.js",
+        "import": true
+      },
+      {
+        "path":"js/writedom.js",
+        "import": true
+      }
+    ],
     "FileList": {
         "index.html": {
+            "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
             "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
             "sElementList": "HTML_TITLE",
@@ -784,10 +804,20 @@ vDataJSON['project'] = {
                 "SESSION": "File index.html - Content of element SESSION",
                 "DATABASE": "File index.html - Content of element DATABASE"
             },
-            "sAppClassHTML": "App",
-            "tTemplateHTML": "tpl/Default.html"
+            "LibList": [
+              {
+                "path":"js/login.js",
+                "import": true
+              },
+              {
+                "path":"js/geolocation.js",
+                "import": true
+              }
+            ]
         },
         "app.html": {
+            "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
             "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
             "sElementList": "",
@@ -801,9 +831,21 @@ vDataJSON['project'] = {
                 "USERNAME": "File app.html - Content of element USERNAME",
                 "SESSION": "File app.html - Content of element SESSION",
                 "DATABASE": "File app.html - Content of element DATABASE"
-            }
+            },
+            "LibList": [
+              {
+                "path":"js/qrcode.js",
+                "import": true
+              },
+              {
+                "path":"js/geolocation.js",
+                "import": true
+              }
+            ]
         },
         "submit.html": {
+            "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
             "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
             "sElementList": "",
@@ -817,7 +859,17 @@ vDataJSON['project'] = {
                 "USERNAME": "File submit.html - Content of element USERNAME",
                 "SESSION": "File submit.html - Content of element SESSION",
                 "DATABASE": "File submit.html - Content of element DATABASE"
-            }
+            },
+            "LibList": [
+              {
+                "path":"js/submit.js",
+                "import": true
+              },
+              {
+                "path":"js/geolocation.js",
+                "import": true
+              }
+            ]
         }
     },
     "SelectedFile": "index.html",
@@ -831,6 +883,5 @@ vDataJSON['project'] = {
         "Hash": "{}",
         "RegularExp": "/mypattern/g",
         "Document": "document"
-    },
-    "tMethodCode": ""
+    }
 }

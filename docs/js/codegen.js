@@ -8,7 +8,7 @@ function compressCode4Class() {
 
 function compressCodeJS(pCode) {
   var vCode = pCode || getEditorValue("iOutput");
-  console.log("compressCodeJS() length="+vCode.length+" not used in JSCC so far");
+  console.log("compressCodeJS() length="+vCode.length+" ");
   var vWin = getCompressorWin();
   if (vWin) {
     console.log("Window of iFrame 'iCompressor' found");
@@ -84,6 +84,7 @@ function replaceElements4Hash(pObject,pRecursive_Depth,pFile) {
   var vFile = pFile || getSelectedFileID();
   var vRecursive_Depth = pRecursive_Depth || 0;
   var vMax = 50;
+  console.log("replaceElements4Hash(pObject,"+vRecursive_Depth+",'"+vFile+"')");
   if (isHash(pObject)) {
     vRecursive_Depth++;
     if (vRecursive_Depth < vMax)
@@ -93,8 +94,8 @@ function replaceElements4Hash(pObject,pRecursive_Depth,pFile) {
           console.log("RECURSIVE: replaceElements4Hash(pObject['"+iID+"'],"+vRecursive_Depth+");");
           replaceElements4Hash(pObject[iID],vRecursive_Depth);
         } else if (typeof(pObject[iID]) == "string") {
-          console.log("STRING: replaceElements4Hash(pObject['"+iID+"'],"+vRecursive_Depth+");");
           pObject[iID] = replaceElements4HTML(pObject[iID],vFile);
+          console.log("STRING: replaceElements4Hash(pObject['"+iID+"'],"+vRecursive_Depth+"); value='"+pObject[iID]+"'");
         };
       };
     };
@@ -281,16 +282,30 @@ function replaceAppLaucher4HTML(pHTML,pFile) {
 
 function replaceElements4HTML(pHTML,pFile) {
   var vFile = pFile || getSelectedFileID();
+  var vElemHash = vJSON_JS["ElementsDB"];
+  pHTML = replaceHash4Content(vElemHash,pHTML)
+  var vBefore = pHTML;
   if (existsFileJS(vFile)) {
-    var vElemHash = vJSON_JS["FileList"][vFile]["elements"];
+    vElemHash = vJSON_JS["FileList"][vFile]["elements"];
+    pHTML = replaceHash4Content(vElemHash,pHTML)
+  };
+  console.log("replaceElements4HTML() Before: '"+vBefore+"' After: '"+pHTML+"'");
+  return pHTML;
+};
+
+function replaceHash4Content(pHash,pHTML) {
+  if (isHash(pHash)) {
+    var vElemHash = pHash;
     for (var iElemID in vElemHash) {
       if (vElemHash.hasOwnProperty(iElemID)) {
         pHTML = replaceString(pHTML,"___"+iElemID+"___",vElemHash[iElemID]);
       };
     };
   };
+
   return pHTML;
 };
+
 
 function loadProjectJSON4File(pProjectFile) {
   console.log("loadProjectJSON4File('"+pProjectFile+"')");
@@ -855,7 +870,7 @@ function displayCompress() {
 
 function openCompressorWin(pParam) {
   var vParam = pParam || "";
-  return window.open("uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
+  return window.open("plugins/uglify/index.html"+vParam,"wCOMP"+Date.now(),"width=900,height=600");
 }
 
 
@@ -865,7 +880,7 @@ function displayUML() {
         vWinUML.close();
       };
     };
-    vWinUML = window.open("uml/index.html","wUML","width=900,height=600");
+    vWinUML = window.open("plugins/uml/index.html","wUML","width=900,height=600");
 };
 
 
@@ -903,6 +918,7 @@ function createCode4Class(pClass) {
   var vCode = getCode4Class(vClass);
   write2editor("Output",vCode);
   if (getCheckBox("checkCompressCode")) {
+    console.log("Open Compressor Window and compress class '"+pClass+"'");
     compressCode4Class();
   };
 };
@@ -928,7 +944,15 @@ function getCode4Class(pClass,pCompressed) {
   	vClassTail    = replaceString(vClassTail,"___CLASSNAME___",vClassJS["tClassname"]);
   	vOutput += vClassTail;
     if (vCompressed) {
-      vOutput = compressCode4Class(vOutput);
+      var vWin = getIFrameWindow("iCompressor");
+      if (vWin) {
+        vWin.setClassName(vClass);
+        vWin.setInputCode(vOutput);
+        vWin.startCompressor();
+        vOutput = vWin.getOutputCode();
+      }
+    } else {
+      console.log("Code is uncompressed");
     };
   } else {
     console.log("ERROR: getCode4Class('"+vClass+"') Class does not exist");

@@ -203,8 +203,55 @@ function  updateMethodsJS() {
   console.log("updateMethodsJS()-Call undefined");
 };
 
-function updateJSLibraries() {
-  console.log("updateJSLibraries undefined");
+function updateGlobalLibsForm2JSON() {
+  console.log("updateGlobalLibsForm2JSON()");
+  var vGLib = getValueDOM("tGlobalLibs") || "";
+  vGLib = removeEmptyLines(vGLib);
+  vJSON_JS["GlobalLibList"] = [];
+  if (vGLib != "") {
+    var vGLibArr = vGLib.split("\n");
+    var vLinArr;
+    var vImport = "";
+    var vBoolean = true;
+    var vID = "";
+    var vHash;
+    for (var i = 0; i < vGLibArr.length; i++) {
+      vLinArr = vGLibArr[i].split("|");
+      vFileName = vLineArr[0];
+      vImport = vLineArr[1] || "true";
+      if (reduceVarName(vFileName) != "") {
+        vID = filename2id(vFileName);
+        if (vImport == "false") {
+          vBoolean = false;
+        } else {
+          vBoolean = true;
+        };
+        vJSON_JS["GlobalLibList"].push({
+          "file":vFileName,
+          "import": vBoolean
+        });
+      }
+    }
+  }
+};
+
+function updateGlobalLibsJSON2Form() {
+  console.log("updateGlobalLibsForm2JSON()");
+  var vArr = vJSON_JS["GlobalLibList"];
+  var vOut = "";
+  var vCR = "";
+  var vImport = "";
+  for (var i = 0; i < vArr.length; i++) {
+    if (vArr[i]["import"] == false) {
+      vImport = "false";
+    } else {
+      vImport = "true";
+    }
+    //vOut += vCR + vArr[i]["path"]+"|"+vImport;
+    vOut += vCR + vArr[i]["path"];
+    vCR = "\n";
+  };
+  write2value("tGlobalLibs",vOut);
 };
 
 function updateHTMLFiles() {
@@ -650,14 +697,36 @@ function updateJSON2Form(pClass,pFile) {
   updateDOM_JSON2Form(vClass);
   updateGlobalJSON2Form(vClass);
   updateFileJSON2Form(vFile);
+  updateFileListJSON2Form();
+  updateBasicClassJSON2Form();
+  updateButtonJSON2Form();
   // load the defined Attribute from Form
   updateJSON2FormVariable(vClass,"tAttributes");
   updateJSON2FormVariable(vClass,"tMethods");
-  updateJSON2EditorContent();
+  updateJSON2EditorContent(vClass,vFile);
   // updateForm2MissingJSON(pClass);
-  updateJSON2tAttributes();
-  updateJSON2tMethods();
+  updateJSON2tAttributes(vClass);
+  updateJSON2tMethods(vClass);
 };
+
+function updateFileListJSON2Form() {
+  var vArrFile = getArray4HashID(vJSON_JS["FileList"]);
+  write2value("tHTMLfiles",vArrFile.join("\n"));;
+};
+
+function updateBasicClassJSON2Form() {
+  var vHash = vJSON_JS["BasicClasses"];
+  var vOut = "";
+  var vCR = "";
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+       vOut += vCR + iID + " = " + vHash[iID];
+       vCR = "\n";
+    };
+  };
+  write2value("tBasicClassList",vOut);
+}
+
 
 function updateJSON2EditorContent(pClass,pFile) {
   var vClass = pClass || getSelectedClassID();

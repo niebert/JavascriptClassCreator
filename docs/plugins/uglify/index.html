@@ -15,20 +15,23 @@
 </head>
 
 <body class="s-input s-output s-output">
-<h2>UglifyJS: Online JavaScript minifier - <a id="header-link" style="color:blue">[?]</a></h2>
+<h2>UglifyJS: Online JavaScript minifier</h2>
 <br>
 <div class="header" style="padding-left: 20px">
-	<b>Class:</b> <tt id="hClassName" style=" font-size-adjust: 0.90;color:red">MyClass</tt>
+	<b>Class:</b> <tt id="hClassName" style=" font-size-adjust: 0.90;color:blue">-</tt>
+
 	<br>
+	<!--
 	<button class="btn-main pull-right" id="btn-comp"  tabindex="1" onclick="compressCloseWin()">Close</button>
+  -->
 	<button class="btn-main pull-right" id="btn-go" tabindex="1" styleX="display:none">Minify</button>
 	<button id="btn-options" tabindex="2">Options</button>
-	<label><input id="cb-as-i-type" checked="checked" type="checkbox"> As I type</label>
+	<label><input id="cb-as-i-type" checked="checked" type="checkbox"> As I type</label> &nbsp;<a id="header-link" style="color:blue">[?]</a>
 </div>
 
 <div class="content">
 	<div class="col i i-input">
-<textarea id="in" rows="15" cols="80" spellcheck="false" tabindex="1" autofocus="" style="white-space: pre;word-wrap: normal;overflow-x: scroll;">// Your code goes here
+<textarea id="in" rows="10" cols="60" spellcheck="false" tabindex="1" autofocus="" style="white-space: pre;word-wrap: normal;overflow-x: scroll;">// Your code goes here
 </textarea>
 <script language="javascript" src="js/linkparam.js"></script>
 
@@ -63,6 +66,11 @@ function loadInputCode(pEditorID) {
 function setInputCode(pInputCode) {
 	var vInputCode = pInputCode || "// Code undefined";
 	document.getElementById("in").value = vInputCode;
+};
+
+function setClassName(pClassName) {
+	var vClass = pClassName || "-";
+	document.getElementById("hClassName").innerHTML = vClass;
 };
 
 function getOutputCode() {
@@ -152,7 +160,7 @@ function getOutputCode() {
 	<div class="col i i-output">
 		<p>
 			The minified output (<span id="stats">921 bytes, saved 59.23%</span>)</p>
-		<textarea id="out" spellcheck="false" tabindex="3"></textarea>
+		<textarea id="out" spellcheck="false" tabindex="3" rows="25"></textarea>
 	</div>
 
 	<div class="col i i-error">

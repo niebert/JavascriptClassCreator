@@ -4,7 +4,20 @@ function getValueDOM(pID) {
   if (!vNode) {
     console.log("DOM Node ["+pID+"] does not exist! - getValueDOM()-Call");
   } else {
-    vReturn = vNode.value;
+    switch (vNode.tagName) {
+      case "input":
+        switch (vNode.getAttribute("type")) {
+            case "checkbox":
+              vReturn = vNode.checked;
+            break;
+            default:
+              vReturn = vNode.value;
+        }; // end switch
+      break;
+      // textarea
+      default:
+        vReturn = vNode.value;
+    };
     if (!vReturn) {
       vReturn = "";
       //vReturn = getInnerHTML(pID);
@@ -42,9 +55,23 @@ function write2innerHTML(pID,pContent) {
 function write2value(pID,pContent) {
   var vNode =document.getElementById(pID)
   if (vNode){
-    vNode.value=pContent;
+    //vNode.value=pContent;
+    node2value(vNode,pContent,pID)
   } else {
     console.log("Write DOM-Node 'value' with ID=["+pID+"] was undefined")
+  }
+}
+
+function node2value(pNode,pContent,pID) {
+  var vID = pID || "";
+  if (pNode){
+    if (pNode.getAttribute("type") == "checkbox") {
+      pNode.checked=pContent;
+    } else {
+      pNode.value=pContent;
+    }
+  } else {
+    console.log("node2value(pNode,pContent,'"+vID+"') - pNode undefined")
   }
 }
 
@@ -52,7 +79,8 @@ function write4name2value(pID,pContent) {
   var vNodeArr =document.getElementsByName(pID);
   if (vNodeArr){
     for (var i=0;i<vNodeArr.length; i++) {
-      vNodeArr[i].value=pContent;
+      //vNodeArr[i].value=pContent;
+      node2value(vNodeArr[i],pContent,"name:'"+pID+"'")
     }
   } else {
     console.log("Write DOM-Node 'value' with Name=["+pID+"] was undefined")

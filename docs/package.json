@@ -1,0 +1,20 @@
+{
+  "name": "jscc",
+  "version": "1.0.0",
+  "description": "JavaScript Class Creator JSCC",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "jscc"
+  },
+  "keywords": [
+    "Javascript",
+    "WebApp",
+    "Framework"
+  ],
+  "author": "Engelbert Niehaus et.al.",
+  "license": "GPL-3.0"
+}

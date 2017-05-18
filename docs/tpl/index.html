@@ -10,13 +10,16 @@
 	<link href="ios_inspired/styles.css" rel="stylesheet" />
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script>
-		// all dialog buttons should close their parent dialog
-		$(".ui-dialog button").live("click", function() {
-			$("[data-role='dialog']").dialog("close");
-		});
-		$(document).on("mobileinit", function(){
-		  $.mobile.defaultPageTransition = "slide";
-		});
+	  // check in JQuery is loaded - relevant for accessing "$"
+		if (window.jQuery) {
+				// all dialog buttons should close their parent dialog
+			$(".ui-dialog button").live("click", function() {
+				$("[data-role='dialog']").dialog("close");
+			});
+			$(document).on("mobileinit", function(){
+			  $.mobile.defaultPageTransition = "slide";
+			});
+		};
 	</script>
 	<script src="js/jquery.mobile-1.2.0.min.js"></script>
 	<style>
@@ -115,16 +118,11 @@
 </form>
 <script>
 	//setTimeout("checkFullScreen()",400);
-	var IDs = ["app_usergroup","app_email","app_submiturl","app_database"];
-	var vKey = "";
-	var vQueryHash = readQueryParams();
-	for (var i=0;i<IDs.length;i++) {
-		vKey = IDs[i];
-		loadLocalStorageValue(vKey);
-		if (vQueryHash[vKey]) {
-			write2value(vKey,decodeURLparam(vQueryHash[vKey]));
-		};
-   };
+	var vApp;
+	if (typeof(___APP_CLASS___) != "undefined") {
+		vApp = new ___APP_CLASS___();
+		vApp.init(document,vDataJSON);
+	};
 	 document.addEventListener("keydown", function(e) {
 	 if (e.keyCode == 70) {
 		 //Key was F

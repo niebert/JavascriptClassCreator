@@ -50,22 +50,36 @@ function write2options(pID,pArrID) {
   write2innerHTML(pID,createOptions4Array(vArray));
 };
 
-function createMethodSelect() {
+function createMethodSelect(pClass) {
   // get all Methods in JSON Database of all Classes
-  var vClassJSON = getClassJSON();
-  console.log("createMethodSelect()-Call");
-  var vArray = getMethodNameArray();
+  var vClass = pClass || getSelectedClassID();
+  var vMethodHeader = "";
+  var vReturn = "";
+  var vComment = "";
+  var vParameter = "";
+  var vArray = [];
+  if (existsClassJS(vClass)) {
+    var vClassJSON = getClassJSON(vClass);
+    console.log("createMethodSelect()-Call");
+    var vArray = getMethodNameArray();
+    var vMethHash = getMethodHash();
+    var vMethCodeHash = vClassJSON["MethodCode"];
+    var vMethCommentHash = vClassJSON["MethodComment"];
+    var vMethID = vArray[0];
+    vClassJSON["sMethodList"] = vMethID;
+    vParam = vClassJSON["MethodParameter"][vMethID];
+    vComment = vClassJSON["MethodComment"][vMethID];
+    vReturn = vClassJSON["MethodReturn"][vMethID];
+    vCode = vClassJSON["MethodCode"][vMethID];
+    vMethodHeader = getMethodHeader4Name(vClass,vMethID);
+    vClassJSON["tMethodHeader"] = vMethodHeader;
+  };
   write2options("sMethodList",vArray);
-  var vMethHash = getMethodHash();
-  var vMethCodeHash = vClassJSON["MethodCode"];
-  var vMethCommentHash = vClassJSON["MethodComment"];
-  var vMethID = vArray[0];
-  vClassJSON["sMethodList"] = vMethID;
-  var vMethodHeader = vMethHash[vMethID] || "";
   write2value("tMethodHeader",vMethodHeader);
   write2innerHTML("titleMethodName",vMethodHeader);
-  write2value("tMethodCode",vMethCodeHash[vMethID] || "");
-  write2value("tMethodComment",vMethCommentHash[vMethID] || "");
+  write2value("tMethodCode",vCode);
+  write2value("tMethodReturn",vReturn);
+  write2value("tMethodComment",vComment || "");
 };
 
 
@@ -104,13 +118,17 @@ function getSelectedClassJSON(pClassName) {
   return getClassJSON(vSelectedClass);
 }
 
-function updateForm_DOM2JSON() {
+function updateForm_DOM2JSON(pClass) {
   // get all Value from DOM and save Values  in JSON Database of selected Class
-  var vClassName = getSelectedClassID();
-  var vClassJS = getClassJSON();
-  console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSON_JS");
-  for (var i = 0; i < vDOM_ID.length; i++) {
-    vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
+  var vClass = pClass || getSelectedClassID();
+  if (existsFileJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSON_JS");
+    for (var i = 0; i < vDOM_ID.length; i++) {
+      vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
+    };
+  } else {
+    console.log("ERROR: updateForm_DOM2JSON('"+vClass+"')");
   };
 };
 

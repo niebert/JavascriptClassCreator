@@ -18,7 +18,7 @@ function checkInterface4Class(pClassName) {
     //Update Form with inherited
     updateAttribJSON2Form(pClassName);
     updateMethodsJSON2Form(pClassName);
-    updateJSON2Form();
+    updateJSON2Form(pClassName);
   };
   if (vSuperClassType == "Abstract") {
     //inherit the attribute and method interface
@@ -30,7 +30,7 @@ function checkInterface4Class(pClassName) {
     //Update Form with inherited
     updateAttribJSON2Form(pClassName);
     updateMethodsJSON2Form(pClassName);
-    updateJSON2Form();
+    updateJSON2Form(pClassName);
   };
 };
 
@@ -243,7 +243,7 @@ function getDefaultClassHash(pClass,pClassType) {
   debugLog("Class","getDefaultClassHash()");
   var vClassType = pClassType || "Default";
   pClass = reduceVarName(pClass);
-  vClassType = reduceVarName(vClassType)
+  vClassType = reduceVarName(vClassType);
   var vRetClass = {};
   vRetClass["JSCC_type"] = "CLASS";
   vRetClass["JSCC_init_date"] = getDate();
@@ -256,17 +256,23 @@ function getDefaultClassHash(pClass,pClassType) {
   // Set ClassType of Class in JSON and other variables
   vRetClass["tClassname"] = pClass;
   vRetClass["sClassType"][pClass] = vClassType;
-  vRetClass["tEMail"] = getValueDOM("tEMail") || "anonymous@example.com";
-  vRetClass["tAuthor"] = getValueDOM("tAuthor") || "My Name";
+  vRetClass["tEMail"] = getValueDOM("tMainEMail") || "anonymous@example.com";
+  vRetClass["tAuthor"] = getValueDOM("tMainAuthor") || "My Name";
   // "myMethod(p1,p2)" stores the code in vRetClass["MethodCode"]["myMethod"]
   // and stores the comment in vRetClass["MethodComment"]["myMethod"]
   vRetClass["AttribType"] = {};
+  vRetClass["AttribAccess"] = {};
   vRetClass["AttribDefault"] = {};
   vRetClass["AttribComment"] = {};
   vRetClass["MethodParameter"] = {};
   vRetClass["MethodReturn"] = {};
   vRetClass["MethodCode"] = {};
   vRetClass["MethodComment"] = {};
+  vRetClass["MethodAccess"] = {};
+  //----------------
+  vRetClass["tMethodCode"] = "";
+  vRetClass["tAttribName"] = "";
+  vRetClass["tSuperClassname"] = "";
   return vRetClass;
 };
 
@@ -323,6 +329,7 @@ function getClassJSON(pClassName) {
     if (top.vJSON_JS) {
       if (top.vJSON_JS.ClassList) {
         if (top.vJSON_JS.ClassList[vClassName]) {
+          checkClassJSON(top.vJSON_JS.ClassList[vClassName]);
           vRetClass = top.vJSON_JS.ClassList[vClassName];
         } else {
           vRetClass = getDefaultClassHash(vClassName);
@@ -554,11 +561,14 @@ function updateJSON2tMethods(pClass) {
   var vClass = pClass || getSelectedClassID();
   var vOut = "";
   if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
     var vArr = getMethodArrayJSON(vClass);
     if (vArr.length > 0) {
       vOut = vArr.join("\n");
     };
+    "tAttributes", vOut
   };
+  vClassJS["tMethods"] = vOut;
   write2value("tMethods",vOut);
 };
 
@@ -578,6 +588,7 @@ function updateJSON2tAttributes(pClass) {
     if (vArr.length > 0) {
       vOut = vArr.join("\n");
     };
+    vJSON_JS["ClassList"][vClass]["tAttributes"] = vOut;
   };
   // by calling createJSON2tClassList() any missing ClassType-Definitions are written in tClassList
   write2value("tAttributes", vOut);
@@ -816,7 +827,8 @@ function createClassJS(pClass,pClassType,pCallerJS) {
     } else {
       debugLog("Class","createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
       checkClassList(pClass);
-      getDefaultClassHash(pClass,vClassType);
+      vJSON_JS["ClassList"][pClass] = getDefaultClassHash(pClass,vClassType);
+      vJSON_JS["ClassType"][pClass] = vClassType;
       //vClassJSON = vJSON_JS["ClassList"][pClass];
     };
   } else {
@@ -1012,27 +1024,25 @@ function createNewAttribJS(pName,pClass) {
 function createNewAttributeForm(pName,pType,pValue,pComment,pClass) {
     var vClass = pClass || getSelectedClassID();
     console.log("createNewAttributeForm('"+pName+"','"+pType+"',"+pValue+",'"+pComment+"','"+vClass+"')");
-    var vClassJS = getClassJSON();
     var vSuccess = true;
-    if (vClassJS) {
-      vSuccess = true;
-      var vClassName = getSelectedClassID();
+    if (existsClassJS(vClass)) {
+      var vClassJS = getClassJSON(vClass);
       var vAttrDef = pName + " = " + pValue;
-      var vAttributes = document.fCreator.tAttributes;
-      //var vAttribs = reduceVarName(vAttributes.value);
-      var vAttribs = reduceVarName(vAttributes.value);
-      getValueDOM("tAttributes");
-      var vAttribs = reduceVarName(vAttributes.value);
-      if (vAttribs == "") {
-        vAttributes.value = vAttrDef;
+      var vAttributes = getValueDOM("tAttributes");
+      if (reduceVarName(vAttributes) == "") {
+        vAttributes = vAttrDef;
       } else {
-        vAttributes.value += "\n"+vAttrDef;
+        vAttributes = vAttributes+"\n"+vAttrDef;
       };
+      write2value("tAttributes",vAttributes);
+      vClassJS["tAttributes"] = vAttributes;
+      vClassJS["sAttribList"] = pName;
+      vClassJS["sAttribName"] = pName;
+      vSuccess = true;
       saveAttribJSON(pName,pType,pValue,pComment);
       //set the Selector "sAttribList" for the Attributes on the tab "Attributes"
-      updateForm2JSON(vClassName);
+      //updateForm2JSON(vClassName);
       debugLog("Attrib","Set ['sAttribList'] as selected Attribute to '"+pName+"'");
-      vClassJS["sAttribList"] = pName;
     } else {
       vSuccess = false;
     };
@@ -1070,7 +1080,7 @@ function createNewMethodJS(pClass) {
       };
       vMethodList += vCR + vMethCall;
       write2value("tMethods",vMethodList);
-      createMethodSelect(); //dom.js:13
+      createMethodSelect(vClass); //dom.js:13
       updateMethodsJS();
       write2value("sMethodList",vName);
       write2value("tMethodHeader",vMethCall);
@@ -1232,6 +1242,7 @@ function updateAttribType4Form() {
   var vDefault = getValueDOM("tAttribDefault");
   var vType = determineAttType(vDefault);
   write2value("tAttribType",vType);
+  saveAttributeForm();
 }
 
 function updateAttribComment2JSON() {
@@ -1273,6 +1284,8 @@ function determineAttType(pValue) {
     vType = "Hash";
   } else if (vValue.indexOf("[")==0) {
     vType = "Array";
+  } else if (vValue.indexOf("/")==0) {
+    vType = "RegularExp";
   } else if (vValue.indexOf("true")==0) {
     vType = "Boolean";
   } else if (vValue.indexOf("false")==0) {
@@ -1333,7 +1346,7 @@ function getAttribDefaultHash(pAttributes) {
   var vAttribHash = {};
   //var vRegEx = /([A-Za-z_0-9]+)*[\w\s$]*[=] (.*[\w\s,$]*\))/;
   for (var i = 0; i < vAttribArray.length; i++) {
-    vLine = vAttribArray[i];
+    vLine = removeAccess4Def(vAttribArray[i]);
     vFound = vLine.indexOf("=");
     if (vFound > 0) {
       vVar = reduceVarName(vLine.substr(0,vFound+1))
@@ -1349,8 +1362,89 @@ function getAttribDefaultHash(pAttributes) {
     //vAttribArray[i] = vRegEx.$2;
   };
   return vAttribHash;
+};
+function getAttribAccessJSON(pClass,pList,pName) {
+  var vClass = pClass || getSelectedClassID();
+  return getAccessJSON(pClass,"AttribAccess",pName);
+};
+
+function getMethodAccessJSON(pClass,pList,pName) {
+  var vClass = pClass || getSelectedClassID();
+  return getAccessJSON(pClass,"MethodAccess",pName);
+};
+
+function getAccessJSON(pClass,pList,pName) {
+  var vClass = pClass || getSelectedClassID();
+  var vType = "";
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    vType = "public";
+    if (vClassJS.hasOwnProperty(pList)) {
+      if (vClassJS[pList].hasOwnProperty(pName)) {
+        vType = vClassJS[pList][pName];
+      };
+    };
+  };
+  return vType;
 }
 
+function getAttribAccessHash(pAttributes) {
+  // pAttributes is an optional String for creating the Hash from
+  //debugLog("Attrib","getAttribDefaultHash(pAttributes)");
+  //debugLog("Attrib"," pAttributes='"+pAttributes+"'");
+  var vAttrib = pAttributes || getValueDOM("tAttributes");
+  vAttrib = removeEmptyLines(vAttrib);
+  var vAttribArray    = vAttrib.split(/\n/);
+  var vLine = "";
+  var vAccess = "";
+  var vVar = "";
+  var vValue = "";
+  var vAttribHash = {};
+  //var vRegEx = /([A-Za-z_0-9]+)*[\w\s$]*[=] (.*[\w\s,$]*\))/;
+  for (var i = 0; i < vAttribArray.length; i++) {
+    vAccess = getAccess4Def(vAttribArray[i]);
+    vLine = removeAccess4Def(vAttribArray[i]);
+    vFound = vLine.indexOf("=");
+    if (vFound > 0) {
+      vVar = reduceVarName(vLine.substr(0,vFound+1))
+      if (vVar != "") {
+        vAttribHash[vVar] = vAccess;
+      } else {
+        debugLog("Attrib","getAttribAccessHash()-Call - vLine='"+vLine+"' undefined");
+      }
+    }
+    //vRegEx.exec(vLine);
+    //vAttribArray[i] = vRegEx.$2;
+  };
+  return vAttribHash;
+}
+
+function getAccess4Def(pLine) {
+  //extracts "public|" "private|" "protected|" from Definition Line
+  var vType = "";
+  if (pLine && (typeof(pLine) == "string")) {
+    vType = "public";
+    if (pLine.match(/^[\s\t]+public\|/)) {
+      vType = "public";
+    } else if (pLine.match(/^[\s\t]+private\|/)) {
+      vType = "private";
+    } else if (pLine.match(/^[\s\t]+protected\|/)) {
+      vType = "protected";
+    };
+  };
+  return pLine;
+}
+
+
+function removeAccess4Def(pLine) {
+  //remove "public|" "private|" "protected|" from Definition Line
+  if (pLine && (typeof(pLine) == "string")) {
+    pLine = pLine.replace(/^[\s\t]+public\|/,"");
+    pLine = pLine.replace(/^[\s\t]+private\|/,"");
+    pLine = pLine.replace(/^[\s\t]+protected\|/,"");
+  };
+  return pLine;
+}
 
 function getAttribDefaultArray() {
   var vAttrib 	= document.fCreator.tAttributes.value;
@@ -1405,6 +1499,7 @@ function getMethodArrayJSON(pClass) {
   var vMethodArray = getMethodNameArrayJSON(pClass);
   console.log("getMethodArrayJSON('"+pClass+"') vMethodArray.length="+vMethodArray.length);
   var vClassJS = getClassJSON(pClass);
+  var vMethRet = vClassJS["MethodReturn"];
   var vMethRet = vClassJS["MethodReturn"];
   var vMethPar = vClassJS["MethodParameter"];
   var vRetClass = "";
@@ -1885,9 +1980,9 @@ function clearForm() {
   debugLog("Class","clearForm4Class()");
   for (var i = 0; i < vDOM_ID.length; i++) {
     write2value(vDOM_ID[i],"");
-    if (vTYPE_ID[i] == "Textarea") {
-      debugLog("Class","vDOM_ID["+i+"]='"+vDOM_ID[i]+"' is a TEXTAREA");
-      write2innerHTML(vDOM_ID[i],"");
-    };
+    // if (vTYPE_ID[i] == "Textarea") {
+    //   debugLog("Class","vDOM_ID["+i+"]='"+vDOM_ID[i]+"' is a TEXTAREA");
+    //   write2innerHTML(vDOM_ID[i],"");
+    // };
   };
 };

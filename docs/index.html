@@ -21,6 +21,9 @@
    vDataJSON["PageTypeList"] = {};
    vDataJSON["ButtonList"] = {};
    vDataJSON["DatabaseList"] = {};
+   vDataJSON["ElementsDB"] = {};
+   vDataJSON["GlobalLibList"] = {};
+
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
@@ -52,6 +55,7 @@
    </script>
  <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
 
+   <script language="javascript" src="js/arrayhash.js"></script>
    <script language="javascript" src="js/blob.js"></script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
@@ -458,9 +462,7 @@ SaveDialog|home|CANCEL
     		<b>Class:</b> <input name="tClassname" id="tClassname" value="App" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
         <input type="button" id="bCreateNewClass" onclick="createNewClass();return false" value="+">
         <button id="bRenameClass"    class="renamebutton" onclick="renameClassForm();return false">Rename</button>
-        <!--
-        <button id="bDeletePageHTML" class="deletebutton" onclick="deleteClassHTML();return false">Delete</button>
-      -->
+        <button id="bDeleteClass" class="deletebutton" onclick="deleteClassForm();return false">Delete</button>
          <br>
         <b>UML Type:</b>
         <select id="sClassType" name="sClassType" onchange="selectClassType(getValueDOM('tClassname'),this.value)">
@@ -478,7 +480,7 @@ SaveDialog|home|CANCEL
     		<b>Super Class Name:</b>
         <select name="sSuperClassname" id="sSuperClassname" onchange="selectSuperClass(this.value)">
         </select>
-        <input name="tSuperClassname" id="tSuperClassname" value="AppAbstract" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
+        <input name="tSuperClassname" id="tSuperClassname" value="" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
         <br><b>UML-Type Super Class:</b> <font id="labSuperClassTypeUML" color="blue"></font>
     		</td>
     	</tr>
@@ -538,15 +540,18 @@ SaveDialog|home|CANCEL
           </tr>
             <tr>
               <td colspan="2" align="center">
-              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" onchange="updateAttribComment2JSON()" style="font-family: monospace">
-            <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
-            = <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form()" style="font-family: monospace">
+              <select id="sAttribAccess" name="sAttribAccess" onchange="updateAttributeForm2JSON()">
+                <option>public</option>
+                <option>private</option>
+              </select>
+              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" style="font-family: monospace">
+            <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form()" style="font-family: monospace">
           </td>
         </tr>
         <tr>
           <td align="center">
             Attribute Type/Class:
-            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" >
+            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" onchange="updateAttributeForm2JSON()">
           </td>
         <td align="center">
           <b>Select Type:</b>
@@ -585,8 +590,13 @@ SaveDialog|home|CANCEL
           <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
           <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
           <hr>
-          <b>Method Definition:</b>
-          <input id="tMethodHeader" name="tMethodHeader" type="text" size="48" value="" style="font-family: monospace">
+          <input id="tMethodName" name="tMethodName" type="text" size="10" value="" style="display:none">
+          <select id="sMethodAccess" name="sMethodAccess" onchange="saveMethodForm()">
+            <option>public</option>
+            <option>private</option>
+          </select>
+          <b>Method:</b>
+          <input id="tMethodHeader" name="tMethodHeader" type="text" size="40" value="" style="font-family: monospace">
           <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
           <b>Return:</b>
           <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
@@ -890,17 +900,30 @@ ___JSCODE___
     &lt;!-- /page ID: ___PAGE_ID___ --&gt;
     &lt;/div&gt;
 </textarea>
-<b>Header Button</b> <tt>[tTplMENU]</tt><br>
+<hr>
+<b>Root Menu Template</b> <tt>[tTpRootlMENU]</tt><br>
+<textarea id="tTplRootMENU" name="tTplRootMENU" cols="125" rows="2">
+   &lt;ul data-role="listview" data-inset="true"&gt;
+     ___MENUITEM_LIST___
+	&lt;/ul&gt;
+</textarea>
+<hr>
+<b>Root Menu Item</b> <tt>[tTplMENUITEM]</tt><br>
+<textarea id="tTplRootMENUITEM" name="tTplRootMENUITEM" cols="125" rows="2">
+&lt;li&gt;&lt;a href="#___PAGE_ID___"&gt;___PAGE_TITLE___&lt;/a&gt;&lt;/li&gt;
+</textarea>
+<hr>
+<b>Menu Template</b> <tt>[tTplMENU]</tt><br>
 <textarea id="tTplMENU" name="tTplMENU" cols="125" rows="2">
    &lt;ul data-role="listview" data-inset="true"&gt;
      ___MENUITEM_LIST___
 	&lt;/ul&gt;
 </textarea>
 
-  <hr>
-  <b>Header Button</b> <tt>[tTplMENUITEM]</tt><br>
+<hr>
+<b>Menu Item</b> <tt>[tTplMENUITEM]</tt><br>
 <textarea id="tTplMENUITEM" name="tTplMENUITEM" cols="125" rows="2">
-  &lt;li&gt;&lt;a href="#___PAGE_ID___"&gt;___PAGE_TITLE___&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="#___PAGE_ID___"&gt;___PAGE_TITLE___&lt;/a&gt;&lt;/li&gt;
 </textarea>
 <hr>
 
@@ -989,15 +1012,21 @@ ___METHODS___
 ___METHODSPROTOTYPE___
     </textarea>
     <hr>
-    <b>Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
+    <b>Public Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
     <textarea id="tTplAttribute" name="tTplAttribute" cols="125" rows="2">
-//---___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
+//---Public: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
 this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
+</textarea>
+<hr>
+<b>Private Attribute Definition</b> <tt>[tTplAttributePrivate]</tt><br>
+<textarea id="tTplAttributePrivate" name="tTplAttributePrivate" cols="125" rows="2">
+//---Private: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
+var ___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
 </textarea>
     <hr>
       <b>Method Constructor Comment</b> <tt>[tTplMethodConstructorComment]</tt><br>
         <textarea id="tTplMethodConstructorComment" name="tTplMethodConstructorComment" cols="125" rows="4">
-//----Method: ___CLASSNAME___.___METHODDEF___-----
+//----Public Method: ___CLASSNAME___.___METHODDEF___-----
 // ___METHODNAME___(___METHODPARAMETERS___)  ___RETURNCOMMENT___
 ___METHODCOMMENT___
 </textarea>
@@ -1049,7 +1078,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
     <textarea id="tTplMethodHeader" name="tTplMethodHeader" cols="125" rows="10">
 
 //#################################################################
-//# Method: ___METHODNAME___()
+//# Public Method: ___METHODNAME___()
 //#    used in Class: ___CLASSNAME___
 //# Parameter:
 //#    ___PARAMETERDEF___
@@ -1073,6 +1102,34 @@ ___METHODCODE___
 
 };
 //----End of Method ___METHODNAME___ Definition
+
+</textarea>
+<hr>
+  <b>Method Private</b> <tt>[tTplMethodPrivate]</tt><br>
+    <textarea id="tTplMethodPrivate" name="tTplMethodPrivate" cols="125" rows="10">
+
+//#################################################################
+//# Private Method: ___METHODNAME___()
+//#    used in Class: ___CLASSNAME___
+//# Parameter:
+//#    ___PARAMETERDEF___
+//# Comment:
+//#    ___METHODCOMMENT___
+//# ___RETURNCOMMENT___
+//# created with JSCC  ___DATE___
+//# last modifications ___DATE___
+//#################################################################
+
+function ___METHODNAME___(___METHODPARAMETERS___) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___")
+  //-------------------------------------------------------
+
+___METHODCODE___
+
+};
+//----End of Private Method ___METHODNAME___ Definition
 
 </textarea>
 <hr>

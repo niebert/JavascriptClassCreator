@@ -25,7 +25,7 @@ function createProjectJSON() {
   //hide("bSaveJSON");
   var vUsePrefix = getCheckBox("checkExportJS");
   var vExportFile = "project";
-  updateForm2JSON(getValueDOM("tClassname"));
+  //updateForm2JSON(getValueDOM("tClassname"));
   saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON",vUsePrefix);
 };
 
@@ -100,14 +100,6 @@ function replaceElements4Hash(pObject,pRecursive_Depth,pFile) {
       };
     };
   };
-};
-
-function isHash(pObject) {
-   return pObject && (typeof(pObject)  === "object");
-};
-
-function isArray(pObj) {
-  return isHash(pObj) && (pObj instanceof Array);
 };
 
 function setFilenameExportJSON(pFilename) {
@@ -244,15 +236,15 @@ function exportHTML4File(pFile,pStandalone) {
 };
 
 
-function exportMainHTML() {
-  var vHTML = getMainHTML();
-  //write2value("tMainHTML",vHTML);
-  write2editor("MainHTML",vHTML);
-};
-
-function getMainHTML() {
-  return getHTML4File("app.html");
-};
+// function exportMainHTML() {
+//   var vHTML = getMainHTML();
+//   //write2value("tMainHTML",vHTML);
+//   write2editor("MainHTML",vHTML);
+// };
+//
+// function getMainHTML() {
+//   return getHTML4File("app.html");
+// };
 
 function getHTML4File(pFile,pStandalone) {
     var vHTML   = getTemplate4File(pFile);
@@ -347,7 +339,7 @@ function importProjectJSON_do(pProjectFile,pContent) {
           alert("Import JSON file of Type: "+vTypeJS+"");
           vJSON_JS = vJSDB;
           setEditorValue("iJSONDB",vContent);
-          writeFileTitle()
+          writeFileTitle();
           initCodeCreator();
         break;
         case "CLASS":
@@ -417,20 +409,6 @@ function exportClassJSON(pClass) {
 }
 
 
-function X_exportClass2Editor(pClass) {
-  console.log("exportClass2Editor('"+vClass+"')");
-  var vClassJS = getClassJSON(vClass);
-  var vClassTypeHash = getClassTypeJSON();
-  vClassJS["sClassType"] = vClassTypeHash[vClass];
-  vClassJS["JSCC_mod_date"] = getDateTime();
-  var vExportClassJS = cloneJSON(vClassJS);
-  vExportClassJS["JSCC_type"] = "CLASS";
-  var vCode = getCode4JSON_JS(vExportClassJS);
-  if (getCheckBox("checkExportJS")) {
-    vCode = "vJSON_JS['ClassList']['"+vClass+"'] = " + vCode;
-  };
-  setEditorValue("iJSONDB", vCode);
-};
 
 function importClass(pJSDB) {
   var vClass = pJSONDB["tClassname"] || "UndefClass";
@@ -441,10 +419,11 @@ function importClass(pJSDB) {
     if (vCheck == false) {
       alert("Import Class '"+vClass+"' cancelled!");
     } else {
-      // Set ClassType for Class
-      vJSON_JS["ClassType"][vClass] = vClassType;
       // Set Class in vJSON_JS for vClass
       vJSON_JS["ClassList"][vClass] = vJSDB;
+      checkClassJSON(vJSON_JS["ClassList"][vClass]);
+      // Set ClassType for Class
+      setClassType(vClass,ClassType);
     };
   }
 };
@@ -503,30 +482,81 @@ function getTemplateFilename(pFile) {
 function getLibrariesHTML(pFile,pStandalone) {
   var vOut = "";
   vOut += getGlobalLibrariesHTML(pFile,pStandalone)+"\n";
-  vOut += getClassLibrariesHTML(pFile,pStandalone);
+  vOut += getClassLibrariesHTML(pFile,pStandalone)+"\n";;
+  vOut += getFileLibrariesHTML(pFile,pStandalone)+"\n";;
   return vOut;
 }
 
+function getFileLibrariesHTML(pFile,pStandalone) {
+  // Parameter pFile can be used to import a dependent set libraries
+  var vArrJS = [];
+  var vOut = "      <!-- JavaScript Libraries for '"+pFile+"' -->\n";;
+  if (existsFileJS(pFile)) {
+    vArrJS = vJSON_JS["FileList"][pFile]["ImportList"];
+    vOut += getJavascriptImportList(vArrJS);
+  }
+  return vOut;
+};
+
 function getGlobalLibrariesHTML(pFile,pStandalone) {
   // Parameter pFile can be used to import a dependent set libraries
+  var vArrJS = getGlobalLibArrayWithHashes();
+  var vOut = "      <!-- Global JavaScript Libraries for ALL files -->\n";
+  vOut += getJavascriptImportList(vArrJS);
+  return vOut;
+};
+
+function getJavascriptImportList(pArrJS) {
   var vSCRIPT = getValueDOM("tTplSCRIPT");
-  var vArrJS = getGlobalLibArray();
-  var vOut = "      <!-- JavaScript Libraries -->\n";
-  for (var i = 0; i < vArrJS.length; i++) {
-    vOut += replaceString(vSCRIPT,"___LIBRARY___","js/"+vArrJS[i]+".js");
+  var vOut = "";
+  if (isArray(pArrJS)) {
+    for (var i = 0; i < pArrJS.length; i++) {
+       if (pArrJS[i]["import"] == true) {
+         vOut += replaceString(vSCRIPT,"___LIBRARY___",pArrJS[i]["file"]);
+       } else {
+         console.log("getJavascriptImportList(pArrJS) - Lib '"+pArrJS[i]["file"]+"'");
+       }
+     };
+  } else {
+    console.log("ERROR: getJavascriptImportList(pArrJS) pArrJS is not a Hash");
   };
   return vOut;
 }
 
-function getClassLibrariesHTML(pFile,pStandalone) {
+
+function getMainAppClassID(pFile) {
+  var vFile = pFile || getSelectedFileID();
+  var vAppClass = "";
+  if (existsFileJS(vFile)) {
+    vAppClass = vJSON_JS["FileList"][vFile]["sAppClassHTML"];
+    if (existsClassJS(vAppClass)) {
+      console.log("Main App Class '"+vAppClass+"' for file '"+vFile+"' is defined");
+    } else {
+      console.log("ERROR: Main App Class '"+vAppClass+"' exists!");
+    };
+  };
+  return vAppClass;
+}
+
+function getClassLibrariesHTML(pFile,pStandalone,pConnectedOnly) {
   // Parameter pFile can be used to import a dependent set libraries
   var vCompressed = getCheckBox("checkCompressCode4HTML");
-  var vArrJS = getDatabaseArray();
   var vOut = "      <!-- Classes Javascript-Libs -->\n";
-  var vCList = vJSON_JS["ClassList"];
+  var vClassList = vJSON_JS["ClassList"];
+  var vCList = vClassList;
+  if (pConnectedOnly == true) {
+    vCList = {};
+    var vAppClass = getMainAppClassID(pFile);
+    if (existsClassJS(vAppClass)) {
+      console.log("Main App Class '"+vAppClass+"' for file '"+vFile+"' is defined.\nCreate a Hash with just one class");
+      vCList[vAppClass] = vJSON_JS["ClassList"][vAppClass];
+    } else {
+      console.log("ERROR: Main App Class '"+vAppClass+"' exists, export all classes!");
+    };
+  };
   var vExportBoolean = {};
   for (var iClass in vCList) {
-    if (vCList.hasOwnProperty(iClass)) {
+    if (vClassList.hasOwnProperty(iClass)) {
       vOut += getClassInherit4Code(iClass,pStandalone,vCompressed,vExportBoolean);
     };
   };
@@ -584,6 +614,7 @@ function getClassHTML4Code(pClass,pStandalone,pCompressed) {
 function getPagesHTML4Code(pFile) {
   var vOut = "";
   var vPageList = getPageListArrayWithHashes(pFile);
+  //var vPageList = getPageList4FileWithHashes(pFile);
   for (var i = 0; i < vPageList.length; i++) {
     // vPageList[i]; is a Hash with the following IDs
     //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
@@ -1003,6 +1034,10 @@ function replaceCodeMainVars(pOutput,pClass) {
   return vOutput;
 };
 
+function isMethod(pLine) {
+
+};
+
 function getMethodComments4Constructor(pClass) {
   console.log("getMethodComments4Constructor('"+pClass+"')");
   var vOutput = "";
@@ -1010,6 +1045,7 @@ function getMethodComments4Constructor(pClass) {
   var vClassJS = getClassJSON(vClass);
   var vMethodArray = getMethodArray(vClass);
   var vTplMethodHeader = getValueDOM("tTplMethodConstructorComment");
+  var vTplMethodPrivate = getValueDOM("tTplMethodPrivate");
   var vMethod = vTplMethodHeader;
   var vMethodname = "";
   var vMethodAllParams = "";
@@ -1030,6 +1066,10 @@ function getMethodComments4Constructor(pClass) {
         vMethodAllParams = edit2JSparams(vMethodParamsClass);
       };
       var vMethName = vSplitArray[0];
+      var vMethHash = getMethHash4Name(vClass,vMethName);
+      if (vMethHash["access"] == "private") {
+        vMethod = vTplMethodPrivate;
+      };
       console.log("getMethodComments4Constructor('"+pClass+"') - Method: '"+vMethName+"'");
       var vReturn = vClassJS["MethodReturn"][vMethName];
       var vReturnColon = "";
@@ -1073,16 +1113,23 @@ function replaceAttributes4Code(pOutput,pClass) {
   var vAttribArray    = getAttribNameArrayJSON(vClass);
   var vClassJS = getClassJSON(vClass);
   var vTemplate = getValueDOM("tTplAttribute");
+  var vTemplatePriv = getValueDOM("tTplAttributePrivate");
   var vAttribDef = "";
   var vAtts = "";
   var vID = "";
   for (var i=0; i<vAttribArray.length; i++) {
     //alert(vAttribArray[i]);
     vID = vAttribArray[i];
-
-    vAttribDef = vTemplate; // init with AttribTemplate
+    var vAccess = vClassJS["AttribAccess"][vID] || "public";
+    if (vAccess == "public") {
+      vAttribDef = vTemplate; // init with AttribTemplate
+    } else {
+      vAttribDef = vTemplatePriv; // init with AttribTemplate
+    };
     // replace Attribute Name
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_NAME___",vID);
+    // replace Attribute Default/Init Value
+    vAttribDef = replaceString(vAttribDef,"___ATTRIB_ACCESS___",vAccess);
     // replace Attribute Default/Init Value
     vAttribDef = replaceString(vAttribDef,"___ATTRIB_DEFAULT___",vClassJS["AttribDefault"][vID]);
     // replace Attribute Comment

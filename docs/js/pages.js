@@ -390,6 +390,9 @@ function getButtonListHash() {
   return vListHash;
 };
 
+function getGlobalLibArrayWithHashes() {
+  return vJSON_JS["GlobalLibList"];
+};
 
 
 function getGlobalLibArray() {
@@ -398,7 +401,15 @@ function getGlobalLibArray() {
 
 
 function getDatabaseArray() {
+  return getArray4HashID(vJSON_JS["DatabaseList"]);
+}
+
+function getDatabaseArrayForm() {
   return getTextareaArray("tDatabases");
+}
+
+function getDatabaseArrayJSON() {
+  return vJSON_JS["DatabaseList"];
 }
 
 function getPageTypeArray() {
@@ -714,7 +725,7 @@ function getDataseListJSON(pExtenstion) {
 function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
   var vDBname = pDBname || db_undefined;
   var vTitle = pTitle || "Title of DB "+vDBname;
-  var vArrID = pArrID || ["yesno1","freetext1","yesno2"];
+  var vArrID = pArrID || ["yesno1","textarea1","yesno2"];
   var vDB = {};
   vDB["JSCC_type"] = "DB";
   vDB["name"] = vDBname;
@@ -753,7 +764,7 @@ function getDefaultDataDB(pArrID,pDBname,pStart,pEnd) {
     console.log(pDBname+": "+iCount);
     for (var i = 0; i < pArrID.length; i++) {
       vID = pArrID[i];
-      vHash[vID] = "("+iCount+") '"+pDBname+"' record ["+vDBID+"] value of ID ‘"+vID+"’";
+      vHash[vID] = "("+iCount+") '"+pDBname+"' record ["+vDBID+"] value of ID '"+vID+"'";
     };
     vData[vDBID] = vHash;
   };
@@ -780,13 +791,28 @@ function updateForm2DatabasesJSON() {
     vDBHash[vDB] = vJSON_JS["DatabaseList"][vDB] || getDefaultDatabaseJSON(vDB);
   };
   vJSON_JS["DatabaseList"] =  vDBHash;
-  createDatabaseSelect(vNameDB);
+  var vArrID = getArray4HashID(vJSON_JS["DatabaseList"]);
+  createDatabaseSelect(vArrID);
 };
 
 function updateDatabasesJSON2Form() {
   console.log("updateForm2DatabasesJSON()");
   var vDBList = vJSON_JS["DatabaseList"];
   var vArrID = getArray4HashID(vDBList);
+  if (vArrID.length == 0) {
+    //DatabaseList does not contain databases
+    var vID = "";
+    vArrID = getArrayID4tDatabasesJSON();
+    // now create default database if they do not exist.
+    for (var i = 0; i < vArrID.length; i++) {
+      vID = vArrID[i];
+      if (existsDatabaseJS(vID)) {
+        console.log("updateDatabasesJSON2Form() DB '"+vID+"' exists");
+      } else {
+        vJSON_JS["DatabaseList"][vID] = getDefaultDatabaseJSON(vID);
+      };
+    };
+  };
   var vDB = "";
   var vOut = "";
   var vCR = "";
@@ -805,11 +831,27 @@ function updateDatabasesJSON2Form() {
   // getValueDOM("tButtons")
 };
 
+function getArrayID4tDatabasesJSON() {
+  var vDatabases = vJSON_JS["tDatabases"] || "";
+  var vArrID = [];
+  if (vDatabases != "") {
+    var vFilePath = "";
+    var vLineArr = vDatabases.split("\n");
+    for (var i = 0; i < vLineArr.length; i++) {
+      vFile = getName4URL(vLineArr[i]);
+      if (vFile != "") {
+        vArrID.push(vFile);
+      };
+    }
+  };
+  return vArrID;
+};
+
 function removeExtensionJS4Array(pArrDB) {
   var vRetArr = [];
   var vLine = "";
   for (var i = 0; i < pArrDB.length; i++) {
-    vLine = (pArrDB[i]).replace(/\.js$/,"")
+    vLine = getName4URL(pArrDB[i]);
     vRetArr.push(vLine);
   };
   return vRetArr;
@@ -829,10 +871,10 @@ function getButtonArrayWithHashes() {
 }
 
 function getFileListHash() {
-  console.log("getFileListHash()-Call from Form");
-  var vFileArr = getFileListArrayWithHashes();
-  var vPageHash = {};
-
+  console.log("getFileListHash()-Call from JSON");
+  //var vFileArr = getFileListArrayWithHashes();
+  //var vFileHash = {};
+  return vJSON_JS["FileList"];
 }
 
 function getPageListHash() {

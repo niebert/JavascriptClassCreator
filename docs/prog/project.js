@@ -8,12 +8,12 @@ vDataJSON['project'] = {
     "tMainEMail": "niehaus@uni-landau.de",
     "tPages": "welcome|Welcome|DefaultPage|home\nhome|Home|MenuPage|\nsetting|Settings|OptionsPage|home\nsave|Save|SaveDialog|home\nquit|Quit App|ConfirmPage|home\nlogin|Login|LoginPage|quit\n    ",
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
-    "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|       <!-- header button: '___BUTTON_TITLE___' -->___CR___       <a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
+    "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|<!-- header button: '___BUTTON_TITLE___' -->___CR___<a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
     "sPageTypeHTML": "ConfirmPage",
     "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
-    "tGlobalLibs": "string.js\nlocalstorage.js\nwritedom.js",
-    "tDatabases": "db_mydata.js\ndb_disapp.js",
+    "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
+    "tDatabases": "db/mydata.js\ndb/disapp.js",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
@@ -23,6 +23,8 @@ vDataJSON['project'] = {
     "SelectedPage": "setting",
     "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
+    "SelectedFile": "index.html",
+    "SelectedElement": "HTML_TITLE",
     "ClassType": {
         "DOMVar": "Red",
         "DOMVarList": "Red",
@@ -58,6 +60,8 @@ vDataJSON['project'] = {
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
+            "AttribAccess": {
+            },
             "AttribDefault": {
                 "aDoc": "null",
                 "aName": "\"DisApp\"",
@@ -120,8 +124,7 @@ vDataJSON['project'] = {
                 "event": "",
                 "gotoPage": "pPageID:String",
                 "gotoURL": "pFileHTML:String"
-            },
-            "tMethodCode": ""
+            }
         },
         "AppAbstract": {
             "tClassname": "AppAbstract",
@@ -302,8 +305,8 @@ vDataJSON['project'] = {
             "MethodComment": {},
             "AttribComment": {},
             "MethodParameter": {}
-        },
-        "FuzzyController": {
+          },
+          "FuzzyController": {
             "tClassname": "FuzzyController",
             "tSuperClassname": "",
             "sClassType": "Yellow",
@@ -334,9 +337,79 @@ vDataJSON['project'] = {
             "AttribComment": {},
             "MethodParameter": {}
         },
+        "WrapJSON": {
+          "tClassname": "WrapJSON",
+          "tSuperClassname": "",
+          "sClassType": "Interface",
+          "tAuthor": "Engelbert Niehaus",
+          "tEMail": "niehaus@uni-landau.de",
+          "tAttributes": "data=null",
+          "tMethods": "init(pData:Hash)\nupdate(pPathID:String,vValue:Object)\nexists(pPathID):Boolean\ngetValue(pPathID:String):Object\nsetValue(pPathID:String,pValue:Object)\ngetType(pPathID):String;\nsplitPathID(pPathID:String):Array",
+          "sAttribList": "data",
+          "tAttribName": "data",
+          "tAttribType": "Object",
+          "tAttribComment": "the attribute 'data' stores a reference to the JSON data",
+          "tAttribDefault": "null",
+          "sAttribTypeList": "Object",
+          "tMethodHeader": "init(pData:Hash)",
+          "tMethodComment": "init the JSON wrapper with a reference to a JSON tree",
+          "sMethodList": "init",
+          "tMethodCode": "",
+          "tLoopObject": "data",
+          "tLoopMethod": "init()",
+          "AttribType": {
+              "data": "Hash"
+          },
+          "AttribDefault": {
+              "data": "null"
+          },
+          "AttribComment": {
+              "data": "the attribute 'data' stores a reference to the JSON data"
+          },
+          "MethodParameter": {
+              "update": "pPathID:String,vValue:Object",
+              "exists": "pPathID",
+              "getValue": "pPathID:String",
+              "splitID": "",
+              "splitPathID": "pPathID:String",
+              "init": "pData",
+              "setValue": "pPathID:String,pValue:Object",
+              "getType": "pPathID"
+          },
+          "MethodReturn": {
+              "update": "",
+              "exists": "Boolean",
+              "getValue": "Object",
+              "splitID": "",
+              "splitPathID": "Array",
+              "init": "",
+              "setValue": "",
+              "getType": "String;"
+          },
+          "MethodCode": {
+              "update": "",
+              "exists": " ",
+              "getValue": "",
+              "splitID": "",
+              "splitPathID": "",
+              "init": "",
+              "setValue": "",
+              "getType": ""
+          },
+          "MethodComment": {
+              "update": "Comment for update",
+              "exists": "Comment for exists",
+              "getValue": "Comment for getValue",
+              "splitID": "Comment for splitID",
+              "splitPathID": "Comment for splitPathID",
+              "init": "Comment for init",
+              "setValue": "Comment for setValue",
+              "getType": "Comment for getType"
+          }
+        },
         "DatabaseList": {
             "tClassname": "DatabaseList",
-            "tSuperClassname": "",
+            "tSuperClassname": "WrapJSON",
             "sClassType": "Green",
             "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
@@ -352,7 +425,7 @@ vDataJSON['project'] = {
             "tMethodHeader": "init(pDoc:Document,pDatabase:Hash)",
             "tMethodComment": "Comment for init",
             "tMethodCode": "",
-            "sMethodList": "init",
+            "sMethodList": "getDBHash4Type",
             "tArrayLoop": "this.aDBList",
             "tMethodLoop": "load()",
             "AttribName": {},
@@ -400,7 +473,7 @@ vDataJSON['project'] = {
         },
         "Database": {
             "tClassname": "Database",
-            "tSuperClassname": "",
+            "tSuperClassname": "WrapJSON",
             "sClassType": "Green",
             "JSCC_mod_date": "2017/04/03 17:32:38",
             "tAuthor": "Engelbert Niehaus",
@@ -484,7 +557,6 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
-
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
@@ -598,70 +670,6 @@ vDataJSON['project'] = {
         }
     },
     "DatabaseList": {
-        "db_mydata": {
-            "JSCC_type": "DB",
-            "name": "db_mydata",
-            "file": "db/db_mydata.js",
-            "dbtitle": "Title of DB db_mydata",
-            "JSCC_init_date": "2017/04/04 20:47:01",
-            "JSCC_mod_date": "2017/04/04 20:47:01",
-            "format": {
-                "yesno1": {
-                    "title": "Title of ID yesno1",
-                    "input": "___DB_YESNO___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                },
-                "freetext1": {
-                    "title": "Title of ID freetext1",
-                    "input": "___DB_TEXTAREA___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                },
-                "yesno2": {
-                    "title": "Title of ID yesno2",
-                    "input": "___DB_YESNO___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                }
-            },
-            "data": {
-                "submitted": {},
-                "local": {}
-            }
-        },
-        "db_disapp": {
-            "JSCC_type": "DB",
-            "name": "db_disapp",
-            "file": "db/db_disapp.js",
-            "dbtitle": "Title of DB db_disapp",
-            "JSCC_init_date": "2017/04/04 20:47:01",
-            "JSCC_mod_date": "2017/04/04 20:47:01",
-            "format": {
-                "yesno1": {
-                    "title": "Title of ID yesno1",
-                    "input": "___DB_YESNO___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                },
-                "freetext1": {
-                    "title": "Title of ID freetext1",
-                    "input": "___DB_TEXTAREA___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                },
-                "yesno2": {
-                    "title": "Title of ID yesno2",
-                    "input": "___DB_YESNO___",
-                    "output": "___DB_ID_VALUE___",
-                    "mandatory": true
-                }
-            },
-            "data": {
-                "submitted": {},
-                "local": {}
-            }
-        }
     },
     "ButtonList": {
         "QUIT": {
@@ -769,20 +777,20 @@ vDataJSON['project'] = {
         "login": "Content for Page 'login'"
     },
     "ElementsDB": {
-      "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB_ID___\" onload=\"vApp.db.setValueDB('___DB___','___DB_ID___','___DB_ID_VALUE___')\"set><option>YES</option><option>NO</option></select>",
-      "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB_ID___'><option>YES</option><option>NO</option></select>"
+      "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
+      "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB___' onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"></textarea>"
     },
     "GlobalLibList": [
       {
-        "path":"js/string.js",
+        "file":"js/string.js",
         "import": true
       },
       {
-        "path":"js/localstorage.js",
+        "file":"js/localstorage.js",
         "import": true
       },
       {
-        "path":"js/writedom.js",
+        "file":"js/writedom.js",
         "import": true
       }
     ],
@@ -799,18 +807,20 @@ vDataJSON['project'] = {
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File index.html - Content of element SERVER_URL",
-                "USERNAME": "File index.html - Content of element USERNAME",
+                "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
+                "USERNAME": "myuser",
                 "SESSION": "File index.html - Content of element SESSION",
                 "DATABASE": "File index.html - Content of element DATABASE"
             },
-            "LibList": [
+            "ImportList": [
               {
-                "path":"js/login.js",
+                "file":"js/login.js",
+                "type":"JS",
                 "import": true
               },
               {
-                "path":"js/geolocation.js",
+                "file":"js/geolocation.js",
+                "type":"JS",
                 "import": true
               }
             ]
@@ -827,18 +837,20 @@ vDataJSON['project'] = {
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File app.html - Content of element SERVER_URL",
+                "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
                 "USERNAME": "File app.html - Content of element USERNAME",
                 "SESSION": "File app.html - Content of element SESSION",
                 "DATABASE": "File app.html - Content of element DATABASE"
             },
-            "LibList": [
+            "ImportList": [
               {
-                "path":"js/qrcode.js",
+                "file":"js/qrcode.js",
+                "type":"JS",
                 "import": true
               },
               {
-                "path":"js/geolocation.js",
+                "file":"js/geolocation.js",
+                "type":"JS",
                 "import": true
               }
             ]
@@ -855,25 +867,25 @@ vDataJSON['project'] = {
             "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
-                "SERVER_URL": "File submit.html - Content of element SERVER_URL",
+                "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
                 "USERNAME": "File submit.html - Content of element USERNAME",
                 "SESSION": "File submit.html - Content of element SESSION",
                 "DATABASE": "File submit.html - Content of element DATABASE"
             },
-            "LibList": [
+            "ImportList": [
               {
-                "path":"js/submit.js",
+                "file":"js/submit.js",
+                "type":"JS",
                 "import": true
               },
               {
-                "path":"js/geolocation.js",
+                "file":"js/geolocation.js",
+                "type":"JS",
                 "import": true
               }
             ]
         }
     },
-    "SelectedFile": "index.html",
-    "SelectedElement": "HTML_TITLE",
     "BasicClasses": {
         "Boolean": "false",
         "String": "\"\"",
@@ -881,6 +893,7 @@ vDataJSON['project'] = {
         "Float": "0.0",
         "Array": "[]",
         "Hash": "{}",
+        "Object": "null",
         "RegularExp": "/mypattern/g",
         "Document": "document"
     }

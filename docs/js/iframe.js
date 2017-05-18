@@ -95,13 +95,14 @@ function getPageTypeCode4Editor(pPageTypeID) {
 
 function getMethodCode4Editor(pClass) {
   var vValue = "MethodCode for '"+pClass+"' undefined";
-  if (vJSON_JS["ClassList"][pClass]) {
-    var vID = vJSON_JS["ClassList"][pClass]["sMethodList"];
+  if (existsClassJS(pClass)) {
+    var vClassJS = getClassJSON(pClass);
+    var vID = vClassJS["sMethodList"];
     vValue = "MethodCode for '"+pClass+"."+vID+"()' undefined";
     if (reduceVarName(vID) == "") {
       vValue = "";
-    } else if (vJSON_JS["ClassList"][pClass]["MethodCode"][vID]) {
-      vValue = vJSON_JS["ClassList"][pClass]["MethodCode"][vID];
+    } else if (vClassJS["MethodCode"][vID]) {
+      vValue = vClassJS["MethodCode"][vID];
       console.log("getMethodCode2Editor('"+pClass+"') FOUND MethodCode for "+vID+"()");
     } else {
       console.log("writeMethodCode2Editor('"+pClass+"') undefined MethodCode for '"+vID+"()'");

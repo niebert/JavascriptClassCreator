@@ -207,6 +207,11 @@ function updateGlobalLibsForm2JSON() {
   console.log("updateGlobalLibsForm2JSON()");
   var vGLib = getValueDOM("tGlobalLibs") || "";
   vGLib = removeEmptyLines(vGLib);
+  parseGlobalLibs2JSON(vGLib);
+};
+
+function parseGlobalLibs2JSON(pGLib) {
+  var vGLib = pGLib || "";
   vJSON_JS["GlobalLibList"] = [];
   if (vGLib != "") {
     var vGLibArr = vGLib.split("\n");
@@ -226,18 +231,56 @@ function updateGlobalLibsForm2JSON() {
         } else {
           vBoolean = true;
         };
-        vJSON_JS["GlobalLibList"].push({
-          "file":vFileName,
-          "import": vBoolean
-        });
+        vJSON_JS["GlobalLibList"].push(getDefaultLibraryHash(vFileName,vBoolean));
       }
     }
   }
 };
 
+function existsGlobalLibJS(pLibPath) {
+  var vArr = vJSON_JS["GlobalLibList"];
+  var vExists = false;
+  for (var i = 0; i < vArr.length; i++) {
+    if (isHash(vArr[i])) {
+      // Remove Blanks in GLib
+      vLibPath = (vArr[i]["file"]).replace(/\s/g,"");
+      if (vArr[i]["file"] == vLibPath) {
+          vExists = true;
+      };
+    }
+  };
+  console.log("existsGlobalLibJS('"+pLibPath+"') = "+vExists);
+  return vExists;
+}
+
+function checkGlobalLibsJSON(pGlobLibList) {
+  //pGlobLibList = vJSON_JS["tGlobalLibs"];
+  var vGLib = vJSON_JS["tGlobalLibs"]; // string with libs in JSON
+  var vGLibArr = getString2Array(vGLib); // split String in Array
+  var vLib = "";
+  for (var i = 0; i < vGLibArr.length; i++) {
+    vLib = vGLibArr[i];
+    if (existsGlobalLibJS(vLib)) {
+      console.log("Global Library '"+vLib+"' exists");
+    } else {
+      console.log("Create Library '"+vLib+"' in vJSON_JS['GlobalLibList']");
+      // true means that Lib will be import - Import Flag
+      pGlobLibList.push(getDefaultLibraryHash(vLib,true))
+    }
+  }
+};
+
+function getDefaultLibraryHash(pLib,pImport) {
+  return {
+    "file": pLib,
+    "import":pImport
+  };
+}
+
 function updateGlobalLibsJSON2Form() {
   console.log("updateGlobalLibsForm2JSON()");
   var vArr = vJSON_JS["GlobalLibList"];
+  checkGlobalLibsJSON(vArr);
   var vOut = "";
   var vCR = "";
   var vImport = "";
@@ -248,7 +291,7 @@ function updateGlobalLibsJSON2Form() {
       vImport = "true";
     }
     //vOut += vCR + vArr[i]["path"]+"|"+vImport;
-    vOut += vCR + vArr[i]["path"];
+    vOut += vCR + vArr[i]["file"];
     vCR = "\n";
   };
   write2value("tGlobalLibs",vOut);
@@ -265,30 +308,6 @@ function updateJSAttribs() {
   updateForm2AttribJSON();
   createAttribTypeSelect();
   createAttribSelect();
-};
-
-function updateJSMethods() {
-  debugLog("Method","updateJSMethods()");
-  var vMethodNameArr   = getMethodNameArray();
-  var vMethodHash      = getMethodHash();
-  var vMethodNameArray = getMethodNameArray();
-  var vMethodArray     = getMethodArray();
-  vMethodArray = checkJSMethods(vMethodArray);
-  // load tMethods definitions and create the options of the SELECT Box
-  debugLog("Method","Update JS Methods");
-  var vOptions = createOptions4Array(vMethodNameArr);
-  var vMethodHeader= getValueDOM("tMethodHeader");
-  var vMethodName = getMethodName(vMethodHeader);
-  if (vMethodName != "") {
-    if (vMethodHash[vMethodName]) {
-      loadMethodJSON(vMethodName);
-    } else {
-      loadMethodJSON(vMethodNameArray[0]);
-      debugLog("Method","updateJSMethods()-Call  '"+vMethodName+"' undefined in MethodArray");
-    }
-  };
-  // id="sMethodList" of Select Box
-  write2innerHTML("sMethodList",vOptions);
 };
 
 function loadAttribJSON (pAttribName) {
@@ -391,19 +410,23 @@ function saveID4HashPath2JSON(pHashPath,pValue) {
 function deleteClassForm() {
   console.log("deleteClassForm()");
   var vClassJS = getClassJSON();
-  var vMethodName = getValueDOM("sClassList");
-  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  var vClass = getValueDOM("sClassList");
+  var vOK = confirm("Do you want to delete class "+vClass+"()?");
   if(vOK == true) {
-    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
-    for (var iID in vArrID) {
-      if (vArrID.hasOwnProperty(iID)) {
-        delete vClassJS[iID][vMethodName];
-      }
+    if (existsClassJS(vClass)) {
+      delete vJSON_JS["ClassList"][vClass];
+      delete vJSON_JS["ClassType"][vClass];
     };
-    updateJSON2Form();
+    var vArr = getArray4HashID(vJSON_JS["ClassList"]);
+    clearForm4Class();
+    alert("Class '"+vClass+"' deleted!");
+    createClassSelect();
+    if (vArr.length>0) {
+        selectClass(vArr[0]);
+    };
+    //updateJSON2Form();
   };
 };
-
 
 function deleteAttributeForm() {
   console.log("deleteAttributeForm()");
@@ -421,27 +444,49 @@ function deleteAttributeForm() {
   };
 };
 
+function existsAttributeJS(pAttName,pClass) {
+  var vClass = pClass || getSelectedClassID();
+  var vClassJS = getClassJSON(vClass);
+  var vExists = 0;
+  var vArrID = ["AttribType","AttribDefault","AttribComment"];
+  for (var i = 0; i < vArrID.length; i++) {
+    vID = vArrID[i];
+    if (vClassJS[vID].hasOwnProperty(pAttName)) {
+      vExists++;
+    };
+  };
+  return (vExists > 0)
+}
 
 function saveAttributeForm() {
+  updateAttributeForm2JSON();
+  alert("Attribute '"+vName+"' saved!");
+}
+
+function updateAttributeForm2JSON() {
   var vName = getValueDOM("tAttribName");
   console.log("saveAttributeForm('"+vName+"')");
-  var vClassJSON = getClassJSON();
+  var vClassJS = getClassJSON();
   var vArrID = ["AttribType","AttribDefault","AttribComment"];
   var vID = "";
   for (var i = 0; i < vArrID.length; i++) {
     vID = vArrID[i];
-    vClassJSON[vID][vName] = getValueDOM("t"+vID) || "";
+    vClassJS[vID][vName] = getValueDOM("t"+vID) || "";
   };
   updateAttribListJSON2Form();
-  vClassJSON["sAttribList"] = vName;
+  // evaluate Attribute Access
+  var vAccess = getValueDOM("sAttribAccess") || "public";
+  vClassJS["AttribAccess"][vName] = vAccess;
+  write2value("sAttribAccess",vAccess);
+  // set Attibute Selector
+  vClassJS["sAttribList"] = vName;
   createAttribSelect();
   write2value("sAttribList",vName);
   for (var i = 0; i < vArrID.length; i++) {
     vID = vArrID[i];
-    write2value("t"+vID,vClassJSON[vID][vName]);
+    write2value("t"+vID,vClassJS[vID][vName]);
   };
   autoSaveJSON();
-  alert("Attribute '"+vName+"' saved!");
 };
 
 function updateAttribListJSON2Form() {
@@ -453,12 +498,13 @@ function updateAttribListJSON2Form() {
   for (var iName in vAttHash) {
     if (vAttHash.hasOwnProperty(iName)) {
       vLine = vCR + iName + " = " + vAttHash[iName];
-      vLine = vLine.replace(/\s+=\s+/,"=");
+      vLine = vLine.replace(/\s+=\s+/," = ");
       vOut += vLine;
       vCR = "\n";
     };
   };
   write2value("tAttributes",vOut);
+  vClassJSON["tAttributes"] = vOut;
 };
 
 function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
@@ -479,21 +525,29 @@ function saveAttribJSON(pAttName,pAttType,pAttDefault,pAttComment) {
   };
 };
 
-function getMethodHeader4Name(pMethName,pClass) {
-  var vMethHeader = "";
+function getMethodHeader4Name(pClass,pMethName) {
   var vClass = pClass || getSelectedClassID();
-  var vClassJS = getClassJSON(vClass);
-  if (vClassJS.hasOwnProperty("MethodParameter")) {
-    if (vClassJS.MethodParameter.hasOwnProperty("MethodParameter")) {
-
-    } else {
-      console.log("ERROR: getMethodHeader4Name(pMethName,pClass) MethodParameter undefined");
+  var vOut = "";
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    if (vClassJS.hasOwnProperty("MethodParameter")) {
+      if (vClassJS.MethodParameter.hasOwnProperty(pMethName)) {
+        var vMethHash = getMethHash4Name(vClass,pMethName);
+        if (isHash(vMethHash)) {
+          vOut = vMethHash["name"]+"("+vMethHash["param"]+")";
+          if (vMethHash["return"] != "") {
+            vOut += ":"+vMethHash["return"];
+          };
+        };
+      } else {
+        console.log("ERROR: getMethodHeader4Name(pClass,pMethName) MethodParameter undefined");
+      };
     };
   } else {
-    console.log("ERROR: getMethodHeader4Name(pMethName,pClass) MethodParameter undefined");
+    console.log("ERROR: getMethodHeader4Name(pClass,pMethName) MethodParameter undefined");
   };
-  return vMethHeader;
-}
+  return vOut;
+};
 
 function updateJSON2selectAttrib(pClass) {
   debugLog("Attrib","updateJSON2selectAttrib('"+pClass+"')");
@@ -503,31 +557,57 @@ function updateJSON2selectAttrib(pClass) {
   }
 }
 
-function loadMethodJSON (pMethodName) {
-  var vClassJSON = getClassJSON();
-  var vMethodName = getValueDOM("tMethodHeader");
-  vMethodName = pMethodName || vMethodName;
-  var vMethodHash = getMethodHash();
-  var vMethodHeader= vMethodHash[vMethodName] || pMethodName + "(???)";
-  write2value("tMethodHeader",vMethodHeader);
-  write2innerHTML("titleMethodName",vMethodHeader);
-  vMethodName = getMethodName(vMethodName); //without Parameters
-  if (vMethodName != "") {
-    debugLog("Method","loadMethodJSON() Call - Method Code '"+vMethodName+"' defined");
-    var vCode = vClassJSON["MethodCode"][vMethodName] || "";
-    if (vClassJSON["MethodCode"][vMethodName]) {
-      write2value("tMethodCode",vCode);
-      setEditorValue("iMethodCode",vCode);
+function loadMethodJSON(pClass,pMethodName) {
+  var vMethodName = pMethodName || "";
+  var vClass = pClass || "";
+  console.log("loadMethodJSON('"+vClass+"','"+vMethodName+"')");
+  if (existsClassJS(vClass)) {
+    console.log("loadMethodJSON('"+vClass+"','"+vMethodName+"') - Class exists");
+    var vClassJSON = getClassJSON(vClass);
+    if (vMethodName != "") {
+      //if (vClassJSON["MethodParameter"].hasOwnProperty(vMethodName)) {
+        debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method '"+vMethodName+"' defined");
+        var vMethHash = getMethHash4Name(vClass,vMethodName);
+        var vMethodHeader = getMethodHeader4Name(vClass,vMethodName);
+        //set Method Name
+        vClassJSON["sMethodList"] = vMethodName; //set Method Header
+        write2value("sMethodList",vMethodName); // set Selector
+        write2value("tMethodName",vMethodName); // set Selector
+        //set Method Header
+        vClassJSON["tMethodHeader"] = vMethodHeader;
+        write2value("tMethodHeader",vMethodHeader);
+        write2innerHTML("titleMethodName",vMethodHeader);
+        //set Method Comment
+        vClassJSON["tMethodComment"] = vMethHash["comment"];
+        write2value("tMethodComment", vMethHash["comment"]);
+        //set Method Return
+        //vClassJSON["sReturnList"] = vMethHash["return"];
+        write2value("sReturnList", vMethHash["return"]);
+        //set Method Code
+        vClassJSON["tMethodCode"] = vMethHash["code"];
+        write2editor("MethodCode", vMethHash["code"]);
+        // set Access "public" "privat",...
+        vMethHash["assess"] = reduceVarName(vMethHash["assess"]);
+        if (vMethHash["assess"] == "") {
+          vMethHash["assess"] = "public";
+        };
+        vClassJSON["tMethodAccess"] = vMethHash["assess"];
+        write2value("sMethodAccess", vMethHash["assess"]);
+      //} else {
+      //  debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method '"+vMethodName+"()' NOT defined");
+      //};
+    } else {
+      alert("loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method Name undefined");
+      debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method Name undefined");
     };
-    write2value("tMethodComment",vClassJSON["MethodComment"][vMethodName] || "");
   } else {
-    alert("loadMethodJSON() Call - Method Name undefined");
-    debugLog("Method","loadMethodJSON() Call - Method Name undefined");
-  };
+    console.log("loadMethodJSON('"+vClass+"','"+vMethodName+"') vClass undefined");
+  }
+
 };
 
 function deleteMethodForm() {
-  debugLog("Attrib","deleteAttributeForm()");
+  debugLog("Attrib","deleteMethodForm()");
   var vClassJS = getClassJSON();
   var vMethodName = getValueDOM("sMethodList");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
@@ -559,7 +639,6 @@ function saveMethodCallJS(pClass) {
       vClassJSON["MethodComment"][vMethodName] = vMethodComment;
       vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodHeader);
       vClassJSON["MethodReturn"][vMethodName] = getMethodReturn4Call(vMethodHeader);
-      updateJSMethods();
     } else {
       debugLog("Method","saveMethodCallJS()-Call  '"+vMethodName+"' undefined in MethodArray, create New Method");
       createNewMethodJS(pClass);
@@ -570,17 +649,22 @@ function saveMethodCallJS(pClass) {
 function write2JSON(pID,pValue) {
   console.log("write2JSON('"+pID+"',pValue)-Call");
   var vClassJSON = getClassJSON();
-  vClassJSON[pID] = pValue;
-  write2value(pID,pValue);
+  if (vClassJSON.hasOwnProperty(pID)) {
+    vClassJSON[pID] = pValue;
+    write2value(pID,pValue);
+  } else {
+    console.log("ERROR: write2JSON(pID,pValue)");
+  }
 };
 
 function saveMethodForm(pMethodHeader) {
   var vMethodHeader = pMethodHeader || getValueDOM("tMethodHeader");
   var vMethodName = getSelectedMethodID();
-  var vErrorMSG = saveMethodJSON(vMethodHeader);
+  var vAccess = getValueDOM("sMethodAccess") || "public";
+  var vErrorMSG = saveMethodJSON(vMethodHeader,vAccess);
   if (vErrorMSG == "") {
     autoSaveJSON();
-    alert("Method '"+vMethodName+"' saved!");
+    alert(firstUpperCase(vAccess) + " Method '"+vMethodName+"' saved!");
   } else {
     alert(vErrorMSG);
   };
@@ -592,15 +676,17 @@ function getSelectedMethodID(pMethodHeader) {
   return vMethodName;
 };
 
-function saveMethodJSON(pMethodHeader) {
+function saveMethodJSON(pMethodHeader,pAccess) {
+  var vAccess = pAccess || getValueDOM("sMethodAccess") || "public";
   var vErrorMSG = "";
   var vClassJSON = getClassJSON();
   var vMethodHeader= pMethodHeader || getValueDOM("tMethodHeader");
   var vMethodName = getSelectedMethodID(vMethodHeader);
-  var vMethodCode     = getEditorValue("iMethodCode");
+  var vMethodCode     = getValueDOM("tMethodCode");
   var vMethodComment  = getValueDOM("tMethodComment");
   if (vMethodName != "") {
     checkClassJSON(vClassJSON);
+    vClassJSON["MethodAccess"][vMethodName] = vAccess;
     vClassJSON["MethodCode"][vMethodName] = vMethodCode;
     vClassJSON["MethodComment"][vMethodName] = vMethodComment;
     vClassJSON["MethodParameter"][vMethodName] = getMethodParameter4Call(vMethodHeader);
@@ -637,7 +723,7 @@ function checkClassJSON(pClassJSON) {
       };
     };
     // Check for Hashes
-    var vHashDefID = ["AttribType","AttribDefault","AttribComment","MethodComment","MethodReturn","MethodCode","MethodParameter"];
+    var vHashDefID = ["AttribAccess","AttribType","AttribDefault","AttribComment","MethodAccess","MethodComment","MethodReturn","MethodCode","MethodParameter"];
     var vID = "";
     for (var i = 0; i < vHashDefID.length; i++) {
       vID = vHashDefID[i];
@@ -737,7 +823,11 @@ function updateJSON2EditorContent(pClass,pFile) {
   var vID = "";
   if (vMethodName != "") {
     console.log("updateJSON2EditorContent: [MethodCode]!");
-    vContent = vJSON_JS["ClassList"][vClass]["MethodCode"][vMethodName];
+    if (existsClassJS(vClass)) {
+      vContent = vJSON_JS["ClassList"][vClass]["MethodCode"][vMethodName];
+    } else {
+      vContent = "";
+    }
     write2value("tMethodCode",vContent);
     setEditorValue("iMethodCode",vContent);
   };
@@ -1052,15 +1142,15 @@ function updateForm2JSON(pClass,pClassType) {
   console.log("updateForm2JSON('"+vClass+"','"+vClassType+"')");
   // updates the Class content with form content in DOM
   createClassJS(vClass,vClassType,"updateForm2JSON()");
-  updateForm_DOM2JSON(pClass);
+  updateForm_DOM2JSON(vClass);
   // load the defined Attribute and Methodsfrom Form
-  console.log("(1) updateForm2JSON('"+pClass+"') >> updateForm2AttribJSON()");
-  updateForm2AttribJSON(pClass);
-  console.log("(2) updateForm2JSON('"+pClass+"') >> uupdateForm2MethodJSON()");
-  updateForm2MethodJSON(pClass);
-  console.log("(3) updateForm2JSON('"+pClass+"') >> updateFormGlobal2JSON()");
+  console.log("(1) updateForm2JSON('"+vClass+"') >> updateForm2AttribJSON()");
+  updateForm2AttribJSON(vClass);
+  console.log("(2) updateForm2JSON('"+vClass+"') >> uupdateForm2MethodJSON()");
+  updateForm2MethodJSON(vClass);
+  console.log("(3) updateForm2JSON('"+vClass+"') >> updateFormGlobal2JSON()");
   updateFormGlobal2JSON();
-  console.log("(4) updateForm2JSON('"+pClass+"') >> set Selected IDs");
+  console.log("(4) updateForm2JSON('"+vClass+"') >> set Selected IDs");
   vJSON_JS["SelectedClass"] = getValueDOM("sClassList") || "";
   vJSON_JS["SelectedPage"] = getValueDOM("sPageHTML") || "";
   vJSON_JS["SelectedPageType"] = getValueDOM("sPageTypeHTML") || "";

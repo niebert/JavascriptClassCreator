@@ -1,3 +1,29 @@
+function randomString4Chars(length, chars) {
+    var result = '';
+    for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
+    return result;
+};
+
+function randomString(length) {
+	var vChars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	return randomString4Chars(32,vChars);
+};
+
+function randomUsername(length) {
+	var vMinLength = 6;
+	var vLength = length || vMinLength;
+	if (vLength < vMinLength) {
+		vLength = vMinLength;
+		console.log("randomUsername(length) length to short - set generated length to "+vMinLength);
+	};
+	var vChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var vCharNums = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var vUsername =  randomString4Chars(1,vChars);
+	vUsername += randomString4Chars(vLength - 1,vChars);
+	return vUsername;
+};
+
+
 function sortStringLines(pString) {
 	var vStringArr = pString.split("\n");
 	vStringArr.sort();
@@ -184,4 +210,53 @@ function encodeURLparam(pURLparam) {
 
 function decodeURLparam(pURLparam) {
   return decodeURIComponent(pURLparam);
+};
+
+function getDirname4URL(pFilePath) {
+  console.log("getDirname4URL('"+pFilePath+"')");
+   vDirname = pFilePath.substr(0, pFilePath.lastIndexOf("/") - 1);
+   if (vDirname.indexOf("//")>0) {
+     vDirname = (vDirname.split("//"))[1];
+   };
+   return vDirname;
+};
+
+function getProtocol4URL(pFilePath) {
+  console.log("getProtocol4URL('"+pFilePath+"')");
+  var vProto = "";
+   if (vFilePath.indexOf("://")>0) {
+     vProto = (vDirname.split("://"))[0];
+   };
+   return vProto;
+};
+
+function getNameExt(pFilePath) {
+  //console.log("getNameExt('"+pFilePath+"')");
+  return getNameExt4URL(pFilePath);
+};
+
+function getNameExt4URL(pURL) {
+  //this gets the full url
+  var url = pURL || ""; //e.g. document.location.href;
+  if (typeof(url) == "string") {
+    //this removes the anchor at the end, if there is one
+    url = url.substring(0, (url.indexOf("#") == -1) ? url.length : url.indexOf("#"));
+    //this removes the query after the file name, if there is one
+    url = url.substring(0, (url.indexOf("?") == -1) ? url.length : url.indexOf("?"));
+    //this removes everything before the last slash in the path
+    url = url.substring(url.lastIndexOf("/") + 1, url.length);
+  };
+  //return
+  console.log("getNameExt4URL('"+pURL+"') return '"+url+"'");
+  return url;
+};
+
+function getName4URL(pFilePath) {
+  var vNameExt = getNameExt4URL(pFilePath);
+  var vName = vNameExt;
+  if (vNameExt.indexOf(".")>0) {
+    vName = vName.substring(0,vNameExt.lastIndexOf("."))
+  };
+  console.log("getName4URL('"+pFilePath+"') return='"+vName+"'");
+  return vName;
 };

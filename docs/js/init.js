@@ -53,8 +53,10 @@ vDOM_TPL.push("tTplMethodsHeader"); // Contains the methods header of definition
 vDOM_TPL.push("tTplSuperClassProto"); // SuperClass definition with Prototype approach in Javascript
 vDOM_TPL.push("tTplSuperClass"); // SuperClass definition without Prototype approach (more memory consumption for instances)
 vDOM_TPL.push("tTplClassTail"); // Defines the End of the Class Definition
-vDOM_TPL.push("tTplAttribute"); // Defines the Attributes definition in a Constructor
-vDOM_TPL.push("tTplMethodHeader"); // Defines the comments before each Method definition
+vDOM_TPL.push("tTplAttribute"); // Public Defines the Attributes definition in a Constructor
+vDOM_TPL.push("tTplAttributePrivate"); // Private Defines the Private Attributes definition in a Constructor
+vDOM_TPL.push("tTplMethodHeader"); // Public Defines the comments before each Method definition
+vDOM_TPL.push("tTplMethodPrivate"); // Private Defines the comments before each Method definition
 vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
 vDOM_TPL.push("tTplMethodConstructorComment"); //Defines a comment in the constructor for a method with Prototype definition
 vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach
@@ -143,11 +145,13 @@ function initCodeCreator() {
        //clearForm4File(vSelectedFile);
        updateJSON2Form(vSelectedClass,vSelectedFile);
        console.log("initCodeCreator() Selected Class ["+vSelectedClass+"] in JSON Database");
-      } else {
+    } else {
         if (vJSON_JS.hasOwnProperty("ClassList") && vJSON_JS.hasOwnProperty("FileList")) {
           console.log("initCodeCreator() vJSON_JS was loaded from Library prog/project.js");
+          updateJSON2Form(vSelectedClass,vSelectedFile);
         } else if ((vJSON_JS["JSCC_type"]) && vJSON_JS["JSCC_type"] == "JSCC") {
           console.log("initCodeCreator() - Typ vJSON_JS was loaded from Library prog/project.js");
+          updateJSON2Form(vSelectedClass,vSelectedFile);
         } else {
           console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
           top.vJSON_JS["JSCC_type"] = "JSCC";
@@ -160,19 +164,19 @@ function initCodeCreator() {
   } else {
       alert("Sorry, your browser does not support Local Storage...");
   };
-  updateBasicClassJSON2Form();
-  updateSelectors(); //select.js:140
-  checkInterface4Class(vSelectedClass);
-  updateClasses();
-  initLabelsHTML();
-  //setTimeout('alert(readFile("tpl/test.txt"))',5000);
-  initEditorContent(vSelectedClass); //iframe.js:80
   //Hack: MethodCode is not properly initialized, when Data is coming from LocalStorage
   vRestoreForm["tMethodCode"] = getMethodCode4Editor(vSelectedClass);
   vRestoreForm["tPageTypeHTML"] = getPageTypeCode4Editor(vSelectedPageType);
   for (var i = 0; i < vDOM_ID.length; i++) {
     vRestoreForm[vDOM_ID[i]] = vJSON_JS["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
   };
+  initEditorContent(vSelectedClass); //iframe.js:80
+  updateBasicClassJSON2Form();
+  updateSelectors(); //select.js:140
+  checkInterface4Class(vSelectedClass);
+  updateClasses();
+  initLabelsHTML();
+  //setTimeout('alert(readFile("tpl/test.txt"))',5000);
   getPageTypeCode4Editor(vSelectedPageType)
   setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
   updateJSON2tClassList();
@@ -181,7 +185,7 @@ function initCodeCreator() {
   createClassSelect();
   setClassSelectorDefault(vSelectedClass);
   createFileSelect();
-  createMethodSelect();
+  createMethodSelect(vSelectedClass);
   createAttribTypeSelect();
   setDefaultSelectors();
   //console.log("checkDatabaseListJSON()-Call");

@@ -180,7 +180,9 @@ function selectClass_do(pClass) {
   var vCurrentClass = getValueDOM("tClassname");
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
-  updateForm2JSON(vCurrentClass);
+  if ((vCurrentClass != "") && (existsClassJS(vCurrentClass))) {
+    updateForm2JSON(vCurrentClass);
+  };
   // following command is inserted for the first startup
   write2value("sClassList",vClass);
   write2value("tClassname",vClass);
@@ -726,6 +728,8 @@ function selectJSAttribs(pAttribName) {
     console.log("["+vID+"]='"+vValue+"'");
     write2value("t"+vID,vValue);
   };
+  var vAccess = vClassJSON["AttribAccess"][vAttribName] || "public";
+  write2value("sAttribAccess",vAccess);
   write2value("tAttribName",vAttribName);
   var vAttribType = (vClassJSON["AttribType"][vAttribName] || " ");
   write2value("sAttribTypeList",vAttribType);
@@ -855,24 +859,75 @@ function saveDatabaseJSON() {
 function selectJSMethods() {
   var vClass = getSelectedClassID();
   //alert("Select Method");
-  //save current Method
-  saveMethodJSON();
-  //get SELECT MethodName value
-  var vMethodName = getValueDOM("sMethodList");
-  // set MethodName Input Window
-  var vMethodHash = getMethodHash();
   if (existsClassJS(vClass)) {
-    vJSON_JS["ClassList"][vClass]["sMethodList"] = vMethodName;
+    var vClassJS = getClassJSON(vClass);
+    //get SELECT MethodName value
+    var vMethodName = getValueDOM("sMethodList");
+    vClassJS["sMethodList"] = vMethodName;
+    //load method code from  vJSON_JS if exists
+    //and write method code to form
+    loadMethodJSON(vClass,vMethodName);
+    saveJSON2LocalStorage();
+  } else {
+    console.log("ERROR: selectJSMethods() - vClass '"+vClass+"' does not exist");
   };
-  //load method code from  vJSON_JS if exists
-  //and write method code to TEXTAREA
-  loadMethodJSON(vMethodName);
-  var vMethodReturn = getMethodReturn4Call(vMethodHash[vMethodName]);
-  write2value("tMethodHeader",vMethodHash[vMethodName]);
-  write2innerHTML("titleMethodName",vMethodHash[vMethodName]);
-  write2value("sReturnList",vMethodReturn);
-  saveJSON2LocalStorage();
 };
+
+function getMethCall4Name(pClass,pName) {
+  var vMethHash = getMethHash4Name(pClass,pMethName);
+  if (isHash(vMethHash)) {
+    return getMethCall4MethHash(pMethHash);
+  } else {
+    console.log("ERROR: getMethCall4Name('"+pClass+"','"+pName+"')");
+  }
+};
+
+function getMethCall4MethHash(pMethHash) {
+  var vCall = pMethHash["name"]+"("+pMethHash["param"]+")";
+  if (pMethHash.hasOwnProperty("return")) {
+    vCall += ":"+pMethHash["return"];
+  };
+  return vCall;
+};
+
+function getMethDef4MethHash(pMethHash) {
+  var vCall = pMethHash["access"]+"("+pMethHash["param"]+")";
+  if ((pMethHash["return"]) && (pMethHash["return"] != "")) {
+    vCall += ":"+pMethHash["return"];
+  };
+  return vCall;
+};
+
+function getMethHash4Name(pClass,pMethName) {
+  var vClass = pClass || getSelectedClassID();
+  var vHash = {
+    "access": "public",
+    "name": pMethName,
+    "param": "",
+    "return": "",
+    "comment": "",
+    "code": ""
+  };
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    if (vClassJS["MethodAccess"].hasOwnProperty(pMethName)) {
+      vHash["access"] = vClassJS["MethodAccess"][pMethName];
+    };
+    if (vClassJS["MethodParameter"].hasOwnProperty(pMethName)) {
+      vHash["param"] =  vClassJS["MethodParameter"][pMethName];
+    };
+    if (vClassJS["MethodReturn"].hasOwnProperty(pMethName)) {
+      vHash["return"] =  vClassJS["MethodReturn"][pMethName];
+    };
+    if (vClassJS["MethodComment"].hasOwnProperty(pMethName)) {
+      vHash["comment"] =  vClassJS["MethodComment"][pMethName];
+    };
+    if (vClassJS["MethodCode"].hasOwnProperty(pMethName)) {
+      vHash["code"] =  vClassJS["MethodCode"][pMethName];
+    };
+  };
+  return vHash;
+}
 
 function updateClassSelector() {
   var vClassJS = getClassJSON();
@@ -882,12 +937,14 @@ function updateClassSelector() {
 }
 
 function updateDatabaseSelector() {
-  createDatabaseSelect();
-}
+  var vArrID = getArray4HashID(vJSON_JS["DatabaseList"]);
+  createDatabaseSelect(vArrID);
+};
 
 function updateSelectors() {
   createClassSelect();
-  createDatabaseSelect();
+  var vArrID = getArray4HashID(vJSON_JS["DatabaseList"]);
+  createDatabaseSelect(vArrID);
   // PageType creates Selectors for the Form in Page Form
   createPageTypeSelect();
   createPageSelect();

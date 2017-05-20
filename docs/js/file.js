@@ -5,7 +5,7 @@ function loadProjectJS(pDB) {
       var vTypeDB = vDataJSON[vDB]["JSCC_type"];
       if (vTypeDB == "JSCC") {
         console.log("JSON Database for JSCC '"+vDB+".js' defined!");
-        vJSON_JS = vDataJSON[vDB];
+        vJSCC_DB = vDataJSON[vDB];
       } else {
         console.log("ERROR: JSCC_type='"+vTypeDB+"' for JSON is not 'JSCC'");
       };
@@ -23,7 +23,7 @@ function handleProjectJSON(pContent) {
  // Parse JSON string into object
    var vJSON = JSON.parse(pContent);
    if (vJSON) {
-     vJSON_JS = vJSON;
+     vJSCC_DB = vJSON;
    } else {
      console.log("ERROR: loading Project JSON");
    };
@@ -124,14 +124,9 @@ function readFileTXT(pFile) {
     return vContent;
 };
 
-function filename2id(pFile) {
-  return pFile.replace(/[^a-zA-Z_0-9]/g,"")
-
-}
-
 function loadHTML2iFrame(pFile) {
   var ifrm = document.createElement("iframe");
-  var vID = filename2id(pFile);
+  var vID = filename2ID(pFile); // string.js
   ifrm.setAttribute("src", pFile);
   ifrm.setAttribute("id", vID);
   ifrm.style.width = "90%";

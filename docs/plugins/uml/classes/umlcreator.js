@@ -35,8 +35,8 @@ function getPaperSize(pClassPos) {
 
 function getSelectedClassName() {
   var vClassName = "";
-  if (vJSON_JS["SelectedClass"]) {
-    vClassName = vJSON_JS["SelectedClass"];
+  if (vJSCC_DB["SelectedClass"]) {
+    vClassName = vJSCC_DB["SelectedClass"];
   };
   return vClassName;
 };
@@ -45,22 +45,22 @@ function X_getClassJSON(pClass) {
   var vSelectedClass = pClass || getSelectedClassName();
   var vRetHash;
   if (vSelectedClass != "") {
-    vRetHash = vJSON_JS["ClassList"][vSelectedClass] || {};
+    vRetHash = vJSCC_DB["ClassList"][vSelectedClass] || {};
   };
   return vRetHash;
 };
 
 function getClassJSON(pClassName) {
   var vClass = pClassName || getSelectedClassName();
-  var vClassTypeHash = vJSON_JS["ClassType"];
+  var vClassTypeHash = vJSCC_DB["ClassType"];
   var vRetClassJSON = {}; //Undefined Variable
-  if ((vSelectedClass != "") && vJSON_JS["ClassList"] && vJSON_JS["ClassList"][vClass]) {
-    vRetClassJSON = vJSON_JS["ClassList"][vClass];
+  if ((vSelectedClass != "") && vJSCC_DB["ClassList"] && vJSCC_DB["ClassList"][vClass]) {
+    vRetClassJSON = vJSCC_DB["ClassList"][vClass];
   } else {
     if (vClass != "") {
       var vClassType = vClassTypeHash[vClass] || "getClassJSON";
       createClassJS(vClass,vClassType,"getClassJSON()");
-      vRetClassJSON = vJSON_JS["ClassList"][vClass];
+      vRetClassJSON = vJSCC_DB["ClassList"][vClass];
     } else {
       console.log("ERROR: getClassJSON(pClassName)  pClassName undefined");
     };
@@ -115,7 +115,7 @@ function createMissingClasses(pClasses,pClassList,pBoolHash) {
 };
 
 function createDiagramClass(pClass,pCentered) {
-  //get the ClassUML form vJSON_JS of parent window
+  //get the ClassUML form vJSCC_DB of parent window
   var vClassUML = getClassUML(pClass);
   // determine the UML Type of the Class "Abstract" "Interface" "Red Class", ...
   var vTypeUML = vClassTypeHash[pClass] || "";
@@ -149,7 +149,7 @@ function getClassUML(pClass) {
 
 function getAttributesUML(pClass) {
   console.log("getAttributesUML('"+pClass+"')");
-  var vClassList = vJSON_JS["ClassList"];
+  var vClassList = vJSCC_DB["ClassList"];
   var vAttribs = [];
   var vAttLine = "";
   if (vClassList[pClass]) {
@@ -207,7 +207,7 @@ function createAllGeneralizations() {
   for (var iClass in vClassList) {
     if (vClassList.hasOwnProperty(iClass)) {
       var vSourceID = classes[iClass].id;
-      //get the ClassUML form vJSON_JS of parent window
+      //get the ClassUML form vJSCC_DB of parent window
       vSuperClass = vClassList[iClass]["tSuperClassname"];
       //----GENERALIZATION-----
       if (vSuperClass && (vSuperClass != "")) {
@@ -487,12 +487,12 @@ function setAssCircle2Target() {
   var vWinOpener = getWinOpener() || {};
   var vWinOpenerDefined = false;
   // vWinOpener is the Window of JavascriptClassGenerator
-  var vJSON_JS = {};
+  var vJSCC_DB = {};
   var vClassList = {"Undefined":{"tClassname":"Undefined_Class"}};
   console.log("Default: GEN="+vShowGeneralizations+" AGG="+vShowAggregations+" ASS="+vShowAssociations);
   try {
-    vJSON_JS = vWinOpener.vJSON_JS;
-    vClassList = vJSON_JS["ClassList"];
+    vJSCC_DB = vWinOpener.vJSCC_DB;
+    vClassList = vJSCC_DB["ClassList"];
     vWinOpenerDefined = true;
     //---Check UML Display Settings in Parent Window----
     vShowGeneralizations = vWinOpener.getValueDOM("sShowGeneralizations");
@@ -515,9 +515,9 @@ function setAssCircle2Target() {
   if (vShowAssociations == "hide") {
     vShowAss = 0
   };
-  // The main class database is defined by vJSON_JS
-  // map that to local window variable vJSON_JS
-  var vClassTypeHash = vJSON_JS["ClassType"] || {"Undefined":"Interface"};
+  // The main class database is defined by vJSCC_DB
+  // map that to local window variable vJSCC_DB
+  var vClassTypeHash = vJSCC_DB["ClassType"] || {"Undefined":"Interface"};
   var vClassUML = null;
   var vClasses = {};
   var vSize = getPaperSize();
@@ -541,7 +541,7 @@ function setAssCircle2Target() {
   // Generate All Classes
   var classes = createAllClasses(vClassList);
 
-  var vSelectedClass = vWinOpener.vJSON_JS["SelectedClass"] || "";
+  var vSelectedClass = vWinOpener.vJSCC_DB["SelectedClass"] || "";
 
   var papersize = getPaperSize(vClassPos);
 

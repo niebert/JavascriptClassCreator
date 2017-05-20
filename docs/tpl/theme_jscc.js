@@ -1,0 +1,128 @@
+vDataJSON["theme_jscc"] = {
+  "JSCC_type":"THEME",
+  "JSCC_version": "1",
+  "init_date": "2017/03/05 18:13:28",
+  "mod_date": "2017/04/03 23:36:53",
+  "type":"Hash",
+  "multiple":false,
+  "children":{
+    "ClassList":{
+      "type":"Hash",
+      "key":"tClassname",
+      "multiple":true,
+      "childcreate":true,
+      "childtype":{
+        "tClassname":{
+          "type":"String",
+          "default":""
+        },
+        "tSuperClassname":{
+          "type":"String",
+          "default":""
+        },
+        "sClassType":{
+          "type":"Selector",
+          "choices":["Blue","Green","Yellow","Brown","Red","INTERFACE","ABSTRACT"],
+          "default":"Default"
+        },
+        "tAuthor":{
+          "type":"String",
+          "default":"Name of Author"
+        },
+        "tEMail":{
+          "type":"String",
+          "default":"anonymous@example.com"
+        },
+        "tAttributes":{
+          "type":"Hash",
+          "key":"tAttribName",
+          "multiple":true,
+          "childcreate":true,
+          "childtype":{
+            "tAttribName":{
+              "type":"String",
+              "default":""
+            },
+            "tAttribAccess":{
+              "type":"Selector",
+              "choices":["public","private"],
+              "default":"public"
+            },
+            "tAttribDefault":{
+              "type":"String",
+              "default":"null"
+            },
+            "tAttribType":{
+              "type":"String",
+              "default":""
+            },
+            "tAttribComment":{
+              "type":"String",
+              "default":"stores ..."
+            }
+          }
+        },
+        "tMethods":{
+          "type":"Hash",
+          "multiple":true,
+          "childcreate":true,
+          "key":"tMethodName",
+          "default": {},
+          "childtype":{
+            "tMethodName":{
+              "type":"String",
+              "default":""
+            },
+            "sMethodAccess":{
+              "type":"Selector",
+              "choices":["public","private"],
+              "default":"public"
+            },
+            "tMethodParameter":{
+              "type":"String",
+              "default":"",
+            },
+            "tMethodReturn":{
+              "type":"String",
+              "default":""
+            },
+            "tMethodComment":{
+              "type":"String",
+              "default":"performs ..."
+            },
+            "tMethodCode":{
+              "type":"Editor",
+              "mode":"javascript",
+              "default":"performs ..."
+            }
+          }
+        }
+      },
+      "PageList":{
+        "type":"Hash",
+        "key":"sPageHTML",
+        "multiple":true,
+        "childcreate":false,
+        "childtype":{
+        }
+      },
+      "PageTypeList": {
+        "type":"Hash",
+        "key":"sPageTypeHTML",
+        "multiple":true,
+        "childcreate":false,
+        "childtype":{
+        }
+      },
+      "FileList":{
+        "type":"Hash",
+        "key":"sFileHTML",
+        "multiple":true,
+        "childcreate":false,
+        "childtype":{
+        }
+      }
+    }
+  }
+
+}

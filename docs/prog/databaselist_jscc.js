@@ -1,4 +1,7 @@
-vJSON_JS['ClassList']['DatabaseList'] = {
+vJSCC_DB['ClassList']['DatabaseList'] = {
+    "JSCC_type": "CLASS",
+    "JSCC_version": "1",
+    "JSCC_mod_date": "2017/04/03 17:58:17"
     "tClassname": "DatabaseList",
     "tSuperClassname": "",
     "sClassType": "Green",
@@ -24,10 +27,9 @@ vJSON_JS['ClassList']['DatabaseList'] = {
         "aDBListHash": "{}"
     },
     "AttribType": {
-         
         "aDBListHash": "Hash"
     },
-     
+
     "MethodReturn": {
         "init": "",
         "load": "",
@@ -51,9 +53,5 @@ vJSON_JS['ClassList']['DatabaseList'] = {
         "init": "pDatabase:Hash",
         "load": "",
         "save": ""
-    },
-    "aDBListHash": "Hash of all Databases. Elements of Hash are objects of class Database()",
-    "JSCC_type": "CLASS",
-    "JSCC_version": "1",
-    "JSCC_mod_date": "2017/04/03 17:58:17"
+    }
 }

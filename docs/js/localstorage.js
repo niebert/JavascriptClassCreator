@@ -40,7 +40,7 @@ function loadLocalStorage(pType,pVar) {
           console.log("DB '"+vDBName+"' loaded!");
         }
       } else {
-        vDBName = "vJSON_JS";
+        vDBName = "vJSCC_DB";
         vRet = loadLocalDB(vDBName);
         console.log("DB '"+vDBName+"' load call finished!");
     };
@@ -79,7 +79,7 @@ function saveLocalStorage(pType,pVar,pContent) {
       saveDOM2LocalStorage();
     break;
     case "json":
-      //saveLocalStorage("json","vJSON_JS");
+      //saveLocalStorage("json","vJSCC_DB");
       var vContent = "";
       if (pVar) {  // pVar is the DBname
         vParLog += ","+pVar;
@@ -87,10 +87,10 @@ function saveLocalStorage(pType,pVar,pContent) {
         eval(vEval);
         vRet = localStorage.setItem(pVar,vContent);
       } else {
-        // vJSON_JS is the default JSONDB
-        vContent = getCode4JSON_JS(vJSON_JS);
-        vParLog += ",'vJSON_JS'";
-        vRet = localStorage.setItem("vJSON_JS",vContent);
+        // vJSCC_DB is the default JSONDB
+        vContent = getCode4JSON_JS(vJSCC_DB);
+        vParLog += ",'vJSCC_DB'";
+        vRet = localStorage.setItem("vJSCC_DB",vContent);
       };
       debugLog("LocalStorage","CALL: "+vLS+"LocalStorage('"+vType+"'"+vParLog+")");
   break;
@@ -126,8 +126,8 @@ function clearLocalStorage(pType,pVar) {
         vParLog += ",pVar"
         localStorage.removeItem(pVar);
       } else {
-        vParLog += ",vJSON_JS"
-        localStorage.removeItem("vJSON_JS");
+        vParLog += ",vJSCC_DB"
+        localStorage.removeItem("vJSCC_DB");
       };
     break;
     case "var":
@@ -255,7 +255,7 @@ function loadLocalDB(pDBName) {
 
 function saveLocalDB(pDBName,pJSONDB) {
   var vError = "";
-  var vJSONDB = pJSONDB || vJSON_JS;
+  var vJSONDB = pJSONDB || vJSCC_DB;
   if (typeof(Storage) != "undefined") {
     // Store
     if (typeof(vJSONDB) != undefined) {

@@ -1,4 +1,4 @@
-vJSON_JS['ClassList']['AppAbstract'] = {
+vJSCC_DB['ClassList']['AppAbstract'] = {
     "tClassname": "AppAbstract",
     "tSuperClassname": "",
     "sClassType": "Abstract",

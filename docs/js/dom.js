@@ -31,9 +31,26 @@ function getCheckBox(pID) {
   return vReturn;
 };
 
+
+function createOptions4Hash(pHash) {
+  var vOptions = "";
+  if (isHash(pHash)) {
+    for (var key in pHash) {
+      if (pHash.hasOwnProperty(key)) {
+        vOptions +="<option value='"+key+"'>"+pHash[key]+"</option>\n";
+
+      }
+    };
+  } else {
+    console.log("ERROR: createOptions4Hash()-Call pHash undefined");
+  };
+  return vOptions;
+};
+
+
 function createOptions4Array(pArray) {
   var vOptions = "";
-  if (pArray) {
+  if (isArray(pArray)) {
     for (var i = 0; i < pArray.length; i++) {
         vOptions +="<option>"+pArray[i]+"</option>\n";
     };
@@ -50,31 +67,43 @@ function write2options(pID,pArrID) {
   write2innerHTML(pID,createOptions4Array(vArray));
 };
 
-function createMethodSelect(pClass) {
+function createMethodSelect(pClass,pMethID) {
   // get all Methods in JSON Database of all Classes
   var vClass = pClass || getSelectedClassID();
+  var vMethID = "";
+  var vAccess = "";
   var vMethodHeader = "";
   var vReturn = "";
   var vComment = "";
   var vParameter = "";
+  var vCode = "";
   var vArray = [];
   if (existsClassJS(vClass)) {
     var vClassJSON = getClassJSON(vClass);
-    console.log("createMethodSelect()-Call");
     var vArray = getMethodNameArray();
     var vMethHash = getMethodHash();
     var vMethCodeHash = vClassJSON["MethodCode"];
     var vMethCommentHash = vClassJSON["MethodComment"];
-    var vMethID = vArray[0];
+    vMethID = pMethID || vArray[0] || "";
+    console.log("createMethodSelect('"+vClass+"','"+vMethID+"')-Call");
     vClassJSON["sMethodList"] = vMethID;
-    vParam = vClassJSON["MethodParameter"][vMethID];
-    vComment = vClassJSON["MethodComment"][vMethID];
-    vReturn = vClassJSON["MethodReturn"][vMethID];
-    vCode = vClassJSON["MethodCode"][vMethID];
-    vMethodHeader = getMethodHeader4Name(vClass,vMethID);
-    vClassJSON["tMethodHeader"] = vMethodHeader;
+    if (vMethID != "") {
+      vAccess = vClassJSON["MethodAccess"][vMethID];
+      if (vAccess == "") {
+        vAccess = "public";
+        vClassJSON["MethodAccess"][vMethID] = "public";
+      };
+      vParam = vClassJSON["MethodParameter"][vMethID];
+      vComment = vClassJSON["MethodComment"][vMethID];
+      vReturn = vClassJSON["MethodReturn"][vMethID];
+      vCode = vClassJSON["MethodCode"][vMethID];
+      vMethodHeader = getMethodHeader4Name(vClass,vMethID);
+      vClassJSON["tMethodHeader"] = vMethodHeader;
+    };
   };
+  write2value("tMethodName",vMethID);
   write2options("sMethodList",vArray);
+  write2value("sMethodAccess",vAccess);
   write2value("tMethodHeader",vMethodHeader);
   write2innerHTML("titleMethodName",vMethodHeader);
   write2value("tMethodCode",vCode);
@@ -82,36 +111,46 @@ function createMethodSelect(pClass) {
   write2value("tMethodComment",vComment || "");
 };
 
-
-function createAttribSelect() { // TA=TextArea
-  var vClassJS = getClassJSON();
-  var vClass = getValueDOM("tClassname");
-  var vArray = getAttribNameArray();
-  var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
-  var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
-  var vSelectedAtt = vClassJS["sAttribList"] || vArray[0] || "";
-  console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
-  var vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
-  var vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
-  var vAttType = vClassJS["AttribType"][vSelectedAtt] || getValueDOM("tAttribType") || "";
-  // Set the Selected Type for the Attribute
-  write2value("sAttribTypeList",vAttType);
-  // create Options for the Attribute Selector
-  write2options("sAttribList",vArray);
-  // set the Selector to the selected attribute
-  write2value("sAttribList",vSelectedAtt);
-  // set the Name of the Attribute
-  write2value("tAttribName",vSelectedAtt);
-  // set the default value of the Attribute
-  write2value("tAttribDefault",vAttDefault);
-  // set the Comment of the Attribute
-  write2value("tAttribComment",vAttComment);
+function createAttribSelect(pClass,pAtt) { // TA=TextArea
+  var vClass = pClass || getValueDOM("tClassname") || "";
+  if (vClass != "") {
+    var vClassJS = getClassJSON(vClass);
+    var vArray = getAttribNameArray();
+    var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
+    var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
+    var vSelectedAtt = pAtt || vClassJS["sAttribList"] || vArray[0] || "";
+    console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
+    var vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
+    var vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
+    var vAttType = vClassJS["AttribType"][vSelectedAtt] || getValueDOM("tAttribType") || "";
+    // Set the Selected Type for the Attribute
+    write2value("sAttribTypeList",vAttType);
+    // create Options for the Attribute Selector
+    write2options("sAttribList",vArray);
+    // set the Selector to the selected attribute
+    write2value("sAttribList",vSelectedAtt);
+    // set the Name of the Attribute
+    write2value("tAttribName",vSelectedAtt);
+    // set the default value of the Attribute
+    write2value("tAttribDefault",vAttDefault);
+    // set the Comment of the Attribute
+    write2value("tAttribComment",vAttComment);
+  } else {
+    clearForm4Attribute();
+  };
 };
 
 function getSelectedClassID() {
   return getValueDOM("tClassname") || getValueDOM("sClassList") || "UndefClass";
 };
 
+function getSelectedElement4File(pFile) {
+  var vID = "";
+  if (existsFileJS(pFile)) {
+    vID = vJSCC_DB["FileList"][pFile]["tElementsID"];
+  };
+  return vID;
+}
 function getSelectedClassJSON(pClassName) {
   var vSelectedClass = pClassName || getSelectedClassID();
   console.log("getClassJSON='"+vSelectedClass+"'");
@@ -123,7 +162,7 @@ function updateForm_DOM2JSON(pClass) {
   var vClass = pClass || getSelectedClassID();
   if (existsFileJS(vClass)) {
     var vClassJS = getClassJSON(vClass);
-    console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSON_JS");
+    console.log("updateForm_DOM2JSON()-Call: vDOM_ID stored in vJSCC_DB");
     for (var i = 0; i < vDOM_ID.length; i++) {
       vClassJS[vDOM_ID[i]] = getValueDOM(vDOM_ID[i]) || "";
     };
@@ -147,9 +186,9 @@ function updateDOM_JSON2Form() {
 };
 
 function updateFormGlobal2JSON() {
-  console.log("updateFormGlobal2JSON()-Call: vDOM_Global stored in vJSON_JS");
+  console.log("updateFormGlobal2JSON()-Call: vDOM_Global stored in vJSCC_DB");
   for (var i = 0; i < vDOM_Global.length; i++) {
-    vJSON_JS[vDOM_Global[i]] = getValueDOM(vDOM_Global[i]) || "";
+    vJSCC_DB[vDOM_Global[i]] = getValueDOM(vDOM_Global[i]) || "";
   };
 }
 
@@ -157,14 +196,25 @@ function updateGlobalJSON2Form() {
   console.log("updateGlobalJSON2Form()-Call: write vDOM_Global in JSON to Form");
   var vContent = "";
   for (var i = 0; i < vDOM_Global.length; i++) {
-    if (vJSON_JS[vDOM_Global[i]]) {
-      vContent = vJSON_JS[vDOM_Global[i]];
+    if (vJSCC_DB[vDOM_Global[i]]) {
+      vContent = vJSCC_DB[vDOM_Global[i]];
       write2value(vDOM_Global[i],vContent);
     };
   };
 };
 
-function createFileSelect(pFileArr) {
+function createFileSelect(pFileID) {
+  console.log("createFileSelect('"+pFileID+"')");
+  var vArrID = getArray4HashID(vJSCC_DB["FileList"]);
+  createFileSelect4Array(vArrID);
+  if (pFileID) {
+    if (existsFileJS(pFileID)) {
+      selectFileJS(pFileID);
+    };
+  };
+};
+
+function createFileSelect4Array(pFileArr) {
   console.log("createFileSelect()");
   var vArray = pFileArr || getAllFilesArray(); //classes.js 1289
   //var vArray = insertArray1Empty(vArr)
@@ -176,7 +226,7 @@ function createFileSelect(pFileArr) {
   write2innerHTML("sFileList",vOptions);
   write2innerHTML("sFileListHTML",vOptions);
   write2innerHTML("sFileHTML",vOptions);
-  var vName =  vJSON_JS["SelectedFile"] || "";
+  var vName =  vJSCC_DB["SelectedFile"] || "";
   if (vArray.length>1) {
     if (vName == "") {
       vName = vArray[1];
@@ -184,7 +234,7 @@ function createFileSelect(pFileArr) {
   };
   write2value("tFilename",vName);
   writeFileTitle(vName);
-  createElementSelect();
+  createElementsFileSelect(vName);
 };
 
 function createAttribTypeSelect() {
@@ -210,10 +260,18 @@ function createAttribTypeSelect() {
   }
 };
 
-function createClassSelect(pArray) {
+function createClassSelect(pClass) {
+  var vArrID = getArray4HashID(vJSCC_DB["ClassList"]);
+  createClassSelect4Array(vArrID);
+  if (pClass) {
+    selectClass_do(pClass);
+  };
+}
+
+function createClassSelect4Array(pArray) {
   // get all Methods in JSON Database of all Classes
   console.log("createClassSelect()-Call");
-  var vArray = pArray || getClassArray();
+  var vArray = pArray || getArray4HashID(vJSCC_DB["ClassList"]);
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
   var vArraySupCla = insertArray1Empty(vArray);
@@ -236,10 +294,20 @@ function getArray4HashID(pHash) {
   return vArray
 };
 
-function createPageSelect(pArrID) {
+function createPageSelect(pPageID) {
+  var vArrID = getArray4HashID(vJSCC_DB["PageList"]);
+  createPageSelect4Array(vArrID);
+  if (pPageID) {
+    if (existsPageJS(pPageID)) {
+      selectPageJS(pPageID);
+    };
+  };
+};
+
+function createPageSelect4Array(pArrID) {
   // get all Methods in JSON Database of all Classes
-  console.log("createPageSelect()-Call");
-  var vArray = pArrID || getArray4HashID(vJSON_JS["PageList"]);
+  console.log("createPageSelect4Array()-Call");
+  var vArray = pArrID || getArray4HashID(vJSCC_DB["PageList"]);
   vArray.sort();
   var vOptions = createOptions4Array(vArray);
   write2innerHTML("sPageHTML",vOptions);
@@ -255,7 +323,7 @@ function setSelectedPage(pArray,pPageID) {
   for (var i = 0; i < pArray.length; i++) {
     if (pPageID == pArray[i]) {
       // pPageID is listed in array
-      // i.e page is existing in vJSON_JS
+      // i.e page is existing in vJSCC_DB
       vSelectedID = pPageID;
     };
   };
@@ -265,19 +333,30 @@ function setSelectedPage(pArray,pPageID) {
   };
 };
 
-function createPageTypeSelect(pArrID) {
+function createPageTypeSelect(pPageTypeID) {
+  // get all Methods in JSON Database of all Classes
+  console.log("createPageTypeSelect()-Call");
+  var vArrID = getArray4HashID(vJSCC_DB["PageTypeList"]);
+  createPageTypeSelect4Array(vArrID);
+  if (pPageTypeID) {
+    if (existsPageTypeJS(pPageTypeID)) {
+      selectPageTypeJS(pPageTypeID);
+    };
+  };
+};
+
+function createPageTypeSelect4Array(pArrID) {
   // get all Methods in JSON Database of all Classes
   var vSelPageType = getValueDOM("sPageTypeHTML");
-  console.log("createPageTypeSelect()-Call");
-  var vArrID = pArrID || getArray4HashID(vJSON_JS["PageType"]);
+  console.log("createPageTypeSelect4Array()-Call");
+  var vArrID = pArrID || getArray4HashID(vJSCC_DB["PageTypeList"]);
   vArrID.sort();
   //updatePageTypeJSON2Form(vArray);
   var vArray = insertArray1Empty(vArrID);
-  var vOptions = createOptions4Array(vArray);
+  var vOptions = createOptions4Array(vArrID);
+  var vOptions1Empty = createOptions4Array(vArray);
   write2innerHTML("sPageTypeHTML",vOptions);
   write2innerHTML("sPageType4Page",vOptions);
-  var vPageTypeID = getValueDOM("tPageTypeID");
-  setSelectedPageType(vArray,vPageTypeID);
 };
 
 function setSelectedPageType(pArray,pPageTypeID) {
@@ -286,7 +365,7 @@ function setSelectedPageType(pArray,pPageTypeID) {
   for (var i = 0; i < pArray.length; i++) {
     if (pPageTypeID == pArray[i]) {
       // pPageTypeID is listed in array
-      // i.e page type is existing in vJSON_JS
+      // i.e page type is existing in vJSCC_DB
       vSelectedID = pPageTypeID;
     };
   };
@@ -302,9 +381,37 @@ function insertArray1Empty(pArr) {
   return pArr;
 };
 
-function createDatabaseSelect(pArray) {
+function getDatabaseIDHash() {
+  var vDBList = cloneJSON(vJSCC_DB["DBID2File"]);
+  for (var iDB in vDBList) {
+    if (vDBList.hasOwnProperty(iDB)) {
+      vDBList[iDB] = getNameExt(vDBList[iDB]);
+    };
+  };
+  return vDBList;
+}
+
+
+function createDatabaseSelect(pDatabaseID) {
+  var vDBList = getDatabaseIDHash();
+  console.log("createDatabaseSelect()-Call\n"+stringifyJSON(vDBList));
+  var vOptions = createOptions4Hash(vDBList);
+  write2innerHTML("sDatabaseTAB",vOptions);
+  write2innerHTML("sDatabaseList",vOptions);
+  var vDBID = firstKey4Hash(vDBList);
+  if (pDatabaseID) {
+    if (existsDatabaseJS(pDBID)) {
+      vDBID = pDatabaseID;
+    };
+  };
+  if (vDBID != "") {
+    selectDatabaseJSON(vDBID);
+  };
+};
+
+function createDatabaseSelect4Array(pArray) {
   // Create a Select for all Databases
-  console.log("createDatabaseSelect()-Call");
+  console.log("createDatabaseSelect4Array()-Call");
   var vArray = pArray || getDatabaseArray();
   vArray.sort();
   var vEmptySel = [""];
@@ -332,7 +439,7 @@ function createButtonSelect(pArray) {
   createHeaderButtonSelect(vArray);
   //update PageTypes to select the Button Selectors Left and Right angain
   // according to vJSON Definition
-  //selectButtonJS(vJSON_JS["SelectedButton"]);
+  //selectButtonJS(vJSCC_DB["SelectedButton"]);
   var vButtonID = getValueDOM("tButtonID");
   setSelectedButton(vArray,vButtonID);
 };
@@ -343,7 +450,7 @@ function setSelectedButton(pArray,pButtonID) {
   for (var i = 0; i < pArray.length; i++) {
     if (pButtonID == pArray[i]) {
       // pPageTypeID is listed in array
-      // i.e page type is existing in vJSON_JS
+      // i.e page type is existing in vJSCC_DB
       vSelectedID = pButtonID;
     };
   };
@@ -355,7 +462,7 @@ function setSelectedButton(pArray,pButtonID) {
 
 function createHeaderButtonSelect(pButtArrID) {
   // get all Methods in JSON Database of all Classes
-  var vButtArrID = pButtArrID || getArray4HashID(vJSON_JS["ButtonList"]);
+  var vButtArrID = pButtArrID || getArray4HashID(vJSCC_DB["ButtonList"]);
   console.log("createHeaderButtonSelect-Call");
   var vOptions = "";
   var vButtonID = "";

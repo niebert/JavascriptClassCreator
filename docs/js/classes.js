@@ -1,8 +1,8 @@
-// vJSON_JS contains all the data of the current programming project
+// vJSCC_DB contains all the data of the current programming project
 //      this database will be stored and updated from the
 // vClassJSON contains the current class
 // vSelectedClass is the ClassName of the Class that is currently edited
-// vJSON_JS["ClassList"][vSelectedClass]  is equal to vClassJSON
+// vJSCC_DB["ClassList"][vSelectedClass]  is equal to vClassJSON
 
 
 function checkInterface4Class(pClassName) {
@@ -190,7 +190,7 @@ function getDefaultButtonHash(pButtonID) {
 };
 
 function checkHeaderButtons4PageType() {
-  var vPageTypeHash = vJSON_JS["PageType"];
+  var vPageTypeHash = vJSCC_DB["PageTypeList"];
   var vHash = null;
   for (var iPageType in vPageTypeHash) {
     if (vPageTypeHash.hasOwnProperty(iPageType)) {
@@ -213,7 +213,7 @@ function checkHeaderButton(pHeaderButton) {
         var vButtDef = getValueDOM("tDefaultBUTTON");
         vButDef = replaceString(vButDef,"\n"," ");
         vButDef = replaceString(vButDef,"___BUTTON_TITLE___",pHeaderButton);
-        vJSON_JS["ButtonList"][pHeaderButton] = vButDef;
+        vJSCC_DB["ButtonList"][pHeaderButton] = vButDef;
         updateButtonJSON2Form();
       }
     } else {
@@ -230,7 +230,7 @@ function checkHeaderButton(pHeaderButton) {
         };
         vFailed = createPageJS(vNewPageHash);
         if (!vFailed) {
-          vJSON_JS["PageList"][vNewPageID] = vNewPageHash;
+          vJSCC_DB["PageList"][vNewPageID] = vNewPageHash;
           write2value("tPages", getPageListString());
           createPageSelect();
         };
@@ -252,7 +252,7 @@ function getDefaultClassHash(pClass,pClassType) {
     vRetClass[vDOM_ID[i]] = "";
   };
   //----SET CLASS TYPE---
-  vJSON_JS["ClassType"][pClass] = vClassType;
+  vJSCC_DB["ClassType"][pClass] = vClassType;
   // Set ClassType of Class in JSON and other variables
   vRetClass["tClassname"] = pClass;
   vRetClass["sClassType"][pClass] = vClassType;
@@ -326,14 +326,14 @@ function getClassJSON(pClassName) {
   var vRetClass;
   debugLog("Class","getClassJSON('"+vClassName+"')");
   if (vClassName != "") {
-    if (top.vJSON_JS) {
-      if (top.vJSON_JS.ClassList) {
-        if (top.vJSON_JS.ClassList[vClassName]) {
-          checkClassJSON(top.vJSON_JS.ClassList[vClassName]);
-          vRetClass = top.vJSON_JS.ClassList[vClassName];
+    if (top.vJSCC_DB) {
+      if (top.vJSCC_DB.ClassList) {
+        if (top.vJSCC_DB.ClassList[vClassName]) {
+          checkClassJSON(top.vJSCC_DB.ClassList[vClassName]);
+          vRetClass = top.vJSCC_DB.ClassList[vClassName];
         } else {
           vRetClass = getDefaultClassHash(vClassName);
-          vJSON_JS["ClassList"][vClassName] = vRetClass;
+          vJSCC_DB["ClassList"][vClassName] = vRetClass;
           debugLog("Class","Class Create in getClassJSON('"+vClassName+"')");
         };
       } else {
@@ -342,7 +342,7 @@ function getClassJSON(pClassName) {
       };
     } else {
       initClassJS(vClassName,null,"getClassJSON()");
-      alert("getClassJSON('"+vClassName+"') vJSON_JS as Main Project DB is undefined");
+      alert("getClassJSON('"+vClassName+"') vJSCC_DB as Main Project DB is undefined");
     };
   };
   if (!vRetClass) {
@@ -477,13 +477,13 @@ function createElementJS(pFile,pNewElementID) {
     if (existsElementJS(vNewElementID,pFile)) {
       debugLog("File","Create New Element ["+pElementID+"] was NOT successful. Element exists already for file '"+pFile+"'!");
     } else {
-      var vElementHash = vJSON_JS["FileList"][vFile]["elements"]
+      var vElementHash = vJSCC_DB["FileList"][vFile]["elements"]
       vElementHash[vNewElementID] = getDefaultElementString(vFile,vNewElementID);
       var vElemArrID = getArray4HashID(vElementHash);
       //vElemArrID.push(vNewElementID);
       var vElemStr = vElemArrID.join("|");
-      write2value("tElementIDs",vElemStr);
-      createElementSelect(vElemStr);
+      write2value("tElementFileIDs",vElemStr);
+      createElementsFileSelect(pFile);
     };
   };
 };
@@ -497,11 +497,11 @@ function getElementListHash(pFile) {
   var vFile = pFile || getValueDOM("tFilename");
   var vHash;
   if (existsFileJS(vFile)) {
-    if (vJSON_JS["FileList"][vFile]["elements"]) {
-      vHash = vJSON_JS["FileList"][vFile]["elements"];
+    if (vJSCC_DB["FileList"][vFile]["elements"]) {
+      vHash = vJSCC_DB["FileList"][vFile]["elements"];
     } else {
-      vJSON_JS["FileList"][vFile]["elements"] = {};
-      vHash = vJSON_JS["FileList"][vFile]["elements"];
+      vJSCC_DB["FileList"][vFile]["elements"] = {};
+      vHash = vJSCC_DB["FileList"][vFile]["elements"];
     };
   };
   return vHash
@@ -536,7 +536,7 @@ function setAuthorEmail() {
 
 function getAggregationHash4Class(pClass) {
   var vAggHash = {};
-  var vClassList = vJSON_JS["ClassList"];
+  var vClassList = vJSCC_DB["ClassList"];
   if (existsClassJS(pClass)) {
     if (vClassList.hasOwnProperty(pClass)) {
       vHash = vClassList[pClass]["AttribType"];
@@ -578,7 +578,7 @@ function updateJSON2tAttributes(pClass) {
   if (existsClassJS(vClass)) {
     var vArr = [];
     var vLine = "";
-    var vHash = vJSON_JS["ClassList"][vClass]["AttribDefault"];
+    var vHash = vJSCC_DB["ClassList"][vClass]["AttribDefault"];
     for (var iAtt in vHash) {
       if (vHash.hasOwnProperty(iAtt)) {
         vLine = iAtt + " = " + vHash[iAtt];
@@ -588,21 +588,31 @@ function updateJSON2tAttributes(pClass) {
     if (vArr.length > 0) {
       vOut = vArr.join("\n");
     };
-    vJSON_JS["ClassList"][vClass]["tAttributes"] = vOut;
+    vJSCC_DB["ClassList"][vClass]["tAttributes"] = vOut;
   };
   // by calling createJSON2tClassList() any missing ClassType-Definitions are written in tClassList
   write2value("tAttributes", vOut);
 };
 
+function updateClassJSON2Form(pSelectedClass) {
+  setClassSelectorDefault(pSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
+  updateJSON2tClassList();
+  createClassSelect();
+  setClassSelectorDefault(pSelectedClass);
+  createMethodSelect(pSelectedClass);
+  createAttribTypeSelect(pSelectedClass);
+
+}
+
 function updateJSON2tClassList() {
-  // update the Selectors sClassType in vJSON_JS["ClassList"] with ClassTypes defined in tClassList
+  // update the Selectors sClassType in vJSCC_DB["ClassList"] with ClassTypes defined in tClassList
   writeClassType2sClassList();
   // by calling createJSON2tClassList() any missing ClassType-Definitions are written in tClassList
   write2value("tClassList", createJSON2tClassList());
 };
 
 function createJSON2tClassList() {
-  var vClassArr = vJSON_JS["ClassList"];
+  var vClassArr = vJSCC_DB["ClassList"];
   var vArr= [];
   var vType = "";
   for (var iClass in vClassArr) {
@@ -620,8 +630,8 @@ function createJSON2tClassList() {
 };
 
 function writeClassType2sClassList() {
-  var vClassTypeHash = vJSON_JS["ClassType"];
-  var vClassList = vJSON_JS["ClassList"]
+  var vClassTypeHash = vJSCC_DB["ClassType"];
+  var vClassList = vJSCC_DB["ClassList"]
   for (var iClass in vClassTypeHash) {
     if (vClassTypeHash.hasOwnProperty(iClass)) {
       if (existsClassJS(iClass)) {
@@ -634,7 +644,7 @@ function writeClassType2sClassList() {
 };
 
 function createClassTypeString4Hash(pClassTypeHash) {
-  var vClassTypeHash = pClassTypeHash || {}; //vJSON_JS["ClassType"];
+  var vClassTypeHash = pClassTypeHash || {}; //vJSCC_DB["ClassType"];
   var vArr= [];
   var vType = "";
   for (var iClass in vClassTypeHash) {
@@ -652,28 +662,32 @@ function createClassTypeString4Hash(pClassTypeHash) {
 }
 
 function renameClassForm() {
-    var vOldClassName = vJSON_JS["SelectedClass"];
+    var vOldClassName = vJSCC_DB["SelectedClass"];
     var vNewClassName = getValueDOM("tClassname");
     debugLog("Class","Rename: Clas '"+vOldClassName+"' to '"+vNewClassName+"'");
     if (vOldClassName != vNewClassName) {
       //check if new ClassName exists
       if (!existsClassJS(vNewClassName)) {
         // rename Selected ClassName
-        vJSON_JS["SelectedClass"] = vNewClassName;
+        vJSCC_DB["SelectedClass"] = vNewClassName;
         // rename Class
-        var vClasses = vJSON_JS["ClassList"];
-        vClasses[vNewClassName] = vJSON_JS["ClassList"][vOldClassName];
-        delete vClasses[vOldClassName];
+        //var vClasses = vJSCC_DB["ClassList"];
+        vJSCC_DB["ClassList"][vNewClassName] = cloneJSON(vJSCC_DB["ClassList"][vOldClassName]);;
+        vJSCC_DB["ClassList"][vNewClassName]["tClassname"] = vNewClassName;
+        delete vJSCC_DB["ClassList"][vOldClassName];
+        delete vJSCC_DB["ClassType"][vOldClassName];
         // update Class Select
         //write2value("tClassList",vClassString);
         updateJSON2tClassList();
         createClassSelect();
+        write2value("sClassList",vNewClassName);
+        selectClass(vNewClassName);
         debugLog("Class","Rename ClassName from '"+vOldClassName+"' to '"+vNewClassName+"' was successful");
       } else {
         alert("WARNING: ClassName '"+vNewClassName+"' already exists, rename operation cancelled!")
       };
     } else {
-      alert("WARNING: ClassName  '"+vNewClassName+"' unchanged!");
+      console.log("WARNING: ClassName  '"+vNewClassName+"' unchanged!");
     }
 }
 
@@ -685,7 +699,7 @@ function initClassJS(pClass,pClassType,pCaller) {
     debugLog("Class","Call: initClassJS(pClass) with pClass undefined");
   } else {
       initClassJS_do(pClass,vClassType);
-      var vClassJS = vJSON_JS["ClassList"][pClass];
+      var vClassJS = vJSCC_DB["ClassList"][pClass];
       if (vClassJS) {
         checkClassJSON(vClassJS);
       }
@@ -699,22 +713,22 @@ function initClassJS_do(pClass,pClassType) {
   if (pClass == "") {
     console.log("ERROR: initClassJS()-Call: Classname undefined");
   } else {
-    if (!top.vJSON_JS) {
-      var vError = "WARNING: initClassJS() [classes.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+    if (!top.vJSCC_DB) {
+      var vError = "WARNING: initClassJS() [classes.js]: JSON Database 'vJSCC_DB' does NOT exist, create as hash.";
       console.log(vError);
-      top.vJSON_JS = {};
+      top.vJSCC_DB = {};
     } else {
-      console.log("JSON Database 'vJSON_JS' exists.");
+      console.log("JSON Database 'vJSCC_DB' exists.");
     };
-    if (top.vJSON_JS["ClassType"]) {
-      console.log("vJSON_JS['ClassType'] exists");
+    if (top.vJSCC_DB["ClassType"]) {
+      console.log("vJSCC_DB['ClassType'] exists");
     } else {
-      top.vJSON_JS["ClassType"] = {};
-      console.log("vJSON_JS['ClassType'] created");
+      top.vJSCC_DB["ClassType"] = {};
+      console.log("vJSCC_DB['ClassType'] created");
     };
-    top.vJSON_JS["SelectedClass"] = pClass;
+    top.vJSCC_DB["SelectedClass"] = pClass;
     initClassJS_undefined(pClass);
-    if (top.vJSON_JS["ClassList"][pClass]) {
+    if (top.vJSCC_DB["ClassList"][pClass]) {
       console.log("Class '"+pClass+"' exists in JSON DB");
       initClassJS_undefined(pClass);
     } else {
@@ -726,20 +740,20 @@ function initClassJS_do(pClass,pClassType) {
 
 function initClassJS_undefined(pClass) {
   if (pClass) {
-    if (top.vJSON_JS["ClassList"]) {
-      //console.log("initClassJS_undefined('"+pClass+"') - vJSON_JS['ClassList'] exists");
+    if (top.vJSCC_DB["ClassList"]) {
+      //console.log("initClassJS_undefined('"+pClass+"') - vJSCC_DB['ClassList'] exists");
     } else {
-      top.vJSON_JS["ClassList"] = {};
-      console.log("initClassJS_undefined('"+pClass+"') - vJSON_JS['ClassList'] created");
+      top.vJSCC_DB["ClassList"] = {};
+      console.log("initClassJS_undefined('"+pClass+"') - vJSCC_DB['ClassList'] created");
     };
-    if (top.vJSON_JS["ClassList"][pClass]) {
+    if (top.vJSCC_DB["ClassList"][pClass]) {
       //console.log("Class '"+pClass+"' exists in JSON DB");
     } else {
-      top.vJSON_JS["ClassList"][pClass] = {};
+      top.vJSCC_DB["ClassList"][pClass] = {};
       console.log("Class '"+pClass+"' created");
     };
     var vID = "";
-    var vHash = top.vJSON_JS["ClassList"][pClass];
+    var vHash = top.vJSCC_DB["ClassList"][pClass];
     for (var i = 0; i < vDOM_ID.length; i++) {
       vID = vDOM_ID[i];
       if (vHash.hasOwnProperty(vID)) {
@@ -785,17 +799,17 @@ function existsClassJS(pClass) {
     console.log("ERROR: existsClassJS(pClass)-Call with pClass undefined");
   } else {
     debugLog("Class","existsClassJS('"+pClass+"')");
-    if (vJSON_JS) {
-      if (vJSON_JS["ClassList"]) {
-        if (vJSON_JS["ClassList"][pClass]) {
+    if (vJSCC_DB) {
+      if (vJSCC_DB["ClassList"]) {
+        if (vJSCC_DB["ClassList"][pClass]) {
           vReturn = true;
-          var vClassType = vJSON_JS["ClassType"][pClass] || "";
+          var vClassType = vJSCC_DB["ClassType"][pClass] || "";
           debugLog("Class","Class '"+pClass+"' (Type: '"+vClassType+"') is a user-defined class.");
         };
       };
     };
     if (vReturn == false) {
-      if (existsBasicClass(pClass)) {
+      if (existsBasicClassJS(pClass)) {
         debugLog("Class","Class '"+pClass+"' is a basic class.");
         vReturn = true;
       };
@@ -809,7 +823,7 @@ function existsClassJS(pClass) {
 
 
 
-function existsBasicClass(pClass) {
+function existsBasicClassJS(pClass) {
   var vBasicClassHash = getBasicClassHash();
   return  vBasicClassHash.hasOwnProperty(pClass);
 }
@@ -827,9 +841,9 @@ function createClassJS(pClass,pClassType,pCallerJS) {
     } else {
       debugLog("Class","createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
       checkClassList(pClass);
-      vJSON_JS["ClassList"][pClass] = getDefaultClassHash(pClass,vClassType);
-      vJSON_JS["ClassType"][pClass] = vClassType;
-      //vClassJSON = vJSON_JS["ClassList"][pClass];
+      vJSCC_DB["ClassList"][pClass] = getDefaultClassHash(pClass,vClassType);
+      vJSCC_DB["ClassType"][pClass] = vClassType;
+      //vClassJSON = vJSCC_DB["ClassList"][pClass];
     };
   } else {
     console.log("ERROR: createClassJS()-Call with empty pClass");
@@ -850,15 +864,15 @@ function checkClassList(pClass,pClassType) {
   pClass = reduceVarName(pClass);
   var vClassType = pClassType || "";
   vClassType = reduceVarName(vClassType);
-  if (vJSON_JS["ClassList"]) {
+  if (vJSCC_DB["ClassList"]) {
     debugLog("Class","checkClassList('"+pClass+"') created Class in JSON Database");
-    vJSON_JS["ClassList"][pClass] = {};
+    vJSCC_DB["ClassList"][pClass] = {};
     setClassTypeJSON(pClass,vClassType);
   } else {
     debugLog("Class","checkClassList('"+pClass+"') created (1) ClassList in JSON Database");
-    vJSON_JS["ClassList"] = {};
+    vJSCC_DB["ClassList"] = {};
     debugLog("Class","checkClassList('"+pClass+"') created (2) Class in JSON Database");
-    vJSON_JS["ClassList"][pClass] = {};
+    vJSCC_DB["ClassList"][pClass] = {};
     setClassTypeJSON(pClass,vClassType);
   };
 };
@@ -1049,13 +1063,14 @@ function createNewAttributeForm(pName,pType,pValue,pComment,pClass) {
     return vSuccess;
 };
 
-function createNewMethodJS(pClass) {
+function createNewMethodJS(pClass,pMethName) {
   var vClass = pClass || getSelectedClassID();
   console.log("createNewMethodJS('"+vClass+"')");
   var vClassJSON = getClassJSON(vClass);
-  // get name of Attributes
-  var vMethCall = getValueDOM("tMethodHeader");
-  var vName = getName4Method(vMethCall);
+  // get name of Method
+  //var vMethCall = getValueDOM("tMethodHeader");
+  //var vName = getName4Method(vMethCall);
+  var vName = getValueDOM("tMethodName");
   vName = reduceVarName(vName);
   if (vName == "") {
     debugLog("Method","createNewMethodJS() vMethodName='' no new Method-Call");
@@ -1306,14 +1321,14 @@ function determineAttType(pValue) {
 
 function getJSON2AttribDefaultHash(pClassName) {
     var vHash = null;
-    if (vJSON_JS["ClassList"]) {
-      if (vJSON_JS["ClassList"][pClassName]) {
-        vHash = vJSON_JS["ClassList"][pClassName]["AttribDefault"];
+    if (vJSCC_DB["ClassList"]) {
+      if (vJSCC_DB["ClassList"][pClassName]) {
+        vHash = vJSCC_DB["ClassList"][pClassName]["AttribDefault"];
       } else {
-        debugLog("Attrib","getJSON2AttribDefaultHash() - vJSON_JS['ClassList']['"+pClassName+"'] does not exist!");
+        debugLog("Attrib","getJSON2AttribDefaultHash() - vJSCC_DB['ClassList']['"+pClassName+"'] does not exist!");
       }
     } else {
-      debugLog("Attrib","getJSON2AttribDefaultHash() - vJSON_JS['ClassList'] does not exist!");
+      debugLog("Attrib","getJSON2AttribDefaultHash() - vJSCC_DB['ClassList'] does not exist!");
     };
     return vHash;
 };
@@ -1608,8 +1623,8 @@ function getClassTypeJSON(pClass) {
   if (pClass == "") {
     console.log("WARNING: getClassTypeJSON('') Call with empty ClassName");
   } else {
-    if (vJSON_JS["ClassType"] && vJSON_JS["ClassType"][pClass]) {
-      vClassType = vJSON_JS["ClassType"][pClass];
+    if (vJSCC_DB["ClassType"] && vJSCC_DB["ClassType"][pClass]) {
+      vClassType = vJSCC_DB["ClassType"][pClass];
     } else {
       console.log("WARNING: getClassTypeJSON('"+pClass+"') ClassType for Class '"+pClass+"' does not exist in ClassType-Hash");
     };
@@ -1626,14 +1641,14 @@ function setClassTypeJSON(pClass,pClassType) {
   } else {
     //---Set the ClassType in the ClassType-Hash
     debugLog("Class","setClassTypeJSON('"+pClass+"','"+vClassType+"')");
-    if (vJSON_JS["ClassType"]) {
-      vJSON_JS["ClassType"][pClass] = vClassType;
+    if (vJSCC_DB["ClassType"]) {
+      vJSCC_DB["ClassType"][pClass] = vClassType;
     } else {
       console.log("WARNING: setClassTypeJSON('"+pClass+"','"+vClassType+"') ClassType for Class '"+pClass+"' does not exist in ClassType-Hash");
     };
     //---Set the selected ClassType for Class in the Tab Class--
     if (existsClassJS(pClass)) {
-      vJSON_JS["ClassList"][pClass]["sClassType"] = pClassType;
+      vJSCC_DB["ClassList"][pClass]["sClassType"] = pClassType;
     } else {
       console.log("WARNING: Class '"+pClass+"' does not exist in ClassList");
     };
@@ -1671,14 +1686,14 @@ function updateJSON2ClassString() {
 };
 
 function getJSON2ClassString() {
-  var vClassList = vJSON_JS["ClassList"];
+  var vClassList = vJSCC_DB["ClassList"];
   var vClassString = "";
   var vCR = "";
   for (var iClassName in vClassList) {
     if (vClassList[iClassName]) {
       if (reduceVarName(iClassName) != "") {
         vClassString += vCR + iClassName;
-        var vClassType = vJSON_JS["ClassType"][iClassName];
+        var vClassType = vJSCC_DB["ClassType"][iClassName];
         // set Selector Variable for the ClassType
         vClassList[iClassName]["sClassType"] = vClassType;
         if (vClassType && vClassType != "") {
@@ -1735,8 +1750,8 @@ function getButtonArray() {
 };
 
 function getButton1EmptyArray() {
-  //var vButtList = getArray4HashID(vJSON_JS["ButtonList"])
-  var vArr = getArray4HashID(vJSON_JS["ButtonList"]);
+  //var vButtList = getArray4HashID(vJSCC_DB["ButtonList"])
+  var vArr = getArray4HashID(vJSCC_DB["ButtonList"]);
   // getButtonArray();
   return insertArray1Empty(vArr);
 };
@@ -1760,7 +1775,7 @@ function getAllFilesArrayForm() {
 };
 
 function getAllFilesArray() {
-  var vHash = vJSON_JS["FileList"];
+  var vHash = vJSCC_DB["FileList"];
   var vArr = [];
   for (var iFile in vHash) {
     if (vHash.hasOwnProperty(iFile)) {
@@ -1908,15 +1923,14 @@ function updateBasicClasses() {
 function updateClasses() {
   // (1) creates non existing classes in tClassList,
   // (2) identifies the ClasType in the ClassDefLine e.g. "App = Interface",
-  // (3) sets the ClassType in ClassList vJSON_JS["ClassType"]["App"] = "Interface",
-  // (4) sets the Selector of the ClassType i.e. DOM-Selector "sClassType" vJSON_JS["ClassList"]["App"]["sClassType"] = "Interface",
+  // (3) sets the ClassType in ClassList vJSCC_DB["ClassType"]["App"] = "Interface",
+  // (4) sets the Selector of the ClassType i.e. DOM-Selector "sClassType" vJSCC_DB["ClassList"]["App"]["sClassType"] = "Interface",
   // (5) and removes empty line in tClassList textarea in Tab "Files/Classes"
   var vClassTypeHash = getForm2ClassTypeHash();
   debugLog("Class","updateClasses()-Call");
   updateBasicClasses();
-  vJSON_JS["BasicClasses"] = getBasicClassHash();
+  vJSCC_DB["BasicClasses"] = getBasicClassHash();
   var vClassList = getValueDOM("tClassList");
-  // document.fCreator.tClassList.value;
   var vClassArray = vClassList.split(/\n/);
   var vOptionArray = [];
   var vClassHashJSON = null;
@@ -1929,33 +1943,33 @@ function updateClasses() {
     // extract ClassType "Interface" from Definition "MyClass = Interface" in vClassArray[i]
     vClassType = getClassType4Definition(vClassArray[i]);
     createClassJS(vClassName,vClassType,"updateClasses(1)");
-    // Set the ClassType in vJSON_JS
+    // Set the ClassType in vJSCC_DB
     debugLog("Class","updateClasses() ClassID='"+vClassName+"' ClassTypeID='"+vClassType+"'\nLINE='"+vClassArray[i]+"'");
     setClassTypeJSON(vClassName,vClassType);
     // get the ClassHash from JSON
-    vClassHashJSON = vJSON_JS["ClassList"][vClassName];
+    vClassHashJSON = vJSCC_DB["ClassList"][vClassName];
     if (vClassName != "") {
       checkClassJSON(vClassHashJSON);
       vOptionArray.push(vClassArray[i]);
       // if new classes are found in tClassList textarea, create them
       // createClassJS()-Call is dependent on the existance of JSON in ClassList
-      // i.e. vJSON_JS["ClassList"][vClassName];
+      // i.e. vJSCC_DB["ClassList"][vClassName];
       if (vClassHashJSON) {
         debugLog("Class","Class '"+vClassName+"' exists for updateClasses()-Call.\nDefinition '"+vClassArray[i]+"'");
       } else {
         createClassJS(vClassName,vClassType,"updateClasses(2)");
       };
       // The following setting must be called after createClassJS,
-      // otherwise the class might not be available in vJSON_JS.
+      // otherwise the class might not be available in vJSCC_DB.
       // Next command will set the selector for the ClassType properly.
       // This value is used, when users change the selected class and
       // the selector ClassType in DOM should show the selected ClassType
       setClassTypeJSON(vClassName,vClassType);
-      //vJSON_JS["ClassList"][vClassName]["sClassType"] = vClassType;
+      //vJSCC_DB["ClassList"][vClassName]["sClassType"] = vClassType;
     };
   };
   // set SelectSelect Op
-  write2value("sClassList",vJSON_JS["SelectedClass"]);
+  write2value("sClassList",vJSCC_DB["SelectedClass"]);
   //write2value("tClassList",vOptionArray.join("\n"));
   // create the Class Selector Option of all existing classes
   updateClassSelector();

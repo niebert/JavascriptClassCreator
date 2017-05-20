@@ -26,17 +26,32 @@ function createProjectJSON() {
   var vUsePrefix = getCheckBox("checkExportJS");
   var vExportFile = "project";
   //updateForm2JSON(getValueDOM("tClassname"));
-  saveCode4JSON_JS(vJSON_JS,vExportFile,"Project JSON",vUsePrefix);
+  saveCode4JSON_JS(vJSCC_DB,vExportFile,"Project JSON",vUsePrefix);
 };
 
 function resetCodeGenCounter() {
   console.log("resetCodeGenCounter()");
   vCounter = 0;
-  var vButtonList = vJSON_JS["ButtonList"];
+  var vButtonList = vJSCC_DB["ButtonList"];
   for (var iID in vButtonList) {
     if (vButtonList.hasOwnProperty(iID)) {
       vButtonList[iID]["counter"] = 0;
     };
+  };
+};
+
+function createDatabaseVarIDSelect(pDBID) {
+  var vDBID = pDBID || getValueDOM("sDatabaseID");
+  if (vJSCC_DB["DatabaseList"].hasOwnProperty(vDBID)) {
+    var vDB = vJSCC_DB["DatabaseList"][vDBID];
+    var vDBIDArr = getArray4HashID(vDB["format"]);
+    write2innerHTML("sDatabaseID",createOptions4Array(vDBIDArr));
+    if (vDBIDArr.length > 0) {
+      console.log("DBIDArr='"+vDBIDArr.join(",")+"'");
+      selectDatabaseVarID(vDBIDArr[0]);
+    };
+    var vDBIDs = vDBIDArr.join("|");
+    write2value("tDatabaseIDs",vDBIDs);
   };
 };
 
@@ -70,11 +85,11 @@ function getDatabaseJSON2String(pDB) {
   var vDB = pDB || "";
   var vContent = "";
   if (existsDatabaseJS(vDB)) {
-    var vDB_JSON = cloneJSON(vJSON_JS["DatabaseList"][vDB]);
+    var vDB_JSON = cloneJSON(vJSCC_DB["DatabaseList"][vDB]);
     replaceElements4Hash(vDB_JSON);
     vContent = stringifyJSON(vDB_JSON);
   } else {
-    vContent = "// Database ["+vDB+"] undefined in vJSON_JS['DatabaseList']";
+    vContent = "// Database ["+vDB+"] undefined in vJSCC_DB['DatabaseList']";
   };
   console.log("Return the Content of Database ["+vDB+"]");
   return vContent;
@@ -172,7 +187,7 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
   // creates the JSON String (stringify)
   var vUsePrefix = pUsePrefix || getCheckBox("checkExportJS");
   var vTitle = pTitle || "";
-  var vDB = pDB || "project"; //means vJSON_JS will be export as project JSON
+  var vDB = pDB || "project"; //means vJSCC_DB will be export as project JSON
   // set modification data of JSON
   pJSONDB["mod_date"] = getDateTime();
   var vContent = getCode4JSON_JS(pJSONDB,vUsePrefix);
@@ -185,7 +200,7 @@ function createCode4JSON_JS(pJSONDB,pDB,pTitle,pUsePrefix) {
   };
   var vExportFile = getFilenameWithPath4DB(vDB,vUsePrefix);
   if (pJSONDB) {
-    console.log("Create JSON Code from vJSON_JS Title: '"+vTitle+"' - File: '"+vExportFile+"' - Type: '"+vType+"'");
+    console.log("Create JSON Code from vJSCC_DB Title: '"+vTitle+"' - File: '"+vExportFile+"' - Type: '"+vType+"'");
     write2editor("JSONDB",vContent,vMode);
     // Write the selected DB into innerHTML of DOM and into value of "tExportedJSON"
     write2exportedDB(vDB,vUsePrefix);
@@ -264,8 +279,8 @@ function getHTML4File(pFile,pStandalone) {
 };
 function replaceAppLaucher4HTML(pHTML,pFile) {
   if (existsFileJS(pFile)) {
-    var vAppClass = vJSON_JS["FileList"][pFile]["sAppClassHTML"];
-    var vAppInitCall = vJSON_JS["FileList"][pFile]["tAppInitCall"];
+    var vAppClass = vJSCC_DB["FileList"][pFile]["sAppClassHTML"];
+    var vAppInitCall = vJSCC_DB["FileList"][pFile]["tAppInitCall"];
     pHTML = replaceString(pHTML,"___APP_CLASS___",vAppClass);
     pHTML = replaceString(pHTML,"___APP_INIT_CALL___",vAppInitCall);
   };
@@ -274,11 +289,11 @@ function replaceAppLaucher4HTML(pHTML,pFile) {
 
 function replaceElements4HTML(pHTML,pFile) {
   var vFile = pFile || getSelectedFileID();
-  var vElemHash = vJSON_JS["ElementsDB"];
+  var vElemHash = vJSCC_DB["ElementsDBList"];
   pHTML = replaceHash4Content(vElemHash,pHTML)
   var vBefore = pHTML;
   if (existsFileJS(vFile)) {
-    vElemHash = vJSON_JS["FileList"][vFile]["elements"];
+    vElemHash = vJSCC_DB["FileList"][vFile]["elements"];
     pHTML = replaceHash4Content(vElemHash,pHTML)
   };
   console.log("replaceElements4HTML() Before: '"+vBefore+"' After: '"+pHTML+"'");
@@ -337,17 +352,19 @@ function importProjectJSON_do(pProjectFile,pContent) {
       switch (vTypeJS) {
         case "JSCC":
           alert("Import JSON file of Type: "+vTypeJS+"");
-          vJSON_JS = vJSDB;
+          vJSCC_DB = vJSDB;
           setEditorValue("iJSONDB",vContent);
           writeFileTitle();
           initCodeCreator();
         break;
         case "CLASS":
-          alert("Import JSON file of Type: "+vTypeJS+"");
+          alert("Import JSON file '"+vJSDB["tClassname"]+"' of Type: "+vTypeJS+"");
           // if (vJSONDB.hasOwnProperty("JSCC_type")) {
-          //   // JSCC_type is not necessary to have in vJSON_JS["ClassList"] so delete value key pair
+          //   // JSCC_type is not necessary to have in vJSCC_DB["ClassList"] so delete value key pair
           //   delete vJSONDB["JSCC_type"];
           // };
+          console.log("Now start importClass(vJSDB)");
+          setEditorValue("iJSONDB",stringifyJSON(vJSDB));
           importClass(vJSDB);
         break;
         case "TPL":
@@ -358,7 +375,7 @@ function importProjectJSON_do(pProjectFile,pContent) {
           var vDBname = vJSDB["name"] || "DBundefined";
           alert("Import JSON Database '"+vDBname+"' of Type: "+vTypeJS+"");
           importDatabase(vDBname,vJSDB);
-          vJSON_JS["DatabaseList"][vDBname] = vJSDB;
+          vJSCC_DB["DatabaseList"][vDBname] = vJSDB;
         break;
         default:
           var vDBname = pProjectFile;
@@ -370,14 +387,14 @@ function importProjectJSON_do(pProjectFile,pContent) {
 function exportClass2Editor(pClass) {
   var vClass = pClass || getSelectedClassID();
   console.log("exportClass2Editor('"+vClass+"')");
-  var vClassJSON = vJSON_JS["ClassList"][vClass];
+  var vClassJSON = vJSCC_DB["ClassList"][vClass];
   vClassJSON["JSCC_type"] = "CLASS";
   vClassJSON["JSCC_version"] = vJSCC_Version;
   //vClassJSON["JSCC_init_date"] is defined getDefaultClassHash() in classes.js:241
   vClassJSON["JSCC_mod_date"] = getDateTime(); //update export time
   var vCode = stringifyJSON(vClassJSON);
   if (getCheckBox("checkExportJS")) {
-    vCode = "vJSON_JS['ClassList']['"+vClass+"'] = " + vCode;
+    vCode = "vJSCC_DB['ClassList']['"+vClass+"'] = " + vCode;
   };
   setEditorValue("iJSONDB", vCode);
 };
@@ -411,21 +428,31 @@ function exportClassJSON(pClass) {
 
 
 function importClass(pJSDB) {
-  var vClass = pJSONDB["tClassname"] || "UndefClass";
-  var vClassType = pJSONDB["sClassType"] || "";
+  var vClass = pJSDB["tClassname"] || "UndefClass";
+  var vClassType = pJSDB["sClassType"] || "";
   console.log("importClass(pJSDB) for Class '"+vClass+"' ClassType='"+vClassType+"'");
+  var vCheck = true;
   if (existsClassJS(vClass)) {
     var vCheck = confirm("Class '"+vClass + "' exists.\nDo you really want to import the class\nand overwrite the existing definition?");
     if (vCheck == false) {
       alert("Import Class '"+vClass+"' cancelled!");
     } else {
-      // Set Class in vJSON_JS for vClass
-      vJSON_JS["ClassList"][vClass] = vJSDB;
-      checkClassJSON(vJSON_JS["ClassList"][vClass]);
-      // Set ClassType for Class
-      setClassType(vClass,ClassType);
+      deleteClass_do(vClass);
     };
-  }
+  };
+  if (vCheck == true) {
+      // Set Class in vJSCC_DB for vClass
+      console.log("importClass(pJSDB) Class '"+vClass+"' does not exist! Perform IMPORT");
+      vJSCC_DB["ClassList"][vClass] = pJSDB;
+      checkClassJSON(vJSCC_DB["ClassList"][vClass]);
+      createClassSelect4Array(getArray4HashID(vJSCC_DB["ClassList"]));
+      // Set ClassType for Class
+      setClassType(vClass,vClassType);
+      write2value("sClassList",vClass);
+      selectClass(vClass);
+      alert("Class '"+vClass+"' imported!")
+      //updateJSON2Form();
+  };
 };
 
 function importDatabase(pDBname,pJSONDB) {
@@ -440,7 +467,7 @@ function importDatabase(pDBname,pJSONDB) {
       // Set Database in Global vDataJSON Hash
       vDataJSON[vDBname] = vJSDB;
       // Import JSON for the Database vDataJSON
-      vJSON_JS["DatabaseList"][vDBname] = vJSDB;
+      vJSCC_DB["DatabaseList"][vDBname] = vJSDB;
     };
   }
 };
@@ -464,7 +491,7 @@ function X_getTemplate4File(pFile) {
       console.log("WARNING: getTemplate4File('"+pFile+"') could not load  Template 'tpl/"+vTPLfilename+"', use default template 'tTplHTML' in textarea instead");
     };
   } else {
-    console.log("WARNING: getTemplate4File('"+pFile+"') pFile does not exist in vJSON_JS['FileList'] use default template 'tTplHTML' in textarea instead");
+    console.log("WARNING: getTemplate4File('"+pFile+"') pFile does not exist in vJSCC_DB['FileList'] use default template 'tTplHTML' in textarea instead");
   };
   return vTemplate
 }
@@ -472,7 +499,7 @@ function X_getTemplate4File(pFile) {
 function getTemplateFilename(pFile) {
   var vTPLfilename = "";
   if (existsFileJS(pFile)) {
-    vTPLfilename = vJSON_JS["FileList"][pFile]["tTemplateHTML"];
+    vTPLfilename = vJSCC_DB["FileList"][pFile]["tTemplateHTML"];
   } else {
     console.log("ERROR: getTemplateFilename('"+pFile+"') Filename of Template not defined");
   };
@@ -492,7 +519,7 @@ function getFileLibrariesHTML(pFile,pStandalone) {
   var vArrJS = [];
   var vOut = "      <!-- JavaScript Libraries for '"+pFile+"' -->\n";;
   if (existsFileJS(pFile)) {
-    vArrJS = vJSON_JS["FileList"][pFile]["ImportList"];
+    vArrJS = vJSCC_DB["FileList"][pFile]["ImportList"];
     vOut += getJavascriptImportList(vArrJS);
   }
   return vOut;
@@ -528,7 +555,7 @@ function getMainAppClassID(pFile) {
   var vFile = pFile || getSelectedFileID();
   var vAppClass = "";
   if (existsFileJS(vFile)) {
-    vAppClass = vJSON_JS["FileList"][vFile]["sAppClassHTML"];
+    vAppClass = vJSCC_DB["FileList"][vFile]["sAppClassHTML"];
     if (existsClassJS(vAppClass)) {
       console.log("Main App Class '"+vAppClass+"' for file '"+vFile+"' is defined");
     } else {
@@ -542,14 +569,14 @@ function getClassLibrariesHTML(pFile,pStandalone,pConnectedOnly) {
   // Parameter pFile can be used to import a dependent set libraries
   var vCompressed = getCheckBox("checkCompressCode4HTML");
   var vOut = "      <!-- Classes Javascript-Libs -->\n";
-  var vClassList = vJSON_JS["ClassList"];
+  var vClassList = vJSCC_DB["ClassList"];
   var vCList = vClassList;
   if (pConnectedOnly == true) {
     vCList = {};
     var vAppClass = getMainAppClassID(pFile);
     if (existsClassJS(vAppClass)) {
       console.log("Main App Class '"+vAppClass+"' for file '"+vFile+"' is defined.\nCreate a Hash with just one class");
-      vCList[vAppClass] = vJSON_JS["ClassList"][vAppClass];
+      vCList[vAppClass] = vJSCC_DB["ClassList"][vAppClass];
     } else {
       console.log("ERROR: Main App Class '"+vAppClass+"' exists, export all classes!");
     };
@@ -613,13 +640,26 @@ function getClassHTML4Code(pClass,pStandalone,pCompressed) {
 
 function getPagesHTML4Code(pFile) {
   var vOut = "";
-  var vPageList = getPageListArrayWithHashes(pFile);
+  var vID = "";
+  var vPageHTML = "";
+  var vConArrID = getConnectedPages4File(pFile);
+  var vPageList = vJSCC_DB["PageList"] //getPageListArrayWithHashes(pFile);
   //var vPageList = getPageList4FileWithHashes(pFile);
-  for (var i = 0; i < vPageList.length; i++) {
-    // vPageList[i]; is a Hash with the following IDs
+  for (var i = 0; i < vConArrID.length; i++) {
+    vPageID = vConArrID[i];
     //var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"];
-   vOut += createPageHTML4Code(vPageList[i]);
-  }
+    if (existsPageJS(vPageID)) {
+      vPageHTML = createPageHTML4Code(vPageList[vPageID]);
+      vPageHTML = replaceString(vPageHTML,"___PAGE_ID___",vPageID);
+      vPageHTML = replaceString(vPageHTML,"___PAGE_TITLE___",vPageList[vPageID]["PAGE_TITLE"]);
+      vOut += vPageHTML;
+    } else {
+      var vOK = confirm("WARNING: Page for ID='"+vPageID+"' is undefined.\nDo you want a create page with ID='"+vPageID+"'?");
+      if (vOK == true) {
+        createNewPage_do(vPageID,firstUpperCase(vPageID),"DefaultPage","");
+      };
+    };
+  };
   return vOut;
 }
 
@@ -630,7 +670,7 @@ function createPageHTML4Code(pPageHash) {
   var vPageID     = pPageHash["PAGE_ID"];
   var vPageTypeID = pPageHash["page-type"];
   var vPageTpl    = getPageTypeTemplate4Code(vPageTypeID);
-  var vPageContent = vJSON_JS["PageContent"][vPageID] || " undefined content for page '"+ vPageID+"'";
+  var vPageContent = vJSCC_DB["PageList"][vPageID]["content"] || " undefined content for page '"+ vPageID+"'";
   // Header Buttons are already inserted in PageType-Template
   // ToDo: Insert
   if (vPageTpl) {
@@ -660,6 +700,16 @@ function getPageMenu4ID(vPageID) {
   return vTPL;
 };
 
+function getConnectedPages4File(pFileID) {
+  if (existsFileJS(pFileID)) {
+    var vPageIDs = vJSCC_DB["FileList"][pFileID]["tPageIDs"];
+    var vArrID = vPageIDs.split("|");
+    var vConArrID = getConnectedPageArr(vArrID);
+    console.log("Connected Pages for file '"+pFileID+"'\nPagesIN: ["+vArrID.join(",")+"]\nPagesOUT: ["+vConArrID.join(",")+"]");
+    return vConArrID;
+  };
+};
+
 function getConnectedPageArr(pArrID) {
   // vArrID is the results Array for return
   var vArrID = [];
@@ -683,31 +733,75 @@ function getConnectedPageArr(pArrID) {
 function getChildPageHash(pPageID,pHash,pRecursive_Depth) {
   var vHash = pHash || {};
   var vRecursive_Depth = pRecursive_Depth || 0;
-  var vMax = 50;
+  var vMax = 100;
   var vChildID = {};
   var vParentID = "";
   vRecursive_Depth++;
-  // checkif root page ID exists
+  // checkif  page ID exists
   if (existsPageJS(pPageID)) {
-    var vPageList = vJSON_JS["PageList"];
-    for (var iPageID in vPageList) {
-      if (vPageList.hasOwnProperty(iPageID)) {
-        vParentID = vPageList[iPageID]["parent-id"];
-        if (vParentID == pPageID) {
-          vChildID[iPageID] = iPageID;
-          vHash[iPageID] = iPageID;
-        };
+    // mark PageID as already checked
+    vHash[pPageID] = pPageID;
+    // append all pages that have pPageID as parent-id
+    var vList = vJSCC_DB["PageList"];
+    for (var iChildID in vList) {
+      if (vList.hasOwnProperty(iChildID)) {
+        if (vList[iChildID]["parent-id"] == pPageID) {
+          // iChildID has vPageID as parent page
+          if (vHash.hasOwnProperty(iChildID)) {
+            console.log("getChildPageHash('"+pPageID+"',pHash,"+vRecursive_Depth+") Child='"+iChildID+"' already marked as exported page");
+          } else {
+            getChildPageHash(iChildID,vHash,pRecursive_Depth)
+          };
+        }
+      }
+    }
+    // create a reference to the page hash
+    var vPageHash = vJSCC_DB["PageList"][pPageID];
+    //--- recursive call for parent-id (if necessary)
+    var vParentID = vPageHash["parent-id"];
+    if (existsPageJS(vParentID)) {
+      if (vHash.hasOwnProperty(vParentID)) {
+        console.log("getChildPageHash('"+pPageID+"',pHash,"+vRecursive_Depth+") parent-id='"+vParentID+"' already marked as exported page");
+      } else {
+        getChildPageHash(vParentID,vHash,pRecursive_Depth)
       };
     };
-    //
-  };
+    //--- recurive to Header Buttons
+    var vPageTypeID = vPageHash["page-type"];
+    if (existsPageTypeJS(vPageTypeID)) {
+      var vPageTypeHash = vJSCC_DB["PageTypeList"][vPageTypeID];
+      var vHeadBut = "";
+      //--- recursive call for header button links (if necessary)
+      var vHB = ["HEADER_BUTTON1","HEADER_BUTTON2"];
+      for (var i = 0; i < vHB.length; i++) {
+        vHeadBut = vPageTypeHash[vHB[i]] || "";
+        if (isPageLink(vHeadBut)) {
+          if (vHash.hasOwnProperty(vHeadBut)) {
+            console.log("getChildPageHash('"+pPageID+"',pHash,"+vRecursive_Depth+") header link '"+vHeadBut+"' already marked as exported page");
+          } else {
+            getChildPageHash(vParentID,vHash,pRecursive_Depth);
+          };
+        };
+      }; // for HeaderButtons
+    }; // existsPageType(page-type)
+  };// existsPageJS(pPageID)
 };
+
+function isPageLink(pHeadBut) {
+  var vIsPageLink = false;
+  if (reduceVarName(pHeadBut) != "") {
+    if (pHeadBut == pHeadBut.toLowerCase()) {
+      vIsPageLink = true;
+    }
+  };
+  return vIsPageLink;
+}
 
 function getChildPageIDs(pParentPageID) {
   var vArrID = [];
   var vParentID = "";
   if (existsPageJS(pParentPageID)) {
-    var vPageList = vJSON_JS["PageList"];
+    var vPageList = vJSCC_DB["PageList"];
     for (var iPageID in vPageList) {
       if (vPageList.hasOwnProperty(iPageID)) {
         vParentID = vPageList[iPageID]["parent-id"];
@@ -724,7 +818,7 @@ function getPageMenuItem(pPageID) {
   // pPageID is the ID of page for which a menu item is created.
   var vTPL = getValueDOM("tTplMENUITEM");
   if (existsPageJS(pPageID)) {
-    var vPageTitle = vJSON_JS["PageList"][pPageID]["PAGE_TITLE"];
+    var vPageTitle = vJSCC_DB["PageList"][pPageID]["PAGE_TITLE"];
     vTPL = replaceString(vTPL,"___PAGE_ID___",pPageID);
     vTPL = replaceString(vTPL,"___PAGE_TITLE___",vPageTitle);
   };
@@ -738,7 +832,7 @@ function getPageTypeTemplate4Code(pPageTypeID) {
   var vOutHash = null;
   var vBID
   if (existsPageTypeJS(pPageTypeID)) {
-    var vPT = vJSON_JS["PageType"][pPageTypeID];
+    var vPT = vJSCC_DB["PageTypeList"][pPageTypeID];
     vPageTpl = vPT["template"];
     vOutHash = getButtonDefinition4Code(vPT["HEADER_BUTTON1"]);
     vButton1 = vOutHash["tButtonDefHTML"];
@@ -768,12 +862,12 @@ function getButtonDefinition4Code(pButtonID) {
         var vBT;
         if (existsButtonJS(vButtonID)) {
           //console.log("Button ["+pButtonID+"] exists for Code Generation");
-          vBT = vJSON_JS["ButtonList"][vButtonID];
+          vBT = vJSCC_DB["ButtonList"][vButtonID];
         } else {
           alert("Button ["+vButtonID+"] is undefined, a default button will be created for you!");
           vBT = getDefaultButtonHash(vButtonID);
-          vJSON_JS["ButtonList"][vButtonID] = vBT;
-          var vArrID = getArray4HashID(vJSON_JS["ButtonList"]);
+          vJSCC_DB["ButtonList"][vButtonID] = vBT;
+          var vArrID = getArray4HashID(vJSCC_DB["ButtonList"]);
           updateButtonJSON2Form(vArrID);
         };
         // It is a predefined Button in ButtonList
@@ -807,7 +901,7 @@ function getPageTitle4ID(pPageID) {
   var vTitle = "Title '"+pPageID+"'?";
   if (pPageID) {
     if (existsPageJS(pPageID)) {
-      vTitle = vJSON_JS["PageList"][pPageID]["PAGE_TITLE"];
+      vTitle = vJSCC_DB["PageList"][pPageID]["PAGE_TITLE"];
     } else {
       console.log("getPageTitle4ID('"+pPageID+"') - Page for Page-ID is UNDEFINED!");
     };
@@ -828,7 +922,7 @@ function getDatabasesHTML(pFile,pStandalone) {
       if (existsDatabaseJS(vArrDB[i])) {
         vOutJS += "\n//---- JSON 'db/"+vArrDB[i]+".js' ----\n";
         vOutJS += "\nvDataJSON['"+vArrDB[i]+"'] = ";
-        vOutJS += stringifyDatabaseJSON(vJSON_JS["DatabaseList"][vArrDB[i]]);
+        vOutJS += stringifyDatabaseJSON(vJSCC_DB["DatabaseList"][vArrDB[i]]);
         vOutJS += ";\n";
       };
     };
@@ -1029,13 +1123,45 @@ function replaceCodeMainVars(pOutput,pClass) {
   vOutput = replaceString(vOutput,"___CLASSNAME___",vClassJS["tClassname"]);
   vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
   vOutput = replaceString(vOutput,"___DATE___",vClassJS["JSCC_mod_date"]);
-  vOutput = replaceString(vOutput,"___MODDATE___",getDate());
+  vOutput = replaceString(vOutput,"___MODDATE___",getDateTime());
   vOutput = replaceString(vOutput,"___METHODDEFPREFIX___",vMethodDefPrefix);
   return vOutput;
 };
 
-function isMethod(pLine) {
+function isMethod(pMethodHeader) {
+  var vIsMethod = false;
+  var vOpenBracketPos = pMethodHeader.indexOf("(");
+  if (vOpenBracketPos > 0) {
+    vSplitArray =pMethodHeader.split("(");
+    var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
+    if (vCloseBracketPos<0) {
+      console.log("ERROR: isMethod('"+pMethodHeader+"') Method definition error!\n No closing bracket!");
+    } else {
+      vIsMethod = true;
+    };
+  } else {
+    console.log("ERROR: isMethod('"+pMethodHeader+"') Method definition error!\n No opening bracket!");
+  };
+  return vIsMethod;
+};
 
+function getMethodParamsClass(pMethodHeader) {
+  var vParams = "";
+  var vOpenBracketPos = pMethodHeader.indexOf("(");
+  if (vOpenBracketPos >0) {
+    vSplitArray = pMethodHeader.split("(");
+    var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
+    if (vCloseBracketPos<0) {
+      console.log("ERROR: Method definition error!\n No closing bracket!\n"+pMethodHeader);
+    } else {
+      vParams = vSplitArray[1].substring(0,vCloseBracketPos);
+    };
+  };
+  return vParams;
+};
+
+function getMethodAllParams(pMethodHeader) {
+  return edit2JSparams(getMethodParamsClass(pMethodHeader));
 };
 
 function getMethodComments4Constructor(pClass) {
@@ -1045,7 +1171,6 @@ function getMethodComments4Constructor(pClass) {
   var vClassJS = getClassJSON(vClass);
   var vMethodArray = getMethodArray(vClass);
   var vTplMethodHeader = getValueDOM("tTplMethodConstructorComment");
-  var vTplMethodPrivate = getValueDOM("tTplMethodPrivate");
   var vMethod = vTplMethodHeader;
   var vMethodname = "";
   var vMethodAllParams = "";
@@ -1056,16 +1181,10 @@ function getMethodComments4Constructor(pClass) {
     // start with clean MethodHeader Template for each Method Definition
     vMethod = vTplMethodHeader;
     var vOpenBracketPos = vMethodArray[i].indexOf("(");
-    if (vOpenBracketPos >0) {
-      vSplitArray = vMethodArray[i].split("(");
-      var vCloseBracketPos = vSplitArray[1].lastIndexOf(")");
-      if (vCloseBracketPos<0) {
-        alert("ERROR: Method definition error!\n No closing bracket!\n"+vMethodArray[i]);
-      } else {
-        vMethodParamsClass = vSplitArray[1].substring(0,vCloseBracketPos);
-        vMethodAllParams = edit2JSparams(vMethodParamsClass);
-      };
-      var vMethName = vSplitArray[0];
+    if (isMethod(vMethodArray[i]) == true) {
+      vMethodParamsClass = getMethodParamsClass(vMethodArray[i]);
+      vMethodAllParams = edit2JSparams(vMethodParamsClass);
+      var vMethName = getMethodName(vMethodArray[i]);
       var vMethHash = getMethHash4Name(vClass,vMethName);
       if (vMethHash["access"] == "private") {
         vMethod = vTplMethodPrivate;
@@ -1091,7 +1210,7 @@ function getMethodComments4Constructor(pClass) {
       vMethod = replaceString(vMethod,"___RETURNCOMMENT___",vReturnComment);
       vMethod = replaceString(vMethod,"___METHODPARAMETERS___",vMethodAllParams);
       vMethod = replaceString(vMethod,"___PARAMETERDEF___",vParameterComment);
-      var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vSplitArray[0]+"' do?";
+      var vMethodComment = getMethodComment(vMethodArray[i]) || "   What does '"+vMethName+"()' do?";
       vMethodComment = createIndentDefault(vMethodComment,vCommentPrefix+vCommentBoxPrefix);
       vMethod = replaceString(vMethod,"___METHODCOMMENT___",vMethodComment);
       var vMethodCode = getMethodCode(vMethodArray[i]) || "//----------- INSERT YOUR CODE HERE ---------------";

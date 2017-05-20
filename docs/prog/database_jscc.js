@@ -1,4 +1,4 @@
-vJSON_JS['ClassList']['Database'] = {
+vJSCC_DB['ClassList']['Database'] = {
     "tClassname": "Database",
     "tSuperClassname": "",
     "sClassType": "Green",

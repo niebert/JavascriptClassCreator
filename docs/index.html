@@ -12,7 +12,7 @@
    var vSelectedClass = "Undefined";
 
    // contains the project JSON
-   var vJSON_JS   = {};
+   var vJSCC_DB   = {};
    // Contains a list of loaded JSON Files - access a JSON via vDataJSON["myJSON"]
    var vDataJSON = {};
    vDataJSON["ClassList"] = {};
@@ -21,7 +21,7 @@
    vDataJSON["PageTypeList"] = {};
    vDataJSON["ButtonList"] = {};
    vDataJSON["DatabaseList"] = {};
-   vDataJSON["ElementsDB"] = {};
+   vDataJSON["ElementsDBList"] = {};
    vDataJSON["GlobalLibList"] = {};
 
 
@@ -32,11 +32,12 @@
    var vDOM_File = [];  // Array that contains all DOM IDs where the HTML-file properties are stored
    var vDOM_TPL = [];  // Array that contains all DOM IDs where the templates are stored
    var vJSON_TPL = {}; // Hash containing the templates for generating code
-   var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"]; //variables that are stored for all pages
-   var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2","template"]; // variables that are stored for all page types
+   var vPageRECDEF = ["PAGE_ID","PAGE_TITLE","page-type","parent-id"]; //"content" contains Content of Page variables that are stored for all pages
+   var vPageTypeRECDEF = ["page-type","HEADER_BUTTON1","HEADER_BUTTON2"]; // "template" contains PageType template, variables that are stored for all page types
    //var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML","counter"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
    var vButtonRECDEF = ["BUTTON_ID","BUTTON_TITLE","tButtonDefHTML"]; // variables that are stored for all buttons, counter is necessary to create unique IDs for buttons
-   var vDataRECDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
+   var vElementFileRECDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
+   var vElementDBDEF = ["DB_ID","DB_TITLE"]; // UNUSED: variables that are stored for all databases with DB Titles
    var vEdIDArr = ["MethodCode","PageHTML","PageTypeHTML","ElementHTML"];
    var vCounter = 0; // User for unique IDs in HTML Tags, e.g. Buttons
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
@@ -95,8 +96,9 @@
   <form name="fCreator">
   <font size="+3">Javascript Class Generator</font><br>
       <font size="+2">
-        <b>HTML-File:</b> <font color="blue" id="titleFileName">FileName</font>
-        <b>Class:</b> <font color="blue" id="titleClassName">ClassName</font>
+        <b>HTML:</b> <font color="blue" id="titleFileName">FileName</font>
+        <b>CLASS:</b> <font color="blue" id="titleClassName">ClassName</font>
+        <b>DB:</b> <font color="blue" class="labDBname" id="titleDBName">DBName</font>
       </font>
     <br>
     <!--
@@ -107,11 +109,15 @@
       <option>app.html</html>
     </select>
     -->
-      <b>
-      Select
+    <b>
+      HTML:
       <select id="sFileList" name="sFileList" onchange="selectFilenameHTML(this.value)">
       </select>
+      CLASS:
       <select id="sClassList" name="sClassList" onchange="selectClass(this.value)">
+      </select>
+      DB:
+      <select id="sDatabaseList" name="sDatabaseList" onchange="selectDatabaseJSON(this.value)">
       </select>
     </b>
     <input type="button" class="ui-button ui-corner-all ui-widget" onclick="saveLocalStorageForm()" value="Save">
@@ -119,160 +125,64 @@
 <br>
 <div id="tabs">
 	<ul>
-    <li><a id="tabHTML" href="#tabs-HTML">HTML</a></li>
-    <li><a id="tabPAGE" href="#tabs-PAGE">Page Types</a></li>
-    <li><a id="tabUML" href="#tabs-UML">UML</a></li>
-    <li><a id="tabClass" href="#tabs-Class">Class</a></li>
-		<li><a id="tabAttributes" href="#tabs-Attributes">Attributes</a></li>
-    <li><a id="tabMethods" href="#tabs-Methods">Methods</a></li>
-    <li><a id="tabFileClass" href="#tabs-FileClass">Files/Classes</a></li>
-    <li><a id="tabExport" href="#tabs-Export">JSON</a></li>
-    <li><a id="tabCode" href="#tabs-Code">Code</a></li>
+    <!--
+    <li><a id="tabMAIN" href="#tabs-MAIN"  onclick="clickedTabJQ(this.id)">Home</a></li>
+    -->
+    <li><a id="tabHTML" href="#tabs-HTML" onclick="clickedTabJQ(this.id)"><b>HTML</b></a></li>
+    <li><a id="tabPAGETYPE" href="#tabs-PAGETYPE" onclick="clickedTabJQ(this.id)">Page Types</a></li>
+    <li><a id="tabClass" href="#tabs-Class" onclick="clickedTabJQ(this.id)"><b>CLASS</b></a></li>
+    <li><a id="tabUML" href="#tabs-UML" onclick="clickedTabJQ(this.id)">UML</a></li>
+    <li><a id="tabAttributes" href="#tabs-Attributes" onclick="clickedTabJQ(this.id)">Attributes</a></li>
+    <li><a id="tabMethods" href="#tabs-Methods" onclick="clickedTabJQ(this.id)">Methods</a></li>
+    <li><a id="tabDB" href="#tabs-DB" onclick="clickedTabJQ(this.id)"><b>DB</b></a></li>
+    <li><a id="tabFileClass" href="#tabs-FileClass" onclick="clickedTabJQ(this.id)">Files/Classes</a></li>
+    <li><a id="tabExport" href="#tabs-Export" onclick="clickedTabJQ(this.id)">Export/Import</a></li>
 	</ul>
-  <!-- MAIN -->
-  <div id="tabs-FileClass" class="tabmenu" style="background-color:#f2f2f2">
+
+  <!-- TAB: MAIN -->
+  <div id="tabs-MAIN" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="95%">
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB: HTML -->
+  <div id="tabs-HTML" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="80%">
       <tbody>
         <tr>
-          <td  colspan="2" align="center" bgcolor="#C0C0C0">
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
               <b>
-                Files and Classes
+                HTML:
+                <font color="blue" id="titleFileNameTab">FileName</font>
               </b>
             </font>
           </td>
         </tr>
         <tr>
-          <td>
-          <b>Author:</b> <input name="tMainAuthor" id="tMainAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
-          </td>
-          <td>
-          <b>e-Mail Author:</b> <input name="tMainEMail" id="tMainEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
-          </td>
-        </tr>
-      <tr>
-  		<td colspan="1" align="center">
-          <b>List of defined Classes</b>
-          <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
-          <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace"></textarea>
-  		</td>
-  	<!-- </tr>
-    <tr> -->
-  		<td colspan="1" align="center">
-          <b>List of Basic Classes</b>
-          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
-          <br>
-          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace"></textarea>
-</td>
-</tr>
-<tr>
-  <td align="center">
-    <b>JSON Databases</b>
-    <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
-    <br>
-    <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">
-    </textarea>
-<br>
-<b>Global Libaries</b>
-<input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON()" type="button">
-<br>
-<textarea name="tGlobalLibs" id="tGlobalLibs" cols="45" rows="5" style="font-family: monospace"></textarea>
-    </td>
-    <td align="center">
-      <b>HTML Files</b>
-      <input name="bUpdateLibraries" value=" Update HTML Files " onclick="updateHTMLFiles()" type="button">
-      <br>
-      <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">
-      </textarea>
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <b>Pages in HTML-File</b>
-      <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
-      <br>
-      <font size="-2">
-        <b>Format:</b>
-        <tt id="labelPageRecord">-</tt>
-      </font>
-      <br>
-      <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">
-    </textarea>
-    </td>
-    <td align="center">
-      <b>Page Types</b>
-      <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
-      <br>
-      <font size="-2">
-        <b>Format:</b>
-        <tt id="labelPageTypeRecord">-</tt>
-      </font>
-      <br>
-      Page-ID can be replaced by Button-ID
-      <br>
-      <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">DefaultPage|home|
-MenuPage|welcome|QUIT
-OptionsPage|home|save
-ConfirmPage|home|OK
-SaveDialog|home|CANCEL
-      </textarea>
-    </td>
-    </tr>
-    <tr>
-    <td colspan="2" align="center">
-      <b>Buttons</b>
-      <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
-      &nbsp;
-      <font size="-2">
-        <b>Format:</b>
-        <tt id="labelButtonRecord">-</tt>
-        </font>
-      <br>
-
-    <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">
-    </textarea>
-    </td>
-  </tr>
-  </tbody>
-</table>
-</div>
-<div id="tabs-HTML" class="tabmenu" style="background-color:#f2f2f2">
-  <table bgcolor="#A9BCF5" border="1" width="80%">
-    <tbody>
-      <tr>
-        <td  colspan="2" bgcolor="#C0C0C0" align="center">
-          <font size="+2">
-            <b>
-              HTML:
-              <font color="blue" id="titleFileNameTab">FileName</font>
-            </b>
-          </font>
-        </td>
-      </tr>
-      <tr>
-        <td  colspan="2" align="center">
-          <b>Select HTML File:</b>
-          <select id="sFileListHTML" name="sFileListHTML" onchange="selectFilenameHTML(this.value)">
-          </select>
-          <input  class="deletebutton" type="button" id="bDeleteFileHTML" onclick="deleteFileHTML();return false" value="Delete">
-          <input name="bSaveFile" value=" Save " onclick="updateFileForm2JSON()" type="button">
-          <input name="bOpenEmulator" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
-          <br>
-          <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
-          <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
-          <br>
-          <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
-          <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
-          <br>
-          <div id="divTemplateHTML" style="display:none">
-            <b>Template :</b> <input name="tTemplateHTML" id="tTemplateHTML" value="tpl/Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
-            <b>Path:</b> /tpl/
+          <td  colspan="2" align="center">
+            <b>Select HTML File:</b>
+            <select id="sFileListHTML" name="sFileListHTML" onchange="selectFilenameHTML(this.value)">
+            </select>
+            <input  class="deletebutton" type="button" id="bDeleteFileHTML" onclick="deleteFileHTML();return false" value="Delete">
+            <input name="bSaveFile" value=" Save " onclick="updateFileForm2JSON()" type="button">
+            <input name="bOpenEmulator" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
             <br>
-
-          </div>
-      		    <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
-            </td>
+            <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
+            <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
+            <br>
+            <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
+            <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+            <br>
+            <div id="divTemplateHTML" style="display:none">
+              <b>Template :</b> <input name="tTemplateHTML" id="tTemplateHTML" value="tpl/Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+              <b>Path:</b> /tpl/
+              <br>
+            </div>
+            <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
+          </td>
         </tr>
         <tr>
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
@@ -284,166 +194,170 @@ SaveDialog|home|CANCEL
             </font>
           </td>
         </tr>
-  <tr>
-    <td colspan="2" align="center">
-      <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS(this.value)">
-        <option>home</option>
-      </select>
-      <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
-      <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
-      <br>
-      <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
-      <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
-      <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
-      </select>
-      <br>
-      <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
-      <b>Parent Page ID:</b>
-      <select id="sParentPage" name="sParentPage">
-        <option>home</option>
-      </select>
-      <br>
-      <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
-      <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
-    </td>
-  </tr>
-  <tr>
+        <tr>
+          <td colspan="2" align="center">
+            <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS(this.value)">
+              <option>home</option>
+            </select>
+            <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
+            <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
+            <br>
+            <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
+            <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
+            <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
+            </select>
+            <br>
+            <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
+            <b>Parent Page ID:</b>
+            <select id="sParentPage" name="sParentPage">
+              <option>home</option>
+            </select>
+            <br>
+            <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+        <tr>
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
                   <b>
-                    HTML Elements:
+                    HTML Replace Elements:
                     <font color="blue" id="titleFileNameElements">FileName</font>
                   </b>
             </font>
-        </td>
-      </tr>
-      <tr>
-        <td  colspan="2" align="center">
-          <b>Element ID for Replace:</b>
-          <select id="sElementList" name="sElementList" onchange="selectElementJS(this.value)">
-          </select>
-          <input  class="deletebutton" type="button" id="bDeleteElementHTML" onclick="deleteElementHTML();return false" value="Delete">
-          <input type="button" id="bSaveElementHTML" onclick="updateForm2ElementsJSON();return false" value="Save">
-          </br>
-          <b>HTML Element IDs:</b> <input name="tElementIDs" id="tElementIDs" value="HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE" type="text" size="65" style="font-family: monospace" onchange="updateFormElementIDs2JSON()">
-          <input name="bUpdateElements" value=" Save " onclick="updateForm2ElementsJSON()" type="button">
-          <br>
-          <b>Element-ID:</b>
-          <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
-          <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
-          <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
-          <iframe id="iElementHTML"  src="ace/editelement.html" width="90%" height="100"></iframe>
-        </td>
-      </tr>
-      <tr>
-        <td  colspan="2" bgcolor="#C0C0C0" align="center">
-          <font size="+2">
-            <b>
-              HTML-Export
-            </b>
-          </font>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-            <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML" onchange="selectFilenameHTML(this.value)">
-            </select>
-            <input name="bOpenEmulatorExport" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
-          <br>
-            <b>Standalone:</b>
-            <select id="sStandalone" name="sStandalone">
-              <option value="YES">YES</option>
-              <option value="NO">NO</option>
-            </select>
-            <b>
-              Compress Code:
-            </b>
-            <input type="checkbox" id="checkCompressCode4HTML" name="checkCompressCode4HTML">
-            <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
-            <br>
-            <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
           </td>
-       </tr>
-    </tbody>
-  </table>
-</div>
-<div id="tabs-PAGE" class="tabmenu" style="background-color:#f2f2f2">
-  <table bgcolor="#A9BCF5" border="1" width="80%">
-    <tbody>
-<tr>
-  <td  colspan="2" bgcolor="#C0C0C0" align="center">
-    <font size="+2">
-      <b>
-        Page Types
-      </b>
-    </font>
-  </td>
-</tr>
-<tr>
-  <td colspan="2" align="center">
-    <b>Select Page Type:</b>
-    <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
-      <option></option>
-    </select>
-    <input type="button"  class="deletebutton" id="bDeletePageTypeHTML" onclick="deletePageTypeHTML();return false" value="Delete">
-    <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
-    <br>
-    <b>Type-ID:</b>
-    <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace"  onchange="this.value=firstUpperCase(reduceVarName(this.value))">
-    <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
-    <br>
-    <b>Header Button 1:</b>
-    <select id="sButtonHeader1" name="sButtonHeader1">
-      <option></option>
-    </select>
-    <b>Header Button 2:</b>
-    <select id="sButtonHeader2" name="sButtonHeader2">
-      <option></option>
-    </select>
+        </tr>
+        <tr>
+          <td  colspan="2" align="center">
+            <b>Select Replace ID:</b>
+            <select id="sElementsFileList" name="sElementsFileList" onchange="selectElementFileJS(this.value)">
+            </select>
+            <input  class="deletebutton" type="button" id="bDeleteElementHTML" onclick="deleteElementHTML();return false" value="Delete">
+            <input type="button" id="bSaveElementHTML" onclick="updateForm2ElementsJSON();return false" value="Save">
+            <br>
+            <b>IDs Replace Marker:</b> <input name="tElementFileIDs" id="tElementFileIDs" value="HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE" type="text" size="65" style="font-family: monospace" onchange="updateFormElementIDs2JSON()">
+            <input name="bUpdateElements" value=" Save " onclick="updateForm2ElementsJSON()" type="button">
+            <br>
+            <b>HTML Replace-ID:</b>
+            <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
+            <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
+            <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iElementHTML"  src="ace/editelement.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+        <tr>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                HTML-Export
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+              <b>HTML File:</b> <select id="sFileHTML" name="sFileHTML" onchange="selectFilenameHTML(this.value)">
+              </select>
+              <input name="bOpenEmulatorExport" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
+            <br>
+              <b>Standalone:</b>
+              <select id="sStandalone" name="sStandalone">
+                <option value="YES">YES</option>
+                <option value="NO">NO</option>
+              </select>
+              <b>
+                Compress Code:
+              </b>
+              <input type="checkbox" id="checkCompressCode4HTML" name="checkCompressCode4HTML">
+              <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
+              <br>
+              <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
+              <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
+            </td>
+         </tr>
+      </tbody>
+    </table>
+  </div>
 
-    <br>
-    <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
-    <iframe id="iPageTypeHTML"  src="ace/editpagetype.html" width="90%" height="100"></iframe>
-  </td>
-</tr>
-<tr>
-  <td  colspan="2" bgcolor="#C0C0C0" align="center">
-    <font size="+2">
-      <b>
-        Buttons Page Header
-      </b>
-    </font>
-  </td>
-</tr>
-<tr>
-  <td colspan="2" align="center">
-    <b>Select Button:</b>
-    <select id="sButtonHTML" name="sButtonHTML" onchange="selectButtonJS()">
-      <option>DefaultButton</option>
-    </select>
-    <input type="button" id="bDeleteButtonHTML" onclick="deleteButtonHTML();return false" class="deletebutton" value="Delete">
-    <input type="button" id="bSaveButtonHTML" onclick="saveButtonHTML();return false" value="Save">
-    <br>
-    <b>Button-ID:</b>
-    <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
-    <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
-    <b>Button-Title:</b>
-    <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonEditForm2JSON()">
-    <br>
-    <b style="align:center">HTML Definition for Button:</b> <tt>[tButtonDefHTML]</tt>
-    <br>Replaces <tt>___BUTTON_ID___</tt>, <tt>___BUTTON_TITLE___</tt> and global elements
-    <!--
-    <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90" onchange="updateButtonEditForm2JSON()">
-    -->
-    <textarea name="tButtonDefHTML" id="tButtonDefHTML" rows="3" cols="85" style="font-family: monospace" size="90" onchange="updateButtonEditForm2JSON()" wrap="off">
-    </textarea>
-  </td>
-</tr>
-</tbody>
-</table>
-</div>
-<!-- CLASS -->
+  <!-- TAB: PAGETYPE -->
+  <div id="tabs-PAGETYPE" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="80%">
+      <tbody>
+        <tr>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                Page Types
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <b>Select Page Type:</b>
+            <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
+              <option></option>
+            </select>
+            <input type="button"  class="deletebutton" id="bDeletePageTypeHTML" onclick="deletePageTypeHTML();return false" value="Delete">
+            <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
+            <br>
+            <b>Type-ID:</b>
+            <input name="tPageTypeID" id="tPageTypeID" value="" type="text" style="font-family: monospace"  onchange="this.value=firstUpperCase(reduceVarName(this.value))">
+            <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
+            <br>
+            <b>Header Button 1:</b>
+            <select id="sButtonHeader1" name="sButtonHeader1">
+              <option></option>
+            </select>
+            <b>Header Button 2:</b>
+            <select id="sButtonHeader2" name="sButtonHeader2">
+              <option></option>
+            </select>
+
+            <br>
+            <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iPageTypeHTML"  src="ace/editpagetype.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+        <tr>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                Buttons Page Header
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <b>Select Button:</b>
+            <select id="sButtonHTML" name="sButtonHTML" onchange="selectButtonJS()">
+              <option>DefaultButton</option>
+            </select>
+            <input type="button" id="bDeleteButtonHTML" onclick="deleteButtonHTML();return false" class="deletebutton" value="Delete">
+            <input type="button" id="bSaveButtonHTML" onclick="saveButtonHTML();return false" value="Save">
+            <br>
+            <b>Button-ID:</b>
+            <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
+            <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
+            <b>Button-Title:</b>
+            <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonEditForm2JSON()">
+            <br>
+            <b style="align:center">HTML Definition for Button:</b> <tt>[tButtonDefHTML]</tt>
+            <br>Replaces <tt>___BUTTON_ID___</tt>, <tt>___BUTTON_TITLE___</tt>
+            <!--
+            <input name="tButtonDefHTML" id="tButtonDefHTML" value="" type="text" style="font-family: monospace" size="90" onchange="updateButtonEditForm2JSON()">
+            -->
+            <textarea name="tButtonDefHTML" id="tButtonDefHTML" rows="3" cols="85" style="display:none" size="90" onchange="updateButtonEditForm2JSON()" wrap="off">
+            </textarea>
+            <iframe id="iButtonDefHTML"  src="ace/editbutton.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB: CLASS -->
   <div id="tabs-Class" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1">
       <tbody>
@@ -511,168 +425,49 @@ SaveDialog|home|CANCEL
     			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">
     			</textarea>
         </td>
-      </tr>
+          </tr>
+          <tr>
+            <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+                <font size="+2"><b>Javascript Code</b></font>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2" align="center">
+              <b>Generate Code for </b> <font color="blue" id="codeClassName">ClassName</font>
+            <b>Select Class:</b>
+            <select id="sClassCode" name="sClassCode" onchange="selectClass_do(this.value)">
+              <option>UndefClass</option>
+            </select>
+            <br>
+            <b>Prototype:</b>
+            <select id="sPrototype" name="sPrototype">
+              <option value="YES">YES</option>
+              <option value="NO">NO</option>
+            </select>
+            <b>
+              Compress Code:
+            </b>
+            <input type="checkbox" id="checkCompressCode" name="checkCompressCode">
+
+            <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
+            <!--
+            <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
+           -->
+           <input name="bExportClassJSON" value=" Export JSON" onclick="exportClassJSON()" type="button">
+           <input name="bSaveButtonClass" value=" Export JS" onclick="saveCode4Class()" type="button">
+            <hr>
+            <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
+            <textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
+            <hr>
+            <input type="button" value="Compressor View" onclick="$('#iCompressor').toggle()">
+            <iframe id="iCompressor"  src="plugins/uglify/index.html" width="90%" height="500" onload="console.log('Compressor loaded in iFrame iCompressor')" style="display:none"></iframe>
+            </td>
+          </tr>
         </tbody>
     </table>
   </div>
-  <!-- ATTRIBUTES -->
-  <div id="tabs-Attributes"  class="tabmenu" style="background-color:#f2f2f2">
-    <table bgcolor="#A9BCF5" border="1" width="90%">
-      <tbody>
-        <tr>
-          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-              <font size="+2">
-                <b>
-                  Attribute Definition:
-                  <font color="blue" class="titleClassName" id="titleClassNameAttrib">FileName</font>
-                </b>
-              </font>
-      		</td>
-        </tr>
-          <tr>
-            <td colspan="2" align="center">
-            <b>Select Attribute</b>
-            <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
-            </select>
-            <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
-            <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
-          </td>
-          </tr>
-            <tr>
-              <td colspan="2" align="center">
-              <select id="sAttribAccess" name="sAttribAccess" onchange="updateAttributeForm2JSON()">
-                <option>public</option>
-                <option>private</option>
-              </select>
-              Attribute Name: <input id="tAttribName" name="tAttribName" type="text" size="20" value="" style="font-family: monospace">
-            <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form()" style="font-family: monospace">
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            Attribute Type/Class:
-            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" onchange="updateAttributeForm2JSON()">
-          </td>
-        <td align="center">
-          <b>Select Type:</b>
-          <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
-          create
-          <input type="checkbox" id="checkAttribCreate" name="checkAttribCreate" checked="true">
-        </td>
-    </tr>
-    </tr>
-      <tr>
-        <td colspan="2" align="center">
-          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribComment2JSON()" >
-        </td>
-      	</tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- METHOD -->
-  <div id="tabs-Methods"  class="tabmenu" style="background-color:#f2f2f2" >
-    <table bgcolor="#A9BCF5" border="1">
-      <tbody>
-        <tr>
-          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-            <font size="+2">
-              <b>
-                Method Definition:
-                <font color="blue" class="titleClassName" id="titleClassNameMethod">Class</font>
-              </b>
-            </font>
-        </td>
-      </tr>
-      <tr>
-      		<td colspan="2" align="center">
-          <b>Method:</b>
-          <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
-          <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
-          <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
-          <hr>
-          <input id="tMethodName" name="tMethodName" type="text" size="10" value="" style="display:none">
-          <select id="sMethodAccess" name="sMethodAccess" onchange="saveMethodForm()">
-            <option>public</option>
-            <option>private</option>
-          </select>
-          <b>Method:</b>
-          <input id="tMethodHeader" name="tMethodHeader" type="text" size="40" value="" style="font-family: monospace">
-          <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
-          <b>Return:</b>
-          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
-          <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
-          <hr>
-           <b>Method Comment</b><br>
-             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="3" onchange="updateForm2MethodComment()" style="font-family: monospace"> </textarea>
-           </td>
-         </tr>
-         <tr>
-         		<td colspan="2" align="center">
-          <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
-          <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
-          <br>
-          <b>Loop Calls:</b>
-          <input id="tLoopObject" name="tLoopObject" type="text" size="20" value="myHash" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
-          <input id="tLoopMethod" name="tLoopMethod" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
-          <select id="sLoopType" name="sLoopType" >
-            <option>Hash</option>
-            <option>Array</option>
-          </select>
-          <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
-          <br>
-            <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
-	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
-           <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
-           </td>
-      	</tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- CODE -->
-  <div id="tabs-Code" class="tabmenu" style="background-color:#f2f2f2">
-    <table bgcolor="#A9BCF5" border="1" width="95%">
-      <tbody>
-        <tr>
-          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-              <font size="+2"><b>Javascript Code</b></font>
-      		</td>
-        </tr>
-        <tr>
-      		<td colspan="2" align="center">
-            <b>Generate Code for </b> <font color="blue" id="codeClassName">ClassName</font>
-          <b>Select Class:</b>
-          <select id="sClassCode" name="sClassCode" onchange="selectClass_do(this.value)">
-            <option>UndefClass</option>
-          </select>
-          <br>
-          <b>Prototype:</b>
-          <select id="sPrototype" name="sPrototype">
-            <option value="YES">YES</option>
-            <option value="NO">NO</option>
-          </select>
-          <b>
-            Compress Code:
-          </b>
-          <input type="checkbox" id="checkCompressCode" name="checkCompressCode">
 
-          <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
-          <!--
-          <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
-         -->
-         <input name="bExportClassJSON" value=" Export JSON" onclick="exportClassJSON()" type="button">
-         <input name="bSaveButtonClass" value=" Export JS" onclick="saveCode4Class()" type="button">
-          <hr>
-          <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
-        	<textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
-          <hr>
-          <input type="button" value="Compressor View" onclick="$('#iCompressor').toggle()">
-          <iframe id="iCompressor"  src="plugins/uglify/index.html" width="90%" height="500" onload="console.log('Compressor loaded in iFrame iCompressor')" style="display:none"></iframe>
-        	</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <!-- UML -->
+  <!-- TAB: UML -->
   <div id="tabs-UML" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="95%">
       <tbody>
@@ -681,6 +476,16 @@ SaveDialog|home|CANCEL
               <font size="+2"><b>UML Diagramm</b></font>
           </td>
         </tr>
+        <tr>
+          <td colspan="2" align="center">
+              <b>Display UML Diagram:</b>
+              <!--
+              <iframe id="iDiagramUML"  src="plugins/uml/index.html" width="90%" height="200"></iframe>
+            -->
+            <input type="button" id="bDisplayUML" onclick="displayUML();return false" value="Create UML Diagram">
+
+            </td>
+         </tr>
         <tr>
           <td align="left">
             <b>Generalizations:</b> (inherit Class Attributes and Methods)
@@ -714,16 +519,336 @@ SaveDialog|home|CANCEL
             </select>
           </td>
         </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB: ATTRIBUTES -->
+  <div id="tabs-Attributes"  class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="90%">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+              <font size="+2">
+                <b>
+                  Attribute Definition:
+                  <font color="blue" class="titleClassName" id="titleClassNameAttrib">FileName</font>
+                </b>
+              </font>
+      		</td>
+        </tr>
+          <tr>
+            <td colspan="2" align="center">
+            <b>Select Attribute</b>
+            <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
+            </select>
+            <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
+            <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
+          </td>
+          </tr>
+            <tr>
+              <td colspan="2" align="center">
+              <select id="sAttribAccess" name="sAttribAccess" onchange="updateAttributeForm2JSON()">
+                <option>public</option>
+                <option>private</option>
+              </select>
+              Name: <input id="tAttribName" name="tAttribName" type="text" size="30" value="" style="font-family: monospace"> =
+            <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form(this.value)" style="font-family: monospace">
+          </td>
+        </tr>
+        <tr>
+          <td align="center">
+            Attribute Type/Class:
+            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" onchange="updateAttributeTypeEdit(this.value)">
+          </td>
+        <td align="center">
+          <b>Select Type:</b>
+          <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
+          create
+          <input type="checkbox" id="checkAttribCreate" name="checkAttribCreate" checked="true">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribComment2JSON()" >
+        </td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB: METHOD -->
+  <div id="tabs-Methods"  class="tabmenu" style="background-color:#f2f2f2" >
+    <table bgcolor="#A9BCF5" border="1">
+      <tbody>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+            <font size="+2">
+              <b>
+                Method Definition:
+                <font color="blue" class="titleClassName" id="titleClassNameMethod">Class</font>
+              </b>
+            </font>
+        </td>
+      </tr>
+      <tr>
+      		<td colspan="2" align="center">
+          <b>Method:</b>
+          <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
+          <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
+          <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
+          <hr>
+          <select id="sMethodAccess" name="sMethodAccess" onchange="saveMethodForm()">
+            <option>public</option>
+            <option>private</option>
+          </select>
+          <input id="tMethodName" name="tMethodName" type="text" size="10" value="" onchange="updateMethodNameEdit(this.value)">
+          <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
+          <b>Return:</b>
+          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
+          <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
+          <br>
+          <b>Method Definition:</b>
+          <input id="tMethodHeader" name="tMethodHeader" type="text" size="90" value="" style="font-family: monospace">
+
+          <hr>
+           <b>Method Comment</b><br>
+             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="3" onchange="updateForm2MethodComment()" style="font-family: monospace"> </textarea>
+           </td>
+         </tr>
+         <tr>
+         		<td colspan="2" align="center">
+          <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
+          <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
+          <br>
+          <b>Loop Calls:</b>
+          <input id="tLoopObject" name="tLoopObject" type="text" size="20" value="myHash" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+          <input id="tLoopMethod" name="tLoopMethod" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+          <select id="sLoopType" name="sLoopType" >
+            <option>Hash</option>
+            <option>Array</option>
+          </select>
+          <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
+          <br>
+            <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
+	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
+           <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
+           </td>
+      	</tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!--- TAB DB --->
+  <div id="tabs-DB" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="80%">
+      <tbody>
+        <tr>
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                Database:
+                <font color="blue" class="labDBname" id="titleDatabaseTab">MyDB</font>
+              </b>
+            </font>
+          </td>
+        </tr>
         <tr>
           <td colspan="2" align="center">
-              <b>Display UML Diagram:</b>
-              <!--
-              <iframe id="iDiagramUML"  src="plugins/uml/index.html" width="90%" height="200"></iframe>
+            <b>Select Database:</b>
+            <select id="sDatabaseTAB" name="sDatabaseTAB" onchange="selectDatabaseJSON(this.value)">
+              <option></option>
+            </select>
+            <input type="button"  class="deletebutton" id="bDeleteDatabaseHTML" onclick="deleteDatabaseHTML();return false" value="Delete">
+            <input type="button" id="bSaveDatabaseHTML" onclick="saveDatabaseHTML();return false" value="Save">
+            <br>
+            <b>Type:</b>
+            <font color="blue" id="titleDatabaseType">JSCC/JSON/CLASS/DB</font>
+            <b>Name:</b>
+            <input name="tDatabaseName" id="tDatabaseName" value=""  size="35" type="text" style="font-family: monospace"  onchange="checkFilenameDef(this.id)">
+            <input type="button" id="bCreateNewDatabase" onclick="createNewDatabase();return false" value="+">
+            <input type="button"  class="renamebutton" id="bRenameDatabaseHTML" onclick="renameDatabaseHTML();return false" value="Rename">
+            <br>
+            <textarea id="tDBHTML" name="tDBHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iDBHTML"  src="ace/editdb.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+        <tr class="trJSCCDB">
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                DB:
+                <font color="blue" class="labDBname" id="titleDBIDEdit">MyDB</font>
+                DB-ID:
+                <font color="blue" id="titleDBIDTab">MyID</font>
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr class="trJSCCDB">
+          <td colspan="2" align="center">
+            <b>Select DB-ID:</b>
+            <select id="sDatabaseID" name="sDatabaseID" onchange="selectDatabaseVarID(this.value)">
+              <option></option>
+            </select>
+            <input type="button"  class="deletebutton" id="bDeleteDatabaseID" onclick="deleteDatabaseID();return false" value="Delete">
+            <input type="button"  class="savebutton" id="bSaveDatabaseID" onclick="saveDatabaseID();return false" value="Delete">
+            <br>
+            <b> ID-Name: </b> <input name="tDatabaseID" id="tDatabaseID" value=""  size="20" type="text" style="font-family: monospace"  onchange="this.value = reduceIDName(this.value)">
+            <input type="button" id="bCreateNewDatabaseID" onclick="createNewDatabaseID();return false" value="+">
+            <!--
+            <button id="bRenameClass" class="renamebutton" onclick="renameDatabaseIDForm();return false">Rename</button>
             -->
-            <input type="button" id="bDisplayUML" onclick="displayUML();return false" value="Create UML Diagram">
+            <br>
+            <b>Define DB-IDs:</b>
+            <input name="tDatabaseIDs" id="tDatabaseIDs" value=""  size="60" type="text" style="font-family: monospace"  onchange="updateDataseIDsForm2JSON()">
+            <br>
+            <b>Visible:</b>
+            <select id="sVarVisible" name="sVarVisible" onchange="setProperty4DBID('visible',this.value)">
+              <option>YES</option>
+              <option>NO</option>
+            </select>
+            <b>Mandatory:</b>
+            <select id="sMandatoryDB" name="sMandatoryDB" onchange="setProperty4DBID('mandatory',this.value)">
+              <option>YES</option>
+              <option>NO</option>
+            </select>
+            <b>Template:</b>
+            <select id="sOutTemplate" name="sOutTemplate">
+              <option>display</option>
+              <option>edit</option>
+              <option>hidden</option>
+            </select>
+            <br>
+            <textarea id="tDBIDHTML" name="tDBIDHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iDBIDHTML"  src="ace/editdbid.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
+        <tr class="trJSCCDB">
+          <td  colspan="2" bgcolor="#C0C0C0" align="center">
+            <font size="+2">
+              <b>
+                Database Replace IDs
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr class="trJSCCDB">
+          <td colspan="2" align="center">
+            <b>Select Replace Marker DB:</b>
+            <select id="sElementDBTAB" name="sElementDBTAB" onchange="selectElementDB(this.value)">
+              <option></option>
+            </select>
+            <input type="button"  class="deletebutton" id="bDeleteElementDBHTML" onclick="deleteElementDBHTML();return false" value="Delete">
+            <input type="button" id="bSaveElementDBHTML" onclick="saveElementDBHTML();return false" value="Save">
+            <br>
+            <textarea id="tElementDBHTML" name="tElementDBHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iElementDBHTML"  src="ace/editelementdb.html" width="90%" height="100"></iframe>
+          </td>
+        </tr>
 
-            </td>
-         </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- TAB: FILES/CLASSES  -->
+  <div id="tabs-FileClass" class="tabmenu" style="background-color:#f2f2f2">
+    <table bgcolor="#A9BCF5" border="1" width="80%">
+      <tbody>
+        <tr>
+          <td  colspan="2" align="center" bgcolor="#C0C0C0">
+            <font size="+2">
+              <b>
+                Files and Classes
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>Author:</b> <input name="tMainAuthor" id="tMainAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+          </td>
+          <td>
+            <b>e-Mail Author:</b> <input name="tMainEMail" id="tMainEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+          </td>
+        </tr>
+      <tr>
+        <td colspan="1" align="center">
+          <b>List of defined Classes</b>
+          <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
+          <br>
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace"></textarea>
+        </td>
+        <td colspan="1" align="center">
+          <b>List of Basic Classes</b>
+          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
+          <br>
+          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <b>JSON Databases</b>
+          <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
+          <br>
+          <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">
+          </textarea>
+          <br>
+          <b>Global Libaries</b>
+          <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON()" type="button">
+          <br>
+          <textarea name="tGlobalLibs" id="tGlobalLibs" cols="45" rows="5" style="font-family: monospace"></textarea>
+        </td>
+        <td align="center">
+            <b>HTML Files</b>
+            <input name="bUpdateLibraries" value=" Update HTML Files " onclick="updateHTMLFiles()" type="button">
+            <br>
+            <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">
+            </textarea>
+        </td>
+      </tr>
+      <tr>
+        <td align="center">
+          <b>Pages in HTML-File</b>
+          <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
+          <br>
+          <font size="-2">
+            <b>Format:</b>
+            <tt id="labelPageRecord">-</tt>
+          </font>
+          <br>
+          <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">
+        </textarea>
+        </td>
+        <td align="center">
+          <b>Page Types</b>
+          <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
+          <br>
+          <font size="-2">
+            <b>Format:</b>
+            <tt id="labelPageTypeRecord">-</tt>
+          </font>
+          <br>
+          Page-ID can be replaced by Button-ID
+          <br>
+          <textarea name="tPageTypes" id="tPageTypes" cols="45" rows="6" style="font-family: monospace">
+          </textarea>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+          <b>Buttons</b>
+          <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
+          &nbsp;
+          <font size="-2">
+            <b>Format:</b>
+            <tt id="labelButtonRecord">-</tt>
+          </font>
+          <br>
+          <textarea name="tButtons" id="tButtons" cols="120" rows="3" style="font-family: monospace" wrap="off">
+          </textarea>
+        </td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -734,49 +859,50 @@ SaveDialog|home|CANCEL
       <tbody>
         <tr>
           <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-            <font size="+2"><b>Export/Import JSON</b></font>
-        </td>
-      </tr>
-      <tr>
-      		<td colspan="2" align="center">
-            <b>
-            Select App Database:
-            <select id="sDatabases" name="sDatabases" onchange="selectDatabaseJSON()">
-              <option>UndefDB</option>
-            </select>
-          </b>
-            <br>
-          <b>
-            DB-Prefix:
-          </b>
-            <input type="checkbox" id="checkUsePrefix" name="checkUsePrefix" onchange="selectDatabaseJSON()">
-            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDataJSON['___DB___'] = " size="30" onchange="createDatabaseJSON()"  checked="checked">
-            <input name="bSaveDB" value=" Save DB " onclick="updateForm2Database()" type="button">
-            <input name="bExportDB" value=" Export DB " onclick="createDatabaseJSON()" type="button">
-          <hr>
-          <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
-          <b>Export JSON:</b>
-          <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) {alert('Format: JS')} else {alert('Format: JSON')}" checked="checked">
-          JS-Export
-          <input name="bSaveClassJSON" value="Export Class" onclick="exportClassJSON()" type="button">
-          <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
-          <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
-          <hr>
-          <b>Load JSON:</b>
-          <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->
-          <input type="file" id="myImportFile" >
-          <input name="bImportProject" value="Import JSON" onclick="importProjectJSON('myImportFile')" type="button">
+            <font size="+2"><b>Export JSON</b></font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <input type="text" id="tExportedJSON" name="tExportedJSON" value="" style="display:none">
+            <b>Export JSON:</b>
+            <input type="checkbox" id="checkExportJS" name="checkExportJS" onchange="if (this.checked) {alert('Format: JS')} else {alert('Format: JSON')}" checked="checked">
+            JS-Export
+            <input name="bSaveClassJSON" value="Export Class" onclick="exportClassJSON()" type="button">
+            <input name="bCreatorTemplates" value="Export Templates" onclick="exportTemplatesJSON()" type="button">
+            <input name="bCreatorButton" value="Export Project" onclick="createProjectJSON()" type="button">
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+            <font size="+2"><b>Import JSON</b></font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" align="center">
+            <b>Import JSON/JS:</b>
+            <!-- <input type="file" id="myImportFile" onchange="importProjectJSON(this.id)"> -->
+            <input type="file" id="myImportFile" >
+            <input name="bImportProject" value="Import JSON" onclick="importProjectJSON('myImportFile')" type="button">
 
-          <hr>
-            <b>JSON Database:</b> <b id="labExportFile" style="color:blue"></b><br>
+            <hr>
+            <b>JSON/JS Database:</b> <b id="labExportFile" style="color:blue"></b><br>
             <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
-          <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
+            <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
             </textarea>
-      		</td>
-      	</tr>
+            <br>
+            <b>
+              DB-Prefix:
+            </b>
+            <input type="text" id="tExportPrefix" name="tExportPrefix" value="vDataJSON['___DB___'] = " size="30" onchange="createDatabaseJSON()"  checked="checked">
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
+
+
+<!-- div id="tabs" -->
 </div>
 <br>
  <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
@@ -1020,13 +1146,13 @@ this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
 <hr>
 <b>Private Attribute Definition</b> <tt>[tTplAttributePrivate]</tt><br>
 <textarea id="tTplAttributePrivate" name="tTplAttributePrivate" cols="125" rows="2">
-//---Private: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
+//---PRIVATE: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
 var ___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
 </textarea>
     <hr>
       <b>Method Constructor Comment</b> <tt>[tTplMethodConstructorComment]</tt><br>
         <textarea id="tTplMethodConstructorComment" name="tTplMethodConstructorComment" cols="125" rows="4">
-//----Public Method: ___CLASSNAME___.___METHODDEF___-----
+//----PUBLIC Method: ___CLASSNAME___.___METHODDEF___-----
 // ___METHODNAME___(___METHODPARAMETERS___)  ___RETURNCOMMENT___
 ___METHODCOMMENT___
 </textarea>
@@ -1035,7 +1161,7 @@ ___METHODCOMMENT___
 <textarea id="tTplMethodsHeadComment" name="tTplMethodsHeadComment" cols="125" rows="3">
 
 //---------------------------------------------------------------------
-//---Methods of Class "___CLASSNAME___()" defined as JS functions
+//---PUBLIC: Methods of Class "___CLASSNAME___()"
 //---------------------------------------------------------------------
 </textarea>
 <hr>
@@ -1159,13 +1285,16 @@ for (var vKey in ___LOOPOBJECT___) {
 </center>
 
 <center>
-  <script>
-    initCodeCreator();
-    setTimeout('createCode4JSON_JS(vJSON_JS)',9000);
-  </script>
   <script src="plugins/jquery/external/jquery/jquery.js" type="text/javascript"></script>
   <script src="plugins/jquery/jquery-ui.js" type="text/javascript"></script>
   <script src="js/jqueryinit.js" type="text/javascript"></script>
+  <script>
+    //setTimeout('createCode4JSON_JS(vJSCC_DB)',9000);
+    $( document ).ready(function() {
+      initCodeCreator();
+      console.log( "JQuery Document ready!" );
+    })
+  </script>
 
    <br>
   <a href="http://niebert.github.io/JavascriptClassCreator/" target="_blank">http://niebert.github.io/JavascriptClassCreator/</a>

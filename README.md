@@ -38,7 +38,7 @@
 An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows novice developers to tweak software without digging very deep into libraries and code of the project.
 
 The objectiv of an ESEIA approach is, that large groups of people are able to modify a software according to their needs.
-An ESEIA tool like ___JavascriptClassCreator___ exports the code in a certain programming languages or syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management Systema like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
+An ESEIA tool like ___JavascriptClassCreator___ exports the code in a certain programming languages or syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management Systems like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
 
 The vision for certain OpenSource projects is, that a software release *X1* has a ESEIA tool as well, that allow quick and simple alterations *X1* into *X2*.
 
@@ -96,13 +96,13 @@ Future application of UglifyJS will allow cross compilation of generation of gen
 **(FileList) Parent: (JSCC)** is an *JS Object* of all HTML-files, used in the project. The key to access the JSON definition of the file is just the filename itself.
 
 **Remark:** Using a filename as a key has the advantage that the you do not have to handle a the mapping of the filename to the key of the hash **FileList**. But approach has the disadvantage, that you cannot access the appropriate object in a JSON tree by the dot-notation of an tree.
-* ___vJSON_JS["FileList"]___ is equivalent to ___vJSON_JS.FileList___ but
-* ___vJSON_JS["FileList"]["app.html"]___ or ___vJSON_JS.FileList["app.html"]___  is the only way to address the JSON object of the file ___app.html___ correctly. ___vJSON_JS.FileList.app.html___ addresses a ___html___-object as suboject of the ___app___-object, and this object does not exist in the JSON tree in general.
+* ___vJSCC_DB["FileList"]___ is equivalent to ___vJSCC_DB.FileList___ but
+* ___vJSCC_DB["FileList"]["app.html"]___ or ___vJSCC_DB.FileList["app.html"]___  is the only way to address the JSON object of the file ___app.html___ correctly. ___vJSCC_DB.FileList.app.html___ addresses a ___html___-object as suboject of the ___app___-object, and this object does not exist in the JSON tree in general.
 
 **Example:** The web-based software *DisApp* contains two HTML-files:
-* **<tt>index.html</tt>** for login to the server the JSON element can be access by ___JSCC.FileList["index.html"]___ ).
-* **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. ___JSCC.FileList["app.html"]___).
-* **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. ___JSCC.FileList["submit.html"]___).
+* **<tt>index.html</tt>** for login to the server the JSON element can be access by ___JSCC_DB.FileList["index.html"]___ ).
+* **<tt>app.html</tt>** is the window that will be opened by <tt>index.html</tt>, which contains the main interactive elements of *DisApp*,  (e.g. ___JSCC_DB.FileList["app.html"]___).
+* **<tt>submit.html</tt>** is the window that will be opened by <tt>app.html</tt>, which will be used to submit data to server/backend of *DisApp*,  (e.g. ___JSCC_DB.FileList["submit.html"]___).
 
 In traditional software development HTML pages can be regarded as windows with a certain content, that are opened and closed within the software. The HTML file defines the Graphical User Interface (GUI) of the app in these windows.
 
@@ -143,7 +143,7 @@ any new page generation of a certain HTML template (PageType). Similar to this a
 
       ___PAGE_TITLE___
 
-will be replaced by the title of the HTML page. In general markers that are replaced by content from a hash (Object), are stored in the project JSON file ___vJSON_JS___ with the ID in uppercase characters (e.g. PAGE_TITLE) and the definition of page title.
+will be replaced by the title of the HTML page. In general markers that are replaced by content from a hash (Object), are stored in the project JSON file ___vJSCC_DB___ with the ID in uppercase characters (e.g. PAGE_TITLE) and the definition of page title.
 
       ___"PAGE_TITLE": "My Title of the Page",___
 

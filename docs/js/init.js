@@ -4,7 +4,7 @@
 //# created with JavaScript Class Generator by Engelbert Niehaus
 //# 2012 University Koblenz-Landau
 //#################################################################
-// DOM_Global Hash is used to store global values in LocalStorage and in vJSON_JS
+// DOM_Global Hash is used to store global values in LocalStorage and in vJSCC_DB
 // see saveDOM2LocalStorage() in localstorage.js:125
 // The following DOM elements are defined in index.html
 vDOM_Global.push("sStandalone"); //YES/NO for Standalone export of HTML
@@ -27,9 +27,9 @@ vDOM_Global.push("sShowGeneralizations"); //UML-Settings for Diagram Export
 vDOM_Global.push("sShowAggregations"); //UML-Settings for Diagram Export
 vDOM_Global.push("sShowAssociations"); //UML-Settings for Diagram Export
 //-------------------------------
-vDOM_File.push("tElementIDs"); // Pipe separated ID String
+vDOM_File.push("tElementFileIDs"); // Pipe separated ID String
 vDOM_File.push("tElementID"); // the edit string of selected Element ID - used to edit a new Element ID
-vDOM_File.push("sElementList"); // the select Box setting of selected Element ID
+vDOM_File.push("sElementsFileList"); // the select Box setting of selected Element ID
 vDOM_File.push("tElementHTML"); // Content of Element Definition
 vDOM_File.push("tFilename"); // Is the Filename
 vDOM_File.push("sAppClassHTML"); // is the main App that is instantiated when a web site is loaded.
@@ -101,6 +101,8 @@ vDOM_ID.push("sAttribTypeList");
 vTYPE_ID.push("Select");
 vDOM_ID.push("tMethodHeader");
 vTYPE_ID.push("String");
+vDOM_ID.push("tMethodName");
+vTYPE_ID.push("String");
 vDOM_ID.push("tMethodComment");
 vTYPE_ID.push("Textarea");
 vDOM_ID.push("sMethodList");
@@ -121,12 +123,12 @@ function initCodeCreator() {
   console.log("initCodeCreator()-Call");
   var vDB = null;
   var vLocalStorageLoad = false;
-  var vSelectedClass = getValueDOM("tClassname");
-  var vSelectedFile = getValueDOM("tFilename") || "";
-  var vSelectedPage = getValueDOM("sPageHTML") || "";
-  var vSelectedMethod = getValueDOM("sMethodList") || "";
-  var vSelectedPageType = getValueDOM("sPageTypeHTML") || "";
-  console.log("initCodeCreator() Selected Class ["+vSelectedClass+"]");
+  var vSelectedClass = "";
+  var vSelectedFile = "";
+  var vSelectedPage =  "";
+  var vSelectedMethod = "";
+  var vSelectedPageType = "";
+  console.log("initCodeCreator()");
   //loadProjectJSON();
   if (typeof(Storage) != "undefined") {
      //alert("Local Storage");
@@ -134,75 +136,84 @@ function initCodeCreator() {
      vDB = loadLocalStorage("json");
      if (vDB) {
        console.log("initCodeCreator(): JSCC Project exists as JSON in Local Storage");
-       top.vJSON_JS = vDB;
-       vSelectedClass = top.vJSON_JS["SelectedClass"] || "";
-       vSelectedFile  = top.vJSON_JS["SelectedFile"]  || "";
-       vSelectedPage  = top.vJSON_JS["SelectedPage"]  || "";
-       vSelectedPageType  = top.vJSON_JS["SelectedPageType"] || "";
-       vSelectedMethod  = top.vJSON_JS["ClassList"][vSelectedClass]["sMethodList"] || "";
+       top.vJSCC_DB = vDB;
        vLocalStorageLoad = true;
-       //clearForm4Class(vSelectedClass);
-       //clearForm4File(vSelectedFile);
-       updateJSON2Form(vSelectedClass,vSelectedFile);
-       console.log("initCodeCreator() Selected Class ["+vSelectedClass+"] in JSON Database");
+       console.log("initCodeCreator() JSON Database");
     } else {
-        if (vJSON_JS.hasOwnProperty("ClassList") && vJSON_JS.hasOwnProperty("FileList")) {
-          console.log("initCodeCreator() vJSON_JS was loaded from Library prog/project.js");
+        if (vJSCC_DB.hasOwnProperty("ClassList") && vJSCC_DB.hasOwnProperty("FileList")) {
+          console.log("initCodeCreator() vJSCC_DB was loaded from Library prog/project.js");
           updateJSON2Form(vSelectedClass,vSelectedFile);
-        } else if ((vJSON_JS["JSCC_type"]) && vJSON_JS["JSCC_type"] == "JSCC") {
-          console.log("initCodeCreator() - Typ vJSON_JS was loaded from Library prog/project.js");
+        } else if ((vJSCC_DB["JSCC_type"]) && vJSCC_DB["JSCC_type"] == "JSCC") {
+          console.log("initCodeCreator() - Typ vJSCC_DB was loaded from Library prog/project.js");
           updateJSON2Form(vSelectedClass,vSelectedFile);
         } else {
-          console.log("vJSON_JS was loaded from Definition in HTML Form of JSCC");
-          top.vJSON_JS["JSCC_type"] = "JSCC";
-          top.vJSON_JS["JSCC_version"] = vJSCC_Version;
-          top.vJSON_JS["init_date"] = getDateTime();
-          top.vJSON_JS["mod_date"] = "";
+          console.log("vJSCC_DB was loaded from Definition in HTML Form of JSCC");
+          top.vJSCC_DB["JSCC_type"] = "JSCC";
+          top.vJSCC_DB["JSCC_version"] = vJSCC_Version;
+          top.vJSCC_DB["init_date"] = getDateTime();
+          top.vJSCC_DB["mod_date"] = "";
           loadForm2JSON(vSelectedClass);
         };
       };
   } else {
       alert("Sorry, your browser does not support Local Storage...");
   };
+  vSelectedClass = vJSCC_DB["SelectedClass"] || "";
+  vSelectedFile  = vJSCC_DB["SelectedFile"]  || "";
+  vSelectedPage  = vJSCC_DB["SelectedPage"]  || "";
+  vSelectedDatabase = vJSCC_DB["SelectedDatabase"]  || "";
+  vSelectedPageType = vJSCC_DB["SelectedPageType"] || "";
+  vSelectedElement  = getSelectedElement4File(vSelectedFile);
+  vSelectedMethod  = vJSCC_DB["ClassList"][vSelectedClass]["sMethodList"] || "";
   //Hack: MethodCode is not properly initialized, when Data is coming from LocalStorage
+  console.log("initCodeCreator() Selected File='"+vSelectedFile+"' Class='"+vSelectedClass+"' Method='"+vSelectedMethod+"'");
   vRestoreForm["tMethodCode"] = getMethodCode4Editor(vSelectedClass);
   vRestoreForm["tPageTypeHTML"] = getPageTypeCode4Editor(vSelectedPageType);
   for (var i = 0; i < vDOM_ID.length; i++) {
-    vRestoreForm[vDOM_ID[i]] = vJSON_JS["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
+    vRestoreForm[vDOM_ID[i]] = vJSCC_DB["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
   };
-  initEditorContent(vSelectedClass); //iframe.js:80
-  updateBasicClassJSON2Form();
-  updateSelectors(); //select.js:140
-  checkInterface4Class(vSelectedClass);
-  updateClasses();
   initLabelsHTML();
+  updateBasicClassJSON2Form();
+  //--- Create Selectors
+  createFileSelect(vSelectedFile);
+  createClassSelect(vSelectedClass);
+  createPageSelect(vSelectedPage);
+  createPageTypeSelect(vSelectedPageType);
+  createElementsDBSelect();
+  checkDatabaseListJSON();
+  createDatabaseSelect(vSelectedDatabase);
+  //--- Call of updateClassJSON2Form(vSelectedClass)
+  //--- writes the UML-Mapper-List in tClasses
+  updateClassJSON2Form(vSelectedClass);
+  //createElementsFileSelect(vSelectedFile);
+  //selectElementFileJS(vSelectedElement)
+  //initEditorContent(vSelectedClass); //iframe.js:80
+  //updateClassJSON2Form(vSelectedClass);
+  //checkInterface4Class(vSelectedClass);
+  //updateClasses();
   //setTimeout('alert(readFile("tpl/test.txt"))',5000);
-  getPageTypeCode4Editor(vSelectedPageType)
-  setClassSelectorDefault(vSelectedClass); // set selectedClass in Select-Tag with id="sClassList"
-  updateJSON2tClassList();
-  updateFileListJSON2Form();
+  //getPageTypeCode4Editor(vSelectedPageType)
+  updateFileListJSON2Form(vSelectedFile);
+  updateElementsFileJSON2Form(getArray4HashID(vJSCC_DB["Element"]));
   populateForm2TemplateJSON();
-  createClassSelect();
-  setClassSelectorDefault(vSelectedClass);
-  createFileSelect();
-  createMethodSelect(vSelectedClass);
-  createAttribTypeSelect();
-  setDefaultSelectors();
+  //createFileSelect();
+  //updateSelectors(vSelectedClass,vSelectedFile); //select.js:140
+  //setDefaultSelectors();
   //console.log("checkDatabaseListJSON()-Call");
   updateButtonJSON2Form();
   updateGlobalLibsJSON2Form();
   updateDatabasesJSON2Form();
-  checkDatabaseListJSON();
   if (vLocalStorageLoad == true) {
-    write2value("tMethodCode",vRestoreForm["tMethodCode"]);
-    write2value("tPageTypeHTML",vRestoreForm["tPageTypeHTML"]);
+    //write2value("tMethodCode",vRestoreForm["tMethodCode"]);
+    //OK   write2value("tPageTypeHTML",vRestoreForm["tPageTypeHTML"]);
+
     //write2value("tSuperClassname",vRestoreForm["tSuperClassname"]);
     //write2value("sSuperClassname",vRestoreForm["tSuperClassname"]);
     //for (var i = 0; i < vDOM_ID.length; i++) {
     //  write2value(vDOM_ID[i],vRestoreForm[vDOM_ID[i]]);
     //};
-    selectSuperClass(vRestoreForm["tSuperClassname"]);
-    updateJSON2tMethods(vSelectedClass);
+    // selectSuperClass(vRestoreForm["tSuperClassname"]);
+    //updateJSON2tMethods(vSelectedClass);
   };
   loadHTML2iFrame("tpl/index.html");
 };
@@ -231,15 +242,15 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
 };
 
 function setDefaultSelectors() {
-  // init the selector settings from vJSON_JS
+  // init the selector settings from vJSCC_DB
   checkMainAppClass4File();
   var vClassJS = getClassJSON();
-  var vClassID = vJSON_JS["SelectedClass"] || "";
-  var vFileID = vJSON_JS["SelectedFile"] || "";
-  var vElementID = vJSON_JS["SelectedElement"] || "";
-  var vPageID = vJSON_JS["SelectedPage"] || "";
-  var vPageTypeID = vJSON_JS["SelectedPageType"] || "";
-  var vButtonID = vJSON_JS["SelectedButton"] || "";
+  var vClassID = vJSCC_DB["SelectedClass"] || "";
+  var vFileID = vJSCC_DB["SelectedFile"] || "";
+  var vElementID = vJSCC_DB["SelectedElement"] || "";
+  var vPageID = vJSCC_DB["SelectedPage"] || "";
+  var vPageTypeID = vJSCC_DB["SelectedPageType"] || "";
+  var vButtonID = vJSCC_DB["SelectedButton"] || "";
   if (vClassID != "") {
     selectClass_do(vClassID);
   };
@@ -251,10 +262,10 @@ function setDefaultSelectors() {
     writeFileTitle(vFileID);
   };
   if (vElementID != "") {
-    selectElementJS(vElementID);
-    write2value("sElementList",vElementID);
+    selectElementFileJS(vElementID);
+    write2value("sElementsFileList",vElementID);
   } else {
-    write2value("sElementList","");
+    write2value("sElementsFileList","");
   };
   if (vPageID != "") {
     selectPageJS(vPageID);
@@ -298,7 +309,7 @@ function initLabelsHTML() {
 function initFormClassList() {
   console.log("initFormClassList()");
   var vClassTypeHash = getForm2ClassTypeHash(); //read from tClassList in  classes.js 413
-  top.vJSON_JS["ClassType"] = vClassTypeHash;
+  top.vJSCC_DB["ClassType"] = vClassTypeHash;
   var vClass = "";
   var vClassTypeID = "";
   var vClassArr = getClassArray(); //read from tClassList in  classes.js 413
@@ -326,7 +337,7 @@ function initFormFileHTMLList() {
      initFileHTML(vArr[i]);
    };
    if (vArr.length > 0) {
-     top.vJSON_JS["SelectedFile"] = vArr[0];
+     top.vJSCC_DB["SelectedFile"] = vArr[0];
      selectFilenameHTML_do(vArr[0]);
      write2value("tFilename",vArr[0]);
    };
@@ -368,23 +379,23 @@ function initButtonJS_do(pButtonHash) {
   if (vButtonID == "") {
     console.log("initButtonJS()-Call: Button-ID undefined");
   } else {
-    if (!top.vJSON_JS) {
-      var vError = "WARNING: initButtonJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+    if (!top.vJSCC_DB) {
+      var vError = "WARNING: initButtonJS() [init.js]: JSON Database 'vJSCC_DB' does NOT exist, create as hash.";
       console.log(vError);
-      top.vJSON_JS = {};
+      top.vJSCC_DB = {};
     } else {
-      console.log("JSON Database 'vJSON_JS' exists.");
+      console.log("JSON Database 'vJSCC_DB' exists.");
     };
     //------------------------------------
-    top.vJSON_JS["SelectedButton"] = vButtonID;
+    top.vJSCC_DB["SelectedButton"] = vButtonID;
     //------------------------------------
-    if (top.vJSON_JS["ButtonList"]) {
-      console.log("vJSON_JS['ButtonList'] exists");
+    if (top.vJSCC_DB["ButtonList"]) {
+      console.log("vJSCC_DB['ButtonList'] exists");
     } else {
-      top.vJSON_JS["ButtonList"] = {};
-      console.log("vJSON_JS['ButtonList'] created");
+      top.vJSCC_DB["ButtonList"] = {};
+      console.log("vJSCC_DB['ButtonList'] created");
     };
-    if (top.vJSON_JS["ButtonList"][vButtonID]) {
+    if (top.vJSCC_DB["ButtonList"][vButtonID]) {
       console.log("Button '"+vButtonID+"' exists in JSON DB");
     } else {
       console.log("initButtonJS_do(pButtonHash)-Call for ID='"+vButtonID+"'");
@@ -415,7 +426,7 @@ function initFormPageType() {
 function initMenuPageType(pPageTypeID) {
   console.log("initMenuPageType('"+pPageTypeID+"')");
   if (existsPageTypeJS(pPageTypeID)) {
-    var vPageTypeJS = vJSON_JS["PageType"][pPageTypeID];
+    var vPageTypeJS = vJSCC_DB["PageTypeList"][pPageTypeID];
     var vTemplate = vPageTypeJS["template"];
     vPageTypeJS["template"] = replaceString(vTemplate,"___PAGE_CONTENT___","___PAGE_CONTENT___\n          ___MENU_CONTENT___");
   } else {
@@ -436,27 +447,27 @@ function initPageTypeJS_do(pPageTypeHash) {
   if (pPageType == "") {
     console.log("initPageTypeJS()-Call: Page-ID undefined");
   } else {
-    if (!top.vJSON_JS) {
-      var vError = "WARNING: initPageTypeJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+    if (!top.vJSCC_DB) {
+      var vError = "WARNING: initPageTypeJS() [init.js]: JSON Database 'vJSCC_DB' does NOT exist, create as hash.";
       console.log(vError);
-      top.vJSON_JS = {};
+      top.vJSCC_DB = {};
     } else {
-      console.log("JSON Database 'vJSON_JS' exists.");
+      console.log("JSON Database 'vJSCC_DB' exists.");
     };
     //------------------------------------
-    top.vJSON_JS["SelectedTypePage"] = pPageType;
+    top.vJSCC_DB["SelectedTypePage"] = pPageType;
     //------------------------------------
-    if (top.vJSON_JS["PageType"]) {
-      console.log("vJSON_JS['PageType'] exists");
+    if (top.vJSCC_DB["PageTypeList"]) {
+      console.log("vJSCC_DB['PageType'] exists");
     } else {
-      top.vJSON_JS["PageType"] = {};
-      console.log("vJSON_JS['PageType'] created");
+      top.vJSCC_DB["PageTypeList"] = {};
+      console.log("vJSCC_DB['PageType'] created");
     };
-    if (top.vJSON_JS["PageType"][pPageType]) {
+    if (top.vJSCC_DB["PageTypeList"][pPageType]) {
       console.log("Page '"+pPageType+"' exists in JSON DB");
     } else {
       //top.createPageTypeJS(pPageType);
-      top.vJSON_JS["PageType"][pPageType] = pPageTypeHash;
+      top.vJSCC_DB["PageTypeList"][pPageType] = pPageTypeHash;
       console.log("Page '"+pPageType+"' created and updated from HTML Form with default values");
     };
   };
@@ -477,23 +488,23 @@ function initPageJS_do(pPageHash) {
   if (vPageID == "") {
     console.log("initPageJS()-Call: Page-ID undefined");
   } else {
-    if (!top.vJSON_JS) {
-      var vError = "WARNING: initPageJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+    if (!top.vJSCC_DB) {
+      var vError = "WARNING: initPageJS() [init.js]: JSON Database 'vJSCC_DB' does NOT exist, create as hash.";
       console.log(vError);
-      top.vJSON_JS = {};
+      top.vJSCC_DB = {};
     } else {
-      console.log("JSON Database 'vJSON_JS' exists.");
+      console.log("JSON Database 'vJSCC_DB' exists.");
     };
     //------------------------------------
-    top.vJSON_JS["SelectedPage"] = vPageID;
+    top.vJSCC_DB["SelectedPage"] = vPageID;
     //------------------------------------
-    if (top.vJSON_JS["PageList"]) {
-      console.log("vJSON_JS['PageList'] exists");
+    if (top.vJSCC_DB["PageList"]) {
+      console.log("vJSCC_DB['PageList'] exists");
     } else {
-      top.vJSON_JS["PageList"] = {};
-      console.log("vJSON_JS['PageList'] created");
+      top.vJSCC_DB["PageList"] = {};
+      console.log("vJSCC_DB['PageList'] created");
     };
-    if (top.vJSON_JS["PageList"][vPageID]) {
+    if (top.vJSCC_DB["PageList"][vPageID]) {
       console.log("Page '"+vPageID+"' exists in JSON DB");
     } else {
       top.createPageJS(pPageHash);
@@ -524,23 +535,23 @@ function initDatabaseJS_do(pDatabase) {
   if (pDatabase == "") {
     console.log("initDatabaseJS()-Call: Databasename undefined");
   } else {
-    if (!top.vJSON_JS) {
-      var vError = "WARNING: initDatabaseJS() [init.js]: JSON Database 'vJSON_JS' does NOT exist, create as hash.";
+    if (!top.vJSCC_DB) {
+      var vError = "WARNING: initDatabaseJS() [init.js]: JSON Database 'vJSCC_DB' does NOT exist, create as hash.";
       console.log(vError);
-      top.vJSON_JS = {};
+      top.vJSCC_DB = {};
     } else {
-      console.log("JSON Database 'vJSON_JS' exists.");
+      console.log("JSON Database 'vJSCC_DB' exists.");
     };
-    if (top.vJSON_JS["DatabaseList"]) {
-      console.log("vJSON_JS['DatabaseList'] exists");
+    if (top.vJSCC_DB["DatabaseList"]) {
+      console.log("vJSCC_DB['DatabaseList'] exists");
     } else {
-      top.vJSON_JS["DatabaseList"] = {};
-      console.log("vJSON_JS['DatabaseList'] created");
+      top.vJSCC_DB["DatabaseList"] = {};
+      console.log("vJSCC_DB['DatabaseList'] created");
     };
-    if (top.vJSON_JS["DatabaseList"][pDatabase]) {
+    if (top.vJSCC_DB["DatabaseList"][pDatabase]) {
       console.log("Database '"+pDatabase+"' exists in JSON DB");
     } else {
-      top.vJSON_JS["DatabaseList"][pDatabase] = getDefaultDatabaseJSON(pDatabase);
+      top.vJSCC_DB["DatabaseList"][pDatabase] = getDefaultDatabaseJSON(pDatabase);
       console.log("Database '"+pDatabase+"' created and updated from HTML Form with default values");
     };
   };
@@ -557,7 +568,7 @@ function initFormSelectors() {
 
 function initFileSelector() {
   var vFileArr = [];
-  var vFileList = vJSON_JS["FileList"] || {};
+  var vFileList = vJSCC_DB["FileList"] || {};
   for (var iFile in vFileList) {
     if (vFileList.hasOwnProperty(iFile)) {
       vFileArr.push(iFile);
@@ -570,15 +581,15 @@ function initFileSelector() {
 function initClassSelector() {
   var vClassArr = [];
   var vClassTypeArr = [];
-  var vClassList = vJSON_JS["ClassList"] || {};
-  var vClassTypeHash = vJSON_JS["ClassType"] || {};
+  var vClassList = vJSCC_DB["ClassList"] || {};
+  var vClassTypeHash = vJSCC_DB["ClassType"] || {};
   var vTypeDef = "";
   for (var iClass in vClassList) {
     if (vClassList.hasOwnProperty(iClass)) {
       vClassArr.push(iClass);
       vTypeDef = vClassTypeHash[iClass] || "";
       if (vTypeDef != "") {
-        vJSON_JS["ClassList"][iClass]["sClassType"] = vTypeDef;
+        vJSCC_DB["ClassList"][iClass]["sClassType"] = vTypeDef;
         vTypeDef = " = " + vTypeDef;
       };
       vClassTypeArr.push(iClass+vTypeDef);
@@ -587,7 +598,7 @@ function initClassSelector() {
   write2value("tClassList",getJSON2ClassString());
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
-  createClassSelect(vClassArr);
+  createClassSelect4Array(vClassArr);
   createAttribTypeSelect();
   createAttribSelect();
   createMethodSelect(); //dom.js:13
@@ -597,32 +608,19 @@ function initButtonSelector() {
   write2value("tButtonList",getButtonListString());
   //var vButton = getValueDOM("tButtonname");
   //initButtonJS(vButton);
-  var vArr = getArray4HashID(vJSON_JS["ButtonList"]);
+  var vArr = getArray4HashID(vJSCC_DB["ButtonList"]);
   createButtonSelect(vArr);
 };
 
 
 function initPageTypeSelector() {
   write2value("tPageTypes",getPageTypeString());
-  //var vButton = getValueDOM("tButtonname");
-  //initButtonJS(vButton);
-  var vArr = getArray4HashID(vJSON_JS["PageType"]);
-  createPageTypeSelect(vArr);
+  createPageTypeSelect();
 };
-
-function createArray4HashID(pHash) {
-  var vArr = [];
-  for (var iID in pHash) {
-    if (pHash.hasOwnProperty(iID)) {
-      vArr.push(iID);
-    };
-  };
-  return vArr;
-}
 
 function initButtonSelector() {
   var vButtonArr = [];
-  var vButtonList = vJSON_JS["ButtonList"];
+  var vButtonList = vJSCC_DB["ButtonList"];
   for (var iButton in vButtonList) {
     if (vButtonList.hasOwnProperty(iButton)) {
       vButtonArr.push(iButton);
@@ -637,14 +635,14 @@ function initButtonSelector() {
 };
 
 function initPageSelector() {
-  var vPageArr = getArray4HashID(vJSON_JS["PageList"]);
+  var vPageArr = getArray4HashID(vJSCC_DB["PageList"]);
   //initPageJS(vPage);
-  createPageSelect(vPageArr);
+  createPageSelect4Array(vPageArr);
 };
 
 function initDatabaseSelector() {
   var vDataJSONArr = [];
-  var vDataJSONList = vJSON_JS["DatabaseList"];
+  var vDataJSONList = vJSCC_DB["DatabaseList"];
   for (var iDatabase in vDataJSONList) {
     if (vDataJSONList.hasOwnProperty(iClass)) {
       vDataJSONArr.push(iClass);
@@ -655,7 +653,7 @@ function initDatabaseSelector() {
   write2value("tDatabases",vDataJSONArr.join("\n"));
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
-  createDatabaseSelect(vDataJSONArr);
+  createDatabaseSelect4Array(vDataJSONArr);
 }
 
 

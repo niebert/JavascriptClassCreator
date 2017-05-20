@@ -46,7 +46,8 @@ function getInnerHTML(pID) {
 function write2innerHTML(pID,pContent) {
   var vNode =document.getElementById(pID)
   if (vNode){
-    vNode.innerHTML=pContent;
+    //vNode.innerHTML=pContent;
+    $( "#"+pID ).html(pContent);
   } else {
     console.log("Write DOM-Node 'innerHTML' with ID=["+pID+"] was undefined")
   }
@@ -66,9 +67,11 @@ function node2value(pNode,pContent,pID) {
   var vID = pID || "";
   if (pNode){
     if (pNode.getAttribute("type") == "checkbox") {
-      pNode.checked=pContent;
+      //pNode.checked=pContent;
+      $("#"+pID).prop( "checked", pContent );
     } else {
-      pNode.value=pContent;
+      //pNode.value=pContent;
+      $("#"+pID).val(pContent);
     }
   } else {
     console.log("node2value(pNode,pContent,'"+vID+"') - pNode undefined")
@@ -90,7 +93,8 @@ function write4name2value(pID,pContent) {
 function append2innerHTML(pID,pContent) {
   var vNode =document.getElementById(pID)
   if (vNode){
-    vNode.innerHTML+=pContent;
+  //  vNode.innerHTML+=pContent;
+    $( "#"+pID ).append( pContent );
   } else {
     console.log("Append DOM-Node 'innerHTML' with ID=["+pID+"] was undefined")
   }

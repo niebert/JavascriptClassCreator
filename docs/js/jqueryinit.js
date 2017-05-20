@@ -16,6 +16,10 @@ $( "#controlgroup" ).controlgroup();
 
 $( "#tabs" ).tabs();
 
+// $("#tabPAGETYPE").hide();
+// $("#tabAttributes").hide();
+// $("#tabMethods").hide();
+// $("#tabUML").hide();
 
 
 $( "#dialog" ).dialog({

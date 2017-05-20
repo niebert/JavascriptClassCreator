@@ -68,22 +68,22 @@ function initEditorContent(pClassID) {
 function writePage2Editor() {
   var vID = getValueDOM("sPageHTML");
   var vValue = "Page '"+vID+"' undefined";
-  if (reduceVarName(vID) == "") {
-    vValue = "";
-  } else if (vJSON_JS["PageContent"] && vJSON_JS["PageContent"][vID]) {
-    vValue = vJSON_JS["PageContent"][vID];
+  if (existsPageJS(vID)) {
+    if (vJSCC_DB["PageList"][vID]["content"]) {
+      vValue = vJSCC_DB["PageList"][vID]["content"];
+      write2value("tPageHTML",vValue);
+      write2value("tPageID",vID);
+    };
   };
-  write2value("tPageHTML",vValue);
-  write2value("tPageID",vID);
 }
 
 function getPageTypeCode4Editor(pPageTypeID) {
-  var vID = pPageTypeID || vJSON_JS["sPageTypeHTML"] || getValueDOM("sPageTypeHTML") || "";
+  var vID = pPageTypeID || vJSCC_DB["sPageTypeHTML"] || getValueDOM("sPageTypeHTML") || "";
   var vValue;
-  if (vJSON_JS["PageType"][vID]) {
-    if (vJSON_JS["PageType"][vID]["template"]) {
+  if (vJSCC_DB["PageTypeList"][vID]) {
+    if (vJSCC_DB["PageTypeList"][vID]["template"]) {
       console.log("PageType template for ["+vID+"] FOUND");
-      vValue = vJSON_JS["PageType"][vID]["template"];
+      vValue = vJSCC_DB["PageTypeList"][vID]["template"];
     }
   } else {
     console.log("PagType content for ["+vID+"] undefined");
@@ -113,13 +113,13 @@ function getMethodCode4Editor(pClass) {
 
 
 function writeMethodCode2Editor(pClass) {
-  if (vJSON_JS["ClassList"][pClass]) {
-    var vID = vJSON_JS["ClassList"][pClass]["sMethodList"];
+  if (vJSCC_DB["ClassList"][pClass]) {
+    var vID = vJSCC_DB["ClassList"][pClass]["sMethodList"];
     var vValue = "MethodCode for '"+vID+"()' undefined";
     if (reduceVarName(vID) == "") {
       vValue = "";
-    } else if (vJSON_JS["ClassList"][pClass]["MethodCode"][vID]) {
-      vValue = vJSON_JS["ClassList"][pClass]["MethodCode"][vID];
+    } else if (vJSCC_DB["ClassList"][pClass]["MethodCode"][vID]) {
+      vValue = vJSCC_DB["ClassList"][pClass]["MethodCode"][vID];
       console.log("writeMethodCode2Editor('"+pClass+"') FOUND MethodCode for "+vID+"()");
       write2value("tMethodCode",vValue);
     } else {
@@ -182,8 +182,13 @@ function getEditorValue(pIFrameName) {
   var vEditor = getIFrameEditor(pIFrameName);
   var vReturn = "";
   if (vEditor) {
-    vReturn = vEditor.getValue();
-    console.log("get Text of ACE-Editor in iFrame '"+pIFrameName+"' DONE!");
+    if (typeof(vEditor.getValue) !== "undefined") {
+      // safe to use the function
+      vReturn = vEditor.getValue();
+      console.log("get Text of ACE-Editor in iFrame '"+pIFrameName+"' DONE!");
+    } else {
+      console.log("WARNING: Call vEditor.getValue() undefined");
+    }
   } else {
     console.log("ERROR: Getting Text of ACE-Editor in iFrame '"+pIFrameName+"' was not successful!");
   };

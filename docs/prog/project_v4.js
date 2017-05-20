@@ -642,7 +642,7 @@ vDataJSON['project'] = {
         }
     },
     "SelectedTypePage": "SaveDialog",
-    "PageType": {
+    "PageTypeList": {
         "DefaultPage": {
             "page-type": "DefaultPage",
             "HEADER_BUTTON1": "home",
@@ -728,9 +728,9 @@ vDataJSON['project'] = {
     },
     "FileList": {
         "index.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
-            "sElementList": "HTML_TITLE",
+            "sElementsFileList": "HTML_TITLE",
             "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "tFilename": "index.html",
             "tAppInitCall": "init(document,vDataJSON)",
@@ -746,9 +746,9 @@ vDataJSON['project'] = {
             "tTemplateHTML": "tpl/Default.html"
         },
         "app.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
-            "sElementList": "",
+            "sElementsFileList": "",
             "tElementHTML": "",
             "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
@@ -762,9 +762,9 @@ vDataJSON['project'] = {
             }
         },
         "submit.html": {
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
-            "sElementList": "",
+            "sElementsFileList": "",
             "tElementHTML": "",
             "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",

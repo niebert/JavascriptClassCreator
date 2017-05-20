@@ -13,7 +13,7 @@ vDataJSON['project'] = {
     "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
-    "tDatabases": "db/mydata.js\ndb/disapp.js",
+    "tDatabases": "db/mydata.js\ndb/disapp.js\ndummy",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
@@ -425,7 +425,7 @@ vDataJSON['project'] = {
             "tMethodHeader": "init(pDoc:Document,pDatabase:Hash)",
             "tMethodComment": "Comment for init",
             "tMethodCode": "",
-            "sMethodList": "getDBHash4Type",
+            "sMethodList": "init",
             "tArrayLoop": "this.aDBList",
             "tMethodLoop": "load()",
             "AttribName": {},
@@ -669,7 +669,16 @@ vDataJSON['project'] = {
             }
         }
     },
+    "DBID2File": {
+      "dummy":"../jquery/db/dummy.json",
+      "db_mydata_js":"db/mydata.js"
+    },
     "DatabaseList": {
+      "dummy":{
+        "test":"Test String",
+        "number":355,
+        "visible":true
+      }
     },
     "ButtonList": {
         "QUIT": {
@@ -692,7 +701,7 @@ vDataJSON['project'] = {
         }
     },
     "SelectedTypePage": "SaveDialog",
-    "PageType": {
+    "PageTypeList": {
         "DefaultPage": {
             "page-type": "DefaultPage",
             "HEADER_BUTTON1": "home",
@@ -735,49 +744,48 @@ vDataJSON['project'] = {
             "PAGE_ID": "welcome",
             "PAGE_TITLE": "Welcome",
             "page-type": "DefaultPage",
-            "parent-id": "home"
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "home": {
             "PAGE_ID": "home",
             "PAGE_TITLE": "Home",
             "page-type": "MenuPage",
-            "parent-id": ""
+            "parent-id": "",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "setting": {
             "PAGE_ID": "setting",
             "PAGE_TITLE": "Settings",
             "page-type": "OptionsPage",
-            "parent-id": "home"
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "save": {
             "PAGE_ID": "save",
             "PAGE_TITLE": "Save",
             "page-type": "SaveDialog",
-            "parent-id": "home"
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "quit": {
             "PAGE_ID": "quit",
             "PAGE_TITLE": "Quit App",
             "page-type": "ConfirmPage",
-            "parent-id": "home"
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "login": {
             "PAGE_ID": "login",
             "PAGE_TITLE": "Login",
             "page-type": "LoginPage",
-            "parent-id": "quit"
+            "parent-id": "quit",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         }
     },
-    "PageContent": {
-        "welcome": "Content for Page 'welcome'",
-        "home": "Content for Page 'home'",
-        "setting": "Content for Page 'setting'",
-        "save": "Content for Page 'save'",
-        "quit": "Content for Page 'quit'",
-        "login": "Content for Page 'login'"
-    },
-    "ElementsDB": {
+    "ElementsDBList": {
       "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
+      "DB_HIDDEN": "<input type=\"hidden\" id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
       "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB___' onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"></textarea>"
     },
     "GlobalLibList": [
@@ -798,9 +806,9 @@ vDataJSON['project'] = {
         "index.html": {
             "sAppClassHTML": "App",
             "tTemplateHTML": "tpl/Default.html",
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
-            "sElementList": "HTML_TITLE",
+            "sElementsFileList": "HTML_TITLE",
             "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "tFilename": "index.html",
             "tAppInitCall": "init(document,vDataJSON)",
@@ -828,9 +836,9 @@ vDataJSON['project'] = {
         "app.html": {
             "sAppClassHTML": "App",
             "tTemplateHTML": "tpl/Default.html",
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
-            "sElementList": "",
+            "sElementsFileList": "",
             "tElementHTML": "",
             "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
@@ -858,9 +866,9 @@ vDataJSON['project'] = {
         "submit.html": {
             "sAppClassHTML": "App",
             "tTemplateHTML": "tpl/Default.html",
-            "tElementIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "",
-            "sElementList": "",
+            "sElementsFileList": "",
             "tElementHTML": "",
             "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",

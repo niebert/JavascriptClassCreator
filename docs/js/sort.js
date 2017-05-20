@@ -5,5 +5,5 @@ function sortStringLine(pTextArea) {
 };
 
 function sortClasses() {
-  
+
 }

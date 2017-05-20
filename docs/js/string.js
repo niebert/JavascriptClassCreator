@@ -70,6 +70,28 @@ function replaceString(pString,pSearch,pReplace)
 	return vReturnString + pString;
 };
 
+function reduceIDName(pName) {
+  if (isString(pName)) {
+    if (pName != "") {
+      pName = pName.replace(/[^A-Za-z0-9_]/g,"");
+      pName = pName.toLowerCase();
+	  }
+  };
+  return pName
+};
+
+function reduceFileName(pName) {
+  if (isString(pName)) {
+    if (pName != "") {
+      pName = pName.replace(/[^A-Za-z0-9_\/\-:]/g,"");
+	  }
+  };
+  return pName;
+};
+function filename2ID(pFile) {
+  return reduceFileName(pFile)
+};
+
 function reduceVarName(pName) {
   // remove all characters exept "_", A-Z, a-z and digits 0-9
 	var vName = "";
@@ -136,6 +158,7 @@ function encodeCR(pString) {
 	if (typeof(pString) == "string") {
 		if (pString != "") {
 			pString = replaceString(pString,"\n","___CR___");
+      pString = replaceString(pString,"|","___PIPE___");
 		} else {
 			//console.log("pString is empty - nothiung to do");
 		};
@@ -158,7 +181,12 @@ function createIndentDefault(pText,pIndent) {
 	pText = createIndent(pText,pIndent);
 	//console.log("createIndentDefault(pText,pIndent)\n"+pText);
 	return pText;
-}
+};
+
+function isString(pObj) {
+  return (typeof(pObj) == "string");
+};
+
 function createIndent(pText,pIndent) {
 	var vIndent = pIndent || "\t";
 	if (pText) {
@@ -170,9 +198,10 @@ function createIndent(pText,pIndent) {
 }
 
 function decodeCR(pString) {
-	if (typeof(pString) == "string") {
+	if (isString(pString)) {
 		if (pString != "") {
-			pString = replaceString(pString,"___CR___","\n");
+      pString = replaceString(pString,"___CR___","\n");
+      pString = replaceString(pString,"___PIPE___","|");
 		};
 		return pString
 	} else {
@@ -183,7 +212,7 @@ function decodeCR(pString) {
 
 
 function removeSpaces(pString) {
-	if (pString) {
+	if (isString(pString)) {
 		if (pString != "") {
 			pString = pString.replace(/\s/g,"");
 		};
@@ -250,6 +279,12 @@ function getNameExt4URL(pURL) {
   console.log("getNameExt4URL('"+pURL+"') return '"+url+"'");
   return url;
 };
+
+function checkFilenameDef(pID) {
+  var vFilename = getValueDOM(pID);
+  vFilename = vFilename.replace(/[^a-zA-Z\-\/0-9_]/g,"");
+  return vFilename;
+}
 
 function getName4URL(pFilePath) {
   var vNameExt = getNameExt4URL(pFilePath);

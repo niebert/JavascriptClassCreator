@@ -9,12 +9,19 @@
     <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
     <link rel='stylesheet' src='css/font-awesome.css'>
 
+    <script src="dist/filesaver.js"></script>
     <script src="dist/jsoneditor.js"></script>
 
     <script>
     // Set the default CSS theme and icon library globally
     JSONEditor.defaults.theme = 'foundation5';
     JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
     </script>
   </head>
   <body>
@@ -105,6 +112,8 @@
           indicator.textContent = 'valid';
         }
       });
+
     </script>
+    <input type="button" value="Save Page" onclick="saveFile2HDD('index_css.html',document.getElementsByTagName('html')[0].innerHTML)">
   </body>
 </html>

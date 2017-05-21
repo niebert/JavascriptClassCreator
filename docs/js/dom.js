@@ -88,7 +88,7 @@ function createMethodSelect(pClass,pMethID) {
     console.log("createMethodSelect('"+vClass+"','"+vMethID+"')-Call");
     vClassJSON["sMethodList"] = vMethID;
     if (vMethID != "") {
-      vAccess = vClassJSON["MethodAccess"][vMethID];
+      vAccess = vClassJSON["MethodAccess"][vMethID] || "";
       if (vAccess == "") {
         vAccess = "public";
         vClassJSON["MethodAccess"][vMethID] = "public";
@@ -101,8 +101,9 @@ function createMethodSelect(pClass,pMethID) {
       vClassJSON["tMethodHeader"] = vMethodHeader;
     };
   };
-  write2value("tMethodName",vMethID);
   write2options("sMethodList",vArray);
+  write2value("sMethodList",vMethID);
+  write2value("tMethodName",vMethID);
   write2value("sMethodAccess",vAccess);
   write2value("tMethodHeader",vMethodHeader);
   write2innerHTML("titleMethodName",vMethodHeader);

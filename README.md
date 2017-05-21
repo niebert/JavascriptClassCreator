@@ -145,7 +145,7 @@ any new page generation of a certain HTML template (PageType). Similar to this a
 
 will be replaced by the title of the HTML page. In general markers that are replaced by content from a hash (Object), are stored in the project JSON file ___vJSCC_DB___ with the ID in uppercase characters (e.g. PAGE_TITLE) and the definition of page title.
 
-      ___"PAGE_TITLE": "My Title of the Page",___
+      "PAGE_TITLE": "My Title of the Page",
 
 The notation with  3 underscores before an after the uppercase identifier is used, because it creates less conflict with other programming languages and the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
 

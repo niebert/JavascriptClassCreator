@@ -34,6 +34,10 @@ function lengthHash(pHash) {
   return vLength;
 };
 
+function updateHashSourceDestination(pSource,pDest) {
+
+}
+
 function renameHashKey(pHash,old_key,new_key) {
   var vErrorMSG = "";
   if (isHash(pHash)) {
@@ -82,8 +86,8 @@ function createArray4HashID(pHash) {
   var vArr = [];
   for (var iID in pHash) {
     if (pHash.hasOwnProperty(iID)) {
-      vArr.push(iID);
+        vArr.push(iID);
     };
   };
   return vArr;
-}
+};

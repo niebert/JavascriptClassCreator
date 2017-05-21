@@ -980,21 +980,6 @@ function selectDatabaseJSON(pDBID) {
   //selectDatabaseExport(vDBID);
 };
 
-function createDatabaseVarIDSelect(pDBID) {
-  var vDBID = pDBID || getValueDOM("sDatabaseID");
-  if (vJSCC_DB["DatabaseList"].hasOwnProperty(vDBID)) {
-    var vDB = vJSCC_DB["DatabaseList"][vDBID];
-    var vDBIDArr = getArray4HashID(vDB["format"]);
-    write2innerHTML("sDatabaseID",createOptions4Array(vDBIDArr));
-    if (vDBIDArr.length > 0) {
-      console.log("DBIDArr='"+vDBIDArr.join(",")+"'");
-      selectDatabaseVarID(vDBIDArr[0]);
-    };
-    var vDBIDs = vDBIDArr.join("|");
-    write2value("tDatabaseIDs",vDBIDs);
-  };
-}
-
 function selectDatabaseVarID(pDBVarID) {
   var vDBVarID = pDBVarID || getValueDOM("sDatabaseID");
   console.log("selectDatabaseVarID('"+vDBVarID+"')");
@@ -1046,6 +1031,13 @@ function setOutTemplate4DBID(pKey,pOutTpl,pDef) {
     }
   }
 };
+
+function saveDatabaseVarIDHTML() {
+  var vDBname = getValueDOM("sDatabaseTAB");
+  var vDBVarID = getValueDOM("sDatabaseID");
+  console.log("saveDatabaseHTMLVarID('"+vDBname+"','"+vDBVarID+"')");
+  // Save DB Title of JSCC Database
+}
 
 function saveDatabaseHTML() {
   var vDBname = getValueDOM("sDatabaseTAB");

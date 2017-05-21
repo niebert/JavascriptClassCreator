@@ -4,7 +4,7 @@ function loadProjectJS(pDB) {
     if (vDataJSON[vDB].hasOwnProperty("JSCC_type")) {
       var vTypeDB = vDataJSON[vDB]["JSCC_type"];
       if (vTypeDB == "JSCC") {
-        console.log("JSON Database for JSCC '"+vDB+".js' defined!");
+        console.log("loadProjectJS('prog/"+vDB+".js') from vDataJSON['"+vDB+"'] - JSON defined!");
         vJSCC_DB = vDataJSON[vDB];
       } else {
         console.log("ERROR: JSCC_type='"+vTypeDB+"' for JSON is not 'JSCC'");

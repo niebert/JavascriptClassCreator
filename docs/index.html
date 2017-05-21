@@ -53,6 +53,7 @@
       //alert("URL: "+document.location + document.location.search+"\n"+
       //      "Link: "+document.location + "\n" +
       //      "Parameter: " + document.location.search);
+
    </script>
  <!-- FileSaver Library is a cross browser Blob implementation for W3C by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
 
@@ -60,6 +61,8 @@
    <script language="javascript" src="js/blob.js"></script>
    <script language="javascript" src="js/classes.js"></script>
    <script language="javascript" src="js/codegen.js"></script>
+   <script language="javascript" src="js/codedb.js"></script>
+   <script language="javascript" src="js/codehtml.js"></script>
    <script language="javascript" src="js/date.js"></script>
    <script language="javascript" src="js/dom.js"></script>
    <!-- FileSaver Library by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
@@ -269,6 +272,10 @@
                 Compress Code:
               </b>
               <input type="checkbox" id="checkCompressCode4HTML" name="checkCompressCode4HTML">
+              <b>
+                All Classes:
+              </b>
+              <input type="checkbox" id="checkExportAllClasses" name="checkExportAllClasses" checked="checked">
               <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
               <br>
               <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
@@ -369,11 +376,11 @@
                   <font color="blue" id="titleClassNameTab">FileName</font>
                 </b>
               </font>
-      		</td>
+          </td>
         </tr>
         <tr>
-    		<td>
-    		<b>Class:</b> <input name="tClassname" id="tClassname" value="App" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
+        <td>
+        <b>Class:</b> <input name="tClassname" id="tClassname" value="App" type="text" style="font-family: monospace" onchange="this.value=firstUpperCase(reduceVarName(this.value))">
         <input type="button" id="bCreateNewClass" onclick="createNewClass();return false" value="+">
         <button id="bRenameClass"    class="renamebutton" onclick="renameClassForm();return false">Rename</button>
         <button id="bDeleteClass" class="deletebutton" onclick="deleteClassForm();return false">Delete</button>
@@ -389,41 +396,41 @@
           <option value="Abstract">ABSTRACT Class</option>
           <option value="Interface">INTERFACE Class</option>
         </select>
-	     </td>
-    		<td>
-    		<b>Super Class Name:</b>
+       </td>
+        <td>
+        <b>Super Class Name:</b>
         <select name="sSuperClassname" id="sSuperClassname" onchange="selectSuperClass(this.value)">
         </select>
         <input name="tSuperClassname" id="tSuperClassname" value="" type="text" style="font-family: monospace;display:none" onchange="updateFormID2JSON(this.id)">
         <br><b>UML-Type Super Class:</b> <font id="labSuperClassTypeUML" color="blue"></font>
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    		<b>Author of Class:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
-    		</td>
-    		<td>
-    		<b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
-    		</td>
-    	</tr>
-    	<tr>
-    		<td>
-    			<b>Attributes</b>
+        </td>
+      </tr>
+      <tr>
+        <td>
+        <b>Author of Class:</b> <input name="tAuthor" id="tAuthor" value="Engelbert Niehaus" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
+        </td>
+        <td>
+        <b>e-Mail Author:</b> <input name="tEMail" id="tEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="30" onchange="updateFormID2JSON(this.id)">
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <b>Attributes</b>
           <span class="ui-icon ui-icon-pencil"></span>
           <input name="bEditAttribs" value=" Edit Attributes " class="tabbutton" onclick="showAttributes()" type="button">
           <br>
-    			<textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">
+          <textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">
           </textarea>
-    		</td>
-    		<td>
-    			<b>Methods</b>
+        </td>
+        <td>
+          <b>Methods</b>
           <span class="ui-icon ui-icon-pencil"></span>
           <input name="bEditMethods" value=" Edit Methods "  class="tabbutton" onclick="showMethods()" type="button">
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-    			<textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">
-    			</textarea>
+          <textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">
+          </textarea>
         </td>
           </tr>
           <tr>
@@ -466,6 +473,122 @@
         </tbody>
     </table>
   </div>
+
+  <!-- TAB: ATTRIBUTES -->
+  <div id="tabs-Attributes"  class="tabmenu" style="background-color:#f2f2f2">
+          <table bgcolor="#A9BCF5" border="1" width="90%">
+            <tbody>
+              <tr>
+                <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+                    <font size="+2">
+                      <b>
+                        Attribute Definition:
+                        <font color="blue" class="titleClassName" id="titleClassNameAttrib">FileName</font>
+                      </b>
+                    </font>
+                </td>
+              </tr>
+                <tr>
+                  <td colspan="2" align="center">
+                  <b>Select Attribute</b>
+                  <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
+                  </select>
+                  <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
+                  <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
+                </td>
+                </tr>
+                  <tr>
+                    <td colspan="2" align="center">
+                    <select id="sAttribAccess" name="sAttribAccess" onchange="updateAttributeForm2JSON()">
+                      <option>public</option>
+                      <option>private</option>
+                    </select>
+                    Name: <input id="tAttribName" name="tAttribName" type="text" size="30" value="" style="font-family: monospace"> =
+                  <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form(this.value)" style="font-family: monospace">
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  Attribute Type/Class:
+                  <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" onchange="updateAttributeTypeEdit(this.value)">
+                </td>
+              <td align="center">
+                <b>Select Type:</b>
+                <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
+                create
+                <input type="checkbox" id="checkAttribCreate" name="checkAttribCreate" checked="true">
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center">
+                Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribComment2JSON()" >
+              </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+  <!-- TAB: METHOD -->
+  <div id="tabs-Methods"  class="tabmenu" style="background-color:#f2f2f2" >
+          <table bgcolor="#A9BCF5" border="1">
+            <tbody>
+              <tr>
+                <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
+                  <font size="+2">
+                    <b>
+                      Method Definition:
+                      <font color="blue" class="titleClassName" id="titleClassNameMethod">Class</font>
+                    </b>
+                  </font>
+              </td>
+            </tr>
+            <tr>
+                <td colspan="2" align="center">
+                <b>Method:</b>
+                <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
+                <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
+                <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
+                <hr>
+                <select id="sMethodAccess" name="sMethodAccess" onchange="saveMethodForm()">
+                  <option>public</option>
+                  <option>private</option>
+                </select>
+                <input id="tMethodName" name="tMethodName" type="text" size="10" value="" onchange="updateMethodNameEdit(this.value)">
+                <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
+                <b>Return:</b>
+                <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
+                <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
+                <br>
+                <b>Method Definition:</b>
+                <input id="tMethodHeader" name="tMethodHeader" type="text" size="90" value="" style="font-family: monospace">
+
+                <hr>
+                 <b>Method Comment</b><br>
+                   <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="3" onchange="updateForm2MethodComment()" style="font-family: monospace"> </textarea>
+                 </td>
+               </tr>
+               <tr>
+                  <td colspan="2" align="center">
+                <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
+                <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
+                <br>
+                <b>Loop Calls:</b>
+                <input id="tLoopObject" name="tLoopObject" type="text" size="20" value="myHash" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+                <input id="tLoopMethod" name="tLoopMethod" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
+                <select id="sLoopType" name="sLoopType" >
+                  <option>Hash</option>
+                  <option>Array</option>
+                </select>
+                <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
+                <br>
+                  <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
+                 <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
+                 <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
+                 </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
   <!-- TAB: UML -->
   <div id="tabs-UML" class="tabmenu" style="background-color:#f2f2f2">
@@ -523,122 +646,6 @@
     </table>
   </div>
 
-  <!-- TAB: ATTRIBUTES -->
-  <div id="tabs-Attributes"  class="tabmenu" style="background-color:#f2f2f2">
-    <table bgcolor="#A9BCF5" border="1" width="90%">
-      <tbody>
-        <tr>
-          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-              <font size="+2">
-                <b>
-                  Attribute Definition:
-                  <font color="blue" class="titleClassName" id="titleClassNameAttrib">FileName</font>
-                </b>
-              </font>
-      		</td>
-        </tr>
-          <tr>
-            <td colspan="2" align="center">
-            <b>Select Attribute</b>
-            <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
-            </select>
-            <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
-            <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
-          </td>
-          </tr>
-            <tr>
-              <td colspan="2" align="center">
-              <select id="sAttribAccess" name="sAttribAccess" onchange="updateAttributeForm2JSON()">
-                <option>public</option>
-                <option>private</option>
-              </select>
-              Name: <input id="tAttribName" name="tAttribName" type="text" size="30" value="" style="font-family: monospace"> =
-            <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form(this.value)" style="font-family: monospace">
-          </td>
-        </tr>
-        <tr>
-          <td align="center">
-            Attribute Type/Class:
-            <input id="tAttribType" name="tAttribType" type="text" size="25" value="" style="font-family: monospace" onchange="updateAttributeTypeEdit(this.value)">
-          </td>
-        <td align="center">
-          <b>Select Type:</b>
-          <select id="sAttribTypeList" name="sAttribTypeList" onchange="selectJSAttribType()"></select>
-          create
-          <input type="checkbox" id="checkAttribCreate" name="checkAttribCreate" checked="true">
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-          Attribute Comment: <input id="tAttribComment" name="tAttribComment" type="text" size="80" value="" style="font-family: monospace" onchange="updateAttribComment2JSON()" >
-        </td>
-      	</tr>
-      </tbody>
-    </table>
-  </div>
-
-  <!-- TAB: METHOD -->
-  <div id="tabs-Methods"  class="tabmenu" style="background-color:#f2f2f2" >
-    <table bgcolor="#A9BCF5" border="1">
-      <tbody>
-        <tr>
-          <td colspan="2" align="center" bgcolor="#C0C0C0" valign="bottom">
-            <font size="+2">
-              <b>
-                Method Definition:
-                <font color="blue" class="titleClassName" id="titleClassNameMethod">Class</font>
-              </b>
-            </font>
-        </td>
-      </tr>
-      <tr>
-      		<td colspan="2" align="center">
-          <b>Method:</b>
-          <select id="sMethodList" name="sMethodList" onchange="selectJSMethods()"></select>
-          <input value="Delete" id="bDeleteMethodDef" name="bDeleteMethodDef" class="deletebutton" onclick="deleteMethodForm()" type="button">
-          <input value="Save"   id="bSaveMethodDef" name="bSaveMethodDef" onclick="saveMethodForm()" type="button">
-          <hr>
-          <select id="sMethodAccess" name="sMethodAccess" onchange="saveMethodForm()">
-            <option>public</option>
-            <option>private</option>
-          </select>
-          <input id="tMethodName" name="tMethodName" type="text" size="10" value="" onchange="updateMethodNameEdit(this.value)">
-          <input id name="bNewMethodDef" value="+" onclick="createNewMethodJS()" type="button">
-          <b>Return:</b>
-          <select id="sReturnList" name="sReturnList" onchange="selectJSMethodReturn(this.value)"></select>
-          <!-- <input name="bSaveMethods" value=" Select Method " onclick="saveForm2ClassJSON()" type="button"> -->
-          <br>
-          <b>Method Definition:</b>
-          <input id="tMethodHeader" name="tMethodHeader" type="text" size="90" value="" style="font-family: monospace">
-
-          <hr>
-           <b>Method Comment</b><br>
-             <textarea name="tMethodComment" id="tMethodComment" cols="125" rows="3" onchange="updateForm2MethodComment()" style="font-family: monospace"> </textarea>
-           </td>
-         </tr>
-         <tr>
-         		<td colspan="2" align="center">
-          <b>Method Source Code: <font color="blue" id="titleMethodName"></font></b>
-          <input id="bSaveMethodTitle" name="bSaveMethodTitle" value="Save" onclick="saveMethodForm()" type="button">
-          <br>
-          <b>Loop Calls:</b>
-          <input id="tLoopObject" name="tLoopObject" type="text" size="20" value="myHash" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
-          <input id="tLoopMethod" name="tLoopMethod" type="text" size="35" value="myLoopMethod(pID)" style="font-family: monospace" onchange="updateFormLoopDef2JSON()">
-          <select id="sLoopType" name="sLoopType" >
-            <option>Hash</option>
-            <option>Array</option>
-          </select>
-          <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
-          <br>
-            <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
-	         <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
-           <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
-           </td>
-      	</tr>
-      </tbody>
-    </table>
-  </div>
-
   <!--- TAB DB --->
   <div id="tabs-DB" class="tabmenu" style="background-color:#f2f2f2">
     <table bgcolor="#A9BCF5" border="1" width="80%">
@@ -668,6 +675,11 @@
             <input name="tDatabaseName" id="tDatabaseName" value=""  size="35" type="text" style="font-family: monospace"  onchange="checkFilenameDef(this.id)">
             <input type="button" id="bCreateNewDatabase" onclick="createNewDatabase();return false" value="+">
             <input type="button"  class="renamebutton" id="bRenameDatabaseHTML" onclick="renameDatabaseHTML();return false" value="Rename">
+            <div class="trJSCCDB" id="labTitleJSCCDB">
+              <b>DB-Title:</b>
+              <input name="tDatabaseTitle" id="tDatabaseTitle" value=""  size="45" type="text" style="font-family: monospace"  onchange="saveDatabaseHTML();return false">
+            </div>
+            <!-- "dbtitle": "Title of DB db_mydata_js" -->
             <br>
             <textarea id="tDBHTML" name="tDBHTML" cols="125" rows="10" style="display:none"></textarea>
             <iframe id="iDBHTML"  src="ace/editdb.html" width="90%" height="100"></iframe>
@@ -1217,8 +1229,8 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 
 ___METHODDEFPREFIX___.___METHODNAME___ = function (___METHODPARAMETERS___) {
   //----Debugging------------------------------------------
-  // The following alert-Command is useful for debugging
-  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___")
+  //console.log("___CLASSFILENAME___ - Call: ___METHODDEF___");
+  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___");
   //----Create Object/Instance of ___CLASSNAME___----
   //    var vMyInstance = new ___CLASSNAME___();
   //    vMyInstance.___METHODCALL___;
@@ -1290,7 +1302,7 @@ for (var vKey in ___LOOPOBJECT___) {
   <script src="js/jqueryinit.js" type="text/javascript"></script>
   <script>
     //setTimeout('createCode4JSON_JS(vJSCC_DB)',9000);
-    $( document ).ready(function() {
+      $( document ).ready(function() {
       initCodeCreator();
       console.log( "JQuery Document ready!" );
     })

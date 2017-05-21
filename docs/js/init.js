@@ -18,7 +18,6 @@ vDOM_Global.push("sPageHTML"); // Selector for PageID
 vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
 //vDOM_Global.push("sButtonHeader1"); // Selector for ButtonHeader 1
 //vDOM_Global.push("sButtonHeader2"); // Selector for ButtonHeader 2
-vDOM_Global.push("tMethodCode");
 vDOM_Global.push("tGlobalLibs");
 vDOM_Global.push("tDatabases"); // List of all included Databases
 vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases

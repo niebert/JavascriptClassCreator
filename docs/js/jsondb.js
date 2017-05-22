@@ -756,18 +756,26 @@ function saveMethodForm_do(pMethodHeader) {
   return vSuccessMSG;
 };
 
-function getSelectedMethodID(pMethodHeader) {
-  var vMethodHeader= pMethodHeader|| getValueDOM("tMethodHeader");
-  var vMethodName = getMethodName(vMethodHeader) || "";
+function getSelectedMethodID(pClass) {
+  var vClass = pClass || getSelectedClassID();
+  var vMethodName = "";
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    vMethodName = vClassJS["sMethodList"];
+  };
+  //var vMethodHeader= pMethodHeader|| getValueDOM("tMethodHeader");
+  //var vMethodName = getMethodName(vMethodHeader) || "";
+  //var vMethodName = getMethodName(vMethodHeader) || "";
   return vMethodName;
 };
 
 function saveMethodJSON(pMethodHeader,pAccess) {
   var vAccess = pAccess || getValueDOM("sMethodAccess") || "public";
   var vErrorMSG = "";
-  var vClassJSON = getClassJSON();
+  var vClass = getSelectedClassID();
+  var vClassJSON = getClassJSON(vClass);
   var vMethodHeader= pMethodHeader || getValueDOM("tMethodHeader");
-  var vMethodName = getSelectedMethodID(vMethodHeader);
+  var vMethodName = getSelectedMethodID(vClass);
   var vMethodCode     = getValueDOM("tMethodCode");
   var vMethodComment  = getValueDOM("tMethodComment");
   if (vMethodName != "") {
@@ -860,10 +868,12 @@ function updateFileHTML2Form(pFile) {
   updateFileJSON2FormVariable(vFile,"tElements");
 };
 
-function updateJSON2Form(pClass,pFile,pPageType) {
+function updateJSON2Form(pClass,pFile,pPageType,pPage) {
   var vClass = pClass || getSelectedClassID();
   var vFile  = pFile  || getSelectedFileID();
   var vPageType = pPageType || getSelectedPageTypeID();
+  var vPage = pPage || getSelectedPageID();
+  var vDatabase = getSelectedDatabaseID();
   console.log("updateJSON2Form('"+pClass+"','"+pFile+"','"+pPageType+"')");
   updateBasicClassJSON2Form();
   //--- Create Selectors
@@ -931,8 +941,8 @@ function updateBasicClassJSON2Form() {
 function updateJSON2EditorContent(pClass,pFile) {
   var vClass = pClass || getSelectedClassID();
   var vFile  = pFile  || getSelectedFileID();
-  var vMethodName = getSelectedMethodID() || "";
-  console.log("updateJSON2Form('"+vClass+"','"+vFile+"')");
+  var vMethodName = getSelectedMethodID(vClass) || "";
+  console.log("updateJSON2Form('"+vClass+"','"+vFile+"') MethodName='"+vMethodName+"'");
   var vContent = "";
   var vID = "";
   if (vMethodName != "") {

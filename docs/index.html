@@ -419,7 +419,7 @@
           <span class="ui-icon ui-icon-pencil"></span>
           <input name="bEditAttribs" value=" Edit Attributes " class="tabbutton" onclick="showAttributes()" type="button">
           <br>
-          <textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()">
+          <textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()" wrap="soft">
           </textarea>
         </td>
         <td>
@@ -429,7 +429,7 @@
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-          <textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()">
+          <textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()"  wrap="soft">
           </textarea>
         </td>
           </tr>
@@ -677,7 +677,7 @@
             <input type="button"  class="renamebutton" id="bRenameDatabaseHTML" onclick="renameDatabaseHTML();return false" value="Rename">
             <div class="trJSCCDB" id="labTitleJSCCDB">
               <b>DB-Title:</b>
-              <input name="tDatabaseTitle" id="tDatabaseTitle" value=""  size="45" type="text" style="font-family: monospace"  onchange="saveDatabaseHTML();return false">
+              <input name="tDatabaseTitle" id="tDatabaseTitle" value=""  size="65" type="text" style="font-family: monospace"  onchange="saveDatabaseHTML();return false">
             </div>
             <!-- "dbtitle": "Title of DB db_mydata_js" -->
             <br>
@@ -1228,7 +1228,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 //#    ___METHODCOMMENT___
 //# ___RETURNCOMMENT___
 //# created with JSCC  ___DATE___
-//# last modifications ___DATE___
+//# last modifications ___MODDATE___
 //#################################################################
 
 ___METHODDEFPREFIX___.___METHODNAME___ = function (___METHODPARAMETERS___) {
@@ -1259,7 +1259,7 @@ ___METHODCODE___
 //#    ___METHODCOMMENT___
 //# ___RETURNCOMMENT___
 //# created with JSCC  ___DATE___
-//# last modifications ___DATE___
+//# last modifications ___MODDATE___
 //#################################################################
 
 function ___METHODNAME___(___METHODPARAMETERS___) {

@@ -613,7 +613,7 @@ function replaceCodeMainVars(pOutput,pClass) {
   vOutput = replaceString(vOutput,"___SUPERCLASSNAME___",vClassJS["tSuperClassname"]);
   vOutput = replaceString(vOutput,"___CLASSNAME___",vClassJS["tClassname"]);
   vOutput = replaceString(vOutput,"___CLASSFILENAME___",vClassFile);
-  vOutput = replaceString(vOutput,"___DATE___",vClassJS["JSCC_mod_date"]);
+  vOutput = replaceString(vOutput,"___DATE___",vClassJS["JSCC_init_date"]);
   vOutput = replaceString(vOutput,"___MODDATE___",getDateTime());
   vOutput = replaceString(vOutput,"___METHODDEFPREFIX___",vMethodDefPrefix);
   return vOutput;
@@ -676,19 +676,22 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pCodePrefix) {
     vMethHash["returncomment"] = "";
   };
   var vReplaceHash = {};
+  vReplaceHash["DATE"] = vJSCC_DB["init_date"];
+  vReplaceHash["MODDATE"] = getDateTime();
   vReplaceHash["METHODNAME"] = pMethName;
   vReplaceHash["METHODDEF"] = pMethodHeader;
+  vReplaceHash["PARAM"] = vMethHash["param"];
   //----- Parameter Comments lines -----
   var vParArr = (vMethHash["param"]).split(",");
-  var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix"); //"\t//";
-  var vCommentBoxPrefix = "      ";
-  var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix;
-  vReplaceHash["PARAMETERDEF"] = vParArr.join(vComPrefix);
+  vReplaceHash["PARAMETERDEF"] = vParArr.join("\n");
   //------------------------------------
   vReplaceHash["METHODACCESS"] = (vMethHash["access"]).toUpperCase();
   vReplaceHash["METHODCALL"] = vMethName+"("+vMethodAllParams+")";
   vReplaceHash["RETURNCOMMENT"] = vMethHash["returncomment"];
   var vMethodComment = getMethodComment(pMethodHeader) || "   What does '"+vMethName+"()' do?";
+  var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix"); //"\t//";
+  var vCommentBoxPrefix = "\t";
+  var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix;
   vReplaceHash["METHODCOMMENT"] = createIndentDefault(vMethodComment,vCommentPrefix+vCommentBoxPrefix);
   vReplaceHash["METHODPARAMETERS"] = getMethodAllParams(pMethodHeader);
   var vMethodComment = vMethHash["comment"] || "   What does '"+vMethName+"()' do?";
@@ -700,13 +703,15 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pCodePrefix) {
 };
 
 function getMethodComments4Constructor(pClass) {
-  var vOutput = getMethodCode4Template(pClass,"tTplMethodsHeadComment","tTplMethodConstructorComment","");
+  // pTemplateHeadID = "tTplMethodsHeadComment"
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","");
   vOutput = createIndentDefault(vOutput,"\t");
   return vOutput;
 };
 
 function getMethodPrivate4Constructor(pClass) {
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE","    ");
+  var vCodePrefix = "\t";
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE",vCodePrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = replaceString(vOutput,"\n","\n\t");
   return vOutput;

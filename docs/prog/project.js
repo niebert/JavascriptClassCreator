@@ -337,6 +337,117 @@ vDataJSON['project'] = {
             "AttribComment": {},
             "MethodParameter": {}
         },
+        "HTMLParser":{
+          "JSCC_type": "CLASS",
+          "JSCC_init_date": "22.5.2017",
+          "JSCC_mod_date": "2017/04/01 15:33:46",
+          "tClassname": "ParserHTML",
+          "tSuperClassname": "",
+          "sClassType": "Green",
+          "tAuthor": "John Resig",
+          "tEMail": "jeresig@gmail.com",
+          "tAttributes": "aDoc = new DatabaseList()\nstartTag = /^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/\nendTag = /^<\\/([-A-Za-z0-9_]+)[^>]*>/\nattr = /([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;\nempty = null\nblock = null\ninline = null\ncloseSelf = null\nfillAttrs = null",
+          "tMethods": "init(pDoc)\ntoXML(pString)\ntoHTML(pString)\ntoDOM(pString):Hash\nmakeMap(pCommaSepString):Hash\nparse( html, handler )",
+          "sAttribList": "fillAttrs",
+          "tAttribName": "",
+          "tAttribType": "",
+          "tAttribComment": "",
+          "tAttribDefault": "",
+          "sAttribTypeList": "",
+          "tMethodHeader": "init(pDoc)",
+          "tMethodName": "",
+          "tMethodComment": "Comment for makeMap",
+          "sMethodList": "init",
+          "tMethodCode": "",
+          "tLoopObject": "",
+          "tLoopMethod": "",
+          "AttribType": {
+              "startTag": "RegularExp",
+              "endTag": "RegularExp",
+              "attr": "RegularExp",
+              "aDoc": "DatabaseList",
+              "empty": "",
+              "block": "",
+              "inline": "",
+              "closeSelf": "",
+              "fillAttrs": ""
+          },
+          "AttribAccess": {
+              "aDoc": "public",
+              "attr": "private",
+              "endTag": "private",
+              "startTag": "private",
+              "fillAttrs": "public",
+              "closeSelf": "public",
+              "block": "public",
+              "inline": "public",
+              "empty": "public"
+          },
+          "AttribDefault": {
+              "aDoc": "new DatabaseList()",
+              "startTag": "/^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/",
+              "endTag": "/^<\\/([-A-Za-z0-9_]+)[^>]*>/",
+              "attr": "/([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;",
+              "empty": "null",
+              "block": "null",
+              "inline": "null",
+              "closeSelf": "null",
+              "fillAttrs": "null"
+          },
+          "AttribComment": {
+              "startTag": "the attribute 'startTag' defines a start-tag in HTML as 'RegularExp' ",
+              "endTag": "the attribute 'endTag' defines a end-tag in HTML as 'RegularExp' ",
+              "attr": "the attribute 'attr' stores in 'RegularExp' to parse the attributes of the tag ",
+              "aDoc": "the attribute 'aDoc' stores a reference to 'document'",
+              "empty": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
+              "block": "the attribute 'block' stores in 'Hash'  and is initialized by init()",
+              "inline": "the attribute 'inline' stores in 'Hash'  and is initialized by init()",
+              "closeSelf": "the attribute 'closeSelf' stores in 'Hash'  and is initialized by init()",
+              "fillAttrs": "the attribute 'fillAttrs' stores in 'Hash'  and is initialized by init()"
+          },
+          "MethodParameter": {
+              "init": "pDoc",
+              "toXML": "pString",
+              "toHTML": "pString",
+              "toDOM": "pString",
+              "makeMap": "pCommaSepString",
+              "parse": " html, handler "
+          },
+          "MethodReturn": {
+              "init": "",
+              "toXML": "Hash",
+              "toHTML": "Hash",
+              "toDOM": "Hash",
+              "makeMap": "Hash",
+              "parse": ""
+          },
+          "MethodCode": {
+            "init": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
+            "toXML": "",
+            "toHTML": "",
+            "toDOM": "parses the HTML input and creates DOM tree that can be added to DOM - error in the syntax are correct e.g. missing closing tags",
+            "makeMap": "var obj = {}, items = pCommaSepString.split(\",\");\nfor ( var i = 0; i < items.length; i++ ) {\n\tobj[ items[i] ] = true;\n};\nreturn obj;\n",
+            "parse": ""
+          },
+          "MethodComment": {
+              "init": "init HTML elements for parsing\n* HTML Parser By John Resig (ejohn.org)\n* Original code by Erik Arvidsson, Mozilla Public License\n* http://erik.eae.net/simplehtmlparser/simplehtmlparser.js\n\nUse like so:\n     var vHTMLParser = new HTMLParser();\n     vHTMLParser.init(document)\n     vHTMLParser.parser(htmlString, {\n         start: function(tag, attrs, unary) {},\n         end: function(tag) {},\n         chars: function(text) {},\n         comment: function(text) {}\n      });\n \n or to get an XML string:\n     vHTMLParser.toXML(htmlString);\n \n or to get an XML DOM Document\n  vHTMLParser.toDOM(htmlString);\n \n or to inject into an existing document/DOM node\n     vHTMLParser.toDOM(htmlString, document);\n     vHTMLParser.toDOM(htmlString, document.body);",
+              "toXML": "parses the HTML input and creates XML output with XML closing tags that might no been closed in HTML",
+              "toHTML": "parses the HTML input and creates HTML output corrects errors e.g. missing closing tags",
+              "toDOM": "Parses HTML content and creates a DOM tree that can be append to certain node in DOM",
+              "makeMap": "takes a comma separated string e.g. \"input,form,body\" and creates a hash with a default value 'true'",
+              "parse": "Main method for parse input and provides a handler to do something with the parsed tree (tree walker)"
+          },
+          "MethodAccess": {
+              "init": "public",
+              "toDOM": "public",
+              "toXML": "public",
+              "toHTML": "public",
+              "makeMap": "private",
+              "parse": "public"
+          },
+          "tMethodAccess": "public",
+          "JSCC_version": "1"
+        },
         "WrapJSON": {
           "tClassname": "WrapJSON",
           "tSuperClassname": "",

@@ -267,7 +267,7 @@ function updateElementsFileJSON2Form(pFileID,pArrID) {
     console.log("updateElementsFileJSON2Form('"+pFileID+"')");
     var vArrID = pArrID || getArray4HashID(vJSCC_DB["FileList"][pFileID]["elements"]);
     write2value("tElementFileIDs",vArrID.join("|"));
-    createElementsFileSelect(vFileID); // takes a pipe separted Element String as Input
+    createElementsFileSelect(pFileID); // takes a pipe separted Element String as Input
   } else {
     console.log("ERROR: updateElementsFileJSON2Form(pFileID) - pArrID undefined");
   };

@@ -401,7 +401,7 @@ function createDatabaseSelect(pDatabaseID) {
   write2innerHTML("sDatabaseList",vOptions);
   var vDBID = firstKey4Hash(vDBList);
   if (pDatabaseID) {
-    if (existsDatabaseJS(pDBID)) {
+    if (existsDatabaseJS(vDBID)) {
       vDBID = pDatabaseID;
     };
   };

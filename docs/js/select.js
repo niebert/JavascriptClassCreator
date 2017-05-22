@@ -225,9 +225,6 @@ function selectClass_do(pClass) {
   var vCurrentClass = getValueDOM("tClassname");
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
-  if ((vCurrentClass != "") && (existsClassJS(vCurrentClass))) {
-    updateForm2JSON(vCurrentClass);
-  };
   // following command is inserted for the first startup
   write2value("sClassList",vClass);
   write2value("tClassname",vClass);
@@ -372,7 +369,7 @@ function selectJSMethodReturn(pReturnID) {
   console.log("selectJSMethodReturn('"+vReturnID+"')");
   var vClass = getSelectedClassID();
   if (existsClassJS(vClass)) {
-    var vMethodName = getSelectedMethodID();
+    var vMethodName = getSelectedMethodID(vClass);
     var vClassJS = getClassJSON();
     if (vClassJS["MethodReturn"].hasOwnProperty(vMethodName)) {
       vClassJS["MethodReturn"][vMethodName] = vReturnID;
@@ -644,6 +641,9 @@ function getSelectedElement() {
   return getValueDOM("sElementsFileList") || "";
 }
 
+function getSelectedDatabaseID() {
+  return getValueDOM("sDatabaseList") || "";
+}
 
 function selectElementFileJS(pElementID,pFile) {
   console.log("selectElementFileJS('"+pElementID+"')");
@@ -810,6 +810,22 @@ function updateFileJSON2Form(pFileName) {
   };
 };
 
+function getSelectedMethodCode(pClass,pMethName) {
+  var vClass = pClass || getSelectedClassID();
+  var vMethName = pMethName || getSelectedMethodID(vClass);
+  if (existsClassJS(vClass)) {
+    return vJSCC_DB["ClassList"][vClass]["MethodCode"][vMethName];
+  } else {
+    return "ERROR: undefined Method '"+vMethodName+"' for Class '"+vClass+"'";
+  }
+};
+
+function logSelectedMethodCode(pLabel,pClass,pMethName) {
+  var vClass = pClass || getSelectedClassID();
+  var vMethName = pMethName || getSelectedMethodID(vClass);
+  console.log(pLabel+" logSelectedMethodCode('"+vClass+"','"+vMethName+"') " + getSelectedMethodCode(vClass,vMethName));
+}
+
 function fillForm4Class(pClass) {
   console.log("fillForm4Class('"+pClass+"')");
   //--- Call of updateClassJSON2Form(vClass)
@@ -821,6 +837,8 @@ function fillForm4Class(pClass) {
       vID = vDOM_ID[i];
       write2value(vID,vList[vID]);
     };
+    write2value("sMethodList",vList["tMethodName"]);
+
   };
 };
 
@@ -983,6 +1001,7 @@ function selectDatabaseJSON(pDBID) {
       $('.trJSCCDB').show();
       var vDB = vJSCC_DB["DatabaseList"][vDBID];
       // write the data only to the JSON editor
+      write2value("tDatabaseTitle",(vDB["dbtitle"] || "Title of '"+vDBID+"'"));
       vCode = stringifyJSON(vDB["data"]);
       createDatabaseVarIDSelect(vDBID);
     } else {

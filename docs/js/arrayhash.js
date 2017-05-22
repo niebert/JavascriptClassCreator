@@ -22,6 +22,14 @@ function isArray(pObj) {
   return isHash(pObj) && (pObj instanceof Array);
 };
 
+function makeMap(str){
+  var obj = {};
+  var items = str.split(",");
+  for ( var i = 0; i < items.length; i++ )
+    obj[ items[i] ] = true;
+  return obj;
+}
+
 function lengthHash(pHash) {
   var vLength = 0;
   if (isHash(pHash)) {

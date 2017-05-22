@@ -1141,7 +1141,11 @@ ___ATTRIBUTES___
     //---------------------------------------------------------------------
     //---Methods of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
-___METHODS___
+___METHODLIST___
+    //---------------------------------------------------------------------
+    //---PRIVATE Methods of Class "___CLASSNAME___()"
+    //---------------------------------------------------------------------
+___METHODSPRIVATE___
     //---------------------------------------------------------------------
     //---END Constructor of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
@@ -1152,7 +1156,7 @@ ___METHODSPROTOTYPE___
     <hr>
     <b>Public Attribute Definition</b> <tt>[tTplAttribute]</tt><br>
     <textarea id="tTplAttribute" name="tTplAttribute" cols="125" rows="2">
-//---Public: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
+//---PUBLIC: ___ATTRIB_NAME___ (___ATTRIB_TYPE___): ___ATTRIB_COMMENT___
 this.___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
 </textarea>
 <hr>
@@ -1164,7 +1168,7 @@ var ___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
     <hr>
       <b>Method Constructor Comment</b> <tt>[tTplMethodConstructorComment]</tt><br>
         <textarea id="tTplMethodConstructorComment" name="tTplMethodConstructorComment" cols="125" rows="4">
-//----PUBLIC Method: ___CLASSNAME___.___METHODDEF___-----
+//----___METHODACCESS___ Method: ___CLASSNAME___.___METHODDEF___-----
 // ___METHODNAME___(___METHODPARAMETERS___)  ___RETURNCOMMENT___
 ___METHODCOMMENT___
 </textarea>
@@ -1216,7 +1220,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
     <textarea id="tTplMethodHeader" name="tTplMethodHeader" cols="125" rows="10">
 
 //#################################################################
-//# Public Method: ___METHODNAME___()
+//# ___METHODACCESS___ Method: ___METHODNAME___()
 //#    used in Class: ___CLASSNAME___
 //# Parameter:
 //#    ___PARAMETERDEF___
@@ -1229,8 +1233,8 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 
 ___METHODDEFPREFIX___.___METHODNAME___ = function (___METHODPARAMETERS___) {
   //----Debugging------------------------------------------
-  //console.log("___CLASSFILENAME___ - Call: ___METHODDEF___");
-  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___");
+  // console.log("___CLASSFILENAME___ - Call: ___METHODDEF___");
+  // alert("___CLASSFILENAME___ - Call: ___METHODDEF___");
   //----Create Object/Instance of ___CLASSNAME___----
   //    var vMyInstance = new ___CLASSNAME___();
   //    vMyInstance.___METHODCALL___;
@@ -1247,7 +1251,7 @@ ___METHODCODE___
     <textarea id="tTplMethodPrivate" name="tTplMethodPrivate" cols="125" rows="10">
 
 //#################################################################
-//# Private Method: ___METHODNAME___()
+//# ___METHODACCESS___ Method: ___METHODNAME___()
 //#    used in Class: ___CLASSNAME___
 //# Parameter:
 //#    ___PARAMETERDEF___

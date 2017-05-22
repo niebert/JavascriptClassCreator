@@ -15,10 +15,12 @@ function checkInterface4Class(pClassName) {
     inheritAttributesDefinitions(vChain);
     //inherit all method interfaces
     inheritMethodsInterface(vChain);
-    //Update Form with inherited
+    //----Update Form with inherited-----
+    // write the attrib list to textarea
     updateAttribJSON2Form(pClassName);
+    // write the method list to textarea
     updateMethodsJSON2Form(pClassName);
-    updateJSON2Form(pClassName);
+    //updateJSON2Form(pClassName);
   };
   if (vSuperClassType == "Abstract") {
     //inherit the attribute and method interface
@@ -27,10 +29,12 @@ function checkInterface4Class(pClassName) {
     //create an interface for methods with an empty code ONLY,
     // other methods with a defined code are inherited as usual
     inheritMethodsAbstract(vChain);
-    //Update Form with inherited
+    //----Update Form with inherited-----
+    // write the attrib list to textarea
     updateAttribJSON2Form(pClassName);
+    // write the method list to textarea
     updateMethodsJSON2Form(pClassName);
-    updateJSON2Form(pClassName);
+    //updateJSON2Form(pClassName);
   };
 };
 
@@ -77,12 +81,14 @@ function copyArrID4Hash(pArrID,iAtt,pInHash,pOutHash) {
   // iAtt is
   var vIn,vOut;
   for (var i = 0; i < pArrID.length; i++) {
+    //e.g. vIn = pInHash["AttribType"]
     vIn  = pInHash[pArrID[i]];
+    // vOut = pOutHash["AttribType"]
     vOut = pOutHash[pArrID[i]];
-    for (var iAtt in vIn) {
-      if (vIn.hasOwnProperty(iAtt)) {
-        vOut[iAtt] = vIn[iAtt];
-      }
+    //e.g. vAtt = "aAge"
+    if (vIn.hasOwnProperty(iAtt)) {
+      //e.g. pOutHash["AttribType"]["aAge"] = pInHash["AttribType"]["aAge"]
+      vOut[iAtt] = vIn[iAtt];
     };
   };
 };

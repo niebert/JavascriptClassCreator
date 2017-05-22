@@ -141,10 +141,8 @@ function initCodeCreator() {
     } else {
         if (vJSCC_DB.hasOwnProperty("ClassList") && vJSCC_DB.hasOwnProperty("FileList")) {
           console.log("initCodeCreator() vJSCC_DB was loaded from Library prog/project.js");
-          updateJSON2Form(vSelectedClass,vSelectedFile);
         } else if ((vJSCC_DB["JSCC_type"]) && vJSCC_DB["JSCC_type"] == "JSCC") {
           console.log("initCodeCreator() - Typ vJSCC_DB was loaded from Library prog/project.js");
-          updateJSON2Form(vSelectedClass,vSelectedFile);
         } else {
           console.log("vJSCC_DB was loaded from Definition in HTML Form of JSCC");
           top.vJSCC_DB["JSCC_type"] = "JSCC";
@@ -171,7 +169,7 @@ function initCodeCreator() {
   for (var i = 0; i < vDOM_ID.length; i++) {
     vRestoreForm[vDOM_ID[i]] = vJSCC_DB["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
   };
-  initLabelsHTML();
+  initLabelsRECDEF();
   updateBasicClassJSON2Form();
   //--- Create Selectors
   createFileSelect(vSelectedFile);
@@ -184,24 +182,16 @@ function initCodeCreator() {
   //--- Call of updateClassJSON2Form(vSelectedClass)
   //--- writes the UML-Mapper-List in tClasses
   updateClassJSON2Form(vSelectedClass);
-  //createElementsFileSelect(vSelectedFile);
-  //selectElementFileJS(vSelectedElement)
-  //initEditorContent(vSelectedClass); //iframe.js:80
-  //updateClassJSON2Form(vSelectedClass);
-  //checkInterface4Class(vSelectedClass);
-  //updateClasses();
-  //setTimeout('alert(readFile("tpl/test.txt"))',5000);
-  //getPageTypeCode4Editor(vSelectedPageType)
   updateFileListJSON2Form(vSelectedFile);
-  updateElementsFileJSON2Form(getArray4HashID(vJSCC_DB["Element"]));
+  updateElementsFileJSON2Form(vSelectedFile);
+  updateButtonJSON2Form();
+  updateGlobalLibsJSON2Form();
+  updateDatabasesJSON2Form();
   populateForm2TemplateJSON();
   //createFileSelect();
   //updateSelectors(vSelectedClass,vSelectedFile); //select.js:140
   //setDefaultSelectors();
   //console.log("checkDatabaseListJSON()-Call");
-  updateButtonJSON2Form();
-  updateGlobalLibsJSON2Form();
-  updateDatabasesJSON2Form();
   if (vLocalStorageLoad == true) {
     //write2value("tMethodCode",vRestoreForm["tMethodCode"]);
     //OK   write2value("tPageTypeHTML",vRestoreForm["tPageTypeHTML"]);
@@ -297,7 +287,7 @@ function checkMainAppClass4File() {
 };
 
 
-function initLabelsHTML() {
+function initLabelsRECDEF() {
   var vSep = " | ";
   //write2innerHTML("labelDatabaseRecord",vDataRECDEF.join(vSep));
   write2innerHTML("labelPageRecord",vPageRECDEF.join(vSep));

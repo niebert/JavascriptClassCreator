@@ -439,6 +439,11 @@ vDataJSON['project'] = {
               "aDatabaseHash": "Hash",
               "aDBHash": "Hash"
           },
+            "AttribAccess": {
+              "aDoc": "public",
+              "aDatabaseHash": "private",
+              "aDBHash": "private"
+          },
           "AttribComment": {
             "aDoc": "is the 'document' object",
             "aDatabaseHash": "stores all databases in the init format in a Hash",
@@ -468,6 +473,13 @@ vDataJSON['project'] = {
                 "save": "",
                 "getDBHash4Type": "pType:String"
             },
+            "MethodAccess": {
+              "init": "public",
+              "load": "private",
+              "save": "private",
+              "getDBHash4Type": "public"
+            },
+
             "tLoopObject": "myHash",
             "tLoopMethod": "myLoopMethod(pID)",
         },

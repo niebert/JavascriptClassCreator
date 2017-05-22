@@ -628,6 +628,14 @@ function getArray4IDString(pIDString) {
   return vOutArr;
 }
 
+function getSelectedPageTypeID() {
+  return getValueDOM("sPageTypeHTML") || "";
+}
+
+function getSelectedPageID() {
+  return getValueDOM("sPageHTML") || "";
+}
+
 function getSelectedFileID() {
   return getSelectedFilenameHTML();
 }
@@ -802,9 +810,18 @@ function updateFileJSON2Form(pFileName) {
   };
 };
 
-function fillForm4Class(pClassName) {
-  console.log("fillForm4Class('"+pClassName+"')");
-  updateJSON2Form(pClassName);
+function fillForm4Class(pClass) {
+  console.log("fillForm4Class('"+pClass+"')");
+  //--- Call of updateClassJSON2Form(vClass)
+  //--- writes the UML-Mapper-List in tClasses
+  if (existsClassJS(pClass)) {
+    var vList = vJSCC_DB["ClassList"][pClass];
+    var vID = "";
+    for (var i = 0; i < vDOM_ID.length; i++) {
+      vID = vDOM_ID[i];
+      write2value(vID,vList[vID]);
+    };
+  };
 };
 
 function selectedMethodName() {
@@ -1261,7 +1278,7 @@ function getMethDef4MethHash(pMethHash) {
 function getMethHash4Name(pClass,pMethName) {
   var vClass = pClass || getSelectedClassID();
   var vHash = {
-    "access": "public",
+    "access": "",
     "name": pMethName,
     "param": "",
     "return": "",

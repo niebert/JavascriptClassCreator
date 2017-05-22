@@ -34,6 +34,47 @@ function lengthHash(pHash) {
   return vLength;
 };
 
+function getDeleteBoolean4Hash(pHash) {
+  var vDelHash = {};
+  var vArrID_OLD = getArray4HashID(pHash);
+  // init the Delete Hash
+  for (var i = 0; i < vArrID_OLD.length; i++) {
+    vDelHash[vArrID_OLD[i]] = true;
+  };
+  return vDelHash;
+}
+
+function updateHash4NewIDs(pHash,pArrID_NEW,pDefaultValue) {
+  var vDelHash = getDeleteBoolean4Hash(pHash);
+  var vDefaultValue = pDefaultValue || "";
+  var vArrID_OLD = getArray4HashID(pHash);
+  var vID = "";
+  // mark IDs that should be kept in hash
+  for (var i = 0; i < pArrID_NEW.length; i++) {
+    vID = pArrID_NEW[i];
+    if (pHash.hasOwnProperty(vID)) {
+      // do not delete the ID in Hash
+      vDelHash[vID] = false;
+    } else {
+      // init default value for new keys/IDs
+      if (vDefaultValue != "") {
+        // append the ID to the default value;
+        pHash[vID] = vDefaultValue+ " '"+vID+"'";
+      } else {
+        // init new value with an empty string
+        pHash[vID] = "";
+      };
+    };
+  };
+  // delete all keys with vDelHash[vID] = true
+  for (var i = 0; i < vArrID_OLD.length; i++) {
+    vID = vArrID_OLD[i];
+    if (vDelHash[vID] == true) {
+      delete pHash[vID];
+    };
+  };
+};
+
 function updateHashSourceDestination(pSource,pDest) {
 
 }

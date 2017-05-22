@@ -13,7 +13,7 @@ function deleteClassHTML() {
     var vSelClassID = vArrID[0] || ""
     vJSCC_DB["SelectedClass"] = vSelClassID;
     write2value("sClassList",vSelClassID);
-    updateJSON2Form();
+    updateJSON2Form(); //Call: deleteClassHTML
   };
 };
 
@@ -98,7 +98,7 @@ function deleteElementHTML() {
       delete vJSCC_DB["FileList"][vFile]["elements"][vElementID];
       var vArrID = createArray4HashID(vJSCC_DB["FileList"][vFile]["elements"]);
       console.log(vArrID.join(","));
-      updateElementsFileJSON2Form(vArrID);
+      updateElementsFileJSON2Form(vFile,vArrID);
     };
   } else {
     console.log("ERROR: Element ["+vElementID+"] exists\nDelete Element cancelled!");
@@ -246,8 +246,15 @@ function updateElementsFileForm2JSON(pFileID) {
   if (existsFileJS(pFileID)) {
     console.log("updateElementsFileJSON2Form('"+pFileID+"')");
     var vList = vJSCC_DB["FileList"][pFileID]["elements"];
-    var vTextDef = getValueDOM("tElementFileIDs")
-    write2value("tElementFileIDs",vArrID.join("|"));
+    var vArrID_OLD = getArray4HashID(vList);
+    var vTextDef = getValueDOM("tElementFileIDs");
+    var vArrID_NEW = [];
+    if (vTextDef) {
+      vTextDef = vTextDef.replace(/\s/g,"");
+      vArrID_NEW = vTextDef.split("|");
+    };
+    updateHash4NewIDs(vList,vArrID_NEW,"Element File '"+pFileID+"' with ID ");
+    write2value("tElementFileIDs",vArrID_NEW.join("|"));
     createElementsFileSelect(vFileID); // takes a pipe separted Element String as Input
   } else {
     console.log("ERROR: updateElementsFileJSON2Form(pFileID) - pArrID undefined");
@@ -255,10 +262,10 @@ function updateElementsFileForm2JSON(pFileID) {
 };
 
 
-function updateElementsFileJSON2Form(pFileID) {
+function updateElementsFileJSON2Form(pFileID,pArrID) {
   if (existsFileJS(pFileID)) {
     console.log("updateElementsFileJSON2Form('"+pFileID+"')");
-    var vArrID = getArray4HashID(vJSCC_DB["FileList"][pFileID]["elements"]);
+    var vArrID = pArrID || getArray4HashID(vJSCC_DB["FileList"][pFileID]["elements"]);
     write2value("tElementFileIDs",vArrID.join("|"));
     createElementsFileSelect(vFileID); // takes a pipe separted Element String as Input
   } else {

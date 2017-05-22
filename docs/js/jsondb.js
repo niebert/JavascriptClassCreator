@@ -460,20 +460,37 @@ function deleteClass_do(pClass) {
     //updateJSON2Form();
   };
 };
-
 function deleteAttributeForm() {
-  console.log("deleteAttributeForm()");
-  var vClassJS = getClassJSON();
-  var vMethodName = getValueDOM("sAttribList");
+  var vClass = getSelectedClassID();
+  var vClassJS = getClassJSON(vClass);
+  var vAttribName = getValueDOM("sAttribList");
+  console.log("deleteAttributeForm('"+vAttribName+"')");
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
-  if(vOK == true) {
-    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
+  if (vOK == true) {
+    var vArrID = ["AttribDefault","AttribComment","AttribType","AttribAccess"];
+    for (var iID in vArrID) {
+      if (vArrID.hasOwnProperty(iID)) {
+        delete vClassJS[iID][vAttribName];
+      }
+    };
+    updateJSON2Form(vClass); //Call: deleteAttributeForm()
+  };
+}
+
+function deleteMethodForm() {
+  var vClass = getSelectedClassID();
+  var vClassJS = getClassJSON(vClass);
+  var vMethodName = getValueDOM("sMethodList");
+  console.log("deleteMethodForm('"+vMethodName+"')");
+  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  if (vOK == true) {
+    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment","MethodAccess"];
     for (var iID in vArrID) {
       if (vArrID.hasOwnProperty(iID)) {
         delete vClassJS[iID][vMethodName];
       }
     };
-    updateJSON2Form();
+    updateJSON2Form(vClass); // Call: deleteMethodForm
   };
 };
 
@@ -489,14 +506,12 @@ function existsAttributeJS(pAttName,pClass) {
     };
   };
   return (vExists > 0)
-}
+};
 
 function saveAttributeForm() {
   updateAttributeForm2JSON();
   alert("Attribute '"+getValueDOM("vAttribName")+"' saved!");
 };
-
-
 
 function updateAttributeTypeEdit(pAttribType) {
   console.log("updateAttributeTypeEdit('"+pAttribType+"')");
@@ -612,6 +627,18 @@ function updateJSON2selectAttrib(pClass) {
   }
 }
 
+function isPrivate(pAccess) {
+  return (pAccess.indexOf("vate")>0)
+};
+
+function getPrivateID(pAccess) {
+  var vRet = "public";
+  if (isPrivate(pAccess)) {
+    vRet = "private";
+  };
+  return vRet;
+}
+
 function loadMethodJSON(pClass,pMethodName) {
   var vMethodName = pMethodName || "";
   vMethodName = reduceVarName(vMethodName);
@@ -622,9 +649,9 @@ function loadMethodJSON(pClass,pMethodName) {
     var vClassJSON = getClassJSON(vClass);
     if (vMethodName != "") {
       //if (vClassJSON["MethodParameter"].hasOwnProperty(vMethodName)) {
-        debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method '"+vMethodName+"' defined");
-        console.log("loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method '"+vMethodName+"' defined");
         var vMethHash = getMethHash4Name(vClass,vMethodName);
+        debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - "+vMethHash["access"]+" Method '"+vMethodName+"' defined");
+        console.log("loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - "+vMethHash["access"]+" Method '"+vMethodName+"' defined");
         var vMethodHeader = getMethodHeader4Name(vClass,vMethodName);
         //set Method Name
         vClassJSON["sMethodList"] = vMethodName; //set Method Header
@@ -643,13 +670,16 @@ function loadMethodJSON(pClass,pMethodName) {
         //set Method Code
         vClassJSON["tMethodCode"] = vMethHash["code"];
         write2editor("MethodCode", vMethHash["code"]);
-        // set Access "public" "privat",...
-        vMethHash["assess"] = reduceVarName(vMethHash["assess"]);
-        if (vMethHash["assess"] == "") {
-          vMethHash["assess"] = "public";
-        };
-        vClassJSON["tMethodAccess"] = vMethHash["assess"];
-        write2value("sMethodAccess", vMethHash["assess"]);
+        // set Access "public" "private",...
+        //if ((vMethHash["assess"]).replace(/[^a-g]/g,"") == "public") {
+        //  alert((vMethHash["access"]).indexOf("vate")+" - "+ vMethHash["access"]+" Method '"+vMethodName+"' ");
+        //}
+        var vAccess = getPrivateID(vMethHash["access"]);
+        vClassJSON["tMethodAccess"] = vAccess;
+        write2value("sMethodAccess", vAccess);
+        //vClassJSON["tMethodAccess"] = vMethHash["assess"];
+        //write2value("sMethodAccess", vMethHash["assess"]);
+        //write2value("sMethodAccess", "private");
       //} else {
       //  debugLog("Method","loadMethodJSON('"+vClass+"','"+vMethodName+"') Call - Method '"+vMethodName+"()' NOT defined");
       //};
@@ -663,22 +693,6 @@ function loadMethodJSON(pClass,pMethodName) {
   }
 
 };
-
-function deleteMethodForm() {
-  debugLog("Attrib","deleteMethodForm()");
-  var vClassJS = getClassJSON();
-  var vMethodName = getValueDOM("sMethodList");
-  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
-  if(vOK == true) {
-    var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment"];
-    for (var iID in vArrID) {
-      if (vArrID.hasOwnProperty(iID)) {
-        delete vClassJS[iID][vMethodName];
-      }
-    };
-    updateJSON2Form();
-  };
-}
 
 
 function saveMethodCallJS(pClass) {
@@ -846,7 +860,32 @@ function updateFileHTML2Form(pFile) {
   updateFileJSON2FormVariable(vFile,"tElements");
 };
 
-function updateJSON2Form(pClass,pFile) {
+function updateJSON2Form(pClass,pFile,pPageType) {
+  var vClass = pClass || getSelectedClassID();
+  var vFile  = pFile  || getSelectedFileID();
+  var vPageType = pPageType || getSelectedPageTypeID();
+  console.log("updateJSON2Form('"+pClass+"','"+pFile+"','"+pPageType+"')");
+  updateBasicClassJSON2Form();
+  //--- Create Selectors
+  createFileSelect(vFile);
+  createClassSelect(vClass);
+  createPageSelect(vPage);
+  createPageTypeSelect(vPageType);
+  createElementsDBSelect();
+  checkDatabaseListJSON();
+  createDatabaseSelect(vDatabase);
+  //--- Call of updateClassJSON2Form(vClass)
+  //--- writes the UML-Mapper-List in tClasses
+  updateClassJSON2Form(vClass);
+  updateFileListJSON2Form(vFile);
+  //updateElementsFileJSON2Form(vFile);
+  updateButtonJSON2Form();
+  updateGlobalLibsJSON2Form();
+  updateDatabasesJSON2Form();
+  populateForm2TemplateJSON();
+}
+
+function X_updateJSON2Form(pClass,pFile) {
   var vClass = pClass || getSelectedClassID();
   var vFile  = pFile  || getSelectedFileID();
   var vContent = "";
@@ -1136,6 +1175,7 @@ function getReturnCodeInit(pMethod,pReturn,pCode) {
 }
 
 function updateMethodsJSON2Form(pClass) {
+  // write the method list to textarea
   var vClass = pClass || getSelectedClassID();
   var vOut = getMethodJSON4Form(vClass);
   var vClassJS = getClassJSON(vClass);

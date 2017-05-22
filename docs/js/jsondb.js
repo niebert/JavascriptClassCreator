@@ -1120,54 +1120,56 @@ function updateForm2AttribJSON(pClass) {
 function updateForm2MethodJSON(pClass) {
   var vClass = pClass || getSelectedClassID();
   debugLog("Method","updateForm2MethodJSON('"+vClass+"')");
-  var vClassJS = getClassJSON();
-  saveMethodCallJS(vClass); // saves the definition of the method call
-  var vMethArr = getMethodNameArray(); //classes.js:275
-  var vMethCallArr = getMethodArray(); //classes.js:598
-  var vParam = "";
-  var vCall = "";
-  var vMethName = "";
-  var vMethHash = {};
-  var vMethReturn = {};
-  //-------- Init Hash with the Default Values--------
-  for (var i = 0; i < vMethArr.length; i++) {
-    vMethHash[vMethArr[i]] = "";
-  };
-  //------ Init undefined Method PARAMTER--------------
-  for (var vCall in vMethCallArr) {
-    if (vMethCallArr.hasOwnProperty(vCall)) {
-      vCall = vMethCallArr[vCall];
-      vMethName = getMethodName(vCall);
-      vMethHash[vMethName] = getMethodParameter4Call(vCall);
-      vMethReturn[vMethName] = getMethodReturn4Call(vCall);
+  if (existsClassJS(pClass)) {
+    var vClassJS = getClassJSON();
+    saveMethodCallJS(vClass); // saves the definition of the method call
+    var vMethArr = getMethodNameArray(); //classes.js:275
+    var vMethCallArr = getMethodArray(); //classes.js:598
+    var vParam = "";
+    var vCall = "";
+    var vMethName = "";
+    var vMethHash = {};
+    var vMethReturn = {};
+    //-------- Init Hash with the Default Values--------
+    for (var i = 0; i < vMethArr.length; i++) {
+      vMethHash[vMethArr[i]] = "";
     };
-  };
-  defineHash(vMethHash,"MethodParameter",vClassJS);
-  //defineHashIfUndefined(vMethHash,"MethodParameter");
-  //------ Init undefined Method CODE----------
-  var vReturn = "";
-  var vCode = "";
-  for (var i = 0; i < vMethArr.length; i++) {
-    //vMethHash[vMethArr[i]] = "";
-    if (getCheckBox("checkInitCode")) {
-      vCode =  "// Code for " + vMethArr[i]+"()";
-      vMethName = vMethArr[i];
-      vCode = getReturnCodeInit(vMethName,vMethReturn[vMethName],vCode);
-    } else {
-      vCode = "";
+    //------ Init undefined Method PARAMTER--------------
+    for (var vCall in vMethCallArr) {
+      if (vMethCallArr.hasOwnProperty(vCall)) {
+        vCall = vMethCallArr[vCall];
+        vMethName = getMethodName(vCall);
+        vMethHash[vMethName] = getMethodParameter4Call(vCall);
+        vMethReturn[vMethName] = getMethodReturn4Call(vCall);
+      };
     };
-    vMethHash[vMethArr[i]] = vCode;
-  };
-  defineHashIfUndefined(vMethHash,"MethodCode",vClassJS);
-  //------ Init undefined Method COMMENTS----------
-  for (var i = 0; i < vMethArr.length; i++) {
-    vMethHash[vMethArr[i]] = "Comment for " + vMethArr[i];
-  };
-  defineHashIfUndefined(vMethHash,"MethodComment",vClassJS);
-  //------ Init undefined Method RETURN----------
-  defineHash(vMethReturn,"MethodReturn",vClassJS);
-  //---------------------------------------------
-  createMethodSelect();
+    defineHash(vMethHash,"MethodParameter",vClassJS);
+    //defineHashIfUndefined(vMethHash,"MethodParameter");
+    //------ Init undefined Method CODE----------
+    var vReturn = "";
+    var vCode = "";
+    for (var i = 0; i < vMethArr.length; i++) {
+      //vMethHash[vMethArr[i]] = "";
+      if (getCheckBox("checkInitCode")) {
+        vCode =  "// Code for " + vMethArr[i]+"()";
+        vMethName = vMethArr[i];
+        vCode = getReturnCodeInit(vMethName,vMethReturn[vMethName],vCode);
+      } else {
+        vCode = "";
+      };
+      vMethHash[vMethArr[i]] = vCode;
+    };
+    defineHashIfUndefined(vMethHash,"MethodCode",vClassJS);
+    //------ Init undefined Method COMMENTS----------
+    for (var i = 0; i < vMethArr.length; i++) {
+      vMethHash[vMethArr[i]] = "Comment for " + vMethArr[i];
+    };
+    defineHashIfUndefined(vMethHash,"MethodComment",vClassJS);
+    //------ Init undefined Method RETURN----------
+    defineHash(vMethReturn,"MethodReturn",vClassJS);
+    //---------------------------------------------
+    createMethodSelect(pClass,vMethName);  
+  }
 };
 
 function getReturnCodeInit(pMethod,pReturn,pCode) {

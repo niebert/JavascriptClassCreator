@@ -226,32 +226,32 @@ function selectClass_do(pClass) {
   var vClass = pClass || getValueDOM("sClassList");
   console.log("selectClass()-Call: Current Class '"+vCurrentClass+"' - Selected Class '"+vClass+"'.");
   // following command is inserted for the first startup
-  write2value("sClassList",vClass);
-  write2value("tClassname",vClass);
-  if (vJSCC_DB["ClassList"][vClass]) {
+  if (existsClassJS(vClass)) {
     console.log("Class '"+vClass+"' exists in selectClass()-Call");
+    write2value("sClassList",vClass);
+    write2value("tClassname",vClass);
+    vJSCC_DB["SelectedClass"] = vClass;
+    var vClassJSON = getClassJSON(vClass);
+    clearForm4Class(vClass);
+    console.log("selectClass()-Call Selected Class: "+getValueDOM("tClassname")+" Attributes="+getValueDOM("tAttributes"));
+    checkInterface4Class(vClass);
+    fillForm4Class(vClass);
+    //createClassJS(vClass); // if necessary
+    createAttribTypeSelect();
+    createAttribSelect();
+    var vMethID = vClassJSON["sMethodList"];
+    createMethodSelect(vClass,vMethID);
+    loadMethodJSON(vClass,vMethID);
+    var vClassName = getValueDOM("tClassname");
+    writeClassTitle(vClassName);
+    updateClassSelectors(vClassName);
+    setClassSelectorDefault(vClassName);
+    var vSuperClassname = getValueDOM("tSuperClassname");
+    selectSuperClass(vSuperClassname);
   } else {
     console.log("selectClass()-Call: Undefined Class '"+vClass+"' - use old class '"+vCurrentClass+"'.");
-    vClass = vCurrentClass;
+    //vClass = vCurrentClass;
   };
-  vJSCC_DB["SelectedClass"] = vClass;
-  var vClassJSON = vJSCC_DB["ClassList"][vClass];
-  clearForm4Class(vClass);
-  console.log("selectClass()-Call Selected Class: "+getValueDOM("tClassname")+" Attributes="+getValueDOM("tAttributes"));
-  checkInterface4Class(vClass);
-  fillForm4Class(vClass);
-  //createClassJS(vClass); // if necessary
-  createAttribTypeSelect();
-  createAttribSelect();
-  createMethodSelect();
-  var vMethID = vClassJSON["sMethodList"];
-  loadMethodJSON(vClass,vMethID);
-  var vClassName = getValueDOM("tClassname");
-  writeClassTitle(vClassName);
-  updateClassSelectors(vClassName);
-  setClassSelectorDefault(vClassName);
-  var vSuperClassname = getValueDOM("tSuperClassname");
-  selectSuperClass(vSuperClassname);
   //createCode4JSON_JS(vJSCC_DB);
 };
 
@@ -291,8 +291,17 @@ function setClassSelectorDefault(pClassName) {
 };
 
 function updateClassSelectors(pClassName) {
-  updateAttribSelector(pClassName);
-  updateMethodSelector(pClassName);
+  if (existsClassJS(pClassName)) {
+    var vClassJS = getClassJSON(pClassName);
+    vClassJS["sClassList"] = pClassName;
+    vClassJS["tClassname"] = pClassName;
+    //updateAttribSelector(pClassName);
+    //updateMethodSelector(pClassName);
+    write2value("sClassList",pClassName);
+    write2value("sClassCode",pClassName);
+  } else {
+    console.log("ERROR: updateClassSelectors('"+pClassName+"') pClassName not defined");
+  }
 };
 
 function updateAttribSelector(pClassName) {
@@ -828,6 +837,7 @@ function logSelectedMethodCode(pLabel,pClass,pMethName) {
 
 function fillForm4Class(pClass) {
   console.log("fillForm4Class('"+pClass+"')");
+  pClass = reduceVarName(pClass);
   //--- Call of updateClassJSON2Form(vClass)
   //--- writes the UML-Mapper-List in tClasses
   if (existsClassJS(pClass)) {
@@ -838,7 +848,8 @@ function fillForm4Class(pClass) {
       write2value(vID,vList[vID]);
     };
     write2value("sMethodList",vList["tMethodName"]);
-
+    write2value("sClassList",pClass);
+    write2value("sClassCode",pClass);
   };
 };
 
@@ -892,14 +903,15 @@ function selectJSAttribType() {
 };
 
 function selectJSAttribs(pAttribName) {
+  var vClass = getSelectedClassID();
   var vClassJSON = getClassJSON();
-  saveAttribJSON();
+  //saveAttribJSON();
   //get SELECT AttribName value
   var vAttribName = pAttribName || getValueDOM("sAttribList");
   console.log("selectJSAttribs() - AttribName='"+vAttribName+"'");
   var vID = "";
   var vValue = "";
-  var vAttArr = ["AttribComment","AttribType","AttribDefault"];
+  var vAttArr = ["AttribAccess","AttribComment","AttribType","AttribDefault"];
   for (var i = 0; i < vAttArr.length; i++) {
     vID = vAttArr[i];
     vValue = vClassJSON[vID][vAttribName] || "";

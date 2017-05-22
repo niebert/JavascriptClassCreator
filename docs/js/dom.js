@@ -67,8 +67,25 @@ function write2options(pID,pArrID) {
   write2innerHTML(pID,createOptions4Array(vArray));
 };
 
+function existsMethodJS(pClass,pMethID) {
+  var vMethID = pMethID || "";
+  var vExists = false;
+  if (existsClassJS(pClass)) {
+    var vClassJS = getClassJSON(pClass);
+    if (vMethID != "") {
+      if (vClassJS["MethodParameter"].hasOwnProperty(vMethID)) {
+        vExists = true;
+      } else if (vClassJS["MethodReturn"].hasOwnProperty(vMethID)) {
+        vExists = true;
+      };
+    };
+  };
+  return vExists;
+};
+
 function createMethodSelect(pClass,pMethID) {
   // get all Methods in JSON Database of all Classes
+  console.log("");
   var vClass = pClass || getSelectedClassID();
   var vMethID = "";
   var vAccess = "";
@@ -80,14 +97,13 @@ function createMethodSelect(pClass,pMethID) {
   var vArray = [];
   if (existsClassJS(vClass)) {
     var vClassJSON = getClassJSON(vClass);
-    var vArray = getMethodNameArray();
-    var vMethHash = getMethodHash();
+    var vArray = getArray4HashID(vClassJSON["MethodCode"]); //getMethodNameArray();
     var vMethCodeHash = vClassJSON["MethodCode"];
     var vMethCommentHash = vClassJSON["MethodComment"];
-    vMethID = pMethID || vArray[0] || "";
-    console.log("createMethodSelect('"+vClass+"','"+vMethID+"')-Call");
+    vMethID = pMethID || vClassJSON["sMethodList"] || vArray[0] || "";
     vClassJSON["sMethodList"] = vMethID;
-    if (vMethID != "") {
+    if (existsMethodJS(vClass,vMethID)) {
+      console.log("createMethodSelect('"+vClass+"','"+vMethID+"') Method defined");
       vAccess = vClassJSON["MethodAccess"][vMethID] || "";
       if (vAccess == "") {
         vAccess = "public";
@@ -99,6 +115,8 @@ function createMethodSelect(pClass,pMethID) {
       vCode = vClassJSON["MethodCode"][vMethID];
       vMethodHeader = getMethodHeader4Name(vClass,vMethID);
       vClassJSON["tMethodHeader"] = vMethodHeader;
+    } else {
+      console.log("ERROR: createMethodSelect('"+vClass+"','"+vMethID+"') Method UNDEFINED");
     };
   };
   write2options("sMethodList",vArray);

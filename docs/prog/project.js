@@ -337,7 +337,7 @@ vDataJSON['project'] = {
             "AttribComment": {},
             "MethodParameter": {}
         },
-        "HTMLParser":{
+        "ParserHTML":{
           "JSCC_type": "CLASS",
           "JSCC_init_date": "22.5.2017",
           "JSCC_mod_date": "2017/04/01 15:33:46",
@@ -347,20 +347,20 @@ vDataJSON['project'] = {
           "tAuthor": "John Resig",
           "tEMail": "jeresig@gmail.com",
           "tAttributes": "aDoc = new DatabaseList()\nstartTag = /^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/\nendTag = /^<\\/([-A-Za-z0-9_]+)[^>]*>/\nattr = /([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;\nempty = null\nblock = null\ninline = null\ncloseSelf = null\nfillAttrs = null",
-          "tMethods": "init(pDoc)\ntoXML(pString)\ntoHTML(pString)\ntoDOM(pString):Hash\nmakeMap(pCommaSepString):Hash\nparse( html, handler )",
+          "tMethods": "init(pDoc)\ntoXML(pString)\ntoHTML(pString)\ntoDOM(pString):Hash\nmakeMap(pCommaSepString):Hash\nparse(html,handler)",
           "sAttribList": "fillAttrs",
-          "tAttribName": "",
-          "tAttribType": "",
-          "tAttribComment": "",
-          "tAttribDefault": "",
-          "sAttribTypeList": "",
-          "tMethodHeader": "init(pDoc)",
-          "tMethodName": "",
+          "tAttribName": "empty",
+          "tAttribType": "Hash",
+          "tAttribComment": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
+          "tAttribDefault": "null",
+          "sAttribTypeList": "Hash",
+          "tMethodHeader": "init(pDoc:Document)",
+          "tMethodName": "init",
           "tMethodComment": "Comment for makeMap",
           "sMethodList": "init",
-          "tMethodCode": "",
-          "tLoopObject": "",
-          "tLoopMethod": "",
+          "tMethodCode":  "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
+          "tLoopObject": "vArray",
+          "tLoopMethod": ".init()",
           "AttribType": {
               "startTag": "RegularExp",
               "endTag": "RegularExp",
@@ -406,12 +406,12 @@ vDataJSON['project'] = {
               "fillAttrs": "the attribute 'fillAttrs' stores in 'Hash'  and is initialized by init()"
           },
           "MethodParameter": {
-              "init": "pDoc",
-              "toXML": "pString",
-              "toHTML": "pString",
-              "toDOM": "pString",
-              "makeMap": "pCommaSepString",
-              "parse": " html, handler "
+              "init": "pDoc:Document",
+              "toXML": "pString:String",
+              "toHTML": "pString:String",
+              "toDOM": "pString:String",
+              "makeMap": "pCommaSepString:String",
+              "parse": " html:String, handler:Function "
           },
           "MethodReturn": {
               "init": "",
@@ -592,7 +592,7 @@ vDataJSON['project'] = {
             },
 
             "tLoopObject": "myHash",
-            "tLoopMethod": "myLoopMethod(pID)",
+            "tLoopMethod": "myLoopMethod(pID)"
         },
         "Database": {
             "tClassname": "Database",
@@ -1026,6 +1026,7 @@ vDataJSON['project'] = {
         "Hash": "{}",
         "Object": "null",
         "RegularExp": "/mypattern/g",
-        "Document": "document"
+        "Document": "document",
+        "Function" : "function () {}"
     }
 }

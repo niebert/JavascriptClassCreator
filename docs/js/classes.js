@@ -605,7 +605,12 @@ function updateClassJSON2Form(pSelectedClass) {
   updateJSON2tClassList();
   createClassSelect();
   setClassSelectorDefault(pSelectedClass);
-  createMethodSelect(pSelectedClass);
+  var vMethID = "";
+  if (existsClassJS(pSelectedClass)) {
+    var vClassJS = getClassJSON(pSelectedClass);
+    vMethID = vClassJS["sMethodList"];
+  };
+  createMethodSelect(pSelectedClass,vMethID);
   createAttribTypeSelect(pSelectedClass);
 
 }
@@ -1101,8 +1106,8 @@ function createNewMethodJS(pClass,pMethName) {
       };
       vMethodList += vCR + vMethCall;
       write2value("tMethods",vMethodList);
-      createMethodSelect(vClass); //dom.js:13
-      updateMethodsJS();
+      createMethodSelect(vClass,vName); //dom.js:13
+      //updateMethodsJS();
       write2value("sMethodList",vName);
       write2value("tMethodHeader",vMethCall);
       write2innerHTML("titleMethodName",vMethCall);

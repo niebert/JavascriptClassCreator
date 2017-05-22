@@ -419,7 +419,7 @@
           <span class="ui-icon ui-icon-pencil"></span>
           <input name="bEditAttribs" value=" Edit Attributes " class="tabbutton" onclick="showAttributes()" type="button">
           <br>
-          <textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()" wrap="soft">
+          <textarea name="tAttributes" id="tAttributes" cols="60" rows="10" onchange="" style="font-family: monospace" onchange="updateForm2AttribJSON()" wrap="off">
           </textarea>
         </td>
         <td>
@@ -429,7 +429,7 @@
           Init Method Code:
           <input type="checkbox" id="checkInitCode" name="checkInitCode">
           <br>
-          <textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()"  wrap="soft">
+          <textarea name="tMethods" id="tMethods" cols="60" rows="10" style="font-family: monospace" onchange="updateForm2MethodJSON()"  wrap="off">
           </textarea>
         </td>
           </tr>
@@ -491,7 +491,7 @@
                 <tr>
                   <td colspan="2" align="center">
                   <b>Select Attribute</b>
-                  <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs()">
+                  <select id="sAttribList" name="sAttribList" onchange="selectAttribributeJS(this.id)">
                   </select>
                   <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
                   <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">

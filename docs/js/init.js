@@ -170,28 +170,28 @@ function initCodeCreator() {
     vRestoreForm[vDOM_ID[i]] = vJSCC_DB["ClassList"][vSelectedClass][vDOM_ID[i]] || "";
   };
   initLabelsRECDEF();
-  logSelectedMethodCode("(1)",vSelectedClass);
+  //logSelectedMethodCode("(1)",vSelectedClass);
   updateBasicClassJSON2Form();
-  logSelectedMethodCode("(2)",vSelectedClass);
+  //logSelectedMethodCode("(2)",vSelectedClass);
   //--- Create Selectors
   createFileSelect(vSelectedFile);
-  logSelectedMethodCode("(3)",vSelectedClass);
+  //logSelectedMethodCode("(3)",vSelectedClass);
   createClassSelect(vSelectedClass);
-  logSelectedMethodCode("(4)",vSelectedClass);
+  //logSelectedMethodCode("(4)",vSelectedClass);
   createPageSelect(vSelectedPage);
-  logSelectedMethodCode("(5)",vSelectedClass);
+  //logSelectedMethodCode("(5)",vSelectedClass);
   createPageTypeSelect(vSelectedPageType);
-  logSelectedMethodCode("(6)",vSelectedClass);
+  //logSelectedMethodCode("(6)",vSelectedClass);
   createElementsDBSelect();
-  logSelectedMethodCode("(7)",vSelectedClass);
+  //logSelectedMethodCode("(7)",vSelectedClass);
   checkDatabaseListJSON();
-  logSelectedMethodCode("(8)",vSelectedClass);
+  //logSelectedMethodCode("(8)",vSelectedClass);
   createDatabaseSelect(vSelectedDatabase);
-  logSelectedMethodCode("(9)",vSelectedClass);
+  //logSelectedMethodCode("(9)",vSelectedClass);
   //--- Call of updateClassJSON2Form(vSelectedClass)
   //--- writes the UML-Mapper-List in tClasses
   updateClassJSON2Form(vSelectedClass);
-  logSelectedMethodCode("(10)",vSelectedClass);
+  //logSelectedMethodCode("(10)",vSelectedClass);
   updateFileListJSON2Form(vSelectedFile);
   updateElementsFileJSON2Form(vSelectedFile);
   updateButtonJSON2Form();

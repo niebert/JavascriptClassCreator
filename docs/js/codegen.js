@@ -30,6 +30,7 @@ function createProjectJSON() {
 };
 
 function getCode4Class(pClass,pCompressed) {
+  // called from createCode4Class():571
   var vClass = pClass || "";
   var vCompressed = pCompressed || false;
   console.log("getCode4Class('"+vClass+"',vCompressed)");
@@ -40,8 +41,6 @@ function getCode4Class(pClass,pCompressed) {
     var vSuperClass     = vClassJS["tSuperClass"];
   	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
     var vClassTail    	= getValueDOM("tTplClassTail");
-  	var vAttribConstructor = ""; //"	//---Attributes-------------------------\n";
-  	var vMethodConstructor = "	//---Methods----------------------------\n";
   	vOutput = getValueDOM("tClassHeader");
     vOutput       = replaceCodeMainVars(vOutput,vClass);
   	vMethodHeader = replaceCodeMainVars(vTplMethodHeader,vClass);
@@ -567,6 +566,7 @@ function saveCode4Class() {
 }
 
 function createCode4Class(pClass) {
+  // called when user presses [Create JS]
   var vClass = pClass || getSelectedClassID();
   console.log("createCode4Class() '"+vClass+"'");
   var vCode = getCode4Class(vClass);
@@ -655,7 +655,7 @@ function getMethodAllParams(pMethodHeader) {
   return edit2JSparams(getMethodParamsClass(pMethodHeader));
 };
 
-function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pCodePrefix) {
+function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix,pCommentPrefix,pFirstCodePrefix,pCodePrefix) {
   var vMethName = pMethName || getMethodName(pMethodHeader);
   var vMethHash = getMethHash4Name(pClass,pMethName);
   var vCodePrefix = pCodePrefix || "";
@@ -681,21 +681,24 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pCodePrefix) {
   vReplaceHash["METHODNAME"] = pMethName;
   vReplaceHash["METHODDEF"] = pMethodHeader;
   vReplaceHash["PARAM"] = vMethHash["param"];
+  //------------------------------------
   //----- Parameter Comments lines -----
   var vParArr = (vMethHash["param"]).split(",");
   vReplaceHash["PARAMETERDEF"] = vParArr.join("\n");
   //------------------------------------
+  //----- Method Comments lines -----
+  vReplaceHash["COMMENT"] = getMethodComment(pMethodHeader) || "What does '"+vMethName+"()' do?";
+  vReplaceHash["METHODCOMMENT"] = vReplaceHash["COMMENT"];
+  vReplaceHash["METHODCOMMENTLIST"] = "\t"+replaceString(vReplaceHash["COMMENT"],"\n","\n"+getValueDOM("tCommentPrefix")+"\t");
+  //------------------------------------
   vReplaceHash["METHODACCESS"] = (vMethHash["access"]).toUpperCase();
   vReplaceHash["METHODCALL"] = vMethName+"("+vMethodAllParams+")";
+  vReplaceHash["METHODCODEPRIVATE"] = "\t"+replaceString(vMethHash["code"],"\n","\n\t");
   vReplaceHash["RETURNCOMMENT"] = vMethHash["returncomment"];
-  var vMethodComment = getMethodComment(pMethodHeader) || "   What does '"+vMethName+"()' do?";
-  var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix"); //"\t//";
-  var vCommentBoxPrefix = "\t";
-  var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix;
-  vReplaceHash["METHODCOMMENT"] = createIndentDefault(vMethodComment,vCommentPrefix+vCommentBoxPrefix);
   vReplaceHash["METHODPARAMETERS"] = getMethodAllParams(pMethodHeader);
   var vMethodComment = vMethHash["comment"] || "   What does '"+vMethName+"()' do?";
-  vMethodComment = createIndentDefault(vMethodComment,vCommentPrefix+vCommentBoxPrefix);
+  vLinArr = vMethodComment.split("\n");
+  vMethodComment = createIndentDefault(vMethodComment,getValueDOM("tCommentPrefix")+"   "+getValueDOM('tCommentBoxPrefix'));
   //var vCode = vMethHash["code"] || "//----------- INSERT YOUR CODE HERE ---------------";
   //vReplaceHash["METHODCODE"] = replaceString(vCode,"\n","\n"+vCodePrefix);
   console.log("getMethodReplaceHash('"+pMethodHeader+"','"+pClass+"','"+pMethName+"') Access='"+vMethHash["access"]+"/"+vReplaceHash["METHODACCESS"]+"'");
@@ -704,21 +707,39 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pCodePrefix) {
 
 function getMethodComments4Constructor(pClass) {
   // pTemplateHeadID = "tTplMethodsHeadComment"
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","");
-  vOutput = createIndentDefault(vOutput,"\t");
+  var vCodePrefix = "\n"+getValueDOM("tCommentPrefix")+ "\t";
+  var vParamDocPrefix = "\n // ParamDocPrefix"
+  var vCommentPrefix = "\n // CommentPrefix"
+
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","",vCodePrefix,vParamDocPrefix,vCommentPrefix);
+  //vOutput = createIndentDefault(vOutput,"\t");
+  vOutput = (vOutput.split("\n")).join("\n\t");
+
   return vOutput;
 };
 
 function getMethodPrivate4Constructor(pClass) {
-  var vCodePrefix = "\t";
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE",vCodePrefix);
+  var vCodePrefix = "\n\t"+getValueDOM("tCommentPrefix")+getValueDOM("tCommentBoxPrefix");
+  var vParamDocPrefix = "\n // Privat ParamDocPrefix";
+  var vCommentPrefix = "\n // Privat CommentPrefix";
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE","",vCodePrefix,vParamDocPrefix,vCommentPrefix);
+  //vOutput = createIndentDefault(vOutput,"\t");
+  vOutput = replaceString(vOutput,"\n","\n\t");
+  return vOutput;
+};
+
+function getMethodPublic4Constructor(pClass) {
+  var vCodePrefix = "\t  ";
+  var vParamDocPrefix = "\n // Public ParamDocPrefix";
+  var vCommentPrefix = "\n // Public CommentPrefix";
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE",vCodePrefix,vParamDocPrefix,vCommentPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = replaceString(vOutput,"\n","\n\t");
   return vOutput;
 };
 
 
-function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCodePrefix) {
+function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCodePrefix,pParamDocPrefix,vCommentPrefix) {
   console.log("getMethodCode4Template('"+pClass+"','"+pTemplateHeadID+"','"+pTemplateID+"')");
   var vOutput = "";
   var vCodePrefix = pCodePrefix || "";
@@ -744,6 +765,7 @@ function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCode
       console.log("getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
       if ((vReplaceHash["METHODACCESS"] == vAccess) || (vAccess == "")) {
         console.log("EXPORT: getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
+        vReplaceHash["METHCOMMENT"] =  ((vReplaceHash["COMMENT"]).split("\n")).join(("\n"+vCommentPrefix));
         vMethod = replaceHash4Content(vReplaceHash,vMethod);
         var vCode = vMethHash["code"] || "//----------- INSERT YOUR CODE HERE ---------------";
         vCode = vCodePrefix + replaceString(vCode,"\n","\n"+vCodePrefix);
@@ -836,10 +858,16 @@ function replaceMethodsPublic4Code(pOutput,pTplMethodHeader,pClass) {
       var vReplaceHash = getMethodReplaceHash(vMethodArray[i],vClass,vMethName);
       //----- Parameter Comments lines -----
       var vParArr = (vMethHash["param"]).split(",");
-      var vCommentPrefix = getValueDOM("tCommentPrefix");
-      var vCommentBoxPrefix = getValueDOM("tCommentBoxPrefix");
-      var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix+"    ";
+      var vCommentPrefix = getValueDOM("tCommentPrefix"); // tCommentPrefix="//"
+      var vCommentBoxPrefix = getValueDOM("tCommentBoxPrefix"); // tCommentBoxPrefix="#"
+      var vComPrefix = "\n" + vCommentPrefix + vCommentBoxPrefix + "   ";
       vReplaceHash["PARAMETERDEF"] = vParArr.join(vComPrefix);
+      //------------------------------------
+      //----- Method Comments lines -----
+      var vComPrefix = "\n" + getValueDOM("tCommentPrefix") + getValueDOM("tCommentBoxPrefix")+"\t";
+      var vLinArr = (vReplaceHash["COMMENT"]).split("\n");
+      vReplaceHash["METHODCOMMENT"] = vLinArr.join(vComPrefix);
+      //createIndentDefault(vReplaceHash["COMMENT"],vComPrefix);
       //-------------------------------------------------------
       if (vReplaceHash["METHODACCESS"] == "PUBLIC") {
         console.log("replaceMethods4Code('"+vClass+"') - '"+vReplaceHash["METHODACCESS"]+"' Method: '"+vMethName+"'");

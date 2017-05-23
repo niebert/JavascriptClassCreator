@@ -47,9 +47,9 @@ function createNewDatabase(pFilePath) {
     var vOk = confirm("Do you want to create a JSCC Database?\nPress ESC to create a JSON!");
     if (vOK && vOK == "true") {
       console.log("Create a JSCC Database");
-      vJSCC_DB["DatabaseList"][vDBID] = getDefaultDatabaseJSON(vDBID);
+      vJSCC_DB["DatabaseList"][vDBID] = getDefaultDatabaseJSON(pFilePath,vDBID);
     } else {
-      vJSCC_DB["DatabaseList"][vDBID] = {};
+      vJSCC_DB["DatabaseList"][vDBID] = {"file":pFilePath};
     };
     selectDatabaseJSON(vDBID);
   }
@@ -62,7 +62,7 @@ function checkDatabaseJSON(pDB) {
     if (vJSCC_DB["DatabaseList"].hasOwnProperty(vDB)) {
       console.log("Database["+vDB+"] exists");
     } else {
-      vJSCC_DB["DatabaseList"][vDB] = getDefaultDatabaseJSON(vDB);
+      vJSCC_DB["DatabaseList"][vDB] = getDefaultDatabaseJSON("db/"+vDB+".js",vDB);
       console.log("Database["+vDB+"] initialized with getDefaultDatabaseJSON('"+vDB+"')");
     };
   };
@@ -233,13 +233,22 @@ function updateGlobalLibsForm2JSON() {
   console.log("updateGlobalLibsForm2JSON()");
   var vGLib = getValueDOM("tGlobalLibs") || "";
   vGLib = removeEmptyLines(vGLib);
-  parseGlobalLibs2JSON(vGLib);
+  console.log("updateGlobalLibsForm2JSON() GLib="+vGLib);
+  var vArrFile = vGLib.split("\n");
+  vJSCC_DB["GlobalLibList"] = [];
+  var vGLibArr = vJSCC_DB["GlobalLibList"]
+  for (var i = 0; i < vArrFile.length; i++) {
+    vGLibArr.push({"file":vArrFile[i],"import":true});
+  };
+  alert("Updated GlobalLibList:\n"+vGLib);
+  //parseGlobalLibs2JSON(vGLib);
 };
 
 function parseGlobalLibs2JSON(pGLib) {
   var vGLib = pGLib || "";
   vJSCC_DB["GlobalLibList"] = [];
   if (vGLib != "") {
+    vGLib = removeEmptyLines(vGLib);
     var vGLibArr = vGLib.split("\n");
     var vLinArr;
     var vImport = "";
@@ -247,8 +256,8 @@ function parseGlobalLibs2JSON(pGLib) {
     var vID = "";
     var vHash;
     for (var i = 0; i < vGLibArr.length; i++) {
-      vLinArr = vGLibArr[i].split("|");
-      vFileName = vLineArr[0];
+      vLinArr = (vGLibArr[i]).split("|");
+      var vFileName = vLineArr[0];
       vImport = vLineArr[1] || "true";
       if (reduceVarName(vFileName) != "") {
         vID = filename2ID(vFileName);
@@ -367,28 +376,6 @@ function save3LevelID2JSON(pListID,pHashID,pID,pValue) {
       };
     } else {
       console.log("ERROR: vJSCC_DB['"+pListID+"'] was undefined!");
-    };
-};
-
-function save2LevelID2JSON(pListID,pID,pValue) {
-  var vSuccess = saveID4HashPath2JSON(pListID+"."+pID,pValue);
-  if (vSuccess == true) {
-    console.log("save2LevelID2JSON('"+pListID+"','"+pID+"',pValue) DONE");
-  } else {
-    console.log("ERROR: save2LevelID2JSON('"+pListID+"','"+pID+"',pValue)");
-  }
-};
-
-function X_save2LevelID2JSON(pListID,pID,pValue) {
-    console.log("save2LevelID2JSON('"+pListID+"','"+pID+"',pValue)");
-    if (vJSCC_DB[pListID]) {
-      if (vJSCC_DB[pListID][pID]) {
-        vJSCC_DB[pListID][pID] = pValue;
-      } else {
-        console.log("vJSCC_DB['"+pListID+"']['"+pID+"'] was undefined!");
-      };
-    } else {
-      console.log("vJSCC_DB['"+pListID+"'] was undefined!");
     };
 };
 
@@ -1168,7 +1155,7 @@ function updateForm2MethodJSON(pClass) {
     //------ Init undefined Method RETURN----------
     defineHash(vMethReturn,"MethodReturn",vClassJS);
     //---------------------------------------------
-    createMethodSelect(pClass,vMethName);  
+    createMethodSelect(pClass,vMethName);
   }
 };
 

@@ -830,14 +830,14 @@ function getDataseListJSON(pExtenstion) {
   return vArrDB;
 }
 
-function getDefaultDatabaseJSON(pDBname,pTitle,pArrID) {
-  var vDBname = pDBname || db_undefined;
-  var vTitle = pTitle || "Title of DB "+vDBname;
+function getDefaultDatabaseJSON(pFileName,pDBname,pTitle,pArrID) {
+  var vDBname = pDBname || reduceIDName(pFileName);
+  var vTitle = pTitle || "Title of DB '"+pFileName+"'";
   var vArrID = pArrID || ["yesno1","textarea1","yesno2"];
   var vDB = {};
   vDB["JSCC_type"] = "DB";
   vDB["name"] = vDBname;
-  vDB["file"] = "db/"+vDBname+".js";
+  vDB["file"] = pFileName;
   vDB["dbtitle"] = vTitle;
   vDB["JSCC_init_date"] = getDateTime();
   vDB["JSCC_mod_date"] = getDateTime();
@@ -897,7 +897,7 @@ function updateForm2DatabasesJSON() {
   var vDB = "";
   for (var i = 0; i < vNameDB.length; i++) {
     vDB = vNameDB[i];
-    vDBHash[vDB] = vJSCC_DB["DatabaseList"][vDB] || getDefaultDatabaseJSON(vDB);
+    vDBHash[vDB] = vJSCC_DB["DatabaseList"][vDB] || getDefaultDatabaseJSON(vNameDB[i],vDB);
   };
   vJSCC_DB["DatabaseList"] =  vDBHash;
   var vArrID = getArray4HashID(vJSCC_DB["DatabaseList"]);
@@ -918,7 +918,7 @@ function updateDatabasesJSON2Form() {
       if (existsDatabaseJS(vID)) {
         console.log("updateDatabasesJSON2Form() DB '"+vID+"' exists");
       } else {
-        vJSCC_DB["DatabaseList"][vID] = getDefaultDatabaseJSON(vID);
+        vJSCC_DB["DatabaseList"][vID] = getDefaultDatabaseJSON("db/"+vID+".js",vID);
       };
     };
   };
@@ -1185,15 +1185,20 @@ function createPageTypeJS(pPageTypeHash) {
   var vSuccess = true;
   if (vPageTypeID != "") {
     console.log("createPageTypeJS(pHash) for '"+vPageTypeID+"'");
-    vPageTypeID = reduceVarName(vPageTypeID);
+    vPageTypeID = firstUpperCase(reduceVarName(vPageTypeID));
     if (existsPageTypeJS(vPageTypeID)) {
       //alert("Page '"+pPageType+"' already exists!");
       console.log("PageType '"+vPageTypeID+"' already exists!");
     } else {
       console.log("createPageTypeJS()-Call: Create PageType '"+vPageTypeID+"'");
-      checkPageType(vPageTypeID);
-      //vJSCC_DB["PageTypeList"][pPageType] = vPageTypeHash[pPageType] || {};
-      vJSCC_DB["PageTypeList"][vPageTypeID]["template"] = getDefaultPageTypeContent(vPageTypeID);
+      vJSCC_DB["PageTypeList"][vPageTypeID] = {};
+      var vPagTypHash = vJSCC_DB["PageTypeList"][vPageTypeID];
+      //checkPageType(vPageTypeID);
+      vPagTypHash["page-type"] = pPageType;
+      vPageTypeHash["HEADER_BUTTON1"] = "home";
+      vPageTypeHash["HEADER_BUTTON2"] = "QUIT";
+      vPageTypeHash["template"] = getDefaultPageTypeContent(vPageTypeID);
+      selectPageTypeJS(vPageTypeID);
     };
   } else {
     console.log("createPageTypeJS()-Call not sucessful - vPageTypeID=''");
@@ -1213,9 +1218,12 @@ function createNewPageType_do() {
   console.log("Click New - create a new class after prompt");
   //var vNewPageName = prompt("Please enter name of new Page", "");
   var vPageTypeID = getValueDOM("tPageTypeID");
-  var vLeftButtonID  = getValueDOM("sButtonHeader1");
-  var vRightButtonID = getValueDOM("sButtonHeader2");
-  var vTemplate = getEditorValue("iPageTypeHTML");
+  var vNewPageTypeHash = {
+    "page-type":  vPageTypeID,
+    "HEADER_BUTTON1": getValueDOM("sButtonHeader1"),
+    "HEADER_BUTTON2": getValueDOM("sButtonHeader2"),
+    "template":   getDefaultPageTypeContent(vPageTypeID) //getEditorValue("iPageTypeHTML")
+  };
   var vErrorMSG = "";
   var vSuccess = false;
   var vCount = 0;
@@ -1223,39 +1231,24 @@ function createNewPageType_do() {
     vCount++;
     vErrorMSG = "\n("+vCount+") PageTypeID is undefined!"
   };
-  if (vLeftButtonID == vRightButtonID) {
-    if (vLeftButtonID != "") {
-      vCount++;
-      vErrorMSG = "\n("+vCount+")  ID for Left and Right Button in Header ["+vRightButtonID+"] can not be equal!"
-    }
+  if (existsPageTypeJS(vPageTypeID)) {
+    vCount++;
+    vErrorMSG = "\n("+vCount+") Page with PageType ID '"+vPageTypeID+"' already defined!"
+  };
+  if (vNewPageTypeHash["HEADER_BUTTON1"] == vNewPageTypeHash["HEADER_BUTTON2"]) {
+    if (vNewPageTypeHash["HEADER_BUTTON1"] != "") {
+      vNewPageTypeHash["HEADER_BUTTON2"] = "";
+    };
   };
   if (vErrorMSG == "") {
-    //write2value("tPageID", vNewPageName);
-    var vNewPageHash = {
-      "page-type":  vPageTypeID,
-      "HEADER_BUTTON1": vLeftButtonID,
-      "HEADER_BUTTON2": vRightButtonID,
-      "template":   vTemplate
-    };
-    console.log("CALL: createPageTypeJS() for ["+vPageTypeID+"]");
-    vFailed = createPageTypeJS(vNewPageHash);
-    //vFailed == true means Page exists,
-    if (vFailed) {
-      alert("Create New Type Page ["+vPageTypeID+"] was NOT successful. Page Type already exists!");
-      selectPageTypeJS(vPageTypeID);
-    } else {
-      vJSCC_DB["PageTypeList"][vPageTypeID] = vNewPageHash;
-      write2value("tPageTypes", getPageTypeString());
-      createPageTypeSelect();
-      //updatePages();
-      //updateJSON2Form(vNewPageName);
-      vSuccess = true;
-      //$( "#tabClass" ).trigger( "click" );
-    };
+    console.log("CALL: create PageType for ["+vPageTypeID+"]");
+    vJSCC_DB["PageTypeList"][vPageTypeID] = vNewPageTypeHash;
+    createPageTypeSelect(vPageTypeID);
+    write2value("sPageTypeHTML",vPageTypeID);
   } else {
-    vErrorMSG = "ERROR Create New Type Page:"+vErrorMSG;
+    vErrorMSG = "ERROR: Create New Type Page ‘"+vPageTypeID+"’:"+vErrorMSG;
     alert(vErrorMSG);
-    console.log("Create new Type Page cancelled!\n"+vErrorMSG);
+    console.log(vErrorMSG);
   };
   return vSuccess;
 }
@@ -1273,7 +1266,7 @@ function getHash4Record2String(pRECDEF,pHashJSON,pCutAtEnd) {
       vOut += vCR;
       vSep = "";
       for (var i = 0; i < vMaxRec; i++) {
-        vOut += vSep+vHash[iID][vRECDEF[i]];
+        vOut += vSep+encodeCR(vHash[iID][vRECDEF[i]]);
         vSep = "|";
       }
       vCR = "\n";
@@ -1373,7 +1366,7 @@ function getPageListString() {
 
 
 function getButtonListStringCR() {
-  var vCutColsAtEnd = 1;
+  var vCutColsAtEnd = 0;
   var vButtonList = cloneJSON(vJSCC_DB["ButtonList"]);
   for (var iID in vButtonList) {
     if (vButtonList.hasOwnProperty(iID)) {
@@ -1418,7 +1411,7 @@ function createPageJS(pPageHash) {
       console.log("PageType ["+vNewPageType+"] for Page ["+vPageID+"] exists");
     } else {
       console.log("PageType ["+vNewPageType+"] for Page ["+vPageID+"] will be CREATED!")
-      createDefaultPageTypeJS(vNewPageType);
+      createDefaultPageJS(vNewPageType);
     };
     vJSCC_DB["PageList"][vPageID] = pPageHash;
     //vJSCC_DB["PageContent"][vPageID] = "Content for Page '"+vPageID+"'";
@@ -1568,8 +1561,9 @@ function saveButtonHTML_do(pID) {
   var vID = pID || getValueDOM("tButtonID") || "";
   if (vID != "") {
     console.log("saveButtonHTML() - Button ["+vID+"]");
-    save3LevelID2JSON("ButtonList",vID,"tButtonDefHTML",getValueDOM("tButtonDefHTML"));
-    save3LevelID2JSON("ButtonList",vID,"BUTTON_TITLE",getValueDOM("tButtonTitle"));
+    var vPathID = "ButtonList."+vID+".";
+    saveID4HashPath2JSON(vPathID + "tButtonDefHTML",getValueDOM("tButtonDefHTML"));
+    saveID4HashPath2JSON(vPathID + "BUTTON_TITLE",getValueDOM("tButtonTitle"));
     autoSaveJSON();
   };
 };
@@ -1577,21 +1571,45 @@ function saveButtonHTML_do(pID) {
 
 function savePageHTML() {
   var vID = getValueDOM("sPageHTML");
-  console.log("savePageHTML() - Page ["+vID+"]");
-  save2LevelID2JSON("PageContent",vID,getEditorValue("iPageHTML"));
-  saveJSON2LocalStorage("json");
-  autoSaveJSON();
+  savePageHTML_do(vID);
   alert("Page ['"+vID+"'] saved!");
+};
+
+
+function savePageHTML_do(pID) {
+  var vID = pID || getValueDOM("sPageHTML");
+  console.log("savePageHTML_do() - Page ["+vID+"]");
+  var vPathID = "PageList."+vID+".";
+  //      "home": {
+  //          "PAGE_ID": "quit",
+  //          "PAGE_TITLE": "Home",
+  //          "page-type": "MenuPage",
+  //          "parent-id": "",
+  //          "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+  //      },
+  saveID4HashPath2JSON("SelectedPage",vID);
+  saveID4HashPath2JSON("sPageHTML",vID);
+  saveID4HashPath2JSON(vPathID + "PAGE_ID",vID);
+  saveID4HashPath2JSON(vPathID + "PAGE_TITLE",getValueDOM(""))
+  saveID4HashPath2JSON(vPathID + "parent-id",getValueDOM("sParentPage"));
+  saveID4HashPath2JSON(vPathID + "page-type",getValueDOM("sPageType4Page"));
+  saveID4HashPath2JSON(vPathID + "content",getEditorValue("iPageHTML"));
+  //saveJSON2LocalStorage("json");
+  autoSaveJSON();
 }
 
 function savePageTypeHTML() {
   var vID = getValueDOM("sPageTypeHTML");
   console.log("savePageTypeHTML() - Page Type ["+vID+"]");
-  save2LevelID2JSON("PageTypeList",vID,"template",getEditorValue("iPageTypeHTML"));
-  saveJSON2LocalStorage("json");
-  autoSaveJSON();
-  alert("Page Type ['"+vID+"'] saved!");
-}
+  var vPathID = "PageTypeList."+pID+".template";
+  var vSuccess = saveID4HashPath2JSON(vPathID,getEditorValue("iPageTypeHTML"));
+  if (vSuccess == true) {
+    autoSaveJSON();
+    alert("Page Type ['"+vID+"'] saved!");
+  } else {
+    alert("ERROR: Save PageType Definition.\nPath ["+vPathID+"] does not exist!")
+  };
+};
 
 function existsPageJS(pPageID) {
   return existsListJS("Page","PageList",pPageID);

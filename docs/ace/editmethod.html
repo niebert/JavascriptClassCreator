@@ -30,7 +30,13 @@
     //alert(window.name);
     editor.setValue(top.getValueDOM(vTextareaID),-1);
     editor.getSession().on('change', function() {
-      top.write2value(vTextareaID,editor.getValue());
+      var vClass = top.getSelectedClassID();
+      var vMethID = top.getSelectedMethodID(vClass);
+      if (top.existsMethodJS(vClass,vMethID)) {
+        var vValue = editor.getValue();
+        top.write2value(vTextareaID,vValue);
+        top.saveID4HashPath2JSON("ClassList."+vClass+".MethodCode."+vMethID,vValue);
+      };
     });
 </script>
 

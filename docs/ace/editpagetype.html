@@ -39,7 +39,9 @@
       editor.setValue(top.getValueDOM(vTextareaID),-1);
     };
     editor.getSession().on('change', function() {
-      top.write2value(vTextareaID,editor.getValue());
+      var vValue = editor.getValue();
+      top.write2value(vTextareaID,vValue);
+      top.saveID4HashPath2JSON("PageTypeList."+top.getSelectedPageTypeID()+".template",vValue);
     });
 
     //alert("PaegTypeID='"+vPageTypeID+"'");

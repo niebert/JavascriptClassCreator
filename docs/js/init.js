@@ -20,6 +20,7 @@ vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
 //vDOM_Global.push("sButtonHeader2"); // Selector for ButtonHeader 2
 vDOM_Global.push("tGlobalLibs");
 vDOM_Global.push("tDatabases"); // List of all included Databases
+vDOM_Global.push("sDatabaseList"); // Selected Database
 vDOM_Global.push("tExportPrefix"); // Export Prefix for Databases
 vDOM_Global.push("sExportPrefix"); //Checkbox if Export Prefix should be used for Databases. Unchecked i.e. pure JSON export
 vDOM_Global.push("sShowGeneralizations"); //UML-Settings for Diagram Export
@@ -196,7 +197,7 @@ function initCodeCreator() {
   updateElementsFileJSON2Form(vSelectedFile);
   updateButtonJSON2Form();
   updateGlobalLibsJSON2Form();
-  updateDatabasesJSON2Form();
+  //updateDatabasesJSON2Form();
   populateForm2TemplateJSON();
   //createFileSelect();
   //updateSelectors(vSelectedClass,vSelectedFile); //select.js:140
@@ -640,16 +641,11 @@ function initPageSelector() {
 };
 
 function initDatabaseSelector() {
-  var vDataJSONArr = [];
-  var vDataJSONList = vJSCC_DB["DatabaseList"];
-  for (var iDatabase in vDataJSONList) {
-    if (vDataJSONList.hasOwnProperty(iClass)) {
-      vDataJSONArr.push(iClass);
-    };
-  };
+  var vDataJSONArr = getArray4HashID(vJSCC_DB["DatabaseList"]);
+  var vArr = getDatabaseFilePathArray();
   //ClassList update
   //document.fCreator.tClassList += "\n"+vClass;
-  write2value("tDatabases",vDataJSONArr.join("\n"));
+  write2value("tDatabases",vArr.join("\n"));
   //var vClass = getValueDOM("tClassname");
   //initClassJS(vClass);
   createDatabaseSelect4Array(vDataJSONArr);

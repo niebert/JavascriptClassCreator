@@ -316,6 +316,7 @@ function getArray4HashID(pHash) {
 function createPageSelect(pPageID) {
   var vArrID = getArray4HashID(vJSCC_DB["PageList"]);
   createPageSelect4Array(vArrID);
+  write2value("tPages", getPageListString());
   if (pPageID) {
     if (existsPageJS(pPageID)) {
       selectPageJS(pPageID);
@@ -356,11 +357,17 @@ function createPageTypeSelect(pPageTypeID) {
   // get all Methods in JSON Database of all Classes
   console.log("createPageTypeSelect()-Call");
   var vArrID = getArray4HashID(vJSCC_DB["PageTypeList"]);
+  var vPageTypeID = pPageTypeID || vArrID[0] || "";
   createPageTypeSelect4Array(vArrID);
-  if (pPageTypeID) {
-    if (existsPageTypeJS(pPageTypeID)) {
-      selectPageTypeJS(pPageTypeID);
-    };
+  // set tPageTypes
+  var vCutAtEnd = 0;
+  write2value("tPageTypes",getHash4Record2String(vPageTypeRECDEF,vJSCC_DB["PageTypeList"],vCutAtEnd));
+  if (vPageTypeID == "") {
+    clearPageTypeForm();
+  } else if (existsPageTypeJS(vPageTypeID)) {
+    selectPageTypeJS(vPageTypeID);
+  } else {
+    clearPageTypeForm();
   };
 };
 
@@ -410,6 +417,18 @@ function getDatabaseIDHash() {
   return vDBList;
 }
 
+function getDatabaseFilePathArray() {
+  var vArr = [];
+  var vDBList = vJSCC_DB["DBID2File"];
+  for (var iDB in vDBList) {
+    if (vDBList.hasOwnProperty(iDB)) {
+      console.log("getDatabaseFilePathArray() "+vDBList[iDB]);
+      vArr.push(vDBList[iDB]);
+    };
+  };
+  return vArr;
+}
+
 
 function createDatabaseSelect(pDatabaseID) {
   var vDBList = getDatabaseIDHash();
@@ -426,6 +445,10 @@ function createDatabaseSelect(pDatabaseID) {
   if (vDBID != "") {
     selectDatabaseJSON(vDBID);
   };
+  //--- Update DatabaseList in Files/Classes ---
+  var vArr = getDatabaseFilePathArray();
+  vJSCC_DB["tDatabases"] = vArr.join("\n");
+  write2value("tDatabases",vArr.join("\n"));
 };
 
 function createDatabaseSelect4Array(pArray) {
@@ -481,9 +504,10 @@ function setSelectedButton(pArray,pButtonID) {
 
 function createHeaderButtonSelect(pButtArrID) {
   // get all Methods in JSON Database of all Classes
+  var vPageTypeID = getSelectedPageTypeID();
   var vButtArrID = pButtArrID || getArray4HashID(vJSCC_DB["ButtonList"]);
-  console.log("createHeaderButtonSelect-Call");
-  var vOptions = "";
+  console.log("createHeaderButtonSelect()-Call with PageType='"+vPageTypeID+"'");
+  var vOptions = "<option> </option>";
   var vButtonID = "";
   var vPageID = "";
   var vCR = "";
@@ -499,7 +523,7 @@ function createHeaderButtonSelect(pButtArrID) {
     vCR = "\n";
   };
   // Insert the defined Header Page Links
-  var vPageArr = getPageListArray();
+  var vPageArr = getArray4HashID(vJSCC_DB["PageList"]);
   vPrefix = "Show Page: ";
   for (var i = 0; i < vPageArr.length; i++) {
     vPageID = vPageArr[i];
@@ -510,7 +534,12 @@ function createHeaderButtonSelect(pButtArrID) {
   };
   write2innerHTML("sButtonHeader1",vOptions);
   write2innerHTML("sButtonHeader2",vOptions);
-}
+  if (existsPageTypeJS(vPageTypeID)) {
+    var vPagTypHash = vJSCC_DB["PageTypeList"][vPageTypeID];
+    write2value("sButtonHeader1",vPagTypHash["HEADER_BUTTON1"]);
+    write2value("sButtonHeader2",vPagTypHash["HEADER_BUTTON2"]);
+  };
+};
 
 function getHeadOption(pPrefix,pValue) {
   return "<option value=\""+pValue+"\">"+pPrefix+pValue+"</option>";

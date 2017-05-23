@@ -207,12 +207,12 @@
             <br>
             <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
             <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
-            <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page">
+            <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page" onchange="savePageHTML_do()">
             </select>
             <br>
-            <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="45" style="font-family: monospace">
+            <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="35" style="font-family: monospace" onchange="savePageHTML_do()">
             <b>Parent Page ID:</b>
-            <select id="sParentPage" name="sParentPage">
+            <select id="sParentPage" name="sParentPage" onchange="savePageHTML_do()">
               <option>home</option>
             </select>
             <br>
@@ -348,7 +348,7 @@
             <input name="tButtonID" id="tButtonID" value="" type="text" style="font-family: monospace" size="10" onchange="this.value=(reduceVarName(this.value)).toUpperCase()">
             <input type="button" id="bCreateNewButton" onclick="createNewButton();return false" value="+">
             <b>Button-Title:</b>
-            <input name="tButtonTitle" id="tButtonTitle" value="" type="text" style="font-family: monospace" size="10" onchange="updateButtonEditForm2JSON()">
+            <input name="tButtonTitle" id="tButtonTitle" value="" type="text" size="20" style="font-family: monospace" size="10" onchange="updateButtonEditForm2JSON()">
             <br>
             <b style="align:center">HTML Definition for Button:</b> <tt>[tButtonDefHTML]</tt>
             <br>Replaces <tt>___BUTTON_ID___</tt>, <tt>___BUTTON_TITLE___</tt>
@@ -692,7 +692,7 @@
                 DB:
                 <font color="blue" class="labDBname" id="titleDBIDEdit">MyDB</font>
                 DB-ID:
-                <font color="blue" id="titleDBIDTab">MyID</font>
+                <font color="blue" class="labDBIDname" id="titleDBIDTab">MyID</font>
               </b>
             </font>
           </td>
@@ -700,14 +700,14 @@
         <tr class="trJSCCDB">
           <td colspan="2" align="center">
             <b>Select DB-ID:</b>
-            <select id="sDatabaseID" name="sDatabaseID" onchange="selectDatabaseVarID(this.value)">
+            <select id="sDatabaseVarID" name="sDatabaseVarID" onchange="selectDatabaseVarID(this.value)">
               <option></option>
             </select>
-            <input type="button"  class="deletebutton" id="bDeleteDatabaseID" onclick="deleteDatabaseID();return false" value="Delete">
-            <input type="button"  class="savebutton" id="bSaveDatabaseID" onclick="saveDatabaseID();return false" value="Delete">
+            <input type="button"  class="deletebutton" id="bDeleteDatabaseVarID" onclick="deleteDatabaseVarID();return false" value="Delete">
+            <input type="button"  class="savebutton" id="bSaveDatabaseVarID" onclick="saveDatabaseVarIDHTML();return false" value="Delete">
             <br>
-            <b> ID-Name: </b> <input name="tDatabaseID" id="tDatabaseID" value=""  size="20" type="text" style="font-family: monospace"  onchange="this.value = reduceIDName(this.value)">
-            <input type="button" id="bCreateNewDatabaseID" onclick="createNewDatabaseID();return false" value="+">
+            <b> ID-Name: </b> <input name="tDatabaseVarID" id="tDatabaseVarID" value=""  size="20" type="text" style="font-family: monospace"  onchange="this.value = reduceIDName(this.value)">
+            <input type="button" id="bCreateNewDatabaseVarID" onclick="createNewDatabaseVarID();return false" value="+">
             <!--
             <button id="bRenameClass" class="renamebutton" onclick="renameDatabaseIDForm();return false">Rename</button>
             -->
@@ -725,7 +725,8 @@
               <option>YES</option>
               <option>NO</option>
             </select>
-            <b>Template:</b>
+            <br>
+            <b>Select Output Template for:</b>   <font color="blue" class="labDBIDname" id="titleDBIDout">MyID</font>
             <select id="sOutTemplate" name="sOutTemplate">
               <option>display</option>
               <option>edit</option>
@@ -786,34 +787,34 @@
         </tr>
       <tr>
         <td colspan="1" align="center">
-          <b>List of defined Classes</b>
-          <input name="bUpdateClasses" value=" Update Classes " onclick="updateClasses()" type="button">
+          <b>List of defined Classes</b> <!-- updateClasses() works -->
+          <input name="bUpdateClasses" value=" Edit Classes " onclick="$( '#tabClass' ).trigger( 'click' );return false" type="button">
           <br>
           <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace"></textarea>
         </td>
         <td colspan="1" align="center">
           <b>List of Basic Classes</b>
-          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateClasses()" type="button">
+          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateBasicClasses()" type="button" style="display:none">
           <br>
           <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace"></textarea>
         </td>
       </tr>
       <tr>
         <td align="center">
-          <b>JSON Databases</b>
-          <input name="bUpdateDatabases" value=" Update Databases " onclick="updateForm2DatabasesJSON()" type="button">
+          <b>JSON Databases</b> <!-- ;updateForm2DatabasesJSON() -->
+          <input name="bUpdateDatabases" value=" Edit Databases " onclick="$( '#tabDB' ).trigger( 'click' );return false" type="button">
           <br>
           <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">
           </textarea>
           <br>
           <b>Global Libaries</b>
-          <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON()" type="button">
+          <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON();return false" type="button">
           <br>
           <textarea name="tGlobalLibs" id="tGlobalLibs" cols="45" rows="5" style="font-family: monospace"></textarea>
         </td>
         <td align="center">
             <b>HTML Files</b>
-            <input name="bUpdateLibraries" value=" Update HTML Files " onclick="updateHTMLFiles()" type="button">
+            <input name="bUpdateLibraries" value=" Edit HTML Files " onclick="$( '#tabHTML' ).trigger( 'click' );return false" type="button">
             <br>
             <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">
             </textarea>
@@ -821,8 +822,8 @@
       </tr>
       <tr>
         <td align="center">
-          <b>Pages in HTML-File</b>
-          <input name="bUpdatePages" value=" Update Pages " onclick="updateForm2PagesJSON()" type="button">
+          <b>Pages in HTML-File</b> <!-- updateForm2PagesJSON() -->
+          <input name="bUpdatePages" value=" Edit Pages " onclick="$( '#tabHTML' ).trigger( 'click' );return false" type="button">
           <br>
           <font size="-2">
             <b>Format:</b>
@@ -833,8 +834,8 @@
         </textarea>
         </td>
         <td align="center">
-          <b>Page Types</b>
-          <input name="bUpdatePageTypes" value=" Update Page Types " onclick="updateFormPageTypes2JSON();return false" type="button">
+          <b>Page Types</b> <!-- updateFormPageTypes2JSON() -->
+          <input name="bUpdatePageTypes" value=" Update Page Types " onclick="$( '#tabPAGETYPE' ).trigger( 'click' );return false" type="button">
           <br>
           <font size="-2">
             <b>Format:</b>
@@ -847,7 +848,7 @@
           </textarea>
         </td>
       </tr>
-      <tr>
+      <tr style="display:none">
         <td colspan="2" align="center">
           <b>Buttons</b>
           <input name="bUpdateButtons" value=" Update Buttons " onclick="updateForm2ButtonsJSON();return false" type="button">
@@ -1068,14 +1069,14 @@ ___JSCODE___
 <hr>
 <b>Header Button</b> <tt>[tTplPageLinkBUTTON]</tt><br>
 <textarea id="tTplPageLinkBUTTON" name="tTplPageLinkBUTTON" cols="125" rows="2">
-       &lt;!-- header button: '___BUTTON_TITLE___' --&gt;
+       &lt;!-- header button: '___BUTTON_TITLE___' link to page '___LINK_PAGE_ID___' --&gt;
        &lt;a href="#" id="b___BUTTON_ID______COUNTER___" onclick="$.mobile.changePage( '#___LINK_PAGE_ID___', { transition: 'slideup', changeHash: false });return false" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
 </textarea>
 <hr>
 <b>Default Button</b> <tt>[tDefaultBUTTON]</tt><br>
 <textarea id="tDefaultBUTTON" name="tDefaultBUTTON" cols="125" rows="2">
-       &lt;!-- header button: '___BUTTON_TITLE___' --&gt;
-       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="alert('Click Button ___BUTTON_ID___');return false" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
+       &lt;!-- header button: '___BUTTON_TITLE___' page: '___PAGE_ID___' --&gt;
+       &lt;a href="#" class="b____BUTTON_ID___" id="b____BUTTON_ID______COUNTER___" onclick="vApp.event('___PAGE_ID___','BUTTON_ID___',___COUNTER___);return false" data-theme="a"&gt;___BUTTON_TITLE___&lt;/a&gt;
 </textarea>
 <hr>
 <b>Quit Button</b> <tt>[tTplQUIT]</tt><br>

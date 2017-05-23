@@ -99,7 +99,7 @@ function createDatabaseJSON(pUsePrefix) {
     var vFileDB = getFilenameWithPath4DB(vDB);
     write2exportedDB(vDB);
     // sExportPrefix = "JSON" means do not use the export prefix, it is pure JSON,
-    selectDatabase();
+    selectDatabaseCode();
     alert("Exported Database: '"+vFileDB+"' Format: '"+vType+"'");
     var vFileName = getSaveFilename4DB(vDB);
     var vContent = getDatabaseJSON2String(vDB);

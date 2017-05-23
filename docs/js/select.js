@@ -512,7 +512,7 @@ function selectPageTypeJS(pPageTypeID) {
   if (vOldPageTypeID != "") {
     if (vOldPageTypeID != vPageTypeID) {
       console.log("Update of OLD setting of PageType '"+vOldPageTypeID+"'");
-      updateForm2PageTypeJSON(vOldPageTypeID);
+      //updateForm2PageTypeJSON(vOldPageTypeID);
     }
   };
   console.log("selectPageTypeJS()-Call: Current PageType '"+vOldPageTypeID+"' - Selected PageType '"+vPageTypeID+"'.");
@@ -570,22 +570,44 @@ function  updatePageTypeJSON4ID2Form(pPageTypeID) {
   } else {
     console.log("WARNING: ButtonID empty");
   }
+};
+
+function getButtonJSON(pButtonID) {
+  if (existsButtonJS(pButtonID)) {
+    return vJSCC_DB["ButtonList"][pButtonID];
+  };
 }
+
+function getElementDBJSON(pElemID) {
+  if (existsElementDBJS(pElemID)) {
+    return vJSCC_DB["ElementsDBList"][pButtonID];
+  };
+}
+
 
 function selectButtonJS(pButtonID) {
   var vButtonID = pButtonID || getValueDOM("sButtonHTML");
   var vOldButtonID = getValueDOM("tButtonID"); // old ButtonID
-  saveButtonHTML_do();
+  var vButtonDefHTML = "";
+  var vButtonTitle = "";
+  //saveButtonHTML_do();
   console.log("selectButtonJS()-Call: Current Button '"+vOldButtonID+"' - Selected Button '"+vButtonID+"'.");
   if (existsButtonJS(vButtonID)) {
     console.log("Button with ID '"+vButtonID+"' exists in selectButtonJS()-Call");
-    updateButtonJSON4ID2Form(vButtonID);
+    var vButtJS = getButtonJSON(vButtonID);
+    //-- Correct innconsistency of manual edits of JSON in ButtonList
+    vButtJS["BUTTON_ID"] = vButtonID;
+    // set the output values
+    vButtonTitle = vButtJS["BUTTON_TITLE"] || "Title "+vButtonID;
+    vButtonDefHTML = vButtJS["tButtonDefHTML"] || "Button Definition "+vButtonID;
+    //updateButtonJSON4ID2Form(vButtonID);
   } else {
     console.log("selectButtonJS()-Call: Undefined Button Content '"+vButtonID+"' - use old Button Content '"+vOldButtonID+"'.");
-    clearButtonForm();
-    vButtonID = "";
   };
+  write2value("sButtonHTML",vButtonID);
   write2value("tButtonID",vButtonID);
+  write2value("tButtonTitle",vButtJS["BUTTON_TITLE"] );
+  write2editor("ButtonDefHTML",vButtonDefHTML);
   vJSCC_DB["SelectedButton"] = vButtonID;
 };
 
@@ -646,7 +668,7 @@ function getSelectedFileID() {
   return getSelectedFilenameHTML();
 }
 
-function getSelectedElement() {
+function getSelectedElementDB() {
   return getValueDOM("sElementsFileList") || "";
 }
 
@@ -993,6 +1015,7 @@ function getDatabaseName4DBID(pDBID) {
   if (existsDatabaseJS(pDBID)) {
     var vDBFile = vJSCC_DB["DBID2File"][pDBID];
     vDBName = getNameExt(vDBFile);
+    vJSCC_DB["sDatabaseList"] = vDBName;
   };
   return vDBName;
 }
@@ -1015,6 +1038,7 @@ function selectDatabaseJSON(pDBID) {
       // write the data only to the JSON editor
       write2value("tDatabaseTitle",(vDB["dbtitle"] || "Title of '"+vDBID+"'"));
       vCode = stringifyJSON(vDB["data"]);
+      // create the Variable Selector for the selected Database "vDBID"
       createDatabaseVarIDSelect(vDBID);
     } else {
       $('.trJSCCDB').hide();
@@ -1084,7 +1108,34 @@ function saveDatabaseVarIDHTML() {
   var vDBname = getValueDOM("sDatabaseTAB");
   var vDBVarID = getValueDOM("sDatabaseID");
   console.log("saveDatabaseHTMLVarID('"+vDBname+"','"+vDBVarID+"')");
+  if (existsDatabaseJS(vDBname)) {
+    var vPathID = "DatabaseList."+vDBname+".format."+vDBVarID+".";
+    saveID4HashPath2JSON(vPathID+"title",getValueDOM(""));
+    saveID4HashPath2JSON(vPathID+"visible",getCheckBox(""));
+    saveID4HashPath2JSON(vPathID+"mandatory",getValueDOM(""));
+
+  };
   // Save DB Title of JSCC Database
+  // "DatabaseList": {
+  //   "db_mydata_js": {
+ //      "JSCC_type": "DB",
+ //      "name": "db_mydata_js",
+ //      "file": "db/mydata.js",
+ //      "dbtitle": "Title of DB db_mydata_js",
+ //      "JSCC_init_date": "2017/04/02 10:35:48",
+ //      "JSCC_mod_date": "2017/04/02 10:35:48",
+ //      "format": {
+ //          "yesno1": {
+ //              "title": "Title of ID yesno1",
+ //              "display": "___DB_YESNO___",
+ //              "edit": "___DB_ID_VALUE___",
+ //              "hidden": "___DB_ID_HIDDEN___",
+ //              "visible": true,
+ //              "mandatory": true
+ //          },
+ //          ...
+ //       }
+ //   }
 }
 
 function saveDatabaseHTML() {
@@ -1130,20 +1181,42 @@ function deleteDatabaseHTML() {
 
 };
 
-function deleteDatabaseID() {
+function deleteDatabaseVarID() {
   var vDBname = getValueDOM("sDatabaseTAB");
-  var vDBVarID = getValueDOM("sDatabaseID");
+  var vDBVarID = getValueDOM("sDatabaseVarID");
   console.log("saveDatabaseHTML('"+vDBname+"','"+vDBVarID+"')");
   var vOK = confirm("Do you want to delete the variable ['"+vDBVarID+"'] in database '"+getDatabaseName4DBID(vDBname)+"'?");
   var vID = "";
   if (vOK == true) {
     if (existsDatabaseJS(vDBname)) {
-      var vFormat = vJSCC_DB["DBID2File"][vDBname]["format"];
+      //var vFormat = vJSCC_DB["DBID2File"][vDBname]["format"];
+      var vFormat = vJSCC_DB["DatabaseList"][vDBname]["format"];
       if (vFormat.hasOwnProperty(vDBVarID)) {
         delete vFormat[vDBVarID];
       };
-      createDatabaseSelect();
-      alert("Database '"+vDelFile+"' deleted!");
+
+      // "db_mydata_js": {
+      //      "JSCC_type": "DB",
+      //      "name": "db_mydata_js",
+      //      "file": "db/mydata.js",
+      //      "dbtitle": "Title of DB db_mydata_js",
+      //      "JSCC_init_date": "2017/04/02 10:35:48",
+      //      "JSCC_mod_date": "2017/04/02 10:35:48",
+      //      "format": {
+      //          "yesno1": {
+      //              "title": "Title of ID yesno1",
+      //              "display": "___DB_YESNO___",
+      //              "edit": "___DB_ID_VALUE___",
+      //              "hidden": "___DB_ID_HIDDEN___",
+      //              "visible": true,
+      //              "mandatory": true
+      //          },
+      //          ...
+      //       }
+      //   }
+
+      createDatabaseVarIDSelect();
+      alert("Variable '"+vDBVarID+"' in database with ID ["+vDBname+"] deleted!");
     } else {
       console.log("ERROR: saveDatabaseHTML('"+vDBVarID+"') DB does not exist in vJSCC_DB");
     };
@@ -1217,7 +1290,7 @@ function selectDatabaseExport(pDBname) {
     // ExportPrefix = "JSON" means: do not use the export prefix, it is pure JSON,
     write2exportedDB(vDBname,getCheckBox("checkUsePrefix"));
     console.log("Database: '"+vDBname+"' selected!");
-    //selectDatabase(vDBname);
+    //selectDatabaseCode(vDBname);
   } else {
     writeFilenameWithPath4DB("",getCheckBox("checkUsePrefix"));
     console.log("WARNING: selectDatabaseJS() vDBname undefined!");
@@ -1232,11 +1305,11 @@ function getExportPrefix() {
   return vPrefix;
 };
 
-function selectDatabase(pDBname) {
+function selectDatabaseCode(pDBname) {
   //show("bSaveJSON");
   var vDBname = pDBname || getValueDOM("sDatabases");
   var vSelExpPref = getExportPrefix();
-  console.log("selectDatabase('"+vDBname+"') Type: '"+vSelExpPref+"'");
+  console.log("selectDatabaseCode('"+vDBname+"') Type: '"+vSelExpPref+"'");
   var vContent = "";
   // ExportPrefix = "JSON" means: do not use the export prefix, it is pure JSON,
   var vExportPrefix = "";
@@ -1244,8 +1317,9 @@ function selectDatabase(pDBname) {
   if (getCheckBox("checkUsePrefix") == true) {
     vExportPrefix = getExportPrefix4DB(vDBname);
   };
-  if (vJSCC_DB["DatabaseList"][vDBname]) {
+  if (existsDatabaseJS(vDBname)) {
     vContent = stringifyJSON(vJSCC_DB["DatabaseList"][vDBname]);
+    selectDatabaseJSON(vDBname);
   } else {
     alert("Database ["+vDBname+"] does not exist in call of selectDatabase()");
   };

@@ -237,7 +237,6 @@ function checkHeaderButton(pHeaderButton) {
         vFailed = createPageJS(vNewPageHash);
         if (!vFailed) {
           vJSCC_DB["PageList"][vNewPageID] = vNewPageHash;
-          write2value("tPages", getPageListString());
           createPageSelect();
         };
       };

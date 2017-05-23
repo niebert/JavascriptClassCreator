@@ -33,7 +33,9 @@
     editor.session.setMode("ace/mode/html");
     editor.setValue(top.getValueDOM(vTextareaID),-1);
     editor.getSession().on('change', function() {
-      top.write2value(vTextareaID,editor.getValue());
+      var vValue = editor.getValue();
+      top.write2value(vTextareaID,vValue);
+      top.saveID4HashPath2JSON("PageList."+top.getSelectedPageID()+".content",vValue);
     });
 </script>
 

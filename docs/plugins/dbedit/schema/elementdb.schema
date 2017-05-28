@@ -1,0 +1,15 @@
+vDataJSON["elementdb"] = {
+  type: "array",
+  title: "Replace Definitions",
+  format: "tabs",
+  items: {
+    title: "Marker",
+    headerTemplate: "{{i}} - {{self.name}}",
+    oneOf: [
+      {
+        $ref: "schema/replacer.json",
+        title: "Replace"
+      }
+    ]
+  }
+}

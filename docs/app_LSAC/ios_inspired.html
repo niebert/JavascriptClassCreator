@@ -1,0 +1,386 @@
+<!DOCTYPE html> 
+<html> 
+	<head> 
+	<meta charset="utf-8" /> 
+	<title>iOS Inspired jQuery Mobile Theme</title> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no"> 	 
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<link href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
+	<link href="ios_inspired/styles.css" rel="stylesheet" />
+	<script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+	<script>
+		// all dialog buttons should close their parent dialog
+		$(".ui-dialog button").live("click", function() {		
+			$("[data-role='dialog']").dialog("close");		
+		});
+		$(document).on("mobileinit", function(){
+		  $.mobile.defaultPageTransition = "slide";
+		});
+	</script>
+	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+	<style>
+		#XfooterTabs {
+			background: #FFF -webkit-radial-gradient(circle, #FFF, #dee2e4);
+		}
+		.ui-listview sup {
+			font-size: 0.6em;
+			color: #cc0000;
+		}
+	</style>
+
+</head> 
+<body> 
+ 
+<div data-role="page" id="homeApp"> 
+ 
+	<div data-role="header" data-position="fixed"> 
+		<h1>Page Header</h1>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+		<p>Welcome to the iOS-Inspired jQuery Mobile theme by <a href="http://twitter.com/taitems" target="_blank">@taitems</a>. Feel free to have a look around and report and bugs to the <a href="https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme/issues" target="_blank">GitHub issues page</a>.</p> 
+ 
+			
+		<ul data-role="listview" data-inset="true"> 
+			<li><a href="#headers">Header Bars</a></li> 
+			<li><a href="#headerButtons">Header Buttons</a></li> 
+			<li><a href="#footerTabs">Footer Tabs</a></li> 
+			<li><a href="#formElements">Form Elements</a></li> 
+			<li><a href="#listViews">List Views</a></li> 
+			<li><a href="#dialogs">Dialogs</a></li> 
+			<li><a href="#popups">Popups <sup>New!</sup></a></li> 
+		</ul> 
+					
+		<br />
+			
+		<br />
+ 
+		</div><!-- /ui-body wrapper -->	
+</div><!-- /page --> 
+  
+<div data-role="page" id="formElements">
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Form Elements</h1>
+		<a href="#" data-rel="back" data-theme="a">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+		
+		<div data-role="fieldcontain">
+		
+			<label>Some Fields and Inputs:</label>
+			
+			<br /><br />
+	
+			<input type="range" />
+			
+			<br /><br />
+			
+			<input type="search" />
+			
+			<br /><br />
+			
+			<input type="email" />
+			
+			<br />
+		
+		</div>
+		
+		<div data-role="fieldcontain">
+			<label for="slider">Select slider:</label>
+			<select name="slider" id="slider" data-role="slider">
+				<option value="off">OFF</option>
+				<option value="on">ON</option>
+			</select> 
+		</div>
+		
+		<div data-role="fieldcontain">
+			<fieldset data-role="controlgroup" data-type="horizontal">
+				<legend>Choose a pet:</legend>
+					<input type="radio" name="radio-choice-1" id="radio-choice-1" value="choice-1" checked="checked" />
+					<label for="radio-choice-1">Cat</label>
+
+					<input type="radio" name="radio-choice-1" id="radio-choice-2" value="choice-2"  />
+					<label for="radio-choice-2">Dog</label>
+
+					<input type="radio" name="radio-choice-1" id="radio-choice-3" value="choice-3"  />
+					<label for="radio-choice-3">Hamster</label>
+			</fieldset>
+		</div>
+		
+		<a disabled="disabled" data-role="button" class="ui-btn-plain">Inactive &lt;a&gt;</a>
+
+		<a data-role="button" class="ui-btn-plain">Active &lt;a&gt;</a>
+
+		<button disabled="disabled" class="ui-btn-plain">Inactive &lt;button&gt;</button>
+
+		<button class="ui-btn-plain">Active &lt;button&gt;</button>
+
+		<p><small>Does the above look funny? Consider it a bug in jQuery mobile where the classes from the underling &lt;button&gt; are not being attached to the new DOM</small></p>
+	
+	</div>
+	
+</div>
+  
+<div data-role="page" id="listViews">
+ 
+	<div data-role="header" data-position="fixed">
+		<h1>List Example</h1>
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+		
+		<ul data-role="listview"> 
+			<li data-role="list-divider">Divider</li>
+			<li><a href="#">Anatomy of a page</a></li> 
+			<li><a href="#">Page transitions</a></li> 
+			<li><a href="#">Dialogs</a></li> 
+			<li><a href="#">Navigation: Ajax, hashes &amp; history</a></li> 
+			<li><a href="#">Link format examples</a></li> 
+			<li><a href="#">Theming pages</a></li>
+			<li><a href="#">Anatomy of a page</a></li> 
+			<li><a href="#">Page transitions</a></li> 
+			<li><a href="#">Dialogs</a></li> 
+			<li><a href="#">Navigation: Ajax, hashes &amp; history</a></li> 
+			<li><a href="#">Link format examples</a></li> 
+			<li><a href="#">Theming pages</a></li>
+			<li><a href="#">Anatomy of a page</a></li> 
+			<li><a href="#">Page transitions</a></li> 
+			<li><a href="#">Dialogs</a></li> 
+			<li><a href="#">Navigation: Ajax, hashes &amp; history</a></li> 
+			<li><a href="#">Link format examples</a></li> 
+			<li><a href="#">Theming pages</a></li>
+			<li><a href="#">Anatomy of a page</a></li> 
+			<li><a href="#">Page transitions</a></li> 
+			<li><a href="#">Dialogs</a></li> 
+			<li><a href="#">Navigation: Ajax, hashes &amp; history</a></li> 
+			<li><a href="#">Link format examples</a></li> 
+			<li><a href="#">Theming pages</a></li>
+		</ul> 
+		
+	</div>
+		
+</div>
+  
+<div data-role="page" id="headers"> 
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Headers</h1>
+		<a href="#" data-rel="back" data-theme="a">Back</a>
+		</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+	
+		<p>
+			The default bar is the blue, but you can also use the black by specifying <em>data-theme="b"</em>.
+		</p>
+		
+		<div data-role="header" data-position="inline">
+			<a href="#" data-rel="back" data-theme="a">Back</a>
+			<h1>Blue Bar</h1>
+			<a href="#" data-theme="a">Button</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-theme="b" data-position="inline">
+			<a href="#" data-rel="back" data-theme="b">Back</a>
+			<h1>Black Bar</h1>
+			<a href="#" data-theme="b">Button</a>
+		</div>
+	
+	</div>
+		
+</div>
+  
+<div data-role="page" id="headerButtons"> 
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Header Buttons</h1>
+		<a href="#" data-rel="back" data-theme="a">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+	
+		<p>
+			The various styled buttons you can place in a header:
+		</p>
+		
+		<div data-role="header" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-theme="a">Edit</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-theme="b">Black</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-theme="c">Delete</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-theme="d">Done</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-rel="back" data-icon="arrow-l" data-theme="a">Back</a>
+		</div>
+		
+		<br />
+		
+		<div data-role="header" data-theme="b" data-position="inline">
+			<h1>Page Title</h1>
+			<a href="#" data-rel="back" data-icon="arrow-l" data-theme="b">Back</a>
+		</div>
+	
+	</div>
+	<div data-role="footer" class="ui-bar">
+		<a href="index.html" data-role="button" data-icon="plus">Add</a>
+		<a href="index.html" data-role="button" data-icon="arrow-u">Up</a>
+		<a href="index.html" data-role="button" data-icon="arrow-d">Down</a>
+	</div>	
+</div>
+
+<div data-role="page" id="allDialogExample"> 
+ 
+	<div data-role="content"> 
+		<button data-theme="e">Button Style E</button>
+		<button data-theme="d">Button Style D</button>
+		<button data-theme="c">Button Style C</button>
+		<button data-theme="b">Button Style B</button>
+		<button data-theme="a">Button Style A</button>
+	</div>
+	
+</div>
+
+<div data-role="page" id="deleteDialogExample"> 
+ 
+	<div data-role="content"> 
+		<button data-theme="e">Delete Draft</button>
+		<button data-theme="a">Save Draft</button>
+		<button data-theme="b">Cancel</button>
+	</div>
+	
+</div>
+
+<div data-role="page" id="postDialogExample"> 
+ 
+	<div data-role="content"> 
+		<button data-theme="a">Post to Twitter</button>
+		<button data-theme="a">Post to Facebook</button>
+		<button data-theme="a">Post to YouTube</button>
+		<button data-theme="b">Cancel</button>
+	</div>
+	
+</div>
+  
+<div data-role="page" id="dialogs">
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Dialogs</h1>
+		<a href="#" data-rel="back" data-theme="a">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+	
+		<a href="#allDialogExample" class="ui-btn-plain" data-role="button" data-rel="dialog" data-transition="slideup">All the options</a>
+	
+		<a href="#deleteDialogExample" class="ui-btn-plain" data-role="button" data-rel="dialog" data-transition="slideup">Delete Example</a>
+	
+		<a href="#postDialogExample" class="ui-btn-plain" data-role="button" data-rel="dialog" data-transition="slideup">Post Something</a>
+	
+	</div>
+	<div data-role="footer" data-position="fixed" >
+		<a href="#" data-role="button" onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<a href="index.html" data-theme="c" data-role="button" data-icon="plus">Add</a>
+		<a href="index.html" data-role="button" data-icon="arrow-u">Up</a>
+		<a href="index.html" data-role="button" data-icon="arrow-d">Down</a>
+
+	</div>	
+</div>
+  
+<div data-role="page" id="footerTabs" data-theme="b">
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Footer Tabs</h1>
+		<a href="#" data-rel="back">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+	
+		Icons by Joseph Wain / <a href="http://www.glyphish.com" target="_blank">glyphish.com</a>. Licensed under the <a href="http://creativecommons.org/licenses/by/3.0/us/" target="_blank">Creative Commons Attribution 3.0 United States License</a>.
+	
+	</div>
+	
+	<div data-role="footer" data-position="fixed" data-theme="a">
+		<div data-role="navbar">
+			<ul>
+				<li>
+					<a href="#"  id="tabA"  data-icon="custom" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+					<!-- <a href="#" id="tabA" data-icon="custom">One</a> -->
+				</li>
+				<li><a href="#" id="tabB" data-icon="custom" class="ui-btn-active">Two</a></li>
+				<li><a href="#" id="tabC" data-icon="custom">Three</a></li>
+			</ul>
+		</div><!-- /navbar -->
+	</div><!-- /footer -->
+		
+</div>
+  
+<div data-role="page" id="popups" data-theme="b">
+ 
+	<div data-role="header" data-position="fixed">
+		<a href="#" data-theme="a"  onclick="$.mobile.changePage( '#homeApp', { transition: 'slideup', changeHash: false });return false">Back</a>
+		<h1>Popups</h1>
+		<a href="#" data-rel="back">Back</a>
+	</div><!-- /header --> 
+ 
+	<div data-role="content"> 
+	
+		<a href="#popupBasic" data-rel="popup" data-role="button" class="ui-btn-plain">Open Popup</a>
+
+		<a href="#popupOverlay" data-rel="popup" data-role="button" class="ui-btn-plain">Open Popup with Overlay</a>
+
+		<a href="#popupiOS" data-rel="popup" data-role="button" class="ui-btn-plain">iOS Style Popup</a>
+
+		<div data-role="popup" data-transition="fade" id="popupBasic">
+			<p>This is a completely basic popup, no options set.<p>
+		</div>
+
+		<div data-role="popup" data-transition="fade" data-overlay-theme="a" id="popupOverlay">
+			<p>This is a completely basic popup, but with an overlay<p>
+		</div>
+
+		<div data-role="popup" data-transition="fade" data-theme="a" data-position-to="window" id="popupiOS">
+			<img src="ios_inspired/images/tick.png">
+			<p>Saved<p>
+		</div>
+	
+	</div>
+		
+</div>
+ 
+
+</body> 
+</html> 

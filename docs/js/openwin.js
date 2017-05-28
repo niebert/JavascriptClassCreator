@@ -1,7 +1,13 @@
 function openWinHTML(pURL,pWinName) {
   var vWinName = pWinName || getWinName();
-  pURL = encodeURI(pURL);
+  //pURL = encodeURI(pURL);
   window.open(pURL,vWinName, 'toolbar=no,  scrollbars=yes, menubar=no, width=400, height=600');
+}
+
+function openWindow(pURL,pWinName) {
+  var vWinName = pWinName || getWinName();
+  //pURL = encodeURI(pURL);
+  window.open(pURL,vWinName, 'toolbar=no,  scrollbars=yes, menubar=no, width=1200, height=600');
 }
 
 function openEmulator(pEmulatorFile) {

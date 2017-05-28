@@ -830,7 +830,19 @@ function getDataseListJSON(pExtenstion) {
   return vArrDB;
 }
 
-function getDefaultDatabaseJSON(pFileName,pDBname,pTitle,pArrID) {
+function getDefaultDatabaseJSON(pFileName,pDBname,pTitle) {
+  return {
+    "JSCC_type": "DB",
+    "init_date": getDateTime(),
+    "init_schema": "",
+    "file": pFileName,
+    "name": pDBname,
+    "title": pTitle,
+    "data": {}
+  }
+};
+
+function X_getDefaultDatabaseJSON(pFileName,pDBname,pTitle,pArrID) {
   var vDBname = pDBname || reduceIDName(pFileName);
   var vTitle = pTitle || "Title of DB '"+pFileName+"'";
   var vArrID = pArrID || ["yesno1","textarea1","yesno2"];

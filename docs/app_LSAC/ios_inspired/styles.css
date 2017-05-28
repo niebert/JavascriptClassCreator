@@ -46,9 +46,9 @@
 	background: #FFF;
 }
 
-.ui-btn.ui-btn-plain[disabled] span, 
+.ui-btn.ui-btn-plain[disabled] span,
 .ui-btn.ui-disabled span,
-.ui-btn.ui-btn-plain[disabled].ui-btn-down-c span, 
+.ui-btn.ui-btn-plain[disabled].ui-btn-down-c span,
 .ui-btn.ui-disabled.ui-btn-down-c span {
 	color: #aaaaaa;
 }
@@ -70,6 +70,7 @@
 	}
 
 /* === HEADER BARS - DEFAULT AND BLACK === */
+
 .ui-header {
 	border: 0 none;
 	padding: 1px 0;
@@ -287,7 +288,7 @@ div.ui-btn .ui-btn-inner {
 					box-sizing: border-box;
 }
 
-.ui-dialog .ui-btn { 
+.ui-dialog .ui-btn {
 	border: none transparent !important;
 }
 
@@ -379,8 +380,8 @@ div.ui-btn .ui-btn-inner {
 /* === BACK BUTTON === */
 a[data-rel='back'], .ui-header a[data-rel='back'] {
 	background: transparent url(images/backButtonSprite.png) 0 0 no-repeat !important;
-		-webkit-box-shadow: none !important; 
-		-moz-box-shadow: none !important; 
+		-webkit-box-shadow: none !important;
+		-moz-box-shadow: none !important;
 		box-shadow: none !important;
 			-webkit-border-radius: 0 !important;
 			-moz-border-radius: 0 !important;
@@ -395,8 +396,8 @@ a[data-rel='back'] .ui-btn-inner {
 	padding: 0 8px 0 0 !important;
 	height: 30px;
 	line-height: 30px;
-		-webkit-box-shadow: none !important; 
-		-moz-box-shadow: none !important; 
+		-webkit-box-shadow: none !important;
+		-moz-box-shadow: none !important;
 		box-shadow: none !important;
 }
 
@@ -697,8 +698,8 @@ input.ui-input-text, .ui-input-search {
 	font-size: 1.1em;
 	font-weight: bold;
 }
-		
-		
+
+
 /* === NAVIGATION BAR === */
 .ui-navbar ul {
 	overflow: hidden;
@@ -718,4 +719,4 @@ input.ui-input-text, .ui-input-search {
 		background-position: right 0;
 		background-size: 100px 250px;
 	}
-}		
+}

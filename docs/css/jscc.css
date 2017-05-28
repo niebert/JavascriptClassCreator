@@ -16,7 +16,12 @@ a:visited {
 a:hover {
 	text-decoration: underline;
 }
-
+.label_valid {
+  background: #0eaf44;
+}
+.label_invalid {
+  background: #f44242
+}
 .btnNT {
 	-webkit-border-radius: 2px;
 	-moz-border-radius: 3px;

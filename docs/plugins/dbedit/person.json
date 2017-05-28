@@ -1,5 +1,6 @@
 {
-  "$ref": "basic_person.json",
+  "title": "Person",
+  "type":"object",
   "properties": {
     "location": {
       "type": "object",

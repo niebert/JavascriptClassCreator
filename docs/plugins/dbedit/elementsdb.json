@@ -1,0 +1,19 @@
+{
+  "title": "Database Replace Markers",
+  "type": "array",
+  "format": "table",
+  "uniqueItems": true,
+  "items": {
+    "type": "object",
+    "properties": {
+      "marker": {
+        "type": "string",
+        "title": "UPPERCASE Marker"
+      },
+      "import": {
+        "type": "string",
+        "title": "HTML Replace Definition"
+      }
+    }
+  }
+}

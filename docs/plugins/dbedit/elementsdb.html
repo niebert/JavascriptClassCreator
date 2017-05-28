@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CSS Integration JSON Editor Example</title>
+    <link href="../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+     <script src="../../js/arrayhash.js"></script>
+     <script src="../../js/filesaver.js"></script>
+     <script src="js/jsoneditor.min.js"></script>
+     <script src="js/jsoneditor.min.js"></script>
+
+    <script>
+    var vID4JSCC = "ElementDBList";
+    var vFileOut = "elementdb.json";
+    // Set the default CSS theme and icon library globally
+    JSONEditor.defaults.theme = 'bootstrap3';
+    JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
+    function saveJSON2JSCC(pID,pJSON) {
+      if (top.vJSCC_DB) {
+        //alert("Type of Content: "+typeof(pContent));
+        top.vJSCC_DB[pID] = saveJSCC(pJSON[pID]);
+        console.log("JSON of ['"+pID+"'] saved in JSCC");
+        alert("JSON of ['"+pID+"'] saved in JSCC!");
+        } else {
+        alert("ERROR: JSON Editor is not running in an iframe in JSCC.\nSaving JSCC cancelled!")
+      }
+    };
+    function saveJSCC(pJSON) {
+      var vHash = {};
+      for (var i = 0; i < pJSON.length; i++) {
+        vHash[pJSON[i]["id"]] = pJSON[i]["marker"];
+      };
+      return vHash;
+    };
+
+    function loadJSCC(pJSCC_JSON) {
+      // pJSON is a subtree of top.vJSCC_DB
+      var vArr = [];
+      for (var iID in pJSCC_JSON) {
+        if (pJSCC_JSON.hasOwnProperty(iID)) {
+          vArr.push({
+            "id":iID,
+            "replace":pJSCC_JSON[iID]
+          });
+        }
+      };
+      return vArr;
+    }
+
+      function restoreDefaultJSCC(pID) {
+          if (top.vJSCC_DB) {
+            editor.setValue(JSON.stringify(top.vJSCC_DB[pID]));
+            console.log("JSON of ['"+pID+"'] saved in JSCC");
+          } else {
+            alert("ERROR: JSON Editor is not running in an iframe in JSCC.\nCould not retrieve JSON 'vJSCC_DB' in JSCC. Reset cancelled!");
+          }
+      };
+
+    </script>
+  </head>
+  <body>
+    <div class='row'>
+      <!--
+      <div class='medium-12-columns'>
+      -->
+      <div class='span8 col-md-8 columns eight large-8' style="display:none">
+        <button id='submit' class='tiny'>Submit (console.log)</button>
+        <button id='restore' class='secondary tiny'>Restore to Default</button>
+      </div>
+    </div>
+    <div class='span8 col-md-8 columns eight large-8'>
+        <input value="Restore Default JSON" onclick="restoreDefaultJSCC()" type="button">
+        <input value="Export JSON" onclick="saveFile2HDD(vFileOut,editor.getValue())" type="button">
+        <input value="Save JSON" onclick="saveJSON2JSCC(vID4JSCC,editor.getValue())" type="button">
+        <span id='valid_indicator' class='label'></span>
+        </p>
+
+        <div id='editor_holder'></div>
+        <br>
+    </div>
+
+    <script>
+
+      // This is the starting value for the editor
+      // We will use this to seed the initial editor
+      // and to provide a "Restore to Default" button.
+      var starting_value = {
+        "ElementsDBList": [
+          {
+            "id":"DB_YESNO",
+            "replace": "<select id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>"
+          },
+          {
+            "id":"DB_HIDDEN",
+            "replace": "<input type=\"hidden\" id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>"
+          },
+          {
+            "id":"DB_TEXTAREA",
+            "replace": "<textarea id='___DB_ID___' name='___DB___' onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"></textarea>"
+          }
+        ]
+      };
+      // the seed JSON is for standalone check of the plugin and in case the
+      // JSON-editor is not running in an iFrame.
+      if (top.vJSCC_DB) {
+        starting_value[vID4JSCC] = loadJSCC(top.vJSCC_DB[vID4JSCC]);
+      };
+
+      // Initialize the editor
+      var editor = new JSONEditor(document.getElementById('editor_holder'),{
+        // Enable fetching schemas via ajax
+        ajax: true,
+
+        // The schema for the editor
+        schema: {
+          $ref: "elementsdb.json",
+          format: "grid"
+        },
+
+        // Seed the form with a starting value
+        startval: starting_value
+      });
+
+      // Hook up the submit button to log to the console
+  //    document.getElementById('submit').addEventListener('click',function() {
+        // Get the value from the editor
+  //      console.log(editor.getValue());
+  //    });
+
+      // Hook up the Restore to Default button
+      document.getElementById('restore').addEventListener('click',function() {
+        editor.setValue(starting_value);
+      });
+
+      // Hook up the validation indicator to update its
+      // status whenever the editor changes
+      editor.on('change',function() {
+        // Get an array of errors from the validator
+        var errors = editor.validate();
+
+        var indicator = document.getElementById('valid_indicator');
+
+        // Not valid
+        if(errors.length) {
+          indicator.className = 'label alert';
+          indicator.textContent = 'not valid';
+        }
+        // Valid
+        else {
+          indicator.className = 'label success';
+          indicator.textContent = 'valid';
+        }
+      });
+
+    </script>
+    <script src="../jquery/external/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../jquery/jquery-ui.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+</html>

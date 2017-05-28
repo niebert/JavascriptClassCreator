@@ -3,18 +3,19 @@
   <head>
     <meta charset="utf-8" />
     <title>CSS Integration JSON Editor Example</title>
+    <link href="../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
-    <link rel='stylesheet' src='css/foundation.min.css'>
-    <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
-    <link rel='stylesheet' src='css/font-awesome.css'>
-
-    <script src="dist/filesaver.js"></script>
-    <script src="dist/jsoneditor.js"></script>
+    <script src="js/filesaver.js"></script>
+    <script src="js/jsoneditor.js"></script>
 
     <script>
+    var vFileOut = "elementsdb.json";
     // Set the default CSS theme and icon library globally
-    JSONEditor.defaults.theme = 'foundation5';
+    JSONEditor.defaults.theme = 'bootstrap2';
     JSONEditor.defaults.iconlib = 'fontawesome4';
 
     function saveFile2HDD(pFilename,pContent) {
@@ -26,19 +27,19 @@
   </head>
   <body>
     <div class='row'>
-      <div class='medium-12 columns'>
-        <h1>DB JSON Editor</h1>
-      </div>
-    </div>
-    <div class='row'>
-      <div class='medium-12-columns'>
-        <button id='submit' class='tiny'>Submit (console.log)</button>
+      <div class='span16 col-md-8 columns eight large-8'>
+        <input value="Save JSON" onclick="saveFile2HDD(vFileOut,editor.getValue())" type="button">
+        <button id='submit' class='tiny' style="display:none">Submit (console.log)</button>
         <button id='restore' class='secondary tiny'>Restore to Default</button>
         <span id='valid_indicator' class='label'></span>
       </div>
     </div>
-    <div class='row'>
-      <div id='editor_holder' class='medium-12 columns'></div>
+    <div class='span8 col-md-8 columns eight large-8'>
+        <h2>Editor</h2>
+        <p>Below is the editor generated from the JSON Schema.</p>
+
+        <div id='editor_holder'></div>
+        <br>
     </div>
 
     <script>
@@ -83,10 +84,10 @@
       });
 
       // Hook up the submit button to log to the console
-      document.getElementById('submit').addEventListener('click',function() {
+  //    document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor
-        console.log(editor.getValue());
-      });
+  //      console.log(editor.getValue());
+  //    });
 
       // Hook up the Restore to Default button
       document.getElementById('restore').addEventListener('click',function() {
@@ -114,6 +115,8 @@
       });
 
     </script>
-    <input type="button" value="Save Page" onclick="saveFile2HDD('index_css.html',document.getElementsByTagName('html')[0].innerHTML)">
+    <script src="../jquery/external/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../jquery/jquery-ui.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js"></script>
   </body>
 </html>

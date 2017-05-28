@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Contributing](#contributing)
+  - [Reporting Bugs](#reporting-bugs)
+  - [Contributing Code](#contributing-code)
+    - [Code Style](#code-style)
+    - [Submitting Pull Requests](#submitting-pull-requests)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 Contributing
 ===============
 This document briefly lists the guidelines for contributing to JSON Editor.

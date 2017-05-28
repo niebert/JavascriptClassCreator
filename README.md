@@ -26,9 +26,17 @@
   - [Template Driven Code Generation](#template-driven-code-generation)
     - [View Code Templates](#view-code-templates)
     - [Edit Code Templates and Export](#edit-code-templates-and-export)
-  - [Loading JSON Data into the App](#loading-json-data-into-the-app)
-    - [Load a single JSON file](#load-a-single-json-file)
-  - [ToDo](#todo)
+- [Load JSON Data into the App](#load-json-data-into-the-app)
+  - [Load a single JSON file](#load-a-single-json-file)
+  - [Reserved Keys in ___vDataJSON___](#reserved-keys-in-___vdatajson___)
+  - [Save JSON Data](#save-json-data)
+- [Adding Features to your WebApp build in JSCC](#adding-features-to-your-webapp-build-in-jscc)
+  - [Survey JS](#survey-js)
+  - [Hamburger Side Menu](#hamburger-side-menu)
+  - [Visualisation of data](#visualisation-of-data)
+  - [Geolocation](#geolocation)
+  - [QR Code Scanner](#qr-code-scanner)
+- [ToDo](#todo)
 - [Acknowledgement](#acknowledgement)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -37,8 +45,11 @@
 
 An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows novice developers to tweak software without digging very deep into libraries and code of the project.
 
+* edit the content of a page in the Web App
+* create a HTML5-source that allows editing with a pure HTML-Editor with search and replace to correct typos or wording of text used in the app.
+
 The objectiv of an ESEIA approach is, that large groups of people are able to modify a software according to their needs.
-An ESEIA tool like ___JavascriptClassCreator___ exports the code in a certain programming languages or syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management Systems like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
+An ESEIA tool like a prototype ___JavascriptClassCreator___ exports the code in a certain programming languages or syntax (here HTML and Javascript), so that also deep alterations are still possible and these improvement can be added to the templates for code generation. The structure alterations of software done be programmers with less time or knowledge in the programming language, can be exported with the new templates. So structural rough alterations and improvements in the logic can be exported with the improvement ESEIA templates. This concept is well-known for Content Management Systems like Typo3, Joomla at. al., where LAYOUT and CONTENT are separated working levels. On technical level CSS does that for HTML layout. JavascriptClassCreator is a ESEIA prototype to extend this principle on the software development level, placed in between UML and grass roots programming of functions, classes, data structures, ...
 
 The vision for certain OpenSource projects is, that a software release *X1* has a ESEIA tool as well, that allow quick and simple alterations *X1* into *X2*.
 
@@ -288,12 +299,66 @@ defines a function to save a file by using the download feature of browsers to s
    <script language="javascript" src="js/blob.js"></script>
    <script language="javascript" src="js/filesaver.js"></script>
 
+## App LSAC - Local Storage AppCache
+An WebApp following the LSAC (el-sack) concept is designed with the following objectives in mind.
+
+### User Control about data collection
+An LSAC app can collect data for the user store the data without the need to submit the data to any server *by default*. Data is collected for mobile device user and stored in the browser and NOT submitted COMPANY (transparently or hidden). This is especially relevant for e.g. health related data collected by fitness apps or address book content that apps want to access to. To accomplish these goals, the Local Storage of the browser is used.
+
+### Local Storage of Browsers
+[Local Storage](https://www.w3schools.com/html/html5_webstorage.asp) is used, so that the App can store the collected data in the browser without the submitting the data to any server by default.
+
+### Offline Use of WebApp
+The [AppCache]-Cache is used to give your application four advantages (see [Beginner Guide - AppCache](https://www.html5rocks.com/en/tutorials/appcache/beginner/)):
+
+* ***No Installation:*** Users click on the URL and start the WebApp without installation, because the WebApp are just HTML, Javascript and CSS used on web pages in general.
+* ***Offline browsing:*** if the users started the WebApp once the WebApp in cached and users can navigate your HTML pages  when they're offline
+* ***Speed:*** the HTML, Javascript and CSS files of you WebApp  come straight from disk/mobile device, no internet connectivity is necessary (relevant for quota of mobile data).
+* ***Resilience:*** if your site hosting the WebApp goes down for "maintenance" or accidentally service of the webserver is not available anymore, your users cannot work with you app because the offline experience
+* ***Software Updates:*** Update of your WebApp is dependent on the AppCache-Manifest, which is simply a list of files that belong to the WebApp. Your WebApp will be updated, when the AppCache-Manifest changed (at least one character in manifesr file). So users will not download the WebApp again and again, when they are online. You have to keep this concept in mind, when you upload a new version of your WebApp on the server. *Always update* the AppCache-Manifest (e.g. insert a new date), so the update of the WebApp will be performed for all users when they are online again.
+
+
+### Generate the AppCache manifest
+___JSCC___ produces a WebApp that needs the generation of the AppCache-Manifest ___offline.appcache___ as a list of files. A Perl-script runs over all files in the directory ___/app_LSAC___ and creates a AppCache-Manifest ___offline.appcache___ with all files of the WebApp. There is a pitfall with the automated scanning of a directory. The AppCache-Manifest itself is part of the directory ___/app_LSAC___ and this file ___offline.appcache___ may not be listed in the AppCache-Manifest itsself.  
+
+### Create a Databases for your WebApp LSAC
+Databases contain data for your WebApp. The collected data is stored in these predefined databases. A JSON schema defines the structure of a JSON database. In the ___plugins/dbedit___ folder. The code is adapted code of the [JSON-Editor](https://github.com/jdorn/json-editor) by Jeremy Dorn. As a parameter the ___plugin/dbedit/dbedit.html___ takes
+* the JSON schema as parameter ___schema=myschema___
+* the JSON an ID for database in JSCC e.g. ___db=mydata___, where to store the database.
+With the example mentioned above ___JSCC___ calls the JSON Editor by  
+* ___plugins/dbedit.html?schema=myschema&db=mydata___.
+___JSCC___ opens a windows with JSON Editor. The schema is defined by file in folder ___plugins/dbedit/schema/___ e.g. for the example
+* ___plugins/dbedit/schema/myschema.js___
+
+
+## Adding Features to your WebApp build in JSCC
+
+### BackBone JS
+[BackBoneJS](http://backbonejs.org/) gives structure to web applications that otherwise need a lot of JavaScript, keep the data in HTML form or in general in Document Object Model (DOM) of your HTML file in sync with a JSON database. Your data is hosted in a JSON file (e.g. stored in the Local Storage of your browser or on a server). BackBoneJS supports free you from syncing and tying your data to the DOM. More technically BackBoneJS. See [demo of a Local Storage ToDo-List](http://backbonejs.org/examples/todos/index.html) by  Jérôme Gravel-Niquet and the [annotated code of this ToDo-app](http://backbonejs.org/docs/backbone.html) written with BackBoneJS. You might want to consider BackBoneJS for developing you WebApp and integrate these concepts as global libraries to your WebApp (e.g. ___app_LSAC___). Especially the LocalStorage concept is already implemented in BackBoneJS models.
+
+### Survey JS
+[SurveyJS](http://surveyjs.org/index.html) for generating a questionnaire for data collection in the webapp. Consider SurveyJS as an option, if you want to do a questionnaire with your webapp. Instead of write an entire new app with JSCC you might want to consider [OpenDataKit](https://opendatakit.org/).
+
+### Hamburger Side Menu
+[Hamburger Side Menu](http://www.jqueryscript.net/menu/Basic-Hamburger-Navigation-Menu-jQuery-CSS.html) for generating a header menu that works for mobile and desktop applications. Can be used to design the navigation of the WebApp. This might help you to replace the iOS-inpired JQuery theme used as default in JSCC.
+
+### Visualisation of data
+[MorrisJS](http://morrisjs.github.io/morris.js/) for visualisation of results for data collections performed with the WebApp. Integrate this as global libraries.
+
+### Geolocation
+[Geolocation](https://www.w3schools.com/html/html5_geolocation.asp) When you use you WebApp for attaching digital content (e.g. comments, videos, snapshot, ...) to a geolocation you might want to retrieve the geolcation. The link shows how to used that in you WepApp.
+
+### QR Code Scanner
+[QRCode Scanner Javascript](https://github.com/LazarSoft/jsqrcode) JavaScript QRCode reader for HTML5 enabled browser by
+2011 Lazar Laszlo. Try [Online-Demo of QRCode Scanner](https://webqr.com/) to see the Javascript QR-Code scanner in action. Use the scanner to retrieve content from QR code in your app. If you want to use the QR-Code scanner in you WebApp ___app_LSAC___ add the [libraries on the GitHub-Page](https://github.com/LazarSoft/jsqrcode) in the given order to your WebApp.
+
+### Maps in your WebApp
+If you want to add map feature to your WebApp [OpenLayers](https://openlayers.org/) makes it easy to put a dynamic map in any web page, especially mobile applications. OpenLayers can display map tiles, vector data and markers loaded from any source. See [OpenLayers examples](https://openlayers.org/en/latest/examples/) to experience, what OpenLayers can be used for in you web development. For this application see (see [JQuery Mobile example with OpenLayers](http://dev.openlayers.org/examples/mobile-jq.html#mappage)). This could be one page of you WebApp.
 
 ## ToDo
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code. The syntax tree AST of the Javascript code can be used to generate other object oriented code of other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for parsing Javascript Code of Classes for exporting to Code2XML with AST and TreeWalker
-* BUG: createButtonSelect() is not implemented, Buttons need an empty first entry
 * BUG: When PageType is selected Buttons are not set and Save does not read the settings of Buttons
 * BUG: Update Method Selector
 * BUG: Generated Header Button (e.g. CANCEL) is not generated in tButtonList
@@ -311,9 +376,8 @@ defines a function to save a file by using the download feature of browsers to s
 
 ## Acknowledgement
 Special thanks to the following individual developers and teams of OpenSource JavaScript projects:
-* [SurveyJS](http://surveyjs.org/index.html) for generating a questionnaire for data collection in the webapp.
-* [Hamburger Side Menu](http://www.jqueryscript.net/menu/Basic-Hamburger-Navigation-Menu-jQuery-CSS.html) for generating a header menu that works for mobile and desktop applications. Can be used to design the navigation of the WebApp.
-* [MorrisJS](http://morrisjs.github.io/morris.js/) for visualisation of results for data collections performed with the WebApp.
+* [JSON-Editor](https://github.com/jdorn/json-editor) by Jeremy Dorn. The JSON Editor takes a JSON Schema and uses it to generate an HTML form. The JSON-Editor is partially used to edit JSON file of the Javascript Project in ___JSCC___. The schemes of the JSON subtree are stored in the folder ___/tpl___ of the JavascriptClassCreator. The full potential of the JSON-Editor was not used in ___JSCC___. This can be approved in the future.
+The JSON-Editor of Jeremy Dorn has full support for JSON Schema version 3 and 4 and can integrate with several popular CSS frameworks (bootstrap, foundation, and jQueryUI). This would lead to major code reduction of ___JSCC___. Refactoring of ___JSCC___ would make more use of the JSON-Editor features. Check out an interactive demo (demo.html): http://jeremydorn.com/json-editor/
 * Developer [Mihai Bazon](http://lisperator.net/) create UglifyJS, a great tool to handle and parse Javascript Code and minify the Javascript code (see [Source Code of UglifyJS](https://github.com/mishoo/UglifyJS2)).
 * The wrapper for UglifyJS is written [Dan Wolff](http://danwolff.se/). His UglifyJS-Online example is used to minify/compress the exported Javascript code of generated JS Classes (For Online Example of the [UglifyJS-Wrapper](https://skalman.github.io/UglifyJS-online/) see source code on https://github.com/Skalman/UglifyJS-online for the Online-Version of the Wrapper.
 * Developers of ACE Code Editor https://ace.c9.io (Javascript Editing uses the Editor in iFrames)
@@ -322,5 +386,6 @@ Special thanks to the following individual developers and teams of OpenSource Ja
 * [Inheritage for JavaScript with protoypes](http://phrogz.net/js/classes/OOPinJS2.html) by Gavin Kistner
 * [3 ways to define a JavaScript class](https://www.phpied.com/3-ways-to-define-a-javascript-class/) by Stoyan Stefanov
 * [JQuery](https://jqueryui.com) is used for the theme and standard operations in the Document Object Model (DOM) of HTML-pages. The [JQuery-Themeroller](https://jqueryui.com/themeroller/) was used to create a JQuery theme for JSCC.
-* OS-Inspired jQuery Mobile theme by Tait Brown. Resources at [GitHub page](https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme).
-* iOS style Icons by Joseph Wain at glyphish.com. Licensed under the Creative Commons Attribution 3.0 United States License.
+* OS-Inspired jQuery Mobile theme by Tait Brown. Resources at [GitHub page](https://github.com/taitems/iOS-Inspired-jQuery-Mobile-Theme). The OS-Inspired jQuery Mobile theme uses iOS style icons, that were published under a Creative Commons 3.0 (see next acknowledgement).
+* iOS style Icons by Joseph Wain at glyphish.com. In this app the used images are licensed under the Creative Commons Attribution 3.0 United States License. In general <tt>glyphish.com</tt>  is commercial portal, that publishes only a small set of icons for free.   
+* for the footer in the ___app_LSAC___  [OpenClipArt arrows](https://openclipart.org/search/?query=arrow%20button%20set) are used. Special thanks to  Jakub Jankiewicz (kuba) for providing this icons under a Creative Commons license on OpenClipArt.

@@ -3,20 +3,28 @@
   <head>
     <meta charset="utf-8" />
     <title>CSS Integration JSON Editor Example</title>
+    <link href="../../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="../css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
-    <link rel='stylesheet' src='../css/foundation.min.css'>
-    <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
-    <link rel='stylesheet' src='../css/font-awesome.css'>
-
-    <script src="../dist/jsoneditor.js"></script>
-
+     <script src="../../../js/arrayhash.js"></script>
+     <script src="../../../js/filesaver.js"></script>
+    <script src="../js/jsoneditor.js"></script>
     <script>
+
     // Set the default CSS theme and icon library globally
-    JSONEditor.defaults.theme = 'foundation5';
+    JSONEditor.defaults.theme = 'bootstrap3';
     JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
     </script>
-  </head>
+</head>
   <body>
     <div class='row'>
       <div class='medium-12 columns'>

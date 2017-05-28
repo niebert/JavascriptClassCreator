@@ -16,15 +16,6 @@ function X_stringifyJSON(pJSON) {
   return vContent;
 };
 
-function cloneJSON(pJSON) {
-  var vJSON = {};
-  if (pJSON) {
-    vJSON = JSON.parse(JSON.stringify(pJSON));
-  } else {
-    console.log("ERROR: cloneJSON(pJSON) - pJSON undefined!");
-  };
-  return vJSON
-};
 
 function checkDatabaseListJSON() {
   var vHashDB = getDatabaseListJSON();
@@ -44,7 +35,7 @@ function createNewDatabase(pFilePath) {
     alert("Database ID for '"+vDBFile+"' already exists!")
   } else {
     vJSCC_DB["DBID2File"][vDBID] = vDBFile;
-    var vOk = confirm("Do you want to create a JSCC Database?\nPress ESC to create a JSON!");
+    var vOK = confirm("Do you want to create a JSCC Database?\nPress ESC to create a JSON!");
     if (vOK && vOK == "true") {
       console.log("Create a JSCC Database");
       vJSCC_DB["DatabaseList"][vDBID] = getDefaultDatabaseJSON(pFilePath,vDBID);

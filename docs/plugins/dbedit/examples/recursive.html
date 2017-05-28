@@ -5,17 +5,36 @@
     <title>Recursive JSON Editor Example</title>
 
     <!-- Foundation CSS framework (Bootstrap and jQueryUI also supported) -->
-    <link rel='stylesheet' href='//cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/bootstrap/3.2.0/css/bootstrap.css'>
     <!-- Font Awesome icons (Bootstrap, Foundation, and jQueryUI also supported) -->
-    <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
 
-    <link rel='stylesheet' href='//cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css'>
-    <link rel='stylesheet' href='//cdn.jsdelivr.net/sceditor/1.4.3/themes/modern.min.css'>
-    <script src='//cdn.jsdelivr.net/jquery/2.1.1/jquery.min.js'></script>
-    <script src='//cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.min.js'></script>
-    <script src='//cdn.jsdelivr.net/sceditor/1.4.3/plugins/xhtml.js'></script>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css'>
+    <link rel='stylesheet' href='https://cdn.jsdelivr.net/sceditor/1.4.3/themes/modern.min.css'>
+    <script src='https://cdn.jsdelivr.net/jquery/2.1.1/jquery.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.min.js'></script>
+    <script src='https://cdn.jsdelivr.net/sceditor/1.4.3/plugins/xhtml.js'></script>
+    <link href="../../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="../css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-    <script src="../dist/jsoneditor.js"></script>
+     <script src="../../../js/arrayhash.js"></script>
+     <script src="../../../js/filesaver.js"></script>
+    <script src="../js/jsoneditor.js"></script>
+    <script>
+
+    // Set the default CSS theme and icon library globally
+    JSONEditor.defaults.theme = 'bootstrap3';
+    JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
+    </script>
 </head>
 <body>
 <div class='container'>
@@ -168,5 +187,9 @@
         }
     });
 </script>
+<script src="../../jquery/external/jquery/jquery.js" type="text/javascript"></script>
+<script src="../../jquery/jquery-ui.js" type="text/javascript"></script>
+<script src="../js/bootstrap.min.js"></script>
+
 </body>
 </html>

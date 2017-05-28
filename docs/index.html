@@ -24,6 +24,7 @@
    vDataJSON["ElementsDBList"] = {};
    vDataJSON["GlobalLibList"] = {};
 
+   var vDataDB = null;  // plugins/dbedit/index.html will load this JSON Data into DB
 
    // Contains all the ID that correspond between the ClassJSON["tClassname"]
    var vDOM_ID = []; // IDs that are stored for all classes, read and write class definition for textareas, select, ...
@@ -72,6 +73,8 @@
    <script language="javascript" src="js/gitbuttons.js"></script>
    <script language="javascript" src="js/iframe.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
+   <!-- jsoneditor.js is provide by Jason Dorn https://github.com/jdorn/json-editor -->
+   <script language="javascript" src="js/jsoneditor.js"></script>
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
    <script language="javascript" src="js/openwin.js"></script>
@@ -138,7 +141,7 @@
     <li><a id="tabAttributes" href="#tabs-Attributes" onclick="clickedTabJQ(this.id)">Attributes</a></li>
     <li><a id="tabMethods" href="#tabs-Methods" onclick="clickedTabJQ(this.id)">Methods</a></li>
     <li><a id="tabDB" href="#tabs-DB" onclick="clickedTabJQ(this.id)"><b>DB</b></a></li>
-    <li><a id="tabFileClass" href="#tabs-FileClass" onclick="clickedTabJQ(this.id)">Files/Classes</a></li>
+    <li><a id="tabFileClass" href="#tabs-FileClass" onclick="clickedTabJQ(this.id)">Settings</a></li>
     <li><a id="tabExport" href="#tabs-Export" onclick="clickedTabJQ(this.id)">Export/Import</a></li>
 	</ul>
 
@@ -772,7 +775,7 @@
           <td  colspan="2" align="center" bgcolor="#C0C0C0">
             <font size="+2">
               <b>
-                Files and Classes
+                JSCC Settings
               </b>
             </font>
           </td>
@@ -783,6 +786,19 @@
           </td>
           <td>
             <b>e-Mail Author:</b> <input name="tMainEMail" id="tMainEMail" value="niehaus@uni-landau.de" type="text" style="font-family: monospace" size="35" onchange="updateFormID2JSON(this.id)">
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <b>Global Libraries:</b>
+            <input name="bHelpBasicClasses" value="?" onclick="alert('Global Libraries are imported for all HTML-Files in your JSCC project.\n(e.g. backbone.js or libraries that allow QR-code scanning in your WebApp)');return false" type="button">
+            <input name="bEditGlobalLibs" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=globallibs&jscc=GlobalLibList');return false" type="button">
+          </td>
+          <td>
+            <b>Basic Classes:</b>
+            <input name="bHelpBasicClasses" value="?" onclick="alert('Basic Classes are object that do not have a class definition in JSCC\ne.g. Boolean, Integer, Array, Hash, ...\nYou can extend these definition e.g. with BackBoneJS definitions');return false" type="button">
+            <input name="bEditBasicClasses" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=basicclasses&jscc=BasicClasses');return false" type="button">
+
           </td>
         </tr>
       <tr>
@@ -862,6 +878,35 @@
           </textarea>
         </td>
         </tr>
+        <tr>
+          <td  colspan="2" align="center" bgcolor="#C0C0C0">
+            <font size="+2">
+              <b>
+                Global Libaries
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"  align="center">
+            <iframe id="iGlobalLibsJSON"  src="plugins/dbedit/globallibs.html" width="90%" height="200"></iframe>
+          </td>
+        </tr>
+        <tr>
+          <td  colspan="2" align="center" bgcolor="#C0C0C0">
+            <font size="+2">
+              <b>
+                Database Marker Replace
+              </b>
+            </font>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2"  align="center">
+            <iframe id="iElementDBJSON"  src="plugins/dbedit/elementsdb.html" width="90%" height="200"></iframe>
+          </td>
+        </tr>
+
       </tbody>
     </table>
   </div>

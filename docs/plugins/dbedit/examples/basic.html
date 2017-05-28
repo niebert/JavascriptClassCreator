@@ -3,14 +3,34 @@
   <head>
     <meta charset="utf-8" />
     <title>Basic JSON Editor Example</title>
-    <script src="../dist/jsoneditor.js"></script>
+    <link href="../../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="../css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+     <script src="../../../js/arrayhash.js"></script>
+     <script src="../../../js/filesaver.js"></script>
+    <script src="../js/jsoneditor.js"></script>
+    <script>
+
+    // Set the default CSS theme and icon library globally
+    JSONEditor.defaults.theme = 'bootstrap3';
+    JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
+    </script>
   </head>
   <body>
     <h1>Basic JSON Editor Example</h1>
-    
+
     <div id='editor_holder'></div>
     <button id='submit'>Submit (console.log)</button>
-    
+
     <script>
       // Initialize the editor with a JSON schema
       var editor = new JSONEditor(document.getElementById('editor_holder'),{
@@ -45,7 +65,7 @@
           }
         }
       });
-      
+
       // Hook up the submit button to log to the console
       document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor

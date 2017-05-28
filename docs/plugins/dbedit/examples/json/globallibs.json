@@ -1,0 +1,19 @@
+{
+  "title": "Global Libraries",
+  "type": "array",
+  "format": "table",
+  "uniqueItems": true,
+  "items": {
+    "type": "object",
+    "title": "Library",
+    "properties": {
+      "file": {
+        "type": "string"
+      },
+      "import": {
+        "type": "boolean",
+        "title": "import library"
+      }
+    }
+  }
+}

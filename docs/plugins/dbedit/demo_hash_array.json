@@ -1,0 +1,25 @@
+{
+  "title": "Global Libraries",
+  "type": "object",
+  "id": "GlobalLibList",
+  "properties": {
+    "GlobalLibList": {
+      "type": "array",
+      "format": "table",
+      "title": "Path to Libraries",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": {
+            "type": "string"
+          },
+          "import": {
+            "type": "boolean",
+            "title": "import library"
+          }
+        }
+      }
+    }
+  }
+}

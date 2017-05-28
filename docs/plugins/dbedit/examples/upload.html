@@ -3,14 +3,14 @@
   <head>
     <meta charset="utf-8" />
     <title>JSON Editor Upload Example</title>
-    <script src="../dist/jsoneditor.js"></script>
+    <script src="../js/jsoneditor.js"></script>
   </head>
   <body>
     <h1>JSON Editor Upload Example</h1>
-    
+
     <div id='editor_holder'></div>
     <button id='submit'>Submit (console.log)</button>
-    
+
     <script>
       // Specify theme
       JSONEditor.defaults.options.theme = 'html';
@@ -110,7 +110,7 @@
         upload_fail: "",
         name: ""
       });
-      
+
       // Hook up the submit button to log to the console
       document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor

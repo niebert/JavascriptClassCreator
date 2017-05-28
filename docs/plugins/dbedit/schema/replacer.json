@@ -1,0 +1,18 @@
+{
+  "title": "Marker",
+  "type": "object",
+  "id": "replace",
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "ID (uppercase and underscore only)",
+      "description": "Marker",
+      "default": "MY_MARKER",
+      "minLength": 4
+    },
+    "replace": {
+      "type": "string",
+      "default": "my replace definition for marker"
+    }
+  }
+}

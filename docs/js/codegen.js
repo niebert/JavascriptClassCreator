@@ -1,3 +1,12 @@
+function compressCode4ClassWindow() {
+  console.log("compressCode4Class() not used in JSCC");
+  displayCompress();
+  // var vCompCode = compressCodeJS();
+  // console.log("compressed length="+vCompCode.length);
+  // setEditorValue("iOutput",vCompCode);
+};
+
+
 function compressCode4Class() {
   console.log("compressCode4Class() not used in JSCC");
   displayCompress();
@@ -569,12 +578,12 @@ function createCode4Class(pClass) {
   // called when user presses [Create JS]
   var vClass = pClass || getSelectedClassID();
   console.log("createCode4Class() '"+vClass+"'");
-  var vCode = getCode4Class(vClass);
+  var vCode = getCode4Class(vClass,getCheckBox("checkCompressCode"));
   write2editor("Output",vCode);
-  if (getCheckBox("checkCompressCode")) {
-    console.log("Open Compressor Window and compress class '"+pClass+"'");
-    compressCode4Class();
-  };
+  //if (getCheckBox("checkCompressCode")) {
+  //  console.log("Open Compressor Window and compress class '"+pClass+"'");
+  //  compressCode4Class();
+  //};
 };
 
 function getClassFile4ClassJSON(pClassJS) {
@@ -684,7 +693,7 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix
   //------------------------------------
   //----- Parameter Comments lines -----
   var vParArr = (vMethHash["param"]).split(",");
-  vReplaceHash["PARAMETERDEF"] = vParArr.join("\n");
+  vReplaceHash["PARAMETERDEF"] = vParArr.join("\n//#    ");
   //------------------------------------
   //----- Method Comments lines -----
   vReplaceHash["COMMENT"] = getMethodComment(pMethodHeader) || "What does '"+vMethName+"()' do?";
@@ -708,38 +717,44 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix
 function getMethodComments4Constructor(pClass) {
   // pTemplateHeadID = "tTplMethodsHeadComment"
   var vCodePrefix = "\n"+getValueDOM("tCommentPrefix")+ "\t";
-  var vOutputPrefix = "\t";
   var vCommentPrefix = "\t";
 
   var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","",vCodePrefix,vOutputPrefix,vCommentPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = (vOutput.split("\n")).join("\n\t");
-
+  vOutput = vCommentPrefix + vOutput;
   return vOutput;
 };
 
 function getMethodPrivate4Constructor(pClass) {
+  // used to create the private methods in constructor of class
   var vCodePrefix = "\n\t"+getValueDOM("tCommentPrefix")+getValueDOM("tCommentBoxPrefix");
-  var vOutputPrefix = "";
+  var vOutputPrefix = ""; // injected before the contructor output
   var vCommentPrefix = "\n // Privat CommentPrefix";
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE","",vCodePrefix,vOutputPrefix,vCommentPrefix);
+  var vAccess = "PRIVATE";
+  // Output all Methods in Constructor if checkbox for Prototype = "NO"
+  if (getValueDOM("sPrototype") == "NO") {
+    vAccess = ""; // means no selector PRIVATE/PUBLIC
+  };
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate",vAccess,"",vCodePrefix,vOutputPrefix,vCommentPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = replaceString(vOutput,"\n","\n\t");
   return vOutput;
 };
 
 function getMethodPublic4Constructor(pClass) {
+  // not used in JSCC currently
   var vCodePrefix = "\t  ";
   var vCommentListPrefix = vCodePrefix;
   var vCommentPrefix = "";
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PRIVATE",vCodePrefix,vParamDocPrefix,vCommentPrefix);
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PUBLIC",vCodePrefix,vParamDocPrefix,vCommentPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = replaceString(vOutput,"\n","\n\t");
   return vOutput;
 };
 
 
-function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCodePrefix,pCommentListPrefix,vCommentPrefix) {
+function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCodePrefix,pCommentListPrefix,pCommentPrefix,pOutputPrefix) {
   console.log("getMethodCode4Template('"+pClass+"','"+pTemplateHeadID+"','"+pTemplateID+"')");
   var vOutput = "";
   var vCodePrefix = pCodePrefix || "";
@@ -765,7 +780,7 @@ function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCode
       console.log("getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
       if ((vReplaceHash["METHODACCESS"] == vAccess) || (vAccess == "")) {
         console.log("EXPORT: getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
-        vReplaceHash["METHCOMMENT"] =  ((vReplaceHash["COMMENT"]).split("\n")).join(("\n"+vCommentPrefix));
+        //vReplaceHash["METHODCOMMENT"] =  ((vReplaceHash["COMMENT"]).split("\n")).join(("\n"+pCommentPrefix));
         vMethod = replaceHash4Content(vReplaceHash,vMethod);
         var vCode = vMethHash["code"] || "//----------- INSERT YOUR CODE HERE ---------------";
         //vCode = vCodePrefix + replaceString(vCode,"\n","\n"+vCodePrefix);
@@ -780,7 +795,7 @@ function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCode
     };
   };
   // prepend the output prefix
-  vOutput = pCommentListPrefix + vOutput;
+  vOutput = pOutputPrefix + vOutput;
   if (pTemplateHeadID != "") {
     vOutput = "\n"+getValueDOM(pTemplateHeadID)+vOutput;
   };

@@ -220,7 +220,7 @@
             </select>
             <br>
             <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iPageHTML"  src="plugins/ace/ace.html?domid=tPageHTML" width="90%" height="100"></iframe>
+            <iframe id="iPageHTML"  src="plugins/ace/ace.html?domid=tPageHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -248,7 +248,7 @@
             <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
             <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
             <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iElementHTML"  src="plugins/ace/ace.html?domid=tElementHTML" width="90%" height="100"></iframe>
+            <iframe id="iElementHTML"  src="plugins/ace/ace.html?domid=tElementHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -282,7 +282,7 @@
               <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
               <br>
               <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
-              <iframe id="iMainHTML"  src="plugins/ace/edithtml.html" width="90%" height="200"></iframe>
+              <iframe id="iMainHTML"  src="plugins/ace/ace.html?domid=tMainHTML&mode=html" width="90%" height="200"></iframe>
             </td>
          </tr>
       </tbody>
@@ -326,7 +326,7 @@
 
             <br>
             <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iPageTypeHTML"  src="plugins/ace/editpagetype.html" width="90%" height="100"></iframe>
+            <iframe id="iPageTypeHTML"  src="plugins/ace/ace.html?domid=tPageTypeHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -360,7 +360,7 @@
             -->
             <textarea name="tButtonDefHTML" id="tButtonDefHTML" rows="3" cols="85" style="display:none" size="90" onchange="updateButtonEditForm2JSON()" wrap="off">
             </textarea>
-            <iframe id="iButtonDefHTML"  src="plugins/ace/editbutton.html" width="90%" height="100"></iframe>
+            <iframe id="iButtonDefHTML"  src="plugins/ace/ace.html?domid=tButtonDefHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
       </tbody>
@@ -466,8 +466,8 @@
            <input name="bExportClassJSON" value=" Export JSON" onclick="exportClassJSON()" type="button">
            <input name="bSaveButtonClass" value=" Export JS" onclick="saveCode4Class()" type="button">
             <hr>
-            <iframe id="iOutput"  src="plugins/ace/editcode.html" width="90%" height="200"></iframe>
             <textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
+            <iframe id="iOutput"  src="plugins/ace/ace.html?domid=tOutput&mode=javascript" width="90%" height="200"></iframe>
             <hr>
             <input type="button" value="Compressor View" onclick="$('#iCompressor').toggle()">
             <iframe id="iCompressor"  src="plugins/uglify/index.html" width="90%" height="500" onload="console.log('Compressor loaded in iFrame iCompressor')" style="display:none"></iframe>
@@ -584,8 +584,8 @@
                 </select>
                 <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
                 <br>
-                  <iframe id="iMethodCode"  src="plugins/ace/editmethod.html" width="90%" height="200"></iframe>
                  <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
+                 <iframe id="iMethodCode"  src="plugins/ace/ace.html?domid=tMethodCode&mode=javascript" width="90%" height="200"></iframe>
                  <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
                  </td>
               </tr>
@@ -605,10 +605,7 @@
         <tr>
           <td colspan="2" align="center">
               <b>Display UML Diagram:</b>
-              <!--
-              <iframe id="iDiagramUML"  src="plugins/uml/index.html" width="90%" height="200"></iframe>
-            -->
-            <input type="button" id="bDisplayUML" onclick="displayUML();return false" value="Create UML Diagram">
+              <input type="button" id="bDisplayUML" onclick="displayUML();return false" value="Create UML Diagram">
 
             </td>
          </tr>
@@ -687,7 +684,7 @@
             <!-- "dbtitle": "Title of DB db_mydata_js" -->
             <br>
             <textarea id="tDBHTML" name="tDBHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iDBHTML"  src="plugins/ace/editdb.html" width="90%" height="100"></iframe>
+            <iframe id="iDBHTML"  src="plugins/ace/ace.html?domid=tDBHTML&mode=json" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr class="trJSCCDB">
@@ -720,8 +717,7 @@
             <input type="button" value="Check Schema" class="renamebutton" id="bEditDatabaseSchema" onclick="openWindow('plugins/dbedit/index.html?db='+document.getElementById('sDatabaseTAB').value);return false">
             <br>
             <textarea id="tDBSchema" name="tDBSchema" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iDBSchema"  src="plugins/ace/editschemadb.html" width="90%" height="100"></iframe>
-
+            <iframe id="iDBSchema"  src="plugins/ace/ace.html?domid=tDBSchema&mode=json" width="90%" height="100"></iframe>
           </td>
         </tr>
 
@@ -877,9 +873,8 @@
 
             <hr>
             <b>JSON/JS Database:</b> <b id="labExportFile" style="color:blue"></b><br>
-            <iframe id="iJSONDB"  src="plugins/ace/editjson.html" width="90%" height="200"></iframe>
-            <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
-            </textarea>
+            <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none"> </textarea>
+            <iframe id="iJSONDB"  src="plugins/ace/ace.html?domid=tJSONDB&mode=json" width="90%" height="200"></iframe>
             <br>
             <b>
               DB-Prefix:

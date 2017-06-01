@@ -1,0 +1,4 @@
+vDataJSON["classlist"] = {
+  "title": "ClassList Schema",
+  "$ref": "schema/classlist_schema.json"
+}

@@ -17,11 +17,17 @@ var editor = new JSONEditor(document.getElementById('editor_holder'),{
 });
 
 // Hook up the submit button to log to the console
-//    document.getElementById('submit').addEventListener('click',function() {
-  // Get the value from the editor
-//      console.log(editor.getValue());
-//    });
-
+var vButton  = document.getElementById('submit');
+if (vButton) {
+  vButton.addEventListener('click',function() {
+      // Get the value from the editor
+      var vJSON = editor.getValue();
+      var vContent = JSON.stringify(vJSON,null,4);
+      console.log("JSON output: "+vContent);
+    });
+} else {
+  console.log("WARNING: submit button for code export does not exist in DOM");
+};
 // Hook up the Restore to Default button
 document.getElementById('restore').addEventListener('click',function() {
   editor.setValue(loadJSCC());

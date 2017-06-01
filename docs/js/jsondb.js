@@ -402,8 +402,8 @@ function saveID4HashPath2JSON(pHashPath,pValue) {
   console.log(vLog);
   if (vPathOK) {
     //set Value
-    if (vPrevHash) {
-      vPrevHash[vID] = pValue;
+    if (vHash) {
+      vHash[vID] = pValue;
     } else {
       alert("ERROR: HashPath '"+pHashPath+"' length to short!")
     };

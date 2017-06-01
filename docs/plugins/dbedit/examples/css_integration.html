@@ -56,16 +56,18 @@
         </ul>
       </div>
     </div>
-    <div class='row'>
-      <div class='medium-12-columns'>
-        <button id='submit' class='tiny'>Submit (console.log)</button>
-        <button id='restore' class='secondary tiny'>Restore to Default</button>
-        <span id='valid_indicator' class='label'></span>
-      </div>
-    </div>
-    <div class='row'>
+    <div  style="margin:20px">
       <div id='editor_holder' class='medium-12 columns'></div>
     </div>
+    <div id='button_holder' style="margin:20px">
+      <button id='export'>Export JSON</button>
+      <button id='bExportSchema'>Export JSON Schema</button>
+      <button id='bWinClose' onclick="window.close()">Close</button>
+      <button id='bExportEditorContent'>Export Editor innerHTML - Debug</button>
+      <button id='view' onclick="console.log(JSON.stringify(editor.getValue()))" style="display:none">View (console.log)</button>
+      <span id='valid_indicator' class='label'></span>
+    </div>
+
 
     <script>
       // This is the starting value for the editor
@@ -139,5 +141,18 @@
         }
       });
     </script>
+
+        <button id='submit'>Submit (console.log)</button>
+
+        <script>
+          // Hook up the submit button to log to the console
+          document.getElementById('submit').addEventListener('click',function() {
+            // Get the value from the editor
+            var vJSON = editor.getValue();
+            var vContent = JSON.stringify(vJSON,null,4);
+            console.log("JSON output: "+vContent);
+          });
+        </script>
+
   </body>
 </html>

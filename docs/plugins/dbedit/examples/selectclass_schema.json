@@ -1,0 +1,8 @@
+{
+  "type": "array",
+  "uniqueItems": true,
+  "items": {
+    "type": "string"
+  },
+  "default": ["Arial","Times","Helvetica","ComicSans"]
+}

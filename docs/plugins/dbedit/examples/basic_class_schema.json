@@ -1,0 +1,36 @@
+{
+  "oneOf":[
+    {
+      "title":"String",
+      "type":"string"
+    },
+    {
+      "title":"Number",
+      "type":"number"
+    },
+    {
+      "title":"Integer",
+      "type":"integer"
+    },
+    {
+      "title":"Boolean",
+      "type":"boolean"
+    },
+    {
+      "title":"Object",
+      "type":"object"
+    },
+    {
+      "title":"Array",
+      "type":"a"
+    },
+    {
+      "title":"Null",
+      "$ref":"null"
+    },
+    {
+      "title":"No Type",
+      "type": null
+    }
+  ]
+}

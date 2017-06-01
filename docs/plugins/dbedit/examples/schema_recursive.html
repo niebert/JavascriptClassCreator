@@ -71,67 +71,63 @@
 <script>
     JSONEditor.defaults.theme = 'bootstrap3';
     JSONEditor.defaults.iconlib = 'fontawesome4';
-    JSONEditor.plugins.sceditor.style = "//cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css";
+    JSONEditor.plugins.sceditor.style = "https://cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css";
 
+    var starting_value = {};
     // Initialize the editor
     var editor = new JSONEditor(document.getElementById('editor_holder'),{
         // The schema for the editor
         schema: {
-            title: "Person",
-            $ref: "#/definitions/person",
+            title: "Schema",
+            format: "grid",
+            $ref: "#/definitions/schema_db",
             definitions: {
-                person: {
+                classSelector_db: {
+                  type: "string",
+                  "enum": [
+                    "null",
+                    "Integer",
+                    "Boolean",
+                    "Class1",
+                    "Class2"
+                  ]
+                },
+                schema_db: {
                     type: "object",
-                    id: "person",
+                    id: "my_id",
+                    format: "grid",
                     // The object will start with only these properties
                     defaultProperties: [
-                        "fname",
-                        "lname",
-                        "year",
-                        "coworkers"
+                        "id",
+                        "type_db",
+                        "default_db",
+                        "properties",
+                        "array_db"
                     ],
-                    patternProperties: {
-                      // Self-referential schema in patternProperties
-                      "^cousin_[0-9]+$": {
-                        $ref: "#/definitions/person"
-                      }
-                    },
                     properties: {
-                        fname: {
-                            title: "first name",
+                        id: {
+                            title: "ID:",
                             type: "string"
                         },
-                        lname: {
-                            title: "last name",
+                        default_db: {
+                            title: "Default DB:",
                             type: "string"
                         },
-                        year: {
-                            type: "integer",
-                            pattern: "^[0-9]{4}$",
-                            default: 1975,
-                            minimum: 1900,
-                            maximum: 2020
+                        type_db: {
+                            title: "Type DB:",
+                            $ref: "#/definitions/classSelector_db"
                         },
-                        bestFriend: {
-                          title: "best friend",
-                          oneOf: [
-                            {
-                              title: "none",
-                              type: "null"
-                            },
-                            // Self-referential schema as 2nd choice in oneOf
-                            {
-                              title: "person",
-                              $ref: "#/definitions/person"
-                            }
-                          ]
+                        properties: {
+                          title: "Properties DB:",
+                          $ref: "#/definitions/properties_db"
                         },
-                        coworkers: {
+                        array_db: {
                           type: "array",
                           // Self-referential schema in array items
+                          format:"tabs",
                           items: {
-                            title: "Coworker",
-                            $ref: "#/definitions/person"
+                            title: "Array DB",
+                            $ref: "#/definitions/schema_db"
                           }
                         },
                         // Self-referential schemas in non-default properties
@@ -140,6 +136,31 @@
                           $ref: "#/definitions/person"
                         }
                     }
+                },
+                properties_db: {
+                  title: "Properties DB:",
+                  oneOf: [
+                    {
+                      title: "none",
+                      type: "null"
+                    },
+                    // Self-referential schema as 2nd choice in oneOf
+                    {
+                      title: "schema_db",
+                      $ref: "#/definitions/schema_db"
+                    },
+                    // Self-referential schema as 3nd choice in oneOf
+                    {
+                      title: "array_db",
+                      $ref: "#/definitions/schema_db"
+                    }
+                  ]
+                },
+                year: {
+                    type: "integer",
+                    pattern: "^[0-9]{4}$",
+                    minimum: 1900,
+                    maximum: 2100
                 }
             }
         }
@@ -148,11 +169,8 @@
     // Hook up the submit button to log to the console
     document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor
-        var vJSON = editor.getValue();
-        var vContent = JSON.stringify(vJSON,null,4);
-        var vContentSchema = JSON.stringify(editor.schema,null,4);
-        console.log("JSON:\n"+vContent+"\nSchema JSON:\n"+vContentSchema);
-  });
+        console.log(editor.getValue());
+    });
 
     // Hook up the Restore to Default button
     document.getElementById('restore').addEventListener('click',function() {

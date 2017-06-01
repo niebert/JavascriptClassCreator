@@ -152,6 +152,15 @@ function createArray4HashID(pHash) {
   return vArr;
 };
 
+function isValidJSON(str) {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  };
+  return true;
+}
+
 function existsPathJSON(pJSON,pPath) {
   var vDefinedPath = definedPathJSON(pJSON,pPath);
   return (vDefinedPath == pPath)
@@ -181,13 +190,27 @@ function get4PathJSON(pJSON,pPath) {
   return x[vID];
 }
 
+function getJSON4Path(pPath) {
+  var vPathArr = pPath.split(".");
+  var vJSON;
+  eval("vJSON="+vPathArr[0]);
+  if (!vJSON) {
+    alert("getJSON4Path('"+pPath+"') root element of path undefined")
+  } else {
+    vPathArr.shift();
+    pPath = vPathArr.join(".");
+    return getObject4PathJSON(pJSON,pPath)
+  };
+
+}
+
 function getObject4PathJSON(pJSON,pPath) {
   var vPathArr = pPath.split(".");
   var vID = "";
-  //var x = pJSON;
-  var x;
-  eval("x="+vPathArr[0]);
-  for (var i = 1; i < (vPathArr.length-1); i++) {
+  var x = pJSON;
+  //var x;
+  //eval("x="+vPathArr[0]);
+  for (var i = 0; i < (vPathArr.length-1); i++) {
     vID = (vPathArr[i]).replace(/[^0-9]/g,"");
     if (vID == vPathArr[i]) {
       vID = parseInt(vPathArr[i]);

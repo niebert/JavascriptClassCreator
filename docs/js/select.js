@@ -673,7 +673,7 @@ function getSelectedElementDB() {
 }
 
 function getSelectedDatabaseID() {
-  return getValueDOM("sDatabaseList") || "";
+  return getValueDOM("sDatabaseTAB") || "";
 }
 
 function selectElementFileJS(pElementID,pFile) {
@@ -1039,7 +1039,9 @@ function selectDatabaseJSON(pDBID) {
       write2value("tDatabaseTitle",(vDB["dbtitle"] || "Title of '"+vDBID+"'"));
       vCode = stringifyJSON(vDB["data"]);
       // create the Variable Selector for the selected Database "vDBID"
-      createDatabaseVarIDSelect(vDBID);
+      vSchema = stringifyJSON(vDB["schema"]);
+      write2value("tDBSchema",vSchema);
+      setEditorValue("iDBSchema",vSchema);
     } else {
       $('.trJSCCDB').hide();
       vCode = stringifyJSON(vJSCC_DB["DatabaseList"][vDBID]);

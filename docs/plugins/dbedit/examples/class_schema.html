@@ -8,6 +8,8 @@
      <link href="../css/bootstrap.min.css" rel="stylesheet">
      <!-- Font-Awesome CSS -->
      <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+     <!-- ACE Editor -->
+     <script src="../../../ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
      <script src="../../../js/arrayhash.js"></script>
      <script src="../../../js/filesaver.js"></script>
@@ -25,8 +27,9 @@
 
     </script>
   </head>
-  <body>
-    <h1>Advanced JSON Editor Example</h1>
+  <body  style="margin:20px">
+  	<div>
+    	<h1>Advanced JSON Editor Example</h1>
 
     <p>This example demonstrates the following:</p>
     <ul>
@@ -41,10 +44,13 @@
     <button id='restore'>Restore to Default</button>
     <button id='enable_disable'>Disable/Enable Form</button>
     <span id='valid_indicator'></span>
-
-    <div id='editor_holder'></div>
+    <button id='bExportJSON'>Export JSON</button>
+    <button id='bExportSchemaJSON'>Export JSON Schema</button>
+	</div>
+    <div id='editor_holder' style="margin:20px"></div>
 
     <script>
+
       // This is the starting value for the editor
       // We will use this to seed the initial editor
       // and to provide a "Restore to Default" button.
@@ -80,27 +86,33 @@
 
         // The schema for the editor
         schema: {
-          type: "array",
-          title: "Person List",
-          format: "tabs",
-          items: {
-            title: "Person Item",
-            headerTemplate: "{{i1}} - {{self.name}}",
-            oneOf: [
-              {
-                $ref: "basic_person.json",
-                title: "Basic Person"
-              },
-              {
-                $ref: "person.json",
-                title: "Complex Person"
-              }
-            ]
+          type: "object",
+          title: "Class",
+          properties: {
+            name: {
+              title: "Name:",
+              type: "string",
+              default: "MyClass"
+            },
+            comment: {
+              title: "Comment:",
+              type: "string",
+              default:"Whats does the class do?"
+            },
+            attributes: {
+                $ref: "attriblist_schema.json",
+                title: "Attributes"
+            },
+            methods: {
+                //$ref: "method_schema.json",
+                $ref: "methodlist_schema.json",
+                title: "Methods"
+            }
           }
         },
 
         // Seed the form with a starting value
-        startval: starting_value,
+        //startval: starting_value,
 
         // Disable additional properties
         no_additional_properties: true,
@@ -112,7 +124,8 @@
       // Hook up the submit button to log to the console
       document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor
-        console.log(JSON.stringify(editor.getValue(),null,4));
+        var vContent = JSON.stringify(editor.getValue(),null,4);
+        console.log("JSON Data:\n"+vContent);
       });
 
       // Hook up the Restore to Default button
@@ -156,15 +169,27 @@
     <script src="../../jquery/jquery-ui.js" type="text/javascript"></script>
     <script src="../js/bootstrap.min.js"></script>
 
-        <button id='submit'>Submit (console.log)</button>
 
         <script>
-          // Hook up the submit button to log to the console
-          document.getElementById('submit').addEventListener('click',function() {
+         var vFileBase = "class";
+          // Hook up the submit button to export JSON
+          document.getElementById('bExportJSON').addEventListener('click',function() {
             // Get the value from the editor
             var vJSON = editor.getValue();
             var vContent = JSON.stringify(vJSON,null,4);
-            console.log("JSON output: "+vContent);
+            var vFile = vFileBase+".json"
+            saveFile2HDD(vFile,vContent)
+            console.log("JSON output '"+vFile+"':\n"+vContent);
+          });
+          // Hook up the submit button to export JSON Schema
+          document.getElementById('bExportSchemaJSON').addEventListener('click',function() {
+            // Get the value from the editor
+            console.log("BEFORE editor.schema:\n"+JSON.stringify(editor.schema,null,4));
+            var vJSON = editor.schema;
+            var vContent = JSON.stringify(vJSON,null,4);
+            var vFile = vFileBase+"_schema.json";
+            console.log("JSON Schema output '"+vFile+"':\n"+vContent);
+            saveFile2HDD(vFile,vContent);
           });
         </script>
 

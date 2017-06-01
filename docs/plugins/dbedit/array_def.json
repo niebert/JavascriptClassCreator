@@ -1,0 +1,21 @@
+{
+  "type": "array",
+  "title": "Array Schema JSON",
+  "id": "objectid",
+  "format": "tabs",
+  "items": {
+    "title": "Properties",
+    "headerTemplate": "{{i}} - {{self.id}}",
+    "oneOf": [
+      {
+        "$ref": "object_def.json",
+        "title": "Object Schema"
+      },
+      {
+        "$ref": "array_def.json",
+        "title": "Array Schema"
+      }
+
+    ]
+  }
+}

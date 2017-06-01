@@ -1,0 +1,19 @@
+{
+  "title": "String",
+  "type": "object",
+  "id": "stringvar",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "ID of Variable, no spaces (allowed A-Z, a-z, 0-9 and '_')",
+      "default": "my_var",
+      "minLength": 3
+    },
+    "visible": {
+      "type": "boolean"
+    },
+    "mandatory": {
+      "type": "boolean"
+    }
+  }
+}

@@ -114,7 +114,9 @@
       // Hook up the submit button to log to the console
       document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor
-        console.log(editor.getValue());
+        var vJSON = editor.getValue();
+        var vContent = JSON.stringify(vJSON,null,4);
+        console.log("JSON output: "+vContent);
       });
     </script>
   </body>

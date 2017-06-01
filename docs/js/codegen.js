@@ -717,12 +717,14 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix
 function getMethodComments4Constructor(pClass) {
   // pTemplateHeadID = "tTplMethodsHeadComment"
   var vCodePrefix = "\n"+getValueDOM("tCommentPrefix")+ "\t";
-  var vCommentPrefix = "\t";
+  var vCommentListPrefix = "\t";
+  var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix")+" ";
+  var vOutputPrefix = "\t";
 
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","",vCodePrefix,vOutputPrefix,vCommentPrefix);
+  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","",vCodePrefix,vCommentPrefix,vCommentPrefix,vOutputPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = (vOutput.split("\n")).join("\n\t");
-  vOutput = vCommentPrefix + vOutput;
+  //vOutput = vCommentPrefix + vOutput;
   return vOutput;
 };
 
@@ -730,7 +732,7 @@ function getMethodPrivate4Constructor(pClass) {
   // used to create the private methods in constructor of class
   var vCodePrefix = "\n\t"+getValueDOM("tCommentPrefix")+getValueDOM("tCommentBoxPrefix");
   var vOutputPrefix = ""; // injected before the contructor output
-  var vCommentPrefix = "\n // Privat CommentPrefix";
+  var vCommentPrefix = "\n";
   var vAccess = "PRIVATE";
   // Output all Methods in Constructor if checkbox for Prototype = "NO"
   if (getValueDOM("sPrototype") == "NO") {

@@ -1,0 +1,10 @@
+{
+  "type": "array",
+  "title": "List of Methods",
+  "format": "table",
+  "items": {
+    "title": "Methods",
+    "headerTemplate": "{{i}} - {{self.name}}",
+    "$ref": "schema/method_schema.json"
+  }
+}

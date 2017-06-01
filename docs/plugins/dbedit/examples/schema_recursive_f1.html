@@ -40,12 +40,14 @@
 <div class='container'>
     <div class='row' style='padding-bottom: 15px;'>
         <div class='col-md-12'>
-            <h1>Recursive JSON Editor Example</h1>
+            <h1>Recursive JSON Schema Editor</h1>
 
             <p>
-              This example demonstrates the many ways you can use recursive schemas (aka self-referential or circular schemas).
+              This example is JSON schema editor creates a JSON schema, that defines the valid structure of JSON. Furthermore is demonstrates the many ways you can use recursive schemas (aka self-referential or circular schemas).
             </p>
             <ul>
+              <li>This JSON editor uses a JSON schema to create a JSON schema. This could be confusing because JSON schema "s" is used to define the structure of a valid JSON "j". A JSON schema "s" is a JSON file itself, so the valid structure "s" can be defined by a JSON schema "s4s".</li>
+              <li>REMARK: For layout purpose in the JSON editor the definition of "object" in the JSON is implemented as an array. This implies that JSON schema must be post-processed after using the JSON editor of Jeremy Dorn.</li>
               <li>Within array items as long as minLength is 0.  See "coworkers" below.</li>
               <li>In non-default properties.  See "mother" below (click the "object properties" button and check "mother")</li>
               <li>In oneOf as long as it's not the 1st choice.  See "bestFriend" below.</li>
@@ -71,49 +73,49 @@
 <script>
     JSONEditor.defaults.theme = 'bootstrap3';
     JSONEditor.defaults.iconlib = 'fontawesome4';
-    JSONEditor.plugins.sceditor.style = "//cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css";
+    JSONEditor.plugins.sceditor.style = "https://cdn.jsdelivr.net/sceditor/1.4.3/jquery.sceditor.default.min.css";
 
+    var starting_value = {};
     // Initialize the editor
     var editor = new JSONEditor(document.getElementById('editor_holder'),{
         // The schema for the editor
         schema: {
-            title: "Person",
-            $ref: "#/definitions/person",
+            title: "Schema",
+            $ref: "#/definitions/schema_db",
+            format: "table",
             definitions: {
-                person: {
-                    type: "object",
-                    id: "person",
+                schema_db: {
+                    type: "array",
+                    id: "my_id",
                     // The object will start with only these properties
                     defaultProperties: [
-                        "fname",
-                        "lname",
-                        "year",
-                        "coworkers"
+                        "id",
+                        "type_db",
+                        "default_db",
+                        "properties_db",
+                        "array_db"
                     ],
                     patternProperties: {
-                      // Self-referential schema in patternProperties
+                      // Self-referntial schema in patternProperties
                       "^cousin_[0-9]+$": {
-                        $ref: "#/definitions/person"
+                        $ref: "#/definitions/schema_db"
                       }
                     },
                     properties: {
-                        fname: {
-                            title: "first name",
+                        id: {
+                            title: "ID:",
                             type: "string"
                         },
-                        lname: {
-                            title: "last name",
+                        type_db: {
+                            title: "Type DB:",
                             type: "string"
                         },
-                        year: {
-                            type: "integer",
-                            pattern: "^[0-9]{4}$",
-                            default: 1975,
-                            minimum: 1900,
-                            maximum: 2020
+                        default_db: {
+                            title: "Default DB:",
+                            type: "string"
                         },
-                        bestFriend: {
-                          title: "best friend",
+                        properties_db: {
+                          title: "Properties DB:",
                           oneOf: [
                             {
                               title: "none",
@@ -121,17 +123,23 @@
                             },
                             // Self-referential schema as 2nd choice in oneOf
                             {
-                              title: "person",
-                              $ref: "#/definitions/person"
+                              title: "schema_db",
+                              $ref: "#/definitions/schema_db"
+                            },
+                            // Self-referential schema as 3nd choice in oneOf
+                            {
+                              title: "array_db",
+                              $ref: "#/definitions/schema_db"
                             }
                           ]
                         },
-                        coworkers: {
+                        array_db: {
                           type: "array",
                           // Self-referential schema in array items
+                          format:"tabs",
                           items: {
-                            title: "Coworker",
-                            $ref: "#/definitions/person"
+                            title: "Array DB",
+                            $ref: "#/definitions/schema_db"
                           }
                         },
                         // Self-referential schemas in non-default properties
@@ -140,6 +148,12 @@
                           $ref: "#/definitions/person"
                         }
                     }
+                },
+                year: {
+                    type: "integer",
+                    pattern: "^[0-9]{4}$",
+                    minimum: 1900,
+                    maximum: 2100
                 }
             }
         }
@@ -148,11 +162,8 @@
     // Hook up the submit button to log to the console
     document.getElementById('submit').addEventListener('click',function() {
         // Get the value from the editor
-        var vJSON = editor.getValue();
-        var vContent = JSON.stringify(vJSON,null,4);
-        var vContentSchema = JSON.stringify(editor.schema,null,4);
-        console.log("JSON:\n"+vContent+"\nSchema JSON:\n"+vContentSchema);
-  });
+        console.log(editor.getValue());
+    });
 
     // Hook up the Restore to Default button
     document.getElementById('restore').addEventListener('click',function() {

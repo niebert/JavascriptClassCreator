@@ -1,0 +1,27 @@
+{
+  "title": "Method",
+  "type": "object",
+  "id": "method",
+  "properties": {
+    "visibility": {
+      "type": "string",
+      "enum": [
+        "public",
+        "private"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "default": "myMethod"
+    },
+    "parameter": {
+      "type": "string",
+      "default": "pPar1:Integer,pVar:Boolean"
+    },
+    "return": {
+      "type": "string",
+      "default": ""
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "type": "object",
+  "id": "object_def.json",
+  "properties": {
+    "id": {
+      "default": "my_id",
+      "description": "An explanation about the purpose of this instance.",
+      "id": "/properties/id",
+      "title": "ID of Object/Hash",
+      "type": "string"
+    },
+    "title": {
+      "default": "My Title of Hash",
+      "description": "Explanation about the content of the hash/object",
+      "id": "/properties/title",
+      "title": "The Title Schema",
+      "type": "string"
+    },
+    "type": {
+      "default": "object",
+      "id": "/properties/type",
+      "type": "string",
+      "template": "object"
+    },
+    "properties": {
+      "id": "/properties/properties",
+      "description": "Add addition properties to the hash/object",
+      "type": "array",
+      "uniqueItems": true,
+      "items": []
+
+    }
+  }
+}

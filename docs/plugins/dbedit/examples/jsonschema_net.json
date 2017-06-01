@@ -1,0 +1,72 @@
+
+  {
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "definitions": {},
+        "id": "http://example.com/example.json",
+        "properties": {
+            "checked": {
+                "default": false,
+                "description": "An explanation about the purpose of this instance.",
+                "id": "/properties/checked",
+                "title": "The Checked Schema",
+                "type": "boolean"
+            },
+            "id": {
+                "default": 1,
+                "description": "An explanation about the purpose of this instance.",
+                "id": "/properties/id",
+                "title": "The Id Schema",
+                "type": "integer"
+            },
+            "name": {
+                "default": "A green door",
+                "description": "An explanation about the purpose of this instance.",
+                "id": "/properties/name",
+                "title": "The Name Schema",
+                "type": "string"
+            },
+            "price": {
+                "default": 12.5,
+                "description": "An explanation about the purpose of this instance.",
+                "id": "/properties/price",
+                "title": "The Price Schema",
+                "type": "number"
+            },
+            "properties": {
+                "id": "/properties/properties",
+                "properties": {
+                    "type": {
+                        "default": 234324,
+                        "description": "An explanation about the purpose of this instance.",
+                        "id": "/properties/properties/properties/type",
+                        "title": "The Type Schema",
+                        "type": "integer"
+                    }
+                },
+                "required": [
+                    "type"
+                ],
+                "type": "object"
+            },
+            "tags": {
+                "id": "/properties/tags",
+                "items": {
+                    "default": "home",
+                    "description": "An explanation about the purpose of this instance.",
+                    "id": "/properties/tags/items",
+                    "title": "The Empty Schema",
+                    "type": "string"
+                },
+                "type": "array"
+            }
+        },
+        "required": [
+            "checked",
+            "name",
+            "tags",
+            "price",
+            "properties",
+            "id"
+        ],
+        "type": "object"
+    }

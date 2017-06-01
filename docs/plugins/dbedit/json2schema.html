@@ -36,6 +36,15 @@
     <!-- END:  load JSON schema -->
   </head>
   <body>
+    <div id="iframe_container" style="text-align: center">
+      <iframe src="../ace/ace.html?mode=json&domid=aceinput" id="aceinput" width="90%" height="250px"></iframe>
+    </div>
+    <textarea id="aceinput" rows="5" cols="20">
+      {
+        "name": "Paul Meyers",
+        "age": 35
+      }
+    </textarea>
     <div id='editor_holder' style="margin-right: 30px; margin-left: 30px"></div>
     <div id='button_holder' style="margin:20px">
       <button id='export'>Export JSON</button>
@@ -57,10 +66,12 @@
       vLinkParam.init(document);
       if (vLinkParam.exists("schema")) {
         vSchemaID = vLinkParam.getValue("schema");
+      } else {
+        console.log("LinkParam: 'schema' in json2schema.html not in parameter");
       };
       //-------------------------------------------------------
       // InitJSON: Get the JSON data to init the Editor from Window Opener
-      var vInitData;
+      var vInitData = {};
       var vJSON;
       var vID = "";
       var vWinOpener = getWinOpener();
@@ -99,6 +110,8 @@
               vJSON = vWinOpener.vJSCC_DB;
               vInitData = vJSON[vID];
             };
+          } else {
+            console.log("No Link/URL parameter in json2schema.html");
           }
       };
       //-------------------------------------------------------
@@ -117,6 +130,7 @@
       // JSON: Database
       vStartVal = null;
       var vEditorDOM = document.getElementById('editor_holder');
+      console.log("Create JSON Editor instance");
       var editor = new JSONEditor(vEditorDOM,{
         ajax: true,
         schema: vSchemaJSON,

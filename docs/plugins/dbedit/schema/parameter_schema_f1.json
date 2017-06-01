@@ -1,0 +1,19 @@
+{
+  "type": "array",
+  "title": "Parameter List",
+  "format": "table",
+  "items": {
+    "type": "object",
+    "title": "Parameter",
+    "properties": {
+      "param": {
+        "type": "string",
+        "default": "pPar1"
+      },
+      "param_class": {
+        "type": "string",
+        "default": "null"
+      }
+    }
+  }
+}

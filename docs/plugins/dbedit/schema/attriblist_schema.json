@@ -1,0 +1,10 @@
+{
+  "type": "array",
+  "title": "List of Attributes",
+  "format": "table",
+  "items": {
+    "title": "Attribute",
+    "headerTemplate": "{{i}} - ({{self.visibility}}) {{self.name}} = {{self.init}}",
+    "$ref": "schema/attribute_schema.json"
+  }
+}

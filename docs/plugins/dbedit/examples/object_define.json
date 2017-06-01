@@ -1,0 +1,32 @@
+{
+  "type": "object",
+  "id": "object_def.json",
+  "properties": {
+    "id": {
+      "default": "var",
+      "description": "An explanation about the purpose of this instance.",
+      "id": "/properties/id",
+      "title": "The Id Schema",
+      "type": "string"
+    },
+    "properties": {
+      "id": "/properties/properties",
+      "properties": {},
+      "type": "object"
+    },
+    "title": {
+      "default": "Person",
+      "description": "An explanation about the purpose of this instance.",
+      "id": "/properties/title",
+      "title": "The Title Schema",
+      "type": "string"
+    },
+    "type": {
+      "default": "object",
+      "description": "An explanation about the purpose of this instance.",
+      "id": "/properties/type",
+      "title": "The Type Schema",
+      "type": "string"
+    }
+  }
+}

@@ -48,31 +48,13 @@
       // This is the starting value for the editor
       // We will use this to seed the initial editor
       // and to provide a "Restore to Default" button.
-      var starting_value = [
-        {
-          name: "John Smith",
-          age: 35,
-          gender: "male",
-          location: {
-            city: "San Francisco",
-            state: "California",
-            citystate: ""
-          },
-          pets: [
-            {
-              name: "Spot",
-              type: "dog",
-              fixed: true
-            },
-            {
-              name: "Whiskers",
-              type: "cat",
-              fixed: false
-            }
-          ]
-        }
-      ];
+      var starting_value = {
+        "visibility": "public",
+        "name": "my_publc_integer",
+        "init": "873"
+      };
 
+      // Initialize the editor
       // Initialize the editor
       var editor = new JSONEditor(document.getElementById('editor_holder'),{
         // Enable fetching schemas via ajax
@@ -80,23 +62,8 @@
 
         // The schema for the editor
         schema: {
-          type: "array",
-          title: "Person List",
-          format: "tabs",
-          items: {
-            title: "Person Item",
-            headerTemplate: "{{i1}} - {{self.name}}",
-            oneOf: [
-              {
-                $ref: "basic_person.json",
-                title: "Basic Person"
-              },
-              {
-                $ref: "person.json",
-                title: "Complex Person"
-              }
-            ]
-          }
+          title: "Attribute",
+          $ref: "jsonschema_net.json"
         },
 
         // Seed the form with a starting value

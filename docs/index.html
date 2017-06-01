@@ -220,7 +220,7 @@
             </select>
             <br>
             <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iPageHTML"  src="ace/editpage.html" width="90%" height="100"></iframe>
+            <iframe id="iPageHTML"  src="plugins/ace/ace.html?domid=tPageHTML" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -248,7 +248,7 @@
             <input name="tElementID" id="tElementID" value="" type="text" size="25" style="font-family: monospace">
             <input type="button" id="bCreateNewElement" onclick="createNewElement();return false" value="+">
             <textarea id="tElementHTML" name="tElementHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iElementHTML"  src="ace/editelement.html" width="90%" height="100"></iframe>
+            <iframe id="iElementHTML"  src="plugins/ace/ace.html?domid=tElementHTML" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -282,7 +282,7 @@
               <input type="button" id="bExportHTML" onclick="exportHTML();return false" value="Export HTML">
               <br>
               <textarea id="tMainHTML" name="tMainHTML" cols="125" rows="10" style="display:none"></textarea>
-              <iframe id="iMainHTML"  src="ace/edithtml.html" width="90%" height="200"></iframe>
+              <iframe id="iMainHTML"  src="plugins/ace/edithtml.html" width="90%" height="200"></iframe>
             </td>
          </tr>
       </tbody>
@@ -326,7 +326,7 @@
 
             <br>
             <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iPageTypeHTML"  src="ace/editpagetype.html" width="90%" height="100"></iframe>
+            <iframe id="iPageTypeHTML"  src="plugins/ace/editpagetype.html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -360,7 +360,7 @@
             -->
             <textarea name="tButtonDefHTML" id="tButtonDefHTML" rows="3" cols="85" style="display:none" size="90" onchange="updateButtonEditForm2JSON()" wrap="off">
             </textarea>
-            <iframe id="iButtonDefHTML"  src="ace/editbutton.html" width="90%" height="100"></iframe>
+            <iframe id="iButtonDefHTML"  src="plugins/ace/editbutton.html" width="90%" height="100"></iframe>
           </td>
         </tr>
       </tbody>
@@ -466,7 +466,7 @@
            <input name="bExportClassJSON" value=" Export JSON" onclick="exportClassJSON()" type="button">
            <input name="bSaveButtonClass" value=" Export JS" onclick="saveCode4Class()" type="button">
             <hr>
-            <iframe id="iOutput"  src="ace/editcode.html" width="90%" height="200"></iframe>
+            <iframe id="iOutput"  src="plugins/ace/editcode.html" width="90%" height="200"></iframe>
             <textarea name="tOutput" id="tOutput" cols="125" rows="20" style="font-family: monospace;display:none"></textarea>
             <hr>
             <input type="button" value="Compressor View" onclick="$('#iCompressor').toggle()">
@@ -584,7 +584,7 @@
                 </select>
                 <input name="bInsertLoop" value=" Insert " onclick="appendLoopDefinition()" type="button">
                 <br>
-                  <iframe id="iMethodCode"  src="ace/editmethod.html" width="90%" height="200"></iframe>
+                  <iframe id="iMethodCode"  src="plugins/ace/editmethod.html" width="90%" height="200"></iframe>
                  <textarea name="tMethodCode" id="tMethodCode" cols="125" rows="15" style="font-family: monospace;display:none"></textarea>
                  <input name="bInsertLoop" value=" Insert Comment/Return " onclick="insertCommentReturn()" type="button">
                  </td>
@@ -681,85 +681,47 @@
             <div class="trJSCCDB" id="labTitleJSCCDB">
               <b>DB-Title:</b>
               <input name="tDatabaseTitle" id="tDatabaseTitle" value=""  size="65" type="text" style="font-family: monospace"  onchange="saveDatabaseHTML();return false">
+              <br>
+              <b>DB-Data:</b> Default data in Database, that should match the the DB JSON Schema
             </div>
             <!-- "dbtitle": "Title of DB db_mydata_js" -->
             <br>
             <textarea id="tDBHTML" name="tDBHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iDBHTML"  src="ace/editdb.html" width="90%" height="100"></iframe>
+            <iframe id="iDBHTML"  src="plugins/ace/editdb.html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr class="trJSCCDB">
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
               <b>
-                DB:
+                Create a Schema JSON Editor:
                 <font color="blue" class="labDBname" id="titleDBIDEdit">MyDB</font>
-                DB-ID:
-                <font color="blue" class="labDBIDname" id="titleDBIDTab">MyID</font>
+                <font color="blue" class="labDBIDname" id="titleDBIDTab" style="display:none">MyID</font>
               </b>
             </font>
           </td>
         </tr>
         <tr class="trJSCCDB">
-          <td colspan="2" align="center">
-            <b>Select DB-ID:</b>
-            <select id="sDatabaseVarID" name="sDatabaseVarID" onchange="selectDatabaseVarID(this.value)">
-              <option></option>
-            </select>
-            <input type="button"  class="deletebutton" id="bDeleteDatabaseVarID" onclick="deleteDatabaseVarID();return false" value="Delete">
-            <input type="button"  class="savebutton" id="bSaveDatabaseVarID" onclick="saveDatabaseVarIDHTML();return false" value="Delete">
-            <br>
-            <b> ID-Name: </b> <input name="tDatabaseVarID" id="tDatabaseVarID" value=""  size="20" type="text" style="font-family: monospace"  onchange="this.value = reduceIDName(this.value)">
-            <input type="button" id="bCreateNewDatabaseVarID" onclick="createNewDatabaseVarID();return false" value="+">
-            <!--
-            <button id="bRenameClass" class="renamebutton" onclick="renameDatabaseIDForm();return false">Rename</button>
-            -->
-            <br>
-            <b>Define DB-IDs:</b>
-            <input name="tDatabaseIDs" id="tDatabaseIDs" value=""  size="60" type="text" style="font-family: monospace"  onchange="updateDataseIDsForm2JSON()">
-            <br>
-            <b>Visible:</b>
-            <select id="sVarVisible" name="sVarVisible" onchange="setProperty4DBID('visible',this.value)">
-              <option>YES</option>
-              <option>NO</option>
-            </select>
-            <b>Mandatory:</b>
-            <select id="sMandatoryDB" name="sMandatoryDB" onchange="setProperty4DBID('mandatory',this.value)">
-              <option>YES</option>
-              <option>NO</option>
-            </select>
-            <br>
-            <b>Select Output Template for:</b>   <font color="blue" class="labDBIDname" id="titleDBIDout">MyID</font>
-            <select id="sOutTemplate" name="sOutTemplate">
-              <option>display</option>
-              <option>edit</option>
-              <option>hidden</option>
-            </select>
-            <br>
-            <textarea id="tDBIDHTML" name="tDBIDHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iDBIDHTML"  src="ace/editdbid.html" width="90%" height="100"></iframe>
-          </td>
-        </tr>
-        <tr class="trJSCCDB">
-          <td  colspan="2" bgcolor="#C0C0C0" align="center">
-            <font size="+2">
-              <b>
-                Database Replace IDs
-              </b>
-            </font>
+          <td colspan="2" >
+            <ul>
+              <li>
+                Generate a JSON Schema from JSON with <a href="https://www.jsonschema.net/#/editor" target="_blank">https://www.jsonschema.net</a> and
+              </li>
+              <li>
+                see documentation of <a href="https://github.com/jdorn/json-editor" target="_blank">JSON Editor by Jeremy Dorn</a>.
+              </li>
+            </ul>
           </td>
         </tr>
         <tr class="trJSCCDB">
           <td colspan="2" align="center">
-            <b>Select Replace Marker DB:</b>
-            <select id="sElementDBTAB" name="sElementDBTAB" onchange="selectElementDB(this.value)">
-              <option></option>
-            </select>
-            <input type="button"  class="deletebutton" id="bDeleteElementDBHTML" onclick="deleteElementDBHTML();return false" value="Delete">
-            <input type="button" id="bSaveElementDBHTML" onclick="saveElementDBHTML();return false" value="Save">
+            <b>Database Schema JSON:</b>
             <br>
-            <textarea id="tElementDBHTML" name="tElementDBHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iElementDBHTML"  src="ace/editelementdb.html" width="90%" height="100"></iframe>
+            <input type="button" value="Check Schema" class="renamebutton" id="bEditDatabaseSchema" onclick="openWindow('plugins/dbedit/index.html?db='+document.getElementById('sDatabaseTAB').value);return false">
+            <br>
+            <textarea id="tDBSchema" name="tDBSchema" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iDBSchema"  src="plugins/ace/editschemadb.html" width="90%" height="100"></iframe>
+
           </td>
         </tr>
 
@@ -791,12 +753,11 @@
         <tr>
           <td>
             <b>Global Libraries:</b>
-            <input name="bHelpBasicClasses" value="?" onclick="alert('Global Libraries are imported for all HTML-Files in your JSCC project.\n(e.g. backbone.js or libraries that allow QR-code scanning in your WebApp)');return false" type="button">
             <input name="bEditGlobalLibs" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=globallibs&jscc=GlobalLibList');return false" type="button">
+            <input name="bHelpBasicClasses" value="?" onclick="alert('Global Libraries are imported for all HTML-Files in your JSCC project.\n(e.g. backbone.js or libraries that allow QR-code scanning in your WebApp)');return false" type="button">
           </td>
           <td>
             <b>Basic Classes:</b>
-            <input name="bHelpBasicClasses" value="?" onclick="alert('Basic Classes are object that do not have a class definition in JSCC\ne.g. Boolean, Integer, Array, Hash, ...\nYou can extend these definition e.g. with BackBoneJS definitions');return false" type="button">
             <input name="bEditBasicClasses" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=basicclasses&jscc=BasicClasses');return false" type="button">
 
           </td>
@@ -878,35 +839,6 @@
           </textarea>
         </td>
         </tr>
-        <tr>
-          <td  colspan="2" align="center" bgcolor="#C0C0C0">
-            <font size="+2">
-              <b>
-                Global Libaries
-              </b>
-            </font>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2"  align="center">
-            <iframe id="iGlobalLibsJSON"  src="plugins/dbedit/globallibs.html" width="90%" height="200"></iframe>
-          </td>
-        </tr>
-        <tr>
-          <td  colspan="2" align="center" bgcolor="#C0C0C0">
-            <font size="+2">
-              <b>
-                Database Marker Replace
-              </b>
-            </font>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2"  align="center">
-            <iframe id="iElementDBJSON"  src="plugins/dbedit/elementsdb.html" width="90%" height="200"></iframe>
-          </td>
-        </tr>
-
       </tbody>
     </table>
   </div>
@@ -945,7 +877,7 @@
 
             <hr>
             <b>JSON/JS Database:</b> <b id="labExportFile" style="color:blue"></b><br>
-            <iframe id="iJSONDB"  src="ace/editjson.html" width="90%" height="200"></iframe>
+            <iframe id="iJSONDB"  src="plugins/ace/editjson.html" width="90%" height="200"></iframe>
             <textarea id="tJSONDB" name="tJSONDB" cols="125" rows="10" style="font-family: monospace;display:none">
             </textarea>
             <br>

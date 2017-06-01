@@ -85,10 +85,9 @@
                     id: "person",
                     // The object will start with only these properties
                     defaultProperties: [
-                        "fname",
                         "lname",
                         "year",
-                        "coworkers"
+                        "bestFriend"
                     ],
                     patternProperties: {
                       // Self-referential schema in patternProperties
@@ -96,13 +95,14 @@
                         $ref: "#/definitions/person"
                       }
                     },
+                    //all possible properties for a valid JSON
                     properties: {
+                        lname: {
+                          title: "last name",
+                          type: "string"
+                        },
                         fname: {
                             title: "first name",
-                            type: "string"
-                        },
-                        lname: {
-                            title: "last name",
                             type: "string"
                         },
                         year: {

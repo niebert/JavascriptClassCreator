@@ -1,0 +1,26 @@
+vDataJSON["databaseschema"] = {
+          "type": "array",
+          "title": "Database Schema JSON",
+          "format": "tabs",
+          "items": {
+            "title": "Properties",
+            "headerTemplate": "{{i}} - {{self.id}}",
+            "oneOf": [
+              {
+                "id": "type_schema",
+                "type": "string",
+                "title": "String Schema"
+              },
+              {
+                "$ref": "object_def.json",
+                "title": "Object Schema"
+              },
+              {
+                "$ref": "array_def.json",
+                "title": "Object Schema"
+              }
+
+
+            ]
+          }
+        }

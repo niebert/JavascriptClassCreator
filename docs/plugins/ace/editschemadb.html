@@ -27,13 +27,23 @@
 </pre>
 <script src="src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var vTextareaID = "tDBHTML";
+    var vTextareaID = "tDBSchema";
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/xcode");
-    editor.session.setMode("ace/mode/html");
+    editor.session.setMode("ace/mode/json");
     editor.setValue(top.getValueDOM(vTextareaID),-1);
     editor.getSession().on('change', function() {
-      top.write2value(vTextareaID,editor.getValue());
+      var vValue = editor.getValue();
+      top.write2value(vTextareaID,vValue);
+      if (top.isValidJSON(vValue)) {
+        top.saveID4HashPath2JSON("DatabaseList."+top.getSelectedDatabaseID()+".schema",JSON.parse(vValue));
+      } else {
+        try {
+          JSON.parse(vValue);
+        } catch (e) {
+          alert("ERROR (JSON parser):\n"+e);
+        };
+      };
     });
 </script>
 

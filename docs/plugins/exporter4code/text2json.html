@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+   <TITLE>Export Text2JSON</TITLE>
+<!--
+#################################################################
+#         Exporter: Text2JSON
+#     for Software: My Software
+#
+# Author of Class:      My Name
+# email:                mymail@example.com
+# created               20.10.2014
+# last modifications    20.10.2014
+# GNU Public License - OpenSource
+# created with JavaScript generator_exporter.html
+//#################################################################
+-->
+<script src="../js/filesaver.js"></script>
+<script language="javascript">
+
+function createCode() {
+  console.log("createCode()-Call");
+  var vTemplate = document.getElementById("tInput").value;
+  var vID = document.getElementById("tID").value;
+  var vJSON = {"template":vTemplate,"date": getDate()};
+  document.getElementById("tOutput").value = "vDataJSON['"+vID+"'] = "+JSON.stringify(vJSON,null,4);
+}
+
+function saveFile2HDD(pFilename,pContent) {
+  var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+  saveAs(file,pFilename);
+}
+
+
+function replaceString(pString,pSearch,pReplace)
+//###### replaces in the string "pString" multiple substrings "pSearch" by "pReplace"
+{
+	//alert("cstring.js - replaceString() "+pString);
+	if (pString != '') {
+		var vHelpString = '';
+        var vN = pString.indexOf(pSearch);
+		var vReturnString = '';
+		while (vN >= 0)
+		{
+			if (vN > 0)
+				vReturnString += pString.substring(0, vN);
+			vReturnString += pReplace;
+            if (vN + pSearch.length < pString.length) {
+				pString = pString.substring(vN+pSearch.length, pString.length);
+			} else {
+				pString = ''
+			}
+			vN = pString.indexOf(pSearch);
+		};
+	};
+	return vReturnString + pString;
+}
+
+function getDate() {
+	var vNow = new Date();
+	var vMonth = vNow.getMonth()+1;
+	return vNow.getDate()+"."+vMonth+"."+vNow.getFullYear();
+}
+
+</script>
+
+
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF8">
+</head>
+
+<body bgcolor=white style="font-family:Arial,Verdana; font-size:12pt; color:black">
+<center><h1>Text to JSON</h1>
+<a  href="http://www.gnu.org/licenses/quick-guide-gplv3.pdf" target="vGNU_Licence">GNU Public Licence V3 <br/>
+<!--- img src="http://www.gnu.org/graphics/gfdl-logo-small.png" alt="GPL V3" --->
+</a>
+<hr>
+</center>
+<form name="fCreator">
+<center>
+<table border=1 bgcolor="#EEEEEE">
+	<tr>
+		<td colspan="2" align="center">
+    <b> Text Input:</b>
+<input type="button" name="bCreator2" Value="  Create Code  " onclick="createCode()">
+<b>Filename:</b>
+<input type=text id="tID" name="tID" value="mytext" size="20">
+<br/>
+ <TEXTAREA id="tInput" name="tInput" cols="120" rows="10">This is a sample
+   that includes a HTML tag <b>Bold Text</b>.
+   ddfds
+</TEXTAREA>
+		</td>
+	</tr>
+
+  <tr>
+		<td colspan="2" align="center">
+    <b> JSON Output:</b>
+<input type="button" name="bCreator2" Value="  Create Code  " onclick="createCode()">
+<b>Filename:</b>
+<input type=text id="tFILENAME" name="tFILENAME" value="template.js" size="20">
+<br/>
+ <TEXTAREA id="tOutput" name="tOutput" cols="120" rows="10">
+</TEXTAREA>
+		</td>
+	</tr>
+<table>
+</center>
+<hr/>
+</form>
+</body>
+</HTML>

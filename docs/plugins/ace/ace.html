@@ -37,6 +37,39 @@
   var vNodeDOM = null;
   // if the DOM node with the vDOMID exists in parent window,
   // the vTextACE will be overwritten by value of the DOM node with id vID
+
+  function getElement4ID(pID) {
+    if (pID && (pID != "")) {
+      var vNode = top.document.getElementById(pID);
+      if (vNode) {
+        if (vNode.value) {
+          return vNode;
+        };
+      }
+    }
+  }
+
+  function getInitText(pID) {
+    var vInitText = "";
+    // var vNode = getElement4ID(pID);
+    // if (vNode) {
+    //   vInitText = top.getValueDOM(pID);
+    // } else {
+    //   alert("ERROR: with 'domid' ACE should run in iFrame.\nParent element ["+pID+"] of iframe undefined");
+    //   console.log("ERROR: getInitText(): Parent element ["+pID+"] of iframe undefined");
+    // };
+    // return vInitText;
+    if (typeof top.getValueDOM !== "undefined") {
+      vInitText = top.getValueDOM(pID)
+    } else {
+      console.log("getInitText('"+pID+"') top.getValueDOM() is undefined!");
+    }
+    return vInitText;
+  };
+
+
+
+
   //----- create ACE Editor -----------
   var editor = ace.edit("editor");
   //--- create a LinkParam instance ---
@@ -54,7 +87,8 @@
   if (vLinkParam.exists("domid")) {
     vID = vLinkParam.getValue("domid");
     //alert("domid="+vID);
-    vTextACE = top.getValueDOM(vID);
+    //alert("top.vSchemaID='"+top.vSchemaID+"'")
+    vTextACE = getInitText(vID);
   };
   //---LinkParam: "mode"----------------
   // set the ACE mode via Link Parameter
@@ -79,12 +113,28 @@
   editor.setTheme("ace/theme/"+vThemeACE);
   editor.session.setMode("ace/mode/"+vModeACE);
   editor.setValue(vTextACE,-1);
+  //----- define, what to do on "onchange" events of ACE -------
+  // vID is set be link parameter 'domid'
   if (vID != "") {
-    editor.getSession().on('change', function() {
-        top.write2value(vID,editor.getValue());
-    });
+    // a DOM Element vNode exists and the ACE editor content will be synced
+    // to the value attribute of DOM element.
+    // now check if onChangeACE handler is defined in top frame
+    // 'domid' is set by parent frame and the onchange handler is
+    // expected to be defined in top frame of the window.
+    // vID as parameter can be used
+    if (top.onChangeACE) {
+      editor.getSession().on('change', function() {
+          // this is a call the onChangeACE defined in ace.html
+          top.onChangeACE(vID,editor.getValue());
+      });
+    } else {
+      editor.getSession().on('change', function() {
+          // this is a call the onChangeACE defined in ace.html
+          onChangeACE(vID,editor.getValue());
+      });
+    };
   };
-  
+
 </script>
 
 </body>

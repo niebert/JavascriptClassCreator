@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>JSON Editor for JSCC</title>
+    <!-- JQuery JS and CSS -->
+   <link href="jquery/jquery-ui.css" rel="stylesheet">
+    <script src="jquery/external/jquery/jquery.js" type="text/javascript"></script>
+    <!-- ACE Editor -->
+    <script src="ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+     <!-- Bootstrap Core CSS -->
+     <link href="dbedit/css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="dbedit/css/font-awesome.min.css" rel="stylesheet">
+
+     <script src="dbedit/js/lodash.js"></script>
+     <script src="dbedit/js/arrayhash.js"></script>
+     <script src="dbedit/js/predbedit.js"></script>
+     <script src="dbedit/js/filesaver.js"></script>
+     <!-- iframe.js necessary for setting the iframe ACE content -->
+     <script src="dbedit/js/iframe.js"></script>
+     <!-- linkparam.js necessary for reading the JSON input from link parameter "jsoninput" -->
+     <script src="dbedit/js/linkparam.js"></script>
+     <script src="dbedit/js/string.js"></script>
+     <script src="dbedit/js/writedom.js"></script>
+     <script src="dbedit/js/jsoneditor.js"></script>
+     <script src="dbedit/js/json2schema.js"></script>
+     <script>
+     //-------------------------------------------------------
+     // LINK PARAMETER: Evaluation link parameter in JSON Path
+     var vLinkParam = new LinkParam();
+     vLinkParam.init(document);
+     //-------------------------------------------------------
+     // Data JSON: Container for loaded JSON schema
+     var vDataJSON = {};
+     //-------------------------------------------------------
+      // Set the default CSS theme and icon library globally
+     JSONEditor.defaults.theme = 'bootstrap3';
+     JSONEditor.defaults.iconlib = 'fontawesome4';
+     JSONEditor.plugins.ace.theme = 'xcode';
+
+     function onChangeACE(pID,pContent) {
+        // handles the onchange events in ACE Editors
+        // the id "pID" is the returned parameter "domid" send to ACE editor
+        // via URL, e.g. "ace/ace.html?domid=jsoninput"  pID="jsoninput"
+        // pID is especially import, when different ACE editors in iFrames
+        // fire "onchange" events
+        write2value(pID,pContent);
+        //saveLocalStorage4ArrayID([pID]);
+     };
+
+    </script>
+    <!-- BEGIN: load Templates -->
+    <script src="dbedit/tpl/jsoneditor_tpl.js"></script>
+    <!-- END:  load Templates -->
+  </head>
+  <body  style="margin:20px">
+    <div style="text-align: center">
+      <h1>
+        <a href="https://www.github.com/niebert/json-editor" target="_blank">JSON2Schema Generator</a>
+      </h1>
+      <h4>
+        JSON Schema Support Tool for <a href="https://github.com/jdorn/json-editor" target="_blank">JSON Editor</a>
+      </h4>
+    </div>
+    <hr>
+    <h3>JSON Input</h3>
+    <textarea id="jsoninput" rows="5" cols="20" style="display:none">
+{
+   "booktitle": "A green door",
+   "author": "Peter Miller",
+   "price": 12.5,
+   "count": 4,
+   "available": false,
+   "color":"#12CA34"
+}
+    </textarea>
+    <script>
+      // JSON input can be set via the URL
+      // <form action="https://niebert.github.io/json-editor/json2schema.html" method="get">
+      //  <textarea name="jsoninput" rows="10" cols="80">
+      //  </textarea>
+      // </form>
+      if (vLinkParam.exists("jsoninput")) {
+        console.log("LinkParam: set 'jsoninput' as Link parameter of json2schema.html");
+        write2value("jsoninput",vLinkParam.getValue("jsoninput"));
+      };
+    </script>
+    <!-- JSON input: now place the ACE editor in the following iFrame and
+        let content be synced to jsoninput by setting the "domid=jsoninput" via URL parameter-->
+    <div id="iJSONinput" style="text-align: center">
+      <iframe src="ace/ace.html?domid=jsoninput&mode=json" id="iACEinput" width="90%" height="150px"></iframe>
+    </div>
+    <p id="pConverter">
+      <button id='bCreateSchema' onclick="onClickSchema4JSON('iACEinput','iACEoutput');syncRemoteSchema()">Create JSON Schema</button>
+      <button id='bExportJSON' onclick="saveFile2HDD('myjson.json',getEditorValue('iACEinput'))">Export JSON</button>
+    </p>
+    <div id="pSchemaOutput" style="display:none">
+      <h3>JSON Schema</h3>
+      <textarea id="schemaoutput" rows="5" cols="85" style="display:none">
+      </textarea>
+      <div id="iJSONoutput" style="text-align: center">
+        <iframe src="ace/ace.html?domid=schemaoutput&mode=json" id="iACEoutput" width="90%" height="150px"></iframe>
+      </div>
+      <p id="pCreateEditorJSON" onclick="createEditorJSON()">
+        <button id='bCreateSchema'>Create JSON Editor</button>
+        <button id='bExportJSON' onclick="saveFile2HDD('schema4myjson.json',getEditorValue('iACEoutput'))">Export Schema</button>
+        <button id='bClose' onclick="syncRemoteSchema();window.close()">Close</button>
+      </p>
+    </div>
+    <div id="divEditor" style="display:none">
+      <div id='editor_holder' style="margin-right: 30px; margin-left: 30px"></div>
+      <div id='button_holder' style="margin:20px">
+        <button id='export'>Export JSON</button>
+        <button id='bExportSchema' onclick="saveFile2HDD('schema4myjson.json',getEditorValue('iACEoutput'))">Export JSON Schema</button>
+        <button id='bExportEditor' onclick="alert('Save Editor to folder /dbedit/jsoneditor.html');exportEditorHTML();return false">Export JSON Editor</button>
+        <button id='bClose2' onclick="syncRemoteSchema();window.close()">Close</button>
+        <button id='bExportEditorContent' style="display:none">Export Editor innerHTML</button>
+        <button id='view' onclick="console.log(JSON.stringify(editor.getValue()))" style="display:none">View (console.log)</button>
+      </div>
+    </div>
+    <script>
+      //-------------------------------------------------------
+      // JSON Editor: Initialize the editor with JSON input and JSON schema
+
+      function createEditorJSON() {
+        $("#divEditor").show();
+        $("#editor_holder").html("");
+        var vInputJSON;
+        var vSchemaJSON;
+        // get the DOM editor holder
+        var vEditorDOM = document.getElementById('editor_holder');
+        //--------------------------
+        // Parse the JSON input
+        var vJSONstring = getValueDOM("jsoninput");
+        var vErrors = 0;
+        if (vJSONstring) {
+          try {
+            // parse JSON
+            vInputJSON = JSON.parse(vJSONstring);
+          } catch(e) {
+            vErrors++;
+            alert("Parse JSON Input:\n"+e); // catch error in the above string, if there are any!
+          }
+        };
+        //--------------------------
+        // Parse the JSON Schema
+        var vJSONstring = getValueDOM("schemaoutput");
+        if (vJSONstring) {
+          try {
+            // parse JSON
+            vSchemaJSON = JSON.parse(vJSONstring);
+          } catch(e) {
+            vErrors++;
+            alert("Parse JSON Schema:\n"+e); // catch error in the above string, if there are any!
+          }
+        };
+        //--------------------------
+        // if parsing of JSON strings create no errors create new JSON editor
+        if (vErrors == 0) {
+          // destroy a previous instance of the editor, if it exists,
+          // to free some resources
+          if (editor) {
+            editor.destroy();
+          };
+          // create a new instance of the editor
+          console.log("Create JSON Editor instance");
+          var editor = new JSONEditor(vEditorDOM,{
+            ajax: true,
+            schema: vSchemaJSON,
+            startval: vInputJSON
+          });
+          //-------------------------------------------------------
+          //---JSON EDITOR Handle Change Event---------------------
+          editor.on('change',function() {
+            var vContent = JSON.stringify(editor.getValue(),null,4);
+            setEditorValue("iACEinput",vContent);
+          });
+          //-------------------------------------------------------
+          // EXPORT JSON: Hook up the submit button to download JSONDB
+          document.getElementById('export').addEventListener('click',function() {
+            var vContent = JSON.stringify(editor.getValue(),null,4);
+            // Get the value from the editor
+            saveFile2HDD("myjson.json",vContent);
+            //console.log(editor.getValue());
+          });
+          //-------------------------------------------------------
+          // Hook up the submit button to log to the console
+          document.getElementById('bExportEditorContent').addEventListener('click',function() {
+            var vContent = style_html(getEditorInnerHTML("editor_holder"));
+            // Get the value from the editor
+            saveFile2HDD("editor_innerhtml.html",vContent);
+            //console.log(editor.getValue());
+          });
+        };
+      }
+    </script>
+    <hr>
+    <center>
+      <font size="-1">
+        JSON2Schema written by Engelbert Niehaus 2017<br>
+        <a href="https://www.github.com/niebert/json-editor" target="_blank">GitHub Repository with JSON2Schema Example</a>
+        <br> based on JSON Editor of Jeremy Dorn
+      </font>
+    </center>
+
+  </body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Advanced JSON Editor Example</title>
+    <link href="../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+     <script src=".js/arrayhash.js"></script>
+     <script src="js/filesaver.js"></script>
+    <script src="js/jsoneditor.js"></script>
+    <script>
+
+    // Set the default CSS theme and icon library globally
+    JSONEditor.defaults.theme = 'bootstrap3';
+    JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
+    </script>
+  </head>
+  <body style="margin:20px">
+    <h1>JSON Editor</h1>
+
+    <button id='bExportJSON'>Export JSON</button>
+    <button id='bExportSchema'>Export JSON Schema</button>
+    <span id='valid_indicator'></span>
+
+    <div id='editor_holder'></div>
+
+    <script>
+      // This is the starting value for the editor
+      // We will use this to seed the initial editor
+      // and to provide a "Restore to Default" button.
+      var starting_value = {
+    "booktitle": "A green door",
+    "author": "Peter Miller",
+    "price": 12.5,
+    "count": 4,
+    "available": false,
+    "color": "#12ca34"
+};
+	  var vSchema = {
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "additionalProperties": true,
+    "title": "MyJSON",
+    "definitions": {},
+    "type": "object",
+    "id": "https://niebert.github.io/json-editor",
+    "defaultProperties": [
+        "booktitle",
+        "author",
+        "price",
+        "count",
+        "available",
+        "color"
+    ],
+    "properties": {
+        "booktitle": {
+            "type": "string",
+            "id": "/properties/booktitle",
+            "title": "Title of 'root.booktitle' Type: 'string'",
+            "default": "A green door",
+            "format": "text",
+            "description": "An explanation for 'root.booktitle' about the purpose of string instance with editor path 'root.booktitle'."
+        },
+        "author": {
+            "type": "string",
+            "id": "/properties/author",
+            "title": "Title of 'root.author' Type: 'string'",
+            "default": "Peter Miller",
+            "format": "text",
+            "description": "An explanation for 'root.author' about the purpose of string instance with editor path 'root.author'."
+        },
+        "price": {
+            "type": "number",
+            "id": "/properties/price",
+            "title": "Title of 'root.price' Type: 'number'",
+            "default": 12.5,
+            "description": "An explanation for 'price' about the purpose of number instance with editor path 'root.price'."
+        },
+        "count": {
+            "type": "integer",
+            "id": "/properties/count",
+            "title": "Title of 'root.count' Type: 'integer'",
+            "default": 4,
+            "description": "An explanation for 'count' about the purpose of integer instance with editor path 'root.count'."
+        },
+        "available": {
+            "type": "boolean",
+            "id": "/properties/available",
+            "title": "Title of 'root.available' Type: 'boolean'",
+            "format": "checkbox",
+            "default": false,
+            "description": "An explanation for 'available' about the purpose of boolean instance with editor path 'root.available'."
+        },
+        "color": {
+            "type": "string",
+            "id": "/properties/color",
+            "title": "Title of 'root.color' Type: 'string'",
+            "default": "#12CA34",
+            "format": "color",
+            "description": "An explanation for 'root.color' about the purpose of string instance with editor path 'root.color'."
+        }
+    }
+};
+
+      // Initialize the editor
+      // Initialize the editor
+      var editor = new JSONEditor(document.getElementById('editor_holder'),{
+        // Enable fetching schemas via ajax
+        ajax: true,
+
+        // The schema for the editor
+        schema: vSchema,
+
+        // Seed the form with a starting value
+        startval: starting_value,
+
+        // Disable additional properties
+        no_additional_properties: true,
+
+        // Require all properties by default
+        required_by_default: true
+      });
+
+      // Hook up the submit button to log to the console
+      document.getElementById('bExportJSON').addEventListener('click',function() {
+            // Get the value from the editor
+            var vJSON = editor.getValue();
+            var vContent = JSON.stringify(vJSON,null,4);
+            console.log("JSON output: "+vContent);
+            saveFile2HDD("data.json",vContent);
+
+      });
+
+      // Hook up the Restore to Default button
+      document.getElementById('bExportSchema').addEventListener('click',function() {
+           var vContent = JSON.stringify(vSchema,null,4);
+            console.log("JSON Schema output: "+vContent);
+            saveFile2HDD("schema.json",vContent);
+        //editor.setValue(starting_value);
+      });
+
+      // Hook up the enable/disable button
+      document.getElementById('enable_disable').addEventListener('click',function() {
+        // Enable form
+        if(!editor.isEnabled()) {
+          editor.enable();
+        }
+        // Disable form
+        else {
+          editor.disable();
+        }
+      });
+
+      // Hook up the validation indicator to update its
+      // status whenever the editor changes
+      editor.on('change',function() {
+        // Get an array of errors from the validator
+        var errors = editor.validate();
+
+        var indicator = document.getElementById('valid_indicator');
+
+        // Not valid
+        if(errors.length) {
+          indicator.style.color = 'red';
+          indicator.textContent = "not valid";
+        }
+        // Valid
+        else {
+          indicator.style.color = 'green';
+          indicator.textContent = "valid";
+        }
+      });
+    </script>
+    <script src="../jquery/external/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../jquery/jquery-ui.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+        <button id='submit'>Submit (console.log)</button>
+
+        <script>
+          // Hook up the submit button to log to the console
+          document.getElementById('submit').addEventListener('click',function() {
+            // Get the value from the editor
+            var vJSON = editor.getValue();
+            var vContent = JSON.stringify(vJSON,null,4);
+            console.log("JSON output: "+vContent);
+          });
+        </script>
+
+  </body>
+</html>

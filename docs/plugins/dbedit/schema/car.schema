@@ -26,6 +26,10 @@ vDataJSON["car"] = {
         2015,2016,2017
       ],
       "default": 2008
+    },
+    "comment" : {
+      "type":"string",
+      "default": "comment about the car"
     }
   }
 }

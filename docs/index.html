@@ -325,8 +325,8 @@
             </select>
 
             <br>
-            <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
-            <iframe id="iPageTypeHTML"  src="plugins/ace/ace.html?domid=tPageTypeHTML&mode=html" width="90%" height="100"></iframe>
+            <textarea id="tPageTypeHTML" name="tPageTemplateHTML" cols="125" rows="10" xstyle="display:none"></textarea>
+            <iframe id="iPageTypeHTML"  src="plugins/ace/ace.html?domid=tPageTemplateHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -679,7 +679,7 @@
               <b>DB-Title:</b>
               <input name="tDatabaseTitle" id="tDatabaseTitle" value=""  size="65" type="text" style="font-family: monospace"  onchange="saveDatabaseHTML();return false">
               <br>
-              <b>DB-Data:</b> Default data in Database, that should match the the DB JSON Schema
+              <b>DB-Data:</b> The data of the Database is stored in the hash/object 'data'. The 'schema' hash/object defines the structure of collected JSON data.
             </div>
             <!-- "dbtitle": "Title of DB db_mydata_js" -->
             <br>
@@ -714,7 +714,8 @@
           <td colspan="2" align="center">
             <b>Database Schema JSON:</b>
             <br>
-            <input type="button" value="Check Schema" class="renamebutton" id="bEditDatabaseSchema" onclick="openWindow('plugins/dbedit/index.html?db='+document.getElementById('sDatabaseTAB').value);return false">
+            <input type="button" value="Create Schema" id="bCreateDatabaseSchema" onclick="openWindow('plugins/json2schema.html?db='+document.getElementById('sDatabaseTAB').value);return false">
+            <input type="button" value="Check Schema" class="renamebutton" id="bEditDatabaseSchema" onclick="openWindow('plugins/check4schema.html?db='+document.getElementById('sDatabaseTAB').value);return false">
             <br>
             <textarea id="tDBSchema" name="tDBSchema" cols="125" rows="10" style="display:none"></textarea>
             <iframe id="iDBSchema"  src="plugins/ace/ace.html?domid=tDBSchema&mode=json" width="90%" height="100"></iframe>

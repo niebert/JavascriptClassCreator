@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Basic JSON Editor Table</title>
+    <script src="../../js/writedom.js"></script>
+    <script src="../../js/iframe.js"></script>
+    <script>
+     var vSchemaID = "car";
+     // This is the starting value for the editor
+     // We will use this to seed the initial editor
+     // and to provide a "Restore to Default" button.
+     // Set the default CSS theme and icon library globally
+    </script>
+
+  </head>
+  <body>
+    <textarea id="myinput" rows="5" cols="20">
+      {
+        "name": "Paul Meyers",
+        "age": 35
+      }
+    </textarea>
+    <div id="iframe_container" style="text-align: center">
+      <iframe src="../ace/ace.html?domid=myinput" onload="setEditorValue('iframe_container',document.getElementById('myinput').value)" id="iACE" width="90%" height="250px"></iframe>
+    </div>
+    <script>
+      alert(getValueDOM("myinput"));
+   </script>
+
+  </body>
+</html>

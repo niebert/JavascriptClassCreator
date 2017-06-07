@@ -793,7 +793,7 @@ vDataJSON['project'] = {
         }
     },
     "DBID2File": {
-      "db_mydata_js":"db/mydata.js",
+      "mydata":"db/mydata.js",
       "dummy":"../jquery/db/dummy.json"
     },
     "DatabaseList": {

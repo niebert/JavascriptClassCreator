@@ -3,15 +3,15 @@
   <head>
     <meta charset="utf-8" />
     <title>Advanced JSON Editor Example</title>
-    <link href="../../jquery/jquery-ui.css" rel="stylesheet">
+    <link href="../jquery/jquery-ui.css" rel="stylesheet">
     <!-- Bootstrap Core CSS -->
-     <link href="../css/bootstrap.min.css" rel="stylesheet">
+     <link href="css/bootstrap.min.css" rel="stylesheet">
      <!-- Font-Awesome CSS -->
      <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-     <script src="../../../js/arrayhash.js"></script>
-     <script src="../../../js/filesaver.js"></script>
-    <script src="../js/jsoneditor.js"></script>
+     <script src=".js/arrayhash.js"></script>
+     <script src="js/filesaver.js"></script>
+    <script src="js/jsoneditor.js"></script>
     <script>
 
     // Set the default CSS theme and icon library globally
@@ -26,78 +26,29 @@
     </script>
   </head>
   <body style="margin:20px">
-    <h1>Advanced JSON Editor Example</h1>
+    <h1>JSON Editor</h1>
 
-    <p>This example demonstrates the following:</p>
-    <ul>
-      <li>Loading external schemas via ajax (using $ref)</li>
-      <li>Setting the editor's value from javascript (try the Restore to Default button)</li>
-      <li>Validating the editor's contents (try setting name to an empty string)</li>
-      <li>Macro templates (try changing the city or state fields and watch the citystate field update automatically)</li>
-      <li>Enabling and disabling editor fields</li>
-    </ul>
-
-    <button id='submit'>Submit (console.log)</button>
-    <button id='restore'>Restore to Default</button>
-    <button id='enable_disable'>Disable/Enable Form</button>
+    <button id='bExportJSON'>Export JSON</button>
+    <button id='bExportSchema'>Export JSON Schema</button>
     <span id='valid_indicator'></span>
-
+    <hr>
     <div id='editor_holder'></div>
 
     <script>
       // This is the starting value for the editor
       // We will use this to seed the initial editor
       // and to provide a "Restore to Default" button.
-      var starting_value = [
-        {
-          name: "John Smith",
-          age: 35,
-          gender: "male",
-          location: {
-            city: "San Francisco",
-            state: "California",
-            citystate: ""
-          },
-          pets: [
-            {
-              name: "Spot",
-              type: "dog",
-              fixed: true
-            },
-            {
-              name: "Whiskers",
-              type: "cat",
-              fixed: false
-            }
-          ]
-        }
-      ];
+      var starting_value = ___JSON_DATA___;
+	  var vSchema = ___JSON_SCHEMA___;
 
+      // Initialize the editor
       // Initialize the editor
       var editor = new JSONEditor(document.getElementById('editor_holder'),{
         // Enable fetching schemas via ajax
         ajax: true,
 
         // The schema for the editor
-        schema: {
-          type: "array",
-          title: "Person List",
-          format: "tabs",
-          items: {
-            title: "Person Item",
-            headerTemplate: "{{i1}} - {{self.name}}",
-            oneOf: [
-              {
-                $ref: "basic_person.json",
-                title: "Basic Person"
-              },
-              {
-                $ref: "person.json",
-                title: "Complex Person"
-              }
-            ]
-          }
-        },
+        schema: vSchema,
 
         // Seed the form with a starting value
         startval: starting_value,
@@ -110,14 +61,21 @@
       });
 
       // Hook up the submit button to log to the console
-      document.getElementById('submit').addEventListener('click',function() {
-        // Get the value from the editor
-        console.log(JSON.stringify(editor.getValue(),null,4));
+      document.getElementById('bExportJSON').addEventListener('click',function() {
+            // Get the value from the editor
+            var vJSON = editor.getValue();
+            var vContent = JSON.stringify(vJSON,null,4);
+            console.log("JSON output: "+vContent);
+            saveFile2HDD("data.json",vContent);
+
       });
 
       // Hook up the Restore to Default button
-      document.getElementById('restore').addEventListener('click',function() {
-        editor.setValue(starting_value);
+      document.getElementById('bExportSchema').addEventListener('click',function() {
+           var vContent = JSON.stringify(vSchema,null,4);
+            console.log("JSON Schema output: "+vContent);
+            saveFile2HDD("schema.json",vContent);
+        //editor.setValue(starting_value);
       });
 
       // Hook up the enable/disable button
@@ -152,9 +110,9 @@
         }
       });
     </script>
-    <script src="../../jquery/external/jquery/jquery.js" type="text/javascript"></script>
-    <script src="../../jquery/jquery-ui.js" type="text/javascript"></script>
-    <script src="../js/bootstrap.min.js"></script>
+    <script src="../jquery/external/jquery/jquery.js" type="text/javascript"></script>
+    <script src="../jquery/jquery-ui.js" type="text/javascript"></script>
+    <script src="js/bootstrap.min.js"></script>
 
         <button id='submit'>Submit (console.log)</button>
 

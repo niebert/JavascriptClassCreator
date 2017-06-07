@@ -1037,7 +1037,8 @@ function selectDatabaseJSON(pDBID) {
       var vDB = vJSCC_DB["DatabaseList"][vDBID];
       // write the data only to the JSON editor
       write2value("tDatabaseTitle",(vDB["dbtitle"] || "Title of '"+vDBID+"'"));
-      vCode = stringifyJSON(vDB["data"]);
+      //vCode = stringifyJSON(vDB["data"]);
+      vCode = stringifyJSON(vDB);
       // create the Variable Selector for the selected Database "vDBID"
       vSchema = stringifyJSON(vDB["schema"]);
       write2value("tDBSchema",vSchema);

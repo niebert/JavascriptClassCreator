@@ -7,6 +7,11 @@ function getWinOpener() {
   return vWinOpener;
 };
 
+function getRemoteDataJSON() {
+  var vWinOpener = window.opener;
+
+}
+
 function loadScript(pScript) {
   var vScriptTag = document.createElement('script');
   vScriptTag.setAttribute('src',pScript);
@@ -18,13 +23,96 @@ function getEditorInnerHTML(pID) {
 };
 //var vWinOpener = getWinOpener();
 
+function syncRemoteSchema() {
+  var vRemoteDB = getWinOpenerDB();
+  if (vRemoteDB) {
+    var vSchema = getEditorValue("iACEoutput");
+    var vSchemaJSON = getJSON4String(vSchema);
+    if (vSchemaJSON) {
+      vRemoteDB["schema"] = vSchemaJSON;
+      var vWinOpener = getWinOpener();
+      vWinOpener.setEditorValue("iDBSchema",vSchema);
+      var vDB = JSON.stringify(vRemoteDB,null,4);
+      if (vDB) {
+        vWinOpener.setEditorValue("iDBHTML",vDB);
+      } else {
+        console.log("Window Opener DB undefined");
+      }
+    } else {
+      console.log("Parsing Error of JSON Schema");
+    }
+  }
+};
+
+function getRemoteSchema() {
+  var vRemoteDB = getWinOpenerDB();
+  if (vRemoteDB) {
+    if (vRemoteDB.hasOwnProperty("schema")) {
+      return JSON.stringify(vRemoteDB["schema"],null,4);
+    } else {
+      console.log("No JSON Schema defined in Remote DB '"+vLinkParam.getValue("db")+"'");
+    }
+  } else {
+    console.log("Remote DB '"+vLinkParam.getValue("db")+"' undefined");
+  }
+};
+function exportEditorHTML() {
+  if (vDataJSON.hasOwnProperty("jsoneditor")) {
+    console.log("Create JSON Editor");
+
+    var vTemplate = vDataJSON["jsoneditor"]["template"];
+    var vJSONstring = getEditorValue("iACEinput");
+    var vSCHEMAstring = getEditorValue("iACEoutput");
+    vTemplate = replaceString(vTemplate,"___JSON_SCHEMA___",vSCHEMAstring);
+    vTemplate = replaceString(vTemplate,"___JSON_DATA___",vJSONstring);
+    saveFile2HDD("jsoneditor.html",vTemplate);
+  } else {
+    console.log("Template vDataJSON['jsoneditor'] is not defined/loaded!");
+  };
+}
+
+function createEditorHTML4SchemaJSON(pSchema,pJSON) {
+  var iFrameDoc = getIFrameDocument("iTemplate");
+  if (iFrameDoc) {
+    console.log("Template '"+vFilename+"' loaded");
+    var vTemplate = iFrameDoc.getElementsByTagName("html")[0].innerHTML;
+    vTemplate = "<!DOCTYPE html>\n</html>\n"+vTemplate+"\n</html>"
+    vTemplate = replaceString(vTemplate,"___JSON_SCHEMA___",pSchema);
+    vTemplate = replaceString(vTemplate,"___JSON_DATA___",pJSON);
+    return vTemplate;
+  } else {
+    console.log("ERROR: Loading Template '"+vFilename+"' failed");
+  }
+}
+
+function getWinOpenerDB() {
+  var vWinOpener = getWinOpener();
+  if (typeof vWinOpener === "undefined") {
+    console.log("window.opener undefined or connection lost");
+  } else {
+      if (vLinkParam.exists("db")) {
+        var vDB_ID = vLinkParam.getValue("db");
+        console.log("LinkParam db='"+vDB_ID+"' defined ");
+        if (vWinOpener.vJSCC_DB["DatabaseList"].hasOwnProperty(vDB_ID)) {
+          console.log("JSON Database db='"+vDB_ID+"' defined ");
+          return vWinOpener.vJSCC_DB["DatabaseList"][vDB_ID];
+        };
+      }
+  }
+}
+
 function loadInputJSON() {
   var vJSON;
   if (typeof vWinOpener === "undefined") {
 		console.log("wWinOpener undefined - connection lost");
 	} else {
       if (vLinkParam.exists("db")) {
-        console.log("JSON Database db='"+vLinkParam.getValue("db")+"' defined ");
+        var vDB_ID = vLinkParam.getValue("db");
+        console.log("LinkParam db='"+vDB_ID+"' defined ");
+        if (vWinOpener.vJSCC_DB["DatabaseList"].hasOwnProperty(vDB_ID)) {
+          console.log("JSON Database db='"+vDB_ID+"' defined ");
+          vRemoteDB = vWinOpener.vJSCC_DB["DatabaseList"][vDB_ID];
+        };
       } else if (vLinkParam.exists("jscc")) {
         var vID = vLinkParam.getValue("jscc");
         console.log("JSON ID jscc='"+vID+"' defined ");
@@ -42,11 +130,6 @@ function loadInputJSON() {
 	};
   return vJSON
 };
-
-
-
-function loadSchemaJSON(pHashPath) {
-}
 
 function loadSchemaFile() {
   if (vLinkParam.exists("schema")) {

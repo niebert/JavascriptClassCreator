@@ -35,10 +35,10 @@
     <script src="schema/basicclasses.schema"></script>
     <!-- END:  load JSON schema -->
   </head>
-  <body>
+  <body style="margin:20px">
     <div id='editor_holder' style="margin-right: 30px; margin-left: 30px"></div>
     <div id='button_holder' style="margin:20px">
-      <button id='export'>Export JSON</button>
+      <button id='bExportJSON'>Export JSON</button>
       <button id='bExportSchema'>Export JSON Schema</button>
       <button id='bWinClose' onclick="window.close()">Close</button>
       <button id='bExportEditorContent'>Export Editor innerHTML - Debug</button>
@@ -131,7 +131,7 @@
       });
       //-------------------------------------------------------
       // EXPORT JSON: Hook up the submit button to download JSONDB
-      document.getElementById('export').addEventListener('click',function() {
+      document.getElementById('bExportJSON').addEventListener('click',function() {
         var vContent = JSON.stringify(editor.getValue(),null,4);
         // Get the value from the editor
         saveFile2HDD(vSchemaID+".json",vContent);
@@ -139,10 +139,10 @@
       });
       //-------------------------------------------------------
       // EXPORT JSON SCHEMA: Hook up the submit button to download JSON Schema
-      document.getElementById('export').addEventListener('click',function() {
+      document.getElementById('bExportSchema').addEventListener('click',function() {
         var vContent = JSON.stringify(editor.schema,null,4);
         // Get the value from the editor
-        saveFile2HDD(vSchemaID+"_schemas.json",vContent);
+        saveFile2HDD(vSchemaID+"_schema.json",vContent);
         //console.log(editor.getValue());
       });
       //-------------------------------------------------------

@@ -834,11 +834,11 @@ function getDefaultDatabaseJSON(pFileName,pDBname,pTitle) {
   return {
     "JSCC_type": "DB",
     "init_date": getDateTime(),
-    "init_schema": "",
     "file": pFileName,
     "name": pDBname,
     "title": pTitle,
-    "data": {}
+    "data": {},
+    "schema": {}
   }
 };
 

@@ -141,7 +141,8 @@ function clearLocalStorage(pType,pVar) {
       debugLog("LocalStorage","WARNING: call "+vLS+"LocalStorage - Type='"+pType+"' undefined");
   };
   debugLog("LocalStorage","Call: "+vLS+"LocalStorage("+vParLog+")");
-}
+};
+
 function saveDOM2LocalStorage() {
   saveLocalStorage4ArrayID(vDOM_ID);
   saveLocalStorage4ArrayID(vDOM_Global);
@@ -183,11 +184,11 @@ function loadLocalStorage4ArrayID(pArrayID) {
 			       var vNode = document.getElementById(vID);
 			       vNode.value = vValue;
 		    } else {
-			     debugLog("LocalStorage","loadLocalStorage4ArrayID(pArrayID)-Call: vID="+vID+" is undefined");
+			     //console.log("LocalStorage: loadLocalStorage4ArrayID(pArrayID)-Call: vID="+vID+" is undefined");
 		    };
 	  };
   } else {
-    debugLog("LocalStorage","loadLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");
+    //console.log("LocalStorage: loadLocalStorage4ArrayID(pArrayID)-Call: pArrayID is undefined");
   };
 };
 

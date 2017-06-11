@@ -1,0 +1,20 @@
+{
+  "type": "array",
+  "title": "List of Classes",
+  "format": "tabs",
+  "items": {
+    "title": "Class",
+    "headerTemplate": "{{i1}} -  {{self.name}}",
+    "$ref": "class_schema.json"
+  },
+  "defintions": {
+    "classSelector": {
+      "type": "string",
+      "enum": [
+        "App",
+        "AppAbstract",
+        "LinkParam"
+      ]
+    }
+  }
+}

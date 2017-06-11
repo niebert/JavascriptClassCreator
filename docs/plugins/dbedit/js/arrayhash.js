@@ -13,6 +13,18 @@ function cloneJSON(pJSON) {
   return vJSON
 };
 
+
+function getArray4HashID(pHash) {
+  var vHash = pHash || {};
+  var vArray = [];
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vArray.push(iID)
+    };
+  };
+  return vArray
+};
+
 function getJSON4String(pStringJSON) {
   if (pStringJSON) {
     try {

@@ -1116,7 +1116,7 @@ function createNewFile_do() {
     vNewFile = removeSpaces(vNewFile);
   };
   if (vNewFile != "") {
-    if (existsFileJS(vFile)) {
+    if (existsFileJS(vNewFile)) {
       alert("Create New File ["+vNewFile+"] was NOT successful. File already exists!");
     } else {
       checkFileHTML(vNewFile);

@@ -1,0 +1,155 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "additionalProperties": true,
+    "title": "FileList",
+    "type": "array",
+    "id": "https://niebert.github.io/json-editor",
+    "format": "tabs",
+    "items": {
+        "type": "object",
+        "id": "/items",
+        "defaultProperties": [
+            "sAppClassHTML",
+            "tTemplateHTML",
+            "tElementFileIDs",
+            "tElementID",
+            "sElementsFileList",
+            "tElementHTML",
+            "tFilename",
+            "tAppInitCall",
+            "tPageIDs",
+            "elements",
+            "ImportList"
+        ],
+        "properties": {
+            "tFilename": {
+                "type": "string",
+                "id": "/items/properties/tFilename",
+                "title": "Title of 'root.*.tFilename' Type: 'string'",
+                "default": "index.html",
+                "format": "text",
+                "description": "This is the filename, that is used in app LSAC"
+            },
+            "sAppClassHTML": {
+                "type": "string",
+                "id": "/items/properties/sAppClassHTML",
+                "title": "App",
+                "default": "App",
+                "format": "text",
+                "description": "An instance of this class is created in the HTML file and the an init method is called."
+            },
+            "tTemplateHTML": {
+                "type": "string",
+                "id": "/items/properties/tTemplateHTML",
+                "title": "Template",
+                "default": "tpl/Default.html",
+                "format": "text",
+                "description": "This is a template that is used as HTML wrapper for all pages"
+            },
+            "tPageIDs": {
+                "title": "Pages in File",
+                "type": "array",
+                "format": table,
+                "id": "/items/properties/tPageIDs",
+                "items": {
+                	"title":"Page",
+                	"$ref": "#definitions/pageselect"
+                },
+                "description": "Select root page for HTML file in App, connected pages are added to the HTML file as well."
+            },
+            "elements": {
+                "type": "object",
+                "id": "/items/properties/elements",
+                "defaultProperties": [
+                    "HTML_TITLE",
+                    "SERVER_URL",
+                    "USERNAME",
+                    "SESSION",
+                    "DATABASE"
+                ],
+                "properties": {
+                    "HTML_TITLE": {
+                        "type": "string",
+                        "id": "/items/properties/elements/properties/HTML_TITLE",
+                        "title": "Title of 'root.*.elements.HTML_TITLE' Type: 'string'",
+                        "default": "File index.html - Content of element HTML_TITLE",
+                        "format": "text",
+                        "description": "An explanation for 'root.*.elements.HTML_TITLE' about the purpose of string instance with editor path 'root.*.elements.HTML_TITLE'."
+                    },
+                    "SERVER_URL": {
+                        "type": "string",
+                        "id": "/items/properties/elements/properties/SERVER_URL",
+                        "title": "Title of 'root.*.elements.SERVER_URL' Type: 'string'",
+                        "default": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
+                        "format": "text",
+                        "description": "An explanation for 'root.*.elements.SERVER_URL' about the purpose of string instance with editor path 'root.*.elements.SERVER_URL'."
+                    },
+                    "USERNAME": {
+                        "type": "string",
+                        "id": "/items/properties/elements/properties/USERNAME",
+                        "title": "Title of 'root.*.elements.USERNAME' Type: 'string'",
+                        "default": "myuser",
+                        "format": "text",
+                        "description": "An explanation for 'root.*.elements.USERNAME' about the purpose of string instance with editor path 'root.*.elements.USERNAME'."
+                    },
+                    "SESSION": {
+                        "type": "string",
+                        "id": "/items/properties/elements/properties/SESSION",
+                        "title": "Title of 'root.*.elements.SESSION' Type: 'string'",
+                        "default": "File index.html - Content of element SESSION",
+                        "format": "text",
+                        "description": "An explanation for 'root.*.elements.SESSION' about the purpose of string instance with editor path 'root.*.elements.SESSION'."
+                    },
+                    "DATABASE": {
+                        "type": "string",
+                        "id": "/items/properties/elements/properties/DATABASE",
+                        "title": "Title of 'root.*.elements.DATABASE' Type: 'string'",
+                        "default": "File index.html - Content of element DATABASE",
+                        "format": "text",
+                        "description": "An explanation for 'root.*.elements.DATABASE' about the purpose of string instance with editor path 'root.*.elements.DATABASE'."
+                    }
+                }
+            },
+            "ImportList": {
+                "type": "array",
+                "id": "/items/properties/ImportList",
+                "format": "tabs",
+                "items": {
+                    "type": "object",
+                    "id": "/items/properties/ImportList/items",
+                    "defaultProperties": [
+                        "file",
+                        "type",
+                        "import"
+                    ],
+                    "properties": {
+                        "file": {
+                            "type": "string",
+                            "id": "/items/properties/ImportList/items/properties/file",
+                            "title": "Title of 'root.*.ImportList.*.file' Type: 'string'",
+                            "default": "js/login.js",
+                            "format": "text",
+                            "description": "An explanation for 'root.*.ImportList.*.file' about the purpose of string instance with editor path 'root.*.ImportList.*.file'."
+                        },
+                        "type": {
+                            "type": "string",
+                            "id": "/items/properties/ImportList/items/properties/type",
+                            "title": "Title of 'root.*.ImportList.*.type' Type: 'string'",
+                            "default": "JS",
+                            "format": "text",
+                            "description": "An explanation for 'root.*.ImportList.*.type' about the purpose of string instance with editor path 'root.*.ImportList.*.type'."
+                        },
+                        "import": {
+                            "type": "boolean",
+                            "id": "/items/properties/ImportList/items/properties/import",
+                            "title": "Title of 'root.*.ImportList.*.import' Type: 'boolean'",
+                            "format": "checkbox",
+                            "default": true,
+                            "description": "An explanation for 'import' about the purpose of boolean instance with editor path 'root.*.ImportList.*.import'."
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

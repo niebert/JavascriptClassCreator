@@ -302,17 +302,6 @@ function createClassSelect4Array(pArray) {
   write2value("sSuperClassname",getValueDOM("tSuperClassname"));
 };
 
-function getArray4HashID(pHash) {
-  var vHash = pHash || {};
-  var vArray = [];
-  for (var iID in vHash) {
-    if (vHash.hasOwnProperty(iID)) {
-      vArray.push(iID)
-    };
-  };
-  return vArray
-};
-
 function createPageSelect(pPageID) {
   var vArrID = getArray4HashID(vJSCC_DB["PageList"]);
   createPageSelect4Array(vArrID);

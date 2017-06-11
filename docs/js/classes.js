@@ -1912,7 +1912,20 @@ function splitAtEqual(pString) {
   return pString.split("=");
 }
 
-function updateBasicClasses() {
+function updateJSON2BasicClasses() {
+  var object = vJSCC_DB["BasicClasses"];
+  var vOut = "";
+  var vCR = "";
+  for (var key in object) {
+    if (object.hasOwnProperty(key)) {
+      vOut += vCR + key +" = "+object[key];
+      vCR = "\n";
+    };
+  };
+  write2value("tBasicClassList",vOut);
+}
+
+function updateForm2BasicClasses() {
   var vClassList = getValueDOM("tBasicClassList");
   var vClassArray = vClassList.split(/\n/);
   var vClassHash = {};
@@ -1925,20 +1938,20 @@ function updateBasicClasses() {
       vOut += vCR + reduceVarName(vVar[0]);
       vCR = "\n";
     } else {
-      console.log("WARNING: updateBasicClasses() - Empty BasicClass Name");
+      console.log("WARNING: updateForm2BasicClasses() - Empty BasicClass Name");
     };
   }
 };
 
-function updateClasses() {
+function updateForm2Classes() {
   // (1) creates non existing classes in tClassList,
   // (2) identifies the ClasType in the ClassDefLine e.g. "App = Interface",
   // (3) sets the ClassType in ClassList vJSCC_DB["ClassType"]["App"] = "Interface",
   // (4) sets the Selector of the ClassType i.e. DOM-Selector "sClassType" vJSCC_DB["ClassList"]["App"]["sClassType"] = "Interface",
   // (5) and removes empty line in tClassList textarea in Tab "Files/Classes"
   var vClassTypeHash = getForm2ClassTypeHash();
-  debugLog("Class","updateClasses()-Call");
-  updateBasicClasses();
+  debugLog("Class","updateForm2Classes()-Call");
+  updateForm2BasicClasses();
   vJSCC_DB["BasicClasses"] = getBasicClassHash();
   var vClassList = getValueDOM("tClassList");
   var vClassArray = vClassList.split(/\n/);
@@ -1952,9 +1965,9 @@ function updateClasses() {
     vClassName = reduceVarName(vClassArray[i]);
     // extract ClassType "Interface" from Definition "MyClass = Interface" in vClassArray[i]
     vClassType = getClassType4Definition(vClassArray[i]);
-    createClassJS(vClassName,vClassType,"updateClasses(1)");
+    createClassJS(vClassName,vClassType,"updateForm2Classes(1)");
     // Set the ClassType in vJSCC_DB
-    debugLog("Class","updateClasses() ClassID='"+vClassName+"' ClassTypeID='"+vClassType+"'\nLINE='"+vClassArray[i]+"'");
+    debugLog("Class","updateForm2Classes() ClassID='"+vClassName+"' ClassTypeID='"+vClassType+"'\nLINE='"+vClassArray[i]+"'");
     setClassTypeJSON(vClassName,vClassType);
     // get the ClassHash from JSON
     vClassHashJSON = vJSCC_DB["ClassList"][vClassName];
@@ -1965,9 +1978,9 @@ function updateClasses() {
       // createClassJS()-Call is dependent on the existance of JSON in ClassList
       // i.e. vJSCC_DB["ClassList"][vClassName];
       if (vClassHashJSON) {
-        debugLog("Class","Class '"+vClassName+"' exists for updateClasses()-Call.\nDefinition '"+vClassArray[i]+"'");
+        debugLog("Class","Class '"+vClassName+"' exists for updateForm2Classes()-Call.\nDefinition '"+vClassArray[i]+"'");
       } else {
-        createClassJS(vClassName,vClassType,"updateClasses(2)");
+        createClassJS(vClassName,vClassType,"updateForm2Classes(2)");
       };
       // The following setting must be called after createClassJS,
       // otherwise the class might not be available in vJSCC_DB.

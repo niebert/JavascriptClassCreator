@@ -235,7 +235,7 @@ function loadForm2JSON(pSelectedClass,pSelectedFile) {
   initFormPageList();
   initFormFileHTMLList();
   initFormSelectors();
-  updateClasses(); // reads the tClassList and updates the JSON Classes
+  updateForm2Classes(); // reads the tClassList and updates the JSON Classes
   updateFormGlobal2JSON();
   clearPageTypeForm();
   initMenuPageType("MenuPage");

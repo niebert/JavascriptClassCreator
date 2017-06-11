@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Basic JSON Editor Example</title>
+    <link href="../../jquery/jquery-ui.css" rel="stylesheet">
+    <!-- Bootstrap Core CSS -->
+     <link href="../css/bootstrap.min.css" rel="stylesheet">
+     <!-- Font-Awesome CSS -->
+     <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+     <script src="../../../js/arrayhash.js"></script>
+     <script src="../../../js/filesaver.js"></script>
+    <script src="../js/jsoneditor.js"></script>
+    <script>
+
+    // Set the default CSS theme and icon library globally
+    JSONEditor.defaults.theme = 'bootstrap3';
+    JSONEditor.defaults.iconlib = 'fontawesome4';
+
+    function saveFile2HDD(pFilename,pContent) {
+      var file = new File([pContent], {type: "text/plain;charset=utf-8"});
+      saveAs(file,pFilename);
+    }
+
+    </script>
+  </head>
+  <body>
+    <h1>Class Editor JSON as UML</h1>
+
+    <div id='editor_holder'></div>
+
+    <script>
+      // Initialize the editor with a JSON schema
+      var editor = new JSONEditor(document.getElementById('editor_holder'),{
+        schema: {
+            "type": "object",
+            "title": "Class",
+            "properties": {
+                "name": {
+                    "title": "Name:",
+                    "type": "string",
+                    "default": "MyClass"
+                },
+                "comment": {
+                     "title": "Comment:",
+                   	 "$ref": "#/definitions/comment",
+        			       "default": "What does the class do?"
+                },
+                "attributes": {
+                  "title": "Attribute",
+                  "type": "array",
+                  "format":"tabs",
+                  "uniqueItems":true,
+                  "items": {
+                      "title": "Attrib",
+                      "type": "object",
+                      "uniqueItems":true,
+                      "headerTemplate": "{{i1}} - {{self.name}}",
+                      "properties": {
+                        "visibility": {
+                            "title": "Visibility",
+                            "$ref": "#/definitions/visibility"
+                        },
+                        "name": {
+                              "type": "string",
+                              "minLength": 2,
+                              "default": "aMyAttrib"
+                        },
+                        "init": {
+                          "type": "string",
+                          "default": "null"
+                        },
+                        "class": {
+                              "title": "Class",
+                              "$ref": "#/definitions/selectclass"
+                        },
+                        "comment": {
+                              "title": "Comment",
+                              "$ref": "#/definitions/comment",
+                              "default": "What do you stored in this attribute?"
+                        }
+                      }
+        			     }
+                },
+                "methods": {
+                      "title": "Methods",
+                      "type": "array",
+                      "format": "tabs",
+                      "uniqueItems":true,
+                      "items" : {
+                        "headerTemplate": "{{i1}} - {{self.name}}",
+                        "type": "object",
+                        "title":"Method",
+                        "id": "method",
+                        "properties": {
+                              "visibility": {
+                                    "title": "Visibility",
+                                    "$ref": "#/definitions/visibility"
+                               },
+                               "name": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "default": "myMethod"
+                               },
+                               "parameter": {
+                                      "type": "array",
+                                      "title":"Parameter",
+                                      "format":"table",
+                                      "uniqueItems": true,
+                                      "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                   "name": {
+                                                           "type":"string",
+                                                           "title":"Parameter",
+                                                           "minLength": 1,
+                                                           "default": "pVar"
+                                                    },
+                                                    "class": {
+                                                           "title":"Class",
+                                                           "$ref":"#/definitions/selectclass"
+                                                    }
+                                            }
+                                      }
+                               },
+                               "return": {
+                                     "title":"Return",
+                                     "$ref":"#/definitions/selectclass"
+                               },
+                               "comment": {
+                                     "title": "Comment",
+                                     "$ref": "#/definitions/comment",
+                                      "default": "What kind of process does this method perform?"
+                               },
+                               "code": {
+                                   "title": "Code",
+                                   "type": "string",
+                                   "format": "javascript"
+                               }
+                        }
+        			      }
+                }
+            },
+            "definitions":{
+            	"selectclass": {
+            		"type":"string",
+            		"enum":[
+            			"",
+            			"String",
+            			"Boolean",
+            			"Integer",
+            			"Float",
+            			"Array",
+            			"Hash",
+            			"RegExp",
+            			"Function"
+            		],
+            	},
+            	"comment": {
+                    "title": "Comment:",
+                    "type": "string",
+                    "format": "textarea"
+                },
+        		  "visibility": {
+                "type": "string",
+                "enum": [
+                  "public",
+                  "private"
+                ]
+        		  }
+            }
+        }
+
+      });
+    </script>
+
+    <button id='submit'>Submit (console.log)</button>
+
+    <script>
+      // Hook up the submit button to log to the console
+      document.getElementById('submit').addEventListener('click',function() {
+        // Get the value from the editor
+        var vJSON = editor.getValue();
+        var vContent = JSON.stringify(vJSON,null,4);
+        console.log("JSON output: "+vContent);
+      });
+    </script>
+  </body>
+</html>

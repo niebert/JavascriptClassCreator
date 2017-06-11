@@ -163,6 +163,7 @@ function convertObject2Schema(pJSON,pPath,pSchema,pTypeTree,pEditorPath) {
 function convertArray2Schema(pJSON,pPath,pSchema,pTypeTree,pEditorPath) {
   var vID = "";
   pSchema["items"] = {};
+  pSchema["items"]["headerTemplate"] = "{{i1}}";
   var vItems = [];
   var vDefaults = [];
   for (var i = 0; i < pJSON.length; i++) {
@@ -189,7 +190,8 @@ function convertArray2Schema(pJSON,pPath,pSchema,pTypeTree,pEditorPath) {
   if (vItems.length > 1) {
     for (var i = 0; i < vItems.length; i++) {
       vItems[i]["id"] = pPath+"/arr"+i;
-      vItems[i]["title"] = "Title array"+i+" "+pPath;
+      //vItems[i]["title"] = "Title array"+i+" "+pPath;
+      vItems[i]["title"] = "Title array"+i;
     };
     pSchema["items"]["oneOf"] = vItems;
   } else {

@@ -303,9 +303,9 @@ function getDefaultLibraryHash(pLib,pImport) {
   };
 }
 
-function updateGlobalLibsJSON2Form() {
-  console.log("updateGlobalLibsForm2JSON()");
-  var vArr = vJSCC_DB["GlobalLibList"];
+function updateGlobalLibsJSON2Form(pArr) {
+  console.log("updateGlobalLibsJSON2Form(pArr)");
+  var vArr = pArr || vJSCC_DB["GlobalLibList"];
   checkGlobalLibsJSON(vArr);
   var vOut = "";
   var vCR = "";

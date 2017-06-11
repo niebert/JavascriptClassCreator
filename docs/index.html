@@ -44,6 +44,10 @@
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
    </script>
+   <!-- Load Schema for JSON Editor-->
+   <script language="javascript" src="plugins/dbedit/schema/class_schema.js"></script>
+   <script language="javascript" src="plugins/dbedit/schema/globallibs_schema.js"></script>
+   <script language="javascript" src="plugins/dbedit/schema/basicclasses_schema.js"></script>
    <!-- load the project.js file - JSON of the project is stored in vDataJSON['JSCC'] -->
    <script language="javascript" src="prog/project.js"></script>
    <!-- file.js must be loaded before the function loadProjectJS(pDB) is called -->
@@ -80,6 +84,7 @@
    <script language="javascript" src="js/openwin.js"></script>
    <script language="javascript" src="js/pages.js"></script>
    <script language="javascript" src="js/select.js"></script>
+   <script language="javascript" src="js/syncjsoneditor.js"></script>
    <script language="javascript" src="js/sort.js"></script>
    <script language="javascript" src="js/string.js"></script>
    <script language="javascript" src="js/writedom.js"></script>
@@ -172,12 +177,18 @@
             <b>Select HTML File:</b>
             <select id="sFileListHTML" name="sFileListHTML" onchange="selectFilenameHTML(this.value)">
             </select>
+            <!-- Delete -->
             <input  class="deletebutton" type="button" id="bDeleteFileHTML" onclick="deleteFileHTML();return false" value="Delete">
+            <!-- Save -->
             <input name="bSaveFile" value=" Save " onclick="updateFileForm2JSON()" type="button">
+            <!-- View -->
             <input name="bOpenEmulator" value=" View " class="viewbutton" onclick="openEmulator('emulate.html')" type="button">
             <br>
             <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
+            <!-- [+] Files -->
             <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
+            <!-- Edit Files -->
+            <input type="button" value="Edit JSON" id="bEditFilesJSON" onclick="openEditFileList();return false">
             <br>
             <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
             <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
@@ -205,20 +216,27 @@
             <b>Select Page:</b> <select id="sPageHTML" name="sPageHTML"  onchange="selectPageJS(this.value)">
               <option>home</option>
             </select>
+            <!-- Delete -->
             <input  class="deletebutton" type="button" id="bDeletePageHTML" onclick="deletePageHTML();return false" value="Delete">
+            <!-- Save -->
             <input type="button" id="bSavePageHTML" onclick="savePageHTML();return false" value="Save">
             <br>
+            <!-- PageID -->
             <b>Page-ID:</b> <input name="tPageID" id="tPageID" value="" type="text" style="font-family: monospace" onchange="this.value=(reduceVarName(this.value)).toLowerCase()">
             <input type="button" id="bCreateNewPage" onclick="createNewPage();return false" value="+">
+            <!-- PageType for Page -->
             <b>Page Type:</b> <select id="sPageType4Page" name="sPageType4Page" onchange="savePageHTML_do()">
             </select>
             <br>
+            <!-- Page Title -->
             <b>Page-Title:</b> <input name="tPageTitle" id="tPageTitle" value="" type="text" size="35" style="font-family: monospace" onchange="savePageHTML_do()">
+            <!-- Parent Page ID -->
             <b>Parent Page ID:</b>
             <select id="sParentPage" name="sParentPage" onchange="savePageHTML_do()">
               <option>home</option>
             </select>
             <br>
+            <!-- HTML for Page -->
             <textarea id="tPageHTML" name="tPageHTML" cols="125" rows="10" style="display:none"></textarea>
             <iframe id="iPageHTML"  src="plugins/ace/ace.html?domid=tPageHTML&mode=html" width="90%" height="100"></iframe>
           </td>
@@ -325,8 +343,8 @@
             </select>
 
             <br>
-            <textarea id="tPageTypeHTML" name="tPageTemplateHTML" cols="125" rows="10" xstyle="display:none"></textarea>
-            <iframe id="iPageTypeHTML"  src="plugins/ace/ace.html?domid=tPageTemplateHTML&mode=html" width="90%" height="100"></iframe>
+            <textarea id="tPageTypeHTML" name="tPageTypeHTML" cols="125" rows="10" style="display:none"></textarea>
+            <iframe id="iPageTypeHTML"  src="plugins/ace/ace.html?domid=tPageTypeHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
         <tr>
@@ -749,28 +767,31 @@
         </tr>
         <tr>
           <td>
-            <b>Global Libraries:</b>
-            <input name="bEditGlobalLibs" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=globallibs&jscc=GlobalLibList');return false" type="button">
-            <input name="bHelpBasicClasses" value="?" onclick="alert('Global Libraries are imported for all HTML-Files in your JSCC project.\n(e.g. backbone.js or libraries that allow QR-code scanning in your WebApp)');return false" type="button">
+            <b>Edit Page Type:</b>
+            <input name="bEditPageTypes" value=" Edit " onclick="openEditPageTypes();return false" type="button">
+            <input name="bHelpPageTypes" value="?" onclick="alert('PageTypes can be used for Pages as wrapper for HTML-content in your JSCC project.\n(e.g. a table or certain buttons can defined in templates');return false" type="button">
           </td>
           <td>
-            <b>Basic Classes:</b>
-            <input name="bEditBasicClasses" value=" Edit " onclick="openWindow('plugins/dbedit/index.html?schema=basicclasses&jscc=BasicClasses');return false" type="button">
+            <b>Edit Template:</b>
 
           </td>
         </tr>
       <tr>
         <td colspan="1" align="center">
-          <b>List of defined Classes</b> <!-- updateClasses() works -->
+          <b>List of defined Classes</b>
           <input name="bUpdateClasses" value=" Edit Classes " onclick="$( '#tabClass' ).trigger( 'click' );return false" type="button">
           <br>
-          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace"></textarea>
+          <textarea id="tClassList" name="tClassList" cols="45" rows="8" style="font-family: monospace" readonly></textarea>
         </td>
         <td colspan="1" align="center">
           <b>List of Basic Classes</b>
-          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="updateBasicClasses()" type="button" style="display:none">
+          <input name="bEditBasicClasses" value=" Edit " onclick="openEditBasicClasses();return false" type="button">
+          <input name="bHelpBasicClasses" value="?" onclick="alert('Basic Classes are primitives i.e. classes that were not explicitly defined in your JSCC project.\n(e.g. 'boolean' or 'string' are primitive/basic classes)');return false" type="button">
+          <!--
+          <input name="bUpdateBasicClasses" value=" Update Basic Classes " onclick="openEditBasicClasses();return false" type="button" style="display:none">
+          -->
           <br>
-          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace"></textarea>
+          <textarea id="tBasicClassList" name="tBasicClassList"  class="textcode" cols="45" rows="8" style="font-family: monospace" readonly onchange="openEditBasicClasses()"></textarea>
         </td>
       </tr>
       <tr>
@@ -781,17 +802,21 @@
           <textarea name="tDatabases" id="tDatabases" cols="45" rows="3" onchange="" style="font-family: monospace">
           </textarea>
           <br>
-          <b>Global Libaries</b>
-          <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON();return false" type="button">
+          <b>HTML Files</b>
+          <input name="bUpdateLibraries" value=" Edit HTML Files " onclick="$( '#tabHTML' ).trigger( 'click' );return false" type="button">
           <br>
-          <textarea name="tGlobalLibs" id="tGlobalLibs" cols="45" rows="5" style="font-family: monospace"></textarea>
+          <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="5" style="font-family: monospace"  readonly >
+          </textarea>
         </td>
         <td align="center">
-            <b>HTML Files</b>
-            <input name="bUpdateLibraries" value=" Edit HTML Files " onclick="$( '#tabHTML' ).trigger( 'click' );return false" type="button">
-            <br>
-            <textarea name="tHTMLfiles" id="tHTMLfiles" cols="45" rows="10" style="font-family: monospace">
-            </textarea>
+          <b>Global Libaries</b>
+          <input name="bEditGlobalLibs" value=" Edit " onclick="openEditGlobalLibList();return false" type="button">
+          <input name="bHelpGlobalLibs" value="?" onclick="alert('Global Libraries are imported for all HTML-Files in your JSCC project.\n(e.g. backbone.js or libraries that allow QR-code scanning in your WebApp)');return false" type="button">
+          <!--
+          <input name="bUpdateLibraries" value=" Update Libraries " onclick="updateGlobalLibsForm2JSON();return false" type="button">
+          -->
+          <br>
+          <textarea name="tGlobalLibs" id="tGlobalLibs" cols="45" rows="10" style="font-family: monospace" readonly></textarea>
         </td>
       </tr>
       <tr>
@@ -804,7 +829,7 @@
             <tt id="labelPageRecord">-</tt>
           </font>
           <br>
-          <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace">
+          <textarea name="tPages" id="tPages" cols="60" rows="8" onchange="" style="font-family: monospace" readonly >
         </textarea>
         </td>
         <td align="center">
@@ -890,15 +915,17 @@
 
 <!-- div id="tabs" -->
 </div>
-<br>
- <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
-<br>
- Javascript Class Generator was developed 2012-17 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
- <br>
-<div id="buttonHtmlStorage" style="align:center">
-  <a id="aToggleTpl"></a>
-  <a href="#aToggleTpl" class="btnNT" onclick="$('#htmlStorage').toggle();return false"> Javascript-Templates </a>
-  <a href="#aToggleTpl" class="btnNT" onclick="exportTemplatesJSON();return false"> Export Templates </a>
+<div "divFooter" style="align:center">
+  <br>
+   <b>Import Javascript Classes in <a href="./javascript2htmlcreator/index.html" target="_blank" onclick="saveJSON2LocalStorage()">HTML-Javascript Environment</a></b>
+  <br>
+   Javascript Class Generator was developed 2012-17 by Engelbert Niehaus - <a href="http://www.uni-koblenz-landau.de/" target="_bank">University Koblenz-Landau</a> <br>
+   <br>
+  <div id="buttonHtmlStorage" style="align:center">
+    <a id="aToggleTpl"></a>
+    <a href="#aToggleTpl" class="btnNT" onclick="$('#htmlStorage').toggle();return false"> Javascript-Templates </a>
+    <a href="#aToggleTpl" class="btnNT" onclick="exportTemplatesJSON();return false"> Export Templates </a>
+  </div>
 </div>
 
 <div id="htmlStorage" hidden="hidden">

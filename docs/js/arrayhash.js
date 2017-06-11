@@ -3,6 +3,46 @@
 * If there's a conflict, content of object 'b' overwrites content of 'a'
 */
 
+function convertArray2Hash4ID(pArray,pID,pRemoveID) {
+  var vHash = {};
+  var vKey = "";
+  var vArray = cloneJSON(pArray);
+  if (isArray(vArray)) {
+    for (var i = 0; i < vArray.length; i++) {
+      if (vArray[i].hasOwnProperty(pID)) {
+        vKey = vArray[i][pID];
+        if (vKey != "") {
+          vHash[vKey] = vArray[i];
+        }
+      };
+    };
+    if (pRemoveID && (pRemoveID == true)) {
+      for (var key in vHash) {
+        delete vHash[key][pID];
+      };
+    };
+    return vHash;
+  } else {
+    alert("ERROR: convertArray2JSON4ID(pArray,pID) pArray is not an array");
+  };
+}
+
+function convertHash2Array4ID(pHash,pID) {
+  var vArray = [];
+  var vKey = "";
+  var vHash = cloneJSON(pHash)
+  if (isHash(vHash)) {
+    for (var key in vHash) {
+      vHash[key][pID] = key;
+      vArray.push(vHash[key]);
+    };
+    return vArray;
+  } else {
+    alert("ERROR: convertJSON2Array4ID(pHash,pID) pHash is not an object/hash");
+  };
+}
+
+
 function cloneJSON(pJSON) {
   var vJSON = {};
   if (pJSON) {
@@ -97,6 +137,17 @@ function lengthHash(pHash) {
     };
   };
   return vLength;
+};
+
+function getArray4HashID(pHash) {
+  var vHash = pHash || {};
+  var vArray = [];
+  for (var iID in vHash) {
+    if (vHash.hasOwnProperty(iID)) {
+      vArray.push(iID)
+    };
+  };
+  return vArray
 };
 
 function getDeleteBoolean4Hash(pHash) {

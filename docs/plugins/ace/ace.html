@@ -60,7 +60,8 @@
     // };
     // return vInitText;
     if (typeof top.getValueDOM !== "undefined") {
-      vInitText = top.getValueDOM(pID)
+      vInitText = top.getValueDOM(pID);
+      console.log("ACE: getInitText('"+pID+"') loaded:\n"+vInitText);
     } else {
       console.log("getInitText('"+pID+"') top.getValueDOM() is undefined!");
     }

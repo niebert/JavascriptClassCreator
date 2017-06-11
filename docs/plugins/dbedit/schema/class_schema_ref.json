@@ -1,0 +1,24 @@
+{
+  "type": "object",
+  "title": "Class",
+  "properties": {
+    "name": {
+      "title": "Name:",
+      "type": "string",
+      "default": "MyClass"
+    },
+    "comment": {
+      "title": "Comment:",
+      "type": "string",
+      "default":"Whats does the class do?"
+    },
+    "attributes": {
+        "$ref": "schema/attriblist_schema.json",
+        "title": "Attributes"
+    },
+    "methods": {
+        "$ref": "schema/methodlist_schema.json",
+        "title": "Methods"
+    }
+  }
+}

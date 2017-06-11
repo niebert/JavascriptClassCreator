@@ -3,13 +3,57 @@
   <head>
     <meta charset="utf-8" />
     <title>JSON Editor for JSCC</title>
+    <!--
+      Link Parameter (optional):
+        "jscc": is the key of vJSCC_DB data used to init the JSON editor
+        "db": is the key for a JSON database in vJSCC_DB["DatabaseList"][db]
+              it uses the JSON schema vJSCC_DB["DatabaseList"][db]["schema"]
+              for the JSON editor
+        "initfunc": calls a function to populate the JSON as parameter
+              the initialization is called in the window opener and retrieves the
+              !!! Do not use in conjunction with "array2hash" in LinkParam !!!
+              example initfunc=getBasicClasses4Editor&jscc=BasicClasses
+              set: "window.opener.iJE_BasicClasses(editor.getValue())"
+        "syncfunc": calls a sync function with editor.getValue() as parameter
+              the syncfunction is called in the window opener,
+              !!! Do not use in conjunction with "array2hash" in LinkParam !!!
+              example syncfunc=sJE_BasicClasses&jscc=BasicClasses
+              calls: "window.opener.sJE_BasicClasses(editor.getValue())"
+        "array2hash" is a key for converting an array into an object/hash
+              Set onchange handler for JSON editor array2hash conversion
+              With vHash2ArrayID="name" JSON data will be converted from
+         [
+           {
+             "name":"Paul",
+             "age": 35
+           },
+           {
+             "name":"Mary",
+             "age": 24
+           }
+        ]
+
+    into a hash/object
+
+        {
+           "Paul" : {
+             "name":"Paul",
+             "age": 35
+           },
+           "Mary": {
+             "name":"Mary",
+             "age": 24
+           }
+        }
+        //
+  -->
     <link href="../jquery/jquery-ui.css" rel="stylesheet">
     <!-- Bootstrap Core CSS -->
      <link href="css/bootstrap.min.css" rel="stylesheet">
      <!-- Font-Awesome CSS -->
      <link href="font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-     <script src="../../ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+     <script src="../ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
      <script src="../../js/arrayhash.js"></script>
      <script src="../../js/lodash.js"></script>
      <script src="../../js/filesaver.js"></script>
@@ -40,7 +84,7 @@
     <div id='button_holder' style="margin:20px">
       <button id='bExportJSON'>Export JSON</button>
       <button id='bExportSchema'>Export JSON Schema</button>
-      <button id='bWinClose' onclick="window.close()">Close</button>
+      <button id='bWinClose' onclick="window.close()" style="color: white;background-color: #225988">Close</button>
       <button id='bExportEditorContent'>Export Editor innerHTML - Debug</button>
       <button id='view' onclick="console.log(JSON.stringify(editor.getValue()))" style="display:none">View (console.log)</button>
     </div>
@@ -63,15 +107,24 @@
       var vInitData;
       var vJSON;
       var vID = "";
+      var vHash2ArrayID = "";
       var vWinOpener = getWinOpener();
       var vSchemaDefined = false;
+      var vSyncFunc; // is a function, defining a sync call for JSON editor
+      // syncfunc as parameter will defined the on onchange events of the JSON editor
+      // an eval command checks if function in window.opener is defined (see line 227 ff.)
       if (typeof vWinOpener === "undefined") {
     		console.log("wWinOpener undefined - connection lost");
         $( "#bWinClose" ).hide();
         $( "#bExportEditorContent" ).show();
     	} else {
-          //---load schema----
+        //alert(vWinOpener.getValueDOM("sClassList"));
+        //-------------------------------------------------------
+        //---Load JSON Schema
+        //-------------------------------------------------------
           if (vLinkParam.exists("db")) {
+            //-------------------------------------------------------
+            //----Load Database Schema----
             var vDB = vLinkParam.getValue("db");
             console.log("JSON Database db='"+vDB+"' defined ");
             if (vWinOpener.vJSCC_DB["DatabaseList"].hasOwnProperty(vDB)) {
@@ -92,30 +145,68 @@
               vSchemaJSON = vJSON["schema"];
             };
           } else if (vLinkParam.exists("jscc")) {
+            //-------------------------------------------------------
+            //---- Load a JSCC Database
+            //-------------------------------------------------------
             vID = vLinkParam.getValue("jscc");
             console.log("JSON ID jscc='"+vID+"' defined ");
+            if (vLinkParam.exists("hash2array")) {
+              vHash2ArrayID = vLinkParam.getValue("hash2array");
+              console.log("Hash2Array ID hash2array='"+vHash2ArrayID+"' defined ");
+            };
+            //-------------------------------------------------------
+            //-----check if the vJSCC_DB has a property/key vID
             if (vWinOpener.vJSCC_DB.hasOwnProperty(vID)) {
               console.log("JSON data jscc='"+vID+"' defined ");
               vJSON = vWinOpener.vJSCC_DB;
-              vInitData = vJSON[vID];
+              //-------------------------------------------------------
+              // Hash 2 Array convert:
+              // Advantage Hash: properties of hashes can be addressed in a more comprehensive way
+              // Disadvantage Hash: JSON editor has a more comprehensive User Interface for arrays
+              if (vLinkParam.exists("initfunc")) {
+                try {
+                  var vEval = "vInitData = vWinOpener."+vLinkParam.getValue("initfunc")+"('"+vID+"');";
+                  eval(vEval);
+                } catch(e) {
+                    alert(e); // error in the above string (in this case, yes)!
+                };
+              } else if (vHash2ArrayID != "") {
+                console.log("Convert Hash2Array for ID=["+vHash2ArrayID+"]");
+                vInitData = convertHash2Array4ID(vJSON[vID],vHash2ArrayID);
+              } else {
+                console.log("Init Data vJSCC_DB['"+vID+"'] loaded from window.opener")
+                vInitData = vJSON[vID];
+              };
+              //-------------------------------------------------------
+              // Load vSchemaJSON from Window opener
+              //-------------------------------------------------------
+              if (vWinOpener.vDataJSON.hasOwnProperty(vID+"_schema")) {
+                vSchemaJSON = vWinOpener.vDataJSON[vID+"_schema"];
+                console.log("JSCC Schema loaded from vDataJSON['"+vID+"_schema'] in window.opener");
+                vSchemaDefined = true;
+              } else {
+                console.log("JSCC Schema vDataJSON['"+vID+"_schema'] not defined in window.opener");
+              }
             };
           }
       };
       //-------------------------------------------------------
-      console.log("try setting schema '"+vSchemaID+"'");
       if (vSchemaDefined == false) {
+        console.log("vSchema not defined via LinkParam - try setting schema '"+vSchemaID+"'");
         if (vDataJSON.hasOwnProperty(vSchemaID)) {
+          console.log("JSON schema '"+vSchemaID+"' is defined by schema");
           vSchemaJSON = vDataJSON[vSchemaID];
         } else {
           alert("WARNING: Schema 'schema/"+vSchemaID+".schema' was not imported\nin JSON Editor 'plugins/dbedit/index.html'!\nUse default schema 'schema/"+vDefaultID+".schema'");
           console.log("use default schema 'car' for JSON Editor")
+          vSchemaJSON = vDataJSON["car"];
         };
       } else {
-        console.log("JSON Schema ["+vLinkParam.getValue("db")+"]: "+JSON.stringify(vSchemaJSON,null,4));
+        console.log("JSON Schema: "+JSON.stringify(vSchemaJSON,null,4));
       };
       //-------------------------------------------------------
-      // JSON: Database
-      vStartVal = null;
+      //---- Create JSON Editor -------------------------------
+      //-------------------------------------------------------
       var vEditorDOM = document.getElementById('editor_holder');
       var editor = new JSONEditor(vEditorDOM,{
         ajax: true,
@@ -124,11 +215,32 @@
       });
       //-------------------------------------------------------
       //---JSON EDITOR Handle Change Event---------------------
-      editor.on('change',function() {
+      //-------------------------------------------------------
         if (vJSON) {
-            vJSON[vID] = editor.getValue();
+          if (vHash2ArrayID != "") {
+              editor.on('change',function() {
+                  vJSON[vID] = convertArray2Hash4ID(editor.getValue(),vHash2ArrayID);
+              });
+          } else if (vLinkParam.exists("syncfunc")) {
+            if (vWinOpener) {
+              var vFuncStr = vLinkParam.getValue("syncfunc");
+              eval("vSyncFunc = window.opener."+vFuncStr+";");
+              if (typeof(vSyncFunc) == "function") {
+                console.log("Sync Call: window.opener."+vFuncStr+"(editor.getValue()) type: "+typeof(vSyncFunc));
+                editor.on('change',function() {
+                    vSyncFunc(editor.getValue());
+                  });
+              } else {
+                console.log("ERROR: Sync Call in window.opener undefined. Call: "+vFuncStr+"(editor.getValue())type: "+typeof(vSyncFunc));
+              };
+            }
+          } else {
+            // Just sync the JSON editor value (which is a JSON) to the window.opener
+            editor.on('change',function() {
+                vJSON[vID] = editor.getValue();
+              });
+          }
         }
-      });
       //-------------------------------------------------------
       // EXPORT JSON: Hook up the submit button to download JSONDB
       document.getElementById('bExportJSON').addEventListener('click',function() {

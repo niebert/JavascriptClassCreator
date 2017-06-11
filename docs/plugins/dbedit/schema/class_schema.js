@@ -1,4 +1,4 @@
-{
+vDataJSON["ClassList"] = {
     "type": "object",
     "title": "Class",
     "properties": {
@@ -81,7 +81,7 @@
 				             },
 				             "comment": {
 				                   "title": "Comment",
-				                   "$ref": "#/definitions/comment"
+				                   "$ref": "#/definitions/comment",
 				                    "default": "What kind of process does this method perform?"
         		         }
 			        }

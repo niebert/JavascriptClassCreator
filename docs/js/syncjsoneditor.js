@@ -13,6 +13,71 @@ function openEditFileList() {
   openEditorJSON("FileList");
 };
 
+function iJE_FileList(pListID) {
+  // {
+  //     "sAppClassHTML": "App",
+  //     "tTemplateHTML": "tpl/Default.html",
+  //     "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+  //     "tElementID": "HTML_TITLE",
+  //     "sElementsFileList": "HTML_TITLE",
+  //     "tElementHTML": "File index.html - Content of element HTML_TITLE",
+  //     "tFilename": "index.html",
+  //     "tAppInitCall": "init(document,vDataJSON)",
+  //     "tPageIDs": "welcome|home|quit|newpage",
+  //     "elements": {
+  //         "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
+  //         "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
+  //         "USERNAME": "myuser",
+  //         "SESSION": "File index.html - Content of element SESSION",
+  //         "DATABASE": "File index.html - Content of element DATABASE"
+  //     },
+  //     "ImportList": [
+  //       {
+  //         "file":"js/login.js",
+  //         "type":"JS",
+  //         "import": true
+  //       },
+  //       {
+  //         "file":"js/geolocation.js",
+  //         "type":"JS",
+  //         "import": true
+  //       }
+  //     ]
+  // }
+  updatePages4EditJSON();
+  var vHash = vJSCC_DB["FileList"];
+  var vArray = [];
+  for (var key in vHash) {
+    if (vHash.hasOwnProperty(key)) {
+      vHash[key]["tFilename"] = key;
+      vArray.push(vHash[key])
+    }
+  }
+  return vArray;
+}
+
+function sJE_FileList(pArrayJSON) {
+  vJSCC_DB["FileList"] = {};
+  var key = "";
+  var vArrFileID = [];
+  for (var i = 0; i < pArrayJSON.length; i++) {
+    key = pArrayJSON[i]["tFilename"] || "";
+    if (key != "") {
+      vJSCC_DB["FileList"][key] = pArrayJSON[i];
+      vArrFileID.push(key);
+    };
+  };
+  if (indexOfArray(vArrFileID,getSelectedFileID())>=0) {
+    createFileSelect(getSelectedFileID())
+  } else {
+    createFileSelect();
+  }
+}
+
+function updatePages4EditJSON() {
+  vDataJSON["FileList_schema"]["definitions"]["pages"]["enum"] = getArray4HashID(vJSCC_DB["PageList"]);
+};
+
 //--------------------------------
 // JSON Editor: GlobaleLibList
 //--------------------------------

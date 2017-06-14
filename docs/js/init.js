@@ -13,6 +13,8 @@ vDOM_Global.push("tMainEMail");
 vDOM_Global.push("tPages");
 vDOM_Global.push("tPageTypes");
 vDOM_Global.push("tButtons");
+vDOM_Global.push("sFileList");
+vDOM_Global.push("tFilename");
 vDOM_Global.push("sPageTypeHTML");
 vDOM_Global.push("sPageHTML"); // Selector for PageID
 vDOM_Global.push("sButtonHTML"); // Selector for ButtonID
@@ -31,12 +33,10 @@ vDOM_File.push("tElementFileIDs"); // Pipe separated ID String
 vDOM_File.push("tElementID"); // the edit string of selected Element ID - used to edit a new Element ID
 vDOM_File.push("sElementsFileList"); // the select Box setting of selected Element ID
 vDOM_File.push("tElementHTML"); // Content of Element Definition
+//vDOM_File.push("sFileList"); // Is the Filename
 vDOM_File.push("tFilename"); // Is the Filename
 vDOM_File.push("sAppClassHTML"); // is the main App that is instantiated when a web site is loaded.
 vDOM_File.push("tAppInitCall"); // Init Call when App is started
-vDOM_File.push("tTemplateHTML"); // UNUSED Template for HTML-File (unused currently - later to use more than one basic HTML template for different Look&Feels)
-vDOM_File.push("tPageIDs"); // Used Pages in HTML-File
-
 //-------------------------------
 vDOM_TPL.push("tDefaultAppPath"); // default is "app_LSAC/" needed as path to store the exported files for the WebApp.
 vDOM_TPL.push("tTplHTML"); // Main template for file generation of "index.html", "app.html", ... Source Template: tpl/Default.html
@@ -193,7 +193,7 @@ function initCodeCreator() {
   //--- writes the UML-Mapper-List in tClasses
   updateClassJSON2Form(vSelectedClass);
   //logSelectedMethodCode("(10)",vSelectedClass);
-  updateFileListJSON2Form(vSelectedFile);
+  updateFileListJSON2Form();
   updateElementsFileJSON2Form(vSelectedFile);
   updateButtonJSON2Form();
   updateGlobalLibsJSON2Form();
@@ -216,7 +216,42 @@ function initCodeCreator() {
     //updateJSON2tMethods(vSelectedClass);
   };
   loadHTML2iFrame("tpl/index.html");
+  //loadEditors4JSON();
 };
+
+var vPageTypeEditor;
+
+function loadEditors4JSON() {
+  // Set the default CSS theme and icon library globally
+  JSONEditor.defaults.theme = 'bootstrap3';
+  JSONEditor.defaults.iconlib = 'fontawesome4';
+  loadPageTypeEditor4JSON();
+};
+
+function loadPageTypeEditor4JSON() {
+  var vPageTypeEditor = new JSONEditor(document.getElementById('divPageTypeEditor'),{
+    // Enable fetching schemas via ajax
+    ajax: true,
+
+    // The schema for the editor
+    schema: {
+      //title: "Attribute",
+      "title": "PageTypeEditor",
+      //$ref: "jsonschema_net.json"
+      $ref: "plugins/dbedit/examples/jsonschema_net.json"
+    },
+
+    // Seed the form with a starting value
+    startval: vJSCC_DB["PageTypeList"],
+
+    // Disable additional properties
+    no_additional_properties: false,
+
+    // Require all properties by default
+    required_by_default: false
+  });
+
+}
 
 function loadForm2JSON(pSelectedClass,pSelectedFile) {
   var vSelectedFile = pSelectedFile   || getValueDOM("tFilename");

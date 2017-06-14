@@ -228,6 +228,7 @@ function createFileSelect(pFileID) {
   createFileSelect4Array(vArrID);
   if (pFileID) {
     if (existsFileJS(pFileID)) {
+      console.log("createFileSelect()-Call Set Selected File: '"+pFileID+"'");
       selectFileJS(pFileID);
     };
   };
@@ -343,10 +344,10 @@ function setSelectedPage(pArray,pPageID) {
 };
 
 function createPageTypeSelect(pPageTypeID) {
-  // get all Methods in JSON Database of all Classes
-  console.log("createPageTypeSelect()-Call");
-  var vArrID = getArray4HashID(vJSCC_DB["PageTypeList"]);
   var vPageTypeID = pPageTypeID || vArrID[0] || "";
+  // get all Methods in JSON Database of all Classes
+  console.log("createPageTypeSelect('"+pPageTypeID+"')-Call");
+  var vArrID = getArray4HashID(vJSCC_DB["PageTypeList"]);
   createPageTypeSelect4Array(vArrID);
   // set tPageTypes
   var vCutAtEnd = 0;
@@ -354,6 +355,7 @@ function createPageTypeSelect(pPageTypeID) {
   if (vPageTypeID == "") {
     clearPageTypeForm();
   } else if (existsPageTypeJS(vPageTypeID)) {
+    console.log("createPageTypeSelect('"+pPageTypeID+"') - Call: selectPageTypeJS('"+vPageTypeID+"')");
     selectPageTypeJS(vPageTypeID);
   } else {
     clearPageTypeForm();

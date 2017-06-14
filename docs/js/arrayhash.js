@@ -3,6 +3,65 @@
 * If there's a conflict, content of object 'b' overwrites content of 'a'
 */
 
+
+function saveID4HashPath2JSON(pHashPath,pValue) {
+  var vPathOK = true;
+  var vID = "";
+  var vHash = vJSCC_DB;
+  var vPrevHash = vHash;
+  var vLog = "vJSCC_DB";
+  console.log("saveID4HashPath2JSON('"+pHashPath+"','"+pValue+"') ");
+  if (pHashPath && pHashPath.length>1) {
+    var vArrID = pHashPath.split(".");
+    for (var i = 0; i < vArrID.length; i++) {
+      //vID = reduceVarName(vArrID[i]);
+      vID = vArrID[i];
+      if (vID != "") { // skip empty ID defined by path ".."
+        if (vPathOK) {
+          if (vHash.hasOwnProperty(vID)) {
+            vLog += "["+vID+"]"; // vID exists in HashPath
+            vPrevHash = vHash;
+            vHash = vHash[vID]; // set Hash to Lower Part of Hash
+          } else {
+            vPathOK = false;
+            vLog += " OK - remaining undefined Path ["+vID+"]";
+          };
+        } else {
+          // append undefined part of Hash
+          vLog += "["+vID+"]";
+        }
+      }; // empty ID
+    }; // end For
+  } else {
+    console.log("saveID4HashPath2JSON(): HashPath undefined");
+  };
+  console.log("saveID4HashPath2JSON('"+pHashPath+"','"+pValue+"') "+vLog);
+  if (vPathOK) {
+    //set Value
+    if (vPrevHash) {
+      vPrevHash[vID] = pValue;
+    } else {
+      alert("ERROR: HashPath '"+pHashPath+"' length to short!")
+    };
+  } else {
+    console.log("saveID4HashPath2JSON('"+pHashPath+"','"+pValue+"') Path not OK "+vLog);
+  }
+  return vPathOK; // boolead for success of save operation
+}
+
+function indexOfArray(pArray, pValue, pFromIndex) {
+  var fromIndex = pFromIndex || 0;
+  var index = fromIndex - 1;
+  var length = pArray.length;
+
+  while (++index < length) {
+    if (pArray[index] === pValue) {
+      return index;
+    }
+  };
+  return -1;
+};
+
 function convertArray2Hash4ID(pArray,pID,pRemoveID) {
   var vHash = {};
   var vKey = "";
@@ -191,8 +250,26 @@ function updateHash4NewIDs(pHash,pArrID_NEW,pDefaultValue) {
   };
 };
 
-function updateHashSourceDestination(pSource,pDest) {
-
+function updateHashWithEditedHash(pSource,pSourceEdited) {
+  // (1) pSource,pSourceEdited are hashes of hashes, pSourceEdited[key][subkey] may use only subset of subkeys that pSource owns
+  // (2) pSourceEdited may have more subkeys that pSource so that vSource may need to be extended with all keys from pSourceEdited
+  // (3) content from pSource for keys in vDest
+  // (2) copies resp. overwrites all content  keys from pSourceEdited to vDest
+  // (4) return vDest, that contains the keys of pSourceEdited updated partial content
+  var vDest = {};
+  for (var iKey in pSourceEdited) {
+    if (pSource.hasOwnProperty(iKey)) {
+      // use source hash
+      vDest[iKey] = pSource[iKey]
+    } else {
+      // create an empty hash
+      vDest[iKey] = {};
+    };
+    // extend and overwrite the pSource with pEdited
+    _.assign(vDest[iKey],pSourceEdited[iKey]);
+  };
+  // update the pSource with vDest
+  pSource = vDest;
 }
 
 function renameHashKey(pHash,old_key,new_key) {

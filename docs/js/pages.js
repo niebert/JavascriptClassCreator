@@ -642,9 +642,8 @@ function getPageIDArr4File(pFile) {
   if (vFile != "") {
     if (existsFileJS(vFile)) {
       var vIDs = vJSCC_DB["FileList"][vFile]["tPageIDs"];
-      vIDs = removeSpaces(vIDs);
-      if (vIDs != "") {
-        vPageIDArr = vIDs.split("|");
+      if (typoof(vIDs) == "array") {
+        vPageIDArr = vIDs;
       };
     };
   };
@@ -1120,6 +1119,7 @@ function createNewFile_do() {
       alert("Create New File ["+vNewFile+"] was NOT successful. File already exists!");
     } else {
       checkFileHTML(vNewFile);
+      createFileSelect();
       selectFilenameHTML_do(vNewFile);
       write2value("tFilename",vNewFile);
       console.log("Create New File ["+vNewFile+"] performed");
@@ -1613,14 +1613,22 @@ function savePageHTML_do(pID) {
 function savePageTypeHTML() {
   var vID = getValueDOM("sPageTypeHTML");
   console.log("savePageTypeHTML() - Page Type ["+vID+"]");
-  var vPathID = "PageTypeList."+pID+".template";
-  var vSuccess = saveID4HashPath2JSON(vPathID,getEditorValue("iPageTypeHTML"));
+  var vSuccess = savePageTypeHTML_do(vID);
   if (vSuccess == true) {
     autoSaveJSON();
     alert("Page Type ['"+vID+"'] saved!");
   } else {
     alert("ERROR: Save PageType Definition.\nPath ["+vPathID+"] does not exist!")
   };
+};
+
+function savePageTypeHTML_do(pID) {
+  var vID = pID || getValueDOM("sPageTypeHTML");
+  console.log("savePageTypeHTML_do() - Page ["+vID+"]");
+  var vPathID = "PageTypeList."+vID+".";
+  saveID4HashPath2JSON(vPathID+"HEADER_BUTTON1",getValueDOM("sButtonHeader1"));
+  saveID4HashPath2JSON(vPathID+"HEADER_BUTTON2",getValueDOM("sButtonHeader2"));
+  return saveID4HashPath2JSON(vPathID+"template",getEditorValue("iPageTypeHTML"));
 };
 
 function existsPageJS(pPageID) {

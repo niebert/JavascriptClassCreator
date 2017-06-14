@@ -1,4 +1,4 @@
-{
+vDataJSON["FileList_schema"] = {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "additionalProperties": true,
     "title": "FileList",
@@ -7,14 +7,16 @@
     "format": "tabs",
     "items": {
         "title": "File",
+        //"headerTemplate": "{{i}} - {{self.tFilename}}",
+        "headerTemplate": "{{self.tFilename}}",
         "type": "object",
         "id": "/items",
         "defaultProperties": [
             "tFilename",
-            "sAppClassHTML",
             "tAppInitCall",
-            "tPageIDs",
+            "sAppClassHTML",
             "tTemplateHTML",
+            "tPageIDs",
             "elements",
             "ImportList"
         ],
@@ -22,7 +24,7 @@
             "tFilename": {
                 "type": "string",
                 "id": "/items/properties/tFilename",
-                "title": "Title of 'root.*.tFilename' Type: 'string'",
+                "title": "HTML File",
                 "default": "index.html",
                 "format": "text",
                 "description": "This is the filename, that is used in app LSAC"
@@ -35,8 +37,17 @@
                 "format": "text",
                 "description": "An instance of this class is created in the HTML file and the an init method is called."
             },
+            "tAppInitCall": {
+                "type": "string",
+                "id": "/items/properties/tAppInitCall",
+                "title": "App initialize",
+                "default": "init(document,vDataJSON)",
+                "format": "text",
+                "description": "An instance of this class is created in the HTML file and the an init method is called."
+            },
             "tTemplateHTML": {
                 "type": "string",
+                "hidden": true,
                 "id": "/items/properties/tTemplateHTML",
                 "title": "Template",
                 "default": "tpl/Default.html",
@@ -46,17 +57,20 @@
             "tPageIDs": {
                 "title": "Pages in File",
                 "type": "array",
-                "format": table,
+                "format": "table",
                 "id": "/items/properties/tPageIDs",
+                "uniqueItems":true,
                 "items": {
                 	"title":"Page",
-                	"$ref": "#definitions/pageselect"
+                	"$ref": "#/definitions/pages"
                 },
                 "description": "Select root page for HTML file in App, connected pages are added to the HTML file as well."
             },
             "elements": {
                 "type": "object",
                 "id": "/items/properties/elements",
+                "title" :"Replace Markers",
+                "collapsed": true,
                 "defaultProperties": [
                     "HTML_TITLE",
                     "SERVER_URL",
@@ -68,7 +82,7 @@
                     "HTML_TITLE": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/HTML_TITLE",
-                        "title": "Title of 'root.*.elements.HTML_TITLE' Type: 'string'",
+                        "title": "Title HTML file:",
                         "default": "HTML Title of File",
                         "format": "text",
                         "description": "This is the title of HTML file."
@@ -76,80 +90,74 @@
                     "SERVER_URL": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/SERVER_URL",
-                        "title": "Title of 'root.*.elements.SERVER_URL' Type: 'string'",
+                        "title": "Server URL:",
                         "default": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
                         "format": "text",
-                        "description": "This is a server URL that will be replaced in the template."
+                        "description": "This definition replaces the marker ___SERVER_URL___ with a specific URL for your server backend"
                     },
                     "USERNAME": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/USERNAME",
-                        "title": "User name template",
+                        "title": "User Name:",
                         "default": "myuser",
                         "format": "text",
-                        "description": "This is template for the username replaced in the HTML file."
+                        "description": "This definition replaces the marker ___USERNAME___ to authenticate with a specific backend default user name for the server backend."
                     },
                     "SESSION": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/SESSION",
-                        "title": "Session template",
-                        "default": "<input type=\"hidden\" id=\"session\" name=\"session\" value=\"\">",
+                        "title": "Session",
+                        "default": "<input type=\"hidden\" name=\"session\" id=\"session\" value=\"\">",
                         "format": "text",
-                        "description": "This template replaces the marker ___SESSION___ in the HTML file."
+                        "description": "This replace definition replace a marke ___SESSION___ with a HTML element for handling the session."
                     },
                     "DATABASE": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/DATABASE",
-                        "title": "Database for HTML file",
-                        "default": "db/mydata.js",
+                        "title": "Database ",
+                        "default": "mydata.db",
                         "format": "text",
-                        "description": "This replace."
+                        "description": "THe marker ___DATABASE___ will be replaced with the definition. It can be used for a database name to store the app data."
                     }
                 }
             },
             "ImportList": {
                 "type": "array",
                 "id": "/items/properties/ImportList",
-                "format": "tabs",
+                "type": "array",
+                "title": "Import Libraries",
+                "format": "table",
+                "uniqueItems":true,
                 "items": {
-                    "type": "object",
-                    "id": "/items/properties/ImportList/items",
-                    "defaultProperties": [
-                        "file",
-                        "type",
-                        "import"
-                    ],
-                    "properties": {
-                        "file": {
-                            "type": "string",
-                            "id": "/items/properties/ImportList/items/properties/file",
-                            "title": "Title of 'root.*.ImportList.*.file' Type: 'string'",
-                            "default": "js/login.js",
-                            "format": "text",
-                            "description": "An explanation for 'root.*.ImportList.*.file' about the purpose of string instance with editor path 'root.*.ImportList.*.file'."
-                        },
-                        "type": {
-                            "type": "string",
-                            "id": "/items/properties/ImportList/items/properties/type",
-                            "title": "Title of 'root.*.ImportList.*.type' Type: 'string'",
-                            "default": "JS",
-                            "format": "text",
-                            "description": "An explanation for 'root.*.ImportList.*.type' about the purpose of string instance with editor path 'root.*.ImportList.*.type'."
-                        },
-                        "import": {
-                            "type": "boolean",
-                            "id": "/items/properties/ImportList/items/properties/import",
-                            "title": "Title of 'root.*.ImportList.*.import' Type: 'boolean'",
-                            "format": "checkbox",
-                            "default": true,
-                            "description": "An explanation for 'import' about the purpose of boolean instance with editor path 'root.*.ImportList.*.import'."
-                        }
+                  "type": "object",
+                  "title": "Library",
+                  "properties": {
+                    "file": {
+                      "type": "string",
+                      "default": "js/mylib.js"
+                    },
+                    "import": {
+                      "type": "boolean",
+                      "default": true
                     }
+                  }
                 }
             }
         }
     },
     "definitions": {
-
+      "pages" : {
+        "type": "string",
+        "id": "/definitions/pages",
+        "title": "Pages",
+        "default": "home",
+        "enum": [
+          "home",
+          "settings",
+          "load",
+          "save",
+          "quit"
+        ]
+      }
     }
 }

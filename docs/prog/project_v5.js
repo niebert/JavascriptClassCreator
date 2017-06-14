@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/03 10:46:48",
+    "mod_date": "2017/04/04 20:54:31",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -10,18 +10,18 @@ vDataJSON['project'] = {
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
     "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|<!-- header button: '___BUTTON_TITLE___' -->___CR___<a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
     "sPageTypeHTML": "ConfirmPage",
-    "sPageHTML": "analysis",
+    "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
-    "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
+    "tDatabases": "db/mydata.js\ndb/disapp.js\ndummy",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
     "SelectedClass": "DatabaseList",
-    "SelectedPage": "analysis",
-    "SelectedPageType": "DefaultPage",
+    "SelectedPage": "setting",
+    "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
     "SelectedFile": "index.html",
     "SelectedElement": "HTML_TITLE",
@@ -60,7 +60,8 @@ vDataJSON['project'] = {
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
-            "AttribAccess": {},
+            "AttribAccess": {
+            },
             "AttribDefault": {
                 "aDoc": "null",
                 "aName": "\"DisApp\"",
@@ -123,10 +124,7 @@ vDataJSON['project'] = {
                 "event": "",
                 "gotoPage": "pPageID:String",
                 "gotoURL": "pFileHTML:String"
-            },
-            "tMethodName": "",
-            "tMethodCode": "",
-            "MethodAccess": {}
+            }
         },
         "AppAbstract": {
             "tClassname": "AppAbstract",
@@ -157,6 +155,7 @@ vDataJSON['project'] = {
                 "aLinkParam": "LinkParam",
                 "aDatabaseList": "DatabaseList"
             },
+
             "MethodReturn": {
                 "init": "",
                 "load": "Boolean",
@@ -181,12 +180,7 @@ vDataJSON['project'] = {
                 "load": "",
                 "save": ""
             },
-            "sMethodList": "init",
-            "tMethodName": "",
-            "tLoopObject": "",
-            "tLoopMethod": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "sMethodList": "init"
         },
         "DOMVar": {
             "tClassname": "DOMVar",
@@ -212,14 +206,12 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "DOMVarList": {
             "tClassname": "DOMVarList",
@@ -245,14 +237,12 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "CheckBoxList": {
             "tClassname": "CheckBoxList",
@@ -278,14 +268,12 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "FuzzyLayer": {
             "tClassname": "FuzzyLayer",
@@ -311,16 +299,14 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
-        },
-        "FuzzyController": {
+            "MethodParameter": {}
+          },
+          "FuzzyController": {
             "tClassname": "FuzzyController",
             "tSuperClassname": "",
             "sClassType": "Yellow",
@@ -344,199 +330,193 @@ vDataJSON['project'] = {
             "AttribName": {},
             "AttribDefault": {},
             "AttribType": {},
+
             "MethodReturn": {},
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
-        "ParserHTML": {
-            "JSCC_type": "CLASS",
-            "JSCC_init_date": "22.5.2017",
-            "JSCC_mod_date": "2017/04/01 15:33:46",
-            "tClassname": "ParserHTML",
-            "tSuperClassname": "",
-            "sClassType": "Green",
-            "tAuthor": "John Resig",
-            "tEMail": "jeresig@gmail.com",
-            "tAttributes": "aDoc = new DatabaseList()\nstartTag = /^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/\nendTag = /^<\\/([-A-Za-z0-9_]+)[^>]*>/\nattr = /([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;\nempty = null\nblock = null\ninline = null\ncloseSelf = null\nfillAttrs = null",
-            "tMethods": "init(pDoc)\ntoXML(pString)\ntoHTML(pString)\ntoDOM(pString):Hash\nmakeMap(pCommaSepString):Hash\nparse(html,handler)",
-            "sAttribList": "fillAttrs",
-            "tAttribName": "empty",
-            "tAttribType": "Hash",
-            "tAttribComment": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
-            "tAttribDefault": "null",
-            "sAttribTypeList": "Hash",
-            "tMethodHeader": "init(pDoc:Document)",
-            "tMethodName": "init",
-            "tMethodComment": "Comment for makeMap",
-            "sMethodList": "init",
-            "tMethodCode": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
-            "tLoopObject": "vArray",
-            "tLoopMethod": ".init()",
-            "AttribType": {
-                "startTag": "RegularExp",
-                "endTag": "RegularExp",
-                "attr": "RegularExp",
-                "aDoc": "DatabaseList",
-                "empty": "",
-                "block": "",
-                "inline": "",
-                "closeSelf": "",
-                "fillAttrs": ""
-            },
-            "AttribAccess": {
-                "aDoc": "public",
-                "attr": "private",
-                "endTag": "private",
-                "startTag": "private",
-                "fillAttrs": "public",
-                "closeSelf": "public",
-                "block": "public",
-                "inline": "public",
-                "empty": "public"
-            },
-            "AttribDefault": {
-                "aDoc": "new DatabaseList()",
-                "startTag": "/^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/",
-                "endTag": "/^<\\/([-A-Za-z0-9_]+)[^>]*>/",
-                "attr": "/([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;",
-                "empty": "null",
-                "block": "null",
-                "inline": "null",
-                "closeSelf": "null",
-                "fillAttrs": "null"
-            },
-            "AttribComment": {
-                "startTag": "the attribute 'startTag' defines a start-tag in HTML as 'RegularExp' ",
-                "endTag": "the attribute 'endTag' defines a end-tag in HTML as 'RegularExp' ",
-                "attr": "the attribute 'attr' stores in 'RegularExp' to parse the attributes of the tag ",
-                "aDoc": "the attribute 'aDoc' stores a reference to 'document'",
-                "empty": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
-                "block": "the attribute 'block' stores in 'Hash'  and is initialized by init()",
-                "inline": "the attribute 'inline' stores in 'Hash'  and is initialized by init()",
-                "closeSelf": "the attribute 'closeSelf' stores in 'Hash'  and is initialized by init()",
-                "fillAttrs": "the attribute 'fillAttrs' stores in 'Hash'  and is initialized by init()"
-            },
-            "MethodParameter": {
-                "init": "pDoc:Document",
-                "toXML": "pString:String",
-                "toHTML": "pString:String",
-                "toDOM": "pString:String",
-                "makeMap": "pCommaSepString:String",
-                "parse": " html:String, handler:Function "
-            },
-            "MethodReturn": {
-                "init": "",
-                "toXML": "Hash",
-                "toHTML": "Hash",
-                "toDOM": "Hash",
-                "makeMap": "Hash",
-                "parse": ""
-            },
-            "MethodCode": {
-                "init": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
-                "toXML": "",
-                "toHTML": "",
-                "toDOM": "parses the HTML input and creates DOM tree that can be added to DOM - error in the syntax are correct e.g. missing closing tags",
-                "makeMap": "var obj = {}, items = pCommaSepString.split(\",\");\nfor ( var i = 0; i < items.length; i++ ) {\n\tobj[ items[i] ] = true;\n};\nreturn obj;\n",
-                "parse": ""
-            },
-            "MethodComment": {
-                "init": "init HTML elements for parsing\n* HTML Parser By John Resig (ejohn.org)\n* Original code by Erik Arvidsson, Mozilla Public License\n* http://erik.eae.net/simplehtmlparser/simplehtmlparser.js\n\nUse like so:\n     var vHTMLParser = new HTMLParser();\n     vHTMLParser.init(document)\n     vHTMLParser.parser(htmlString, {\n         start: function(tag, attrs, unary) {},\n         end: function(tag) {},\n         chars: function(text) {},\n         comment: function(text) {}\n      });\n \n or to get an XML string:\n     vHTMLParser.toXML(htmlString);\n \n or to get an XML DOM Document\n  vHTMLParser.toDOM(htmlString);\n \n or to inject into an existing document/DOM node\n     vHTMLParser.toDOM(htmlString, document);\n     vHTMLParser.toDOM(htmlString, document.body);",
-                "toXML": "parses the HTML input and creates XML output with XML closing tags that might no been closed in HTML",
-                "toHTML": "parses the HTML input and creates HTML output corrects errors e.g. missing closing tags",
-                "toDOM": "Parses HTML content and creates a DOM tree that can be append to certain node in DOM",
-                "makeMap": "takes a comma separated string e.g. \"input,form,body\" and creates a hash with a default value 'true'",
-                "parse": "Main method for parse input and provides a handler to do something with the parsed tree (tree walker)"
-            },
-            "MethodAccess": {
-                "init": "public",
-                "toDOM": "public",
-                "toXML": "public",
-                "toHTML": "public",
-                "makeMap": "private",
-                "parse": "public"
-            },
-            "tMethodAccess": "public",
-            "JSCC_version": "1"
+        "ParserHTML":{
+          "JSCC_type": "CLASS",
+          "JSCC_init_date": "22.5.2017",
+          "JSCC_mod_date": "2017/04/01 15:33:46",
+          "tClassname": "ParserHTML",
+          "tSuperClassname": "",
+          "sClassType": "Green",
+          "tAuthor": "John Resig",
+          "tEMail": "jeresig@gmail.com",
+          "tAttributes": "aDoc = new DatabaseList()\nstartTag = /^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/\nendTag = /^<\\/([-A-Za-z0-9_]+)[^>]*>/\nattr = /([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;\nempty = null\nblock = null\ninline = null\ncloseSelf = null\nfillAttrs = null",
+          "tMethods": "init(pDoc)\ntoXML(pString)\ntoHTML(pString)\ntoDOM(pString):Hash\nmakeMap(pCommaSepString):Hash\nparse(html,handler)",
+          "sAttribList": "fillAttrs",
+          "tAttribName": "empty",
+          "tAttribType": "Hash",
+          "tAttribComment": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
+          "tAttribDefault": "null",
+          "sAttribTypeList": "Hash",
+          "tMethodHeader": "init(pDoc:Document)",
+          "tMethodName": "init",
+          "tMethodComment": "Comment for makeMap",
+          "sMethodList": "init",
+          "tMethodCode":  "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
+          "tLoopObject": "vArray",
+          "tLoopMethod": ".init()",
+          "AttribType": {
+              "startTag": "RegularExp",
+              "endTag": "RegularExp",
+              "attr": "RegularExp",
+              "aDoc": "DatabaseList",
+              "empty": "",
+              "block": "",
+              "inline": "",
+              "closeSelf": "",
+              "fillAttrs": ""
+          },
+          "AttribAccess": {
+              "aDoc": "public",
+              "attr": "private",
+              "endTag": "private",
+              "startTag": "private",
+              "fillAttrs": "public",
+              "closeSelf": "public",
+              "block": "public",
+              "inline": "public",
+              "empty": "public"
+          },
+          "AttribDefault": {
+              "aDoc": "new DatabaseList()",
+              "startTag": "/^<([-A-Za-z0-9_]+)((?:\\s+\\w+(?:\\s*=\\s*(?:(?:\"[^\"]*\")|(?:'[^']*')|[^>\\s]+))?)*)\\s*(\\/?)>/",
+              "endTag": "/^<\\/([-A-Za-z0-9_]+)[^>]*>/",
+              "attr": "/([-A-Za-z0-9_]+)(?:\\s*=\\s*(?:(?:\"((?:\\\\.|[^\"])*)\")|(?:'((?:\\\\.|[^'])*)')|([^>\\s]+)))?/g;",
+              "empty": "null",
+              "block": "null",
+              "inline": "null",
+              "closeSelf": "null",
+              "fillAttrs": "null"
+          },
+          "AttribComment": {
+              "startTag": "the attribute 'startTag' defines a start-tag in HTML as 'RegularExp' ",
+              "endTag": "the attribute 'endTag' defines a end-tag in HTML as 'RegularExp' ",
+              "attr": "the attribute 'attr' stores in 'RegularExp' to parse the attributes of the tag ",
+              "aDoc": "the attribute 'aDoc' stores a reference to 'document'",
+              "empty": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
+              "block": "the attribute 'block' stores in 'Hash'  and is initialized by init()",
+              "inline": "the attribute 'inline' stores in 'Hash'  and is initialized by init()",
+              "closeSelf": "the attribute 'closeSelf' stores in 'Hash'  and is initialized by init()",
+              "fillAttrs": "the attribute 'fillAttrs' stores in 'Hash'  and is initialized by init()"
+          },
+          "MethodParameter": {
+              "init": "pDoc:Document",
+              "toXML": "pString:String",
+              "toHTML": "pString:String",
+              "toDOM": "pString:String",
+              "makeMap": "pCommaSepString:String",
+              "parse": " html:String, handler:Function "
+          },
+          "MethodReturn": {
+              "init": "",
+              "toXML": "Hash",
+              "toHTML": "Hash",
+              "toDOM": "Hash",
+              "makeMap": "Hash",
+              "parse": ""
+          },
+          "MethodCode": {
+            "init": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
+            "toXML": "",
+            "toHTML": "",
+            "toDOM": "parses the HTML input and creates DOM tree that can be added to DOM - error in the syntax are correct e.g. missing closing tags",
+            "makeMap": "var obj = {}, items = pCommaSepString.split(\",\");\nfor ( var i = 0; i < items.length; i++ ) {\n\tobj[ items[i] ] = true;\n};\nreturn obj;\n",
+            "parse": ""
+          },
+          "MethodComment": {
+              "init": "init HTML elements for parsing\n* HTML Parser By John Resig (ejohn.org)\n* Original code by Erik Arvidsson, Mozilla Public License\n* http://erik.eae.net/simplehtmlparser/simplehtmlparser.js\n\nUse like so:\n     var vHTMLParser = new HTMLParser();\n     vHTMLParser.init(document)\n     vHTMLParser.parser(htmlString, {\n         start: function(tag, attrs, unary) {},\n         end: function(tag) {},\n         chars: function(text) {},\n         comment: function(text) {}\n      });\n \n or to get an XML string:\n     vHTMLParser.toXML(htmlString);\n \n or to get an XML DOM Document\n  vHTMLParser.toDOM(htmlString);\n \n or to inject into an existing document/DOM node\n     vHTMLParser.toDOM(htmlString, document);\n     vHTMLParser.toDOM(htmlString, document.body);",
+              "toXML": "parses the HTML input and creates XML output with XML closing tags that might no been closed in HTML",
+              "toHTML": "parses the HTML input and creates HTML output corrects errors e.g. missing closing tags",
+              "toDOM": "Parses HTML content and creates a DOM tree that can be append to certain node in DOM",
+              "makeMap": "takes a comma separated string e.g. \"input,form,body\" and creates a hash with a default value 'true'",
+              "parse": "Main method for parse input and provides a handler to do something with the parsed tree (tree walker)"
+          },
+          "MethodAccess": {
+              "init": "public",
+              "toDOM": "public",
+              "toXML": "public",
+              "toHTML": "public",
+              "makeMap": "private",
+              "parse": "public"
+          },
+          "tMethodAccess": "public",
+          "JSCC_version": "1"
         },
         "WrapJSON": {
-            "tClassname": "WrapJSON",
-            "tSuperClassname": "",
-            "sClassType": "Interface",
-            "tAuthor": "Engelbert Niehaus",
-            "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "data=null",
-            "tMethods": "init(pData:Hash)\nupdate(pPathID:String,vValue:Object)\nexists(pPathID):Boolean\ngetValue(pPathID:String):Object\nsetValue(pPathID:String,pValue:Object)\ngetType(pPathID):String;\nsplitPathID(pPathID:String):Array",
-            "sAttribList": "data",
-            "tAttribName": "data",
-            "tAttribType": "Object",
-            "tAttribComment": "the attribute 'data' stores a reference to the JSON data",
-            "tAttribDefault": "null",
-            "sAttribTypeList": "Object",
-            "tMethodHeader": "init(pData:Hash)",
-            "tMethodComment": "init the JSON wrapper with a reference to a JSON tree",
-            "sMethodList": "init",
-            "tMethodCode": "",
-            "tLoopObject": "data",
-            "tLoopMethod": "init()",
-            "AttribType": {
-                "data": "Hash"
-            },
-            "AttribDefault": {
-                "data": "null"
-            },
-            "AttribComment": {
-                "data": "the attribute 'data' stores a reference to the JSON data"
-            },
-            "MethodParameter": {
-                "update": "pPathID:String,vValue:Object",
-                "exists": "pPathID",
-                "getValue": "pPathID:String",
-                "splitID": "",
-                "splitPathID": "pPathID:String",
-                "init": "pData",
-                "setValue": "pPathID:String,pValue:Object",
-                "getType": "pPathID"
-            },
-            "MethodReturn": {
-                "update": "",
-                "exists": "Boolean",
-                "getValue": "Object",
-                "splitID": "",
-                "splitPathID": "Array",
-                "init": "",
-                "setValue": "",
-                "getType": "String;"
-            },
-            "MethodCode": {
-                "update": "",
-                "exists": " ",
-                "getValue": "",
-                "splitID": "",
-                "splitPathID": "",
-                "init": "",
-                "setValue": "",
-                "getType": ""
-            },
-            "MethodComment": {
-                "update": "Comment for update",
-                "exists": "Comment for exists",
-                "getValue": "Comment for getValue",
-                "splitID": "Comment for splitID",
-                "splitPathID": "Comment for splitPathID",
-                "init": "Comment for init",
-                "setValue": "Comment for setValue",
-                "getType": "Comment for getType"
-            },
-            "JSCC_mod_date": "",
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+          "tClassname": "WrapJSON",
+          "tSuperClassname": "",
+          "sClassType": "Interface",
+          "tAuthor": "Engelbert Niehaus",
+          "tEMail": "niehaus@uni-landau.de",
+          "tAttributes": "data=null",
+          "tMethods": "init(pData:Hash)\nupdate(pPathID:String,vValue:Object)\nexists(pPathID):Boolean\ngetValue(pPathID:String):Object\nsetValue(pPathID:String,pValue:Object)\ngetType(pPathID):String;\nsplitPathID(pPathID:String):Array",
+          "sAttribList": "data",
+          "tAttribName": "data",
+          "tAttribType": "Object",
+          "tAttribComment": "the attribute 'data' stores a reference to the JSON data",
+          "tAttribDefault": "null",
+          "sAttribTypeList": "Object",
+          "tMethodHeader": "init(pData:Hash)",
+          "tMethodComment": "init the JSON wrapper with a reference to a JSON tree",
+          "sMethodList": "init",
+          "tMethodCode": "",
+          "tLoopObject": "data",
+          "tLoopMethod": "init()",
+          "AttribType": {
+              "data": "Hash"
+          },
+          "AttribDefault": {
+              "data": "null"
+          },
+          "AttribComment": {
+              "data": "the attribute 'data' stores a reference to the JSON data"
+          },
+          "MethodParameter": {
+              "update": "pPathID:String,vValue:Object",
+              "exists": "pPathID",
+              "getValue": "pPathID:String",
+              "splitID": "",
+              "splitPathID": "pPathID:String",
+              "init": "pData",
+              "setValue": "pPathID:String,pValue:Object",
+              "getType": "pPathID"
+          },
+          "MethodReturn": {
+              "update": "",
+              "exists": "Boolean",
+              "getValue": "Object",
+              "splitID": "",
+              "splitPathID": "Array",
+              "init": "",
+              "setValue": "",
+              "getType": "String;"
+          },
+          "MethodCode": {
+              "update": "",
+              "exists": " ",
+              "getValue": "",
+              "splitID": "",
+              "splitPathID": "",
+              "init": "",
+              "setValue": "",
+              "getType": ""
+          },
+          "MethodComment": {
+              "update": "Comment for update",
+              "exists": "Comment for exists",
+              "getValue": "Comment for getValue",
+              "splitID": "Comment for splitID",
+              "splitPathID": "Comment for splitPathID",
+              "init": "Comment for init",
+              "setValue": "Comment for setValue",
+              "getType": "Comment for getType"
+          }
         },
         "DatabaseList": {
             "tClassname": "DatabaseList",
@@ -554,49 +534,49 @@ vDataJSON['project'] = {
             "tAttribDefault": "{}",
             "sAttribTypeList": "Hash",
             "tMethodHeader": "init(pDoc:Document,pDatabase:Hash)",
-            "tMethodComment": "create Database objects for all keys in pDatabase hash in the init the Database in this.aDB",
-            "tMethodCode": "this.aDatabaseHash = pDatabase;\nfor (var vKey in this.aDatabaseHash) {\n  this.aDBHash[vKey] = new Database();\n  this.aDBHash[vKey].init(this.aDatabase[vKey]);\n};\n",
+            "tMethodComment": "Comment for init",
+            "tMethodCode": "",
             "sMethodList": "init",
             "tArrayLoop": "this.aDBList",
             "tMethodLoop": "load()",
             "AttribName": {},
             "AttribDefault": {
-                "aDoc": "null",
-                "aDatabaseHash": "{}",
-                "aDBHash": "{}"
-            },
+              "aDoc": "null",
+              "aDatabaseHash": "{}",
+              "aDBHash": "{}"
+          },
             "AttribType": {
-                "aDoc": "Document",
-                "aDatabaseHash": "Hash",
-                "aDBHash": "Hash"
-            },
+              "aDoc": "Document",
+              "aDatabaseHash": "Hash",
+              "aDBHash": "Hash"
+          },
             "AttribAccess": {
-                "aDoc": "public",
-                "aDatabaseHash": "private",
-                "aDBHash": "private"
-            },
-            "AttribComment": {
-                "aDoc": "is the 'document' object",
-                "aDatabaseHash": "stores all databases in the init format in a Hash",
-                "aDBHash": "stores all databases of Class 'Database' in a Hash"
-            },
+              "aDoc": "public",
+              "aDatabaseHash": "private",
+              "aDBHash": "private"
+          },
+          "AttribComment": {
+            "aDoc": "is the 'document' object",
+            "aDatabaseHash": "stores all databases in the init format in a Hash",
+            "aDBHash": "stores all databases of Class 'Database' in a Hash"
+        },
             "MethodReturn": {
                 "init": "",
                 "load": "Boolean",
                 "save": "Boolean",
-                "getDBHash4Type": "Hash"
+                "getDBHash4Type":"Hash"
             },
             "MethodCode": {
                 "init": "this.aDatabaseHash = pDatabase;\nfor (var vKey in this.aDatabaseHash) {\n  this.aDBHash[vKey] = new Database();\n  this.aDBHash[vKey].init(this.aDatabase[vKey]);\n};\n",
                 "load": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].load();\n};\n",
                 "save": "for (var vKey in this.aDBHash) {\n  this.aDBHash[vKey].save();\n};\n",
-                "getDBHash4Type": "var vRetHash = {};\nvar vType = \"\";\nfor (var vKey in this.aDBHash) {\n  vType = this.aDBHash[vKey].getType();\n  if (vType==\"pType\") {\n    vRetHash[vKey] = this.aDBHash[vKey];\n  }\n};\nreturn vRetHash\n"
+                "getDBHash4Type":"var vRetHash = {};\nvar vType = \"\";\nfor (var vKey in this.aDBHash) {\n  vType = this.aDBHash[vKey].getType();\n  if (vType==\"pType\") {\n    vRetHash[vKey] = this.aDBHash[vKey];\n  }\n};\nreturn vRetHash\n"
             },
             "MethodComment": {
                 "init": "create Database objects for all keys in pDatabase hash in the init the Database in this.aDB",
                 "load": "load Databases and DOMVars from LocalStorage if the exist in local storage",
                 "save": "save Databases and DOMVars to LocalStorage",
-                "getDBHash4Type": "a DatabaseList contains Databases of different types.\nMethod return a Hash of all DBs of a certain Type"
+                "getDBHash4Type":"a DatabaseList contains Databases of different types.\nMethod return a Hash of all DBs of a certain Type"
             },
             "MethodParameter": {
                 "init": "pDoc:Document,pDatabase:Hash",
@@ -605,16 +585,14 @@ vDataJSON['project'] = {
                 "getDBHash4Type": "pType:String"
             },
             "MethodAccess": {
-                "init": "public",
-                "load": "private",
-                "save": "private",
-                "getDBHash4Type": "public"
+              "init": "public",
+              "load": "private",
+              "save": "private",
+              "getDBHash4Type": "public"
             },
+
             "tLoopObject": "myHash",
-            "tLoopMethod": "myLoopMethod(pID)",
-            "tMethodName": "",
-            "tMethodAccess": "public",
-            "sClassList": "DatabaseList"
+            "tLoopMethod": "myLoopMethod(pID)"
         },
         "Database": {
             "tClassname": "Database",
@@ -646,6 +624,7 @@ vDataJSON['project'] = {
                 "aSourceDB": "Hash",
                 "aDB": "Hash"
             },
+
             "MethodReturn": {
                 "init": "",
                 "checkFormat": "",
@@ -675,10 +654,7 @@ vDataJSON['project'] = {
                 "save": ""
             },
             "JSCC_type": "CLASS",
-            "JSCC_version": "1",
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "JSCC_version": "1"
         },
         "Server": {
             "tClassname": "Server",
@@ -708,10 +684,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "LinkParam": {
             "sClassType": "Blue",
@@ -816,59 +789,47 @@ vDataJSON['project'] = {
                 "calcSize": "",
                 "encodeHTML": "pValue:String,pWrapCode:Boolean",
                 "exists": "pVar:String"
-            },
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            }
         }
     },
     "DBID2File": {
-        "mydata": "db/mydata.js",
-        "dummy": "../jquery/db/dummy.json"
+      "mydata":"db/mydata.js",
+      "dummy":"../jquery/db/dummy.json"
     },
     "DatabaseList": {
-        "dummy": {
-            "test": "Test String",
-            "number": 355,
-            "visible": true
-        },
-        "mydata": {
-            "JSCC_type": "DB",
-            "init_date": "2017/05/00 8:26:58",
-            "file": "db/mydata.js",
-            "name": "mydata",
-            "data": {},
-            "schema": {}
-        }
+      "dummy":{
+        "test":"Test String",
+        "number":355,
+        "visible":true
+      }
     },
     "ButtonList": {
         "QUIT": {
             "BUTTON_ID": "QUIT",
             "BUTTON_TITLE": "Quit",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 1
+            "counter": 3
         },
         "OK": {
             "BUTTON_ID": "OK",
             "BUTTON_TITLE": "OK",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___)\" data-theme=\"a\">OK</a>",
-            "counter": 0
+            "counter": 1
         },
         "CANCEL": {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___);return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
-            "counter": 1
+            "counter": 7
         }
     },
     "SelectedTypePage": "SaveDialog",
     "PageTypeList": {
         "DefaultPage": {
             "page-type": "DefaultPage",
-            "HEADER_BUTTON1": "OK",
-            "HEADER_BUTTON2": "OK",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "HEADER_BUTTON1": "home",
+            "HEADER_BUTTON2": "",
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "MenuPage": {
             "page-type": "MenuPage",
@@ -886,8 +847,7 @@ vDataJSON['project'] = {
             "page-type": "ConfirmPage",
             "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "CANCEL",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "SaveDialog": {
             "page-type": "SaveDialog",
@@ -899,8 +859,7 @@ vDataJSON['project'] = {
             "page-type": "LoginPage",
             "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "CANCEL",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         }
     },
     "PageList": {
@@ -919,9 +878,9 @@ vDataJSON['project'] = {
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "setting": {
-            "PAGE_ID": "login",
+            "PAGE_ID": "setting",
             "PAGE_TITLE": "Settings",
-            "page-type": "ConfirmPage",
+            "page-type": "OptionsPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
@@ -932,48 +891,51 @@ vDataJSON['project'] = {
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
-        "load": {
-            "PAGE_ID": "save",
-            "PAGE_TITLE": "Load JSON",
-            "page-type": "MenuPage",
+        "quit": {
+            "PAGE_ID": "quit",
+            "PAGE_TITLE": "Quit App",
+            "page-type": "ConfirmPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
-        "analysis": {
-            "PAGE_ID": "analysis",
-            "PAGE_TITLE": "",
-            "page-type": "SaveDialog",
-            "parent-id": "home",
+        "login": {
+            "PAGE_ID": "login",
+            "PAGE_TITLE": "Login",
+            "page-type": "LoginPage",
+            "parent-id": "quit",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         }
     },
     "ElementsDBList": {
-        "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
-        "DB_HIDDEN": "<input type=\"hidden\" id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
-        "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB___' onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"></textarea>"
+      "DB_YESNO": "<select id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
+      "DB_HIDDEN": "<input type=\"hidden\" id=\"___DB_ID___\" name=\"___DB___\" onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"><option>YES</option><option>NO</option></select>",
+      "DB_TEXTAREA": "<textarea id='___DB_ID___' name='___DB___' onload=\"this.value = vApp.db.getVal('___DB___','___DB_ID___','___DB_ID_VALUE___')\" onchange=\"vApp.db.setVal('___DB___','___DB_ID___',this.value)\"></textarea>"
     },
     "GlobalLibList": [
-        {
-            "file": "js/string.js",
-            "import": true
-        },
-        {
-            "file": "js/localstorage.js",
-            "import": true
-        },
-        {
-            "file": "js/writedom.js",
-            "import": true
-        }
+      {
+        "file":"js/string.js",
+        "import": true
+      },
+      {
+        "file":"js/localstorage.js",
+        "import": true
+      },
+      {
+        "file":"js/writedom.js",
+        "import": true
+      }
     ],
     "FileList": {
         "index.html": {
+            "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "HTML_TITLE",
+            "sElementsFileList": "HTML_TITLE",
+            "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "tFilename": "index.html",
-            "sAppClassHTML": "",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "login"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
@@ -982,31 +944,28 @@ vDataJSON['project'] = {
                 "DATABASE": "File index.html - Content of element DATABASE"
             },
             "ImportList": [
-                {
-                    "file": "js/login.js",
-                    "import": true
-                },
-                {
-                    "file": "js/geolocation.js",
-                    "import": true
-                }
-            ],
-            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
-            "tElementID": "HTML_TITLE",
-            "sElementsFileList": "",
-            "tElementHTML": "File index.html - Content of element HTML_TITLE",
-            "sElementFileList": "HTML_TITLE"
+              {
+                "file":"js/login.js",
+                "type":"JS",
+                "import": true
+              },
+              {
+                "file":"js/geolocation.js",
+                "type":"JS",
+                "import": true
+              }
+            ]
         },
         "app.html": {
-            "tFilename": "app.html",
             "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementsFileList": "",
+            "tElementHTML": "",
+            "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "welcome",
-                "home",
-                "quit",
-                "analysis"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
@@ -1015,25 +974,28 @@ vDataJSON['project'] = {
                 "DATABASE": "File app.html - Content of element DATABASE"
             },
             "ImportList": [
-                {
-                    "file": "js/qrcode.js",
-                    "import": true
-                },
-                {
-                    "file": "js/geolocation.js",
-                    "import": true
-                }
+              {
+                "file":"js/qrcode.js",
+                "type":"JS",
+                "import": true
+              },
+              {
+                "file":"js/geolocation.js",
+                "type":"JS",
+                "import": true
+              }
             ]
         },
         "submit.html": {
             "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementsFileList": "",
+            "tElementHTML": "",
+            "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "welcome",
-                "home",
-                "quit",
-                "newpage"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
@@ -1042,14 +1004,16 @@ vDataJSON['project'] = {
                 "DATABASE": "File submit.html - Content of element DATABASE"
             },
             "ImportList": [
-                {
-                    "file": "js/submit.js",
-                    "import": true
-                },
-                {
-                    "file": "js/geolocation.js",
-                    "import": true
-                }
+              {
+                "file":"js/submit.js",
+                "type":"JS",
+                "import": true
+              },
+              {
+                "file":"js/geolocation.js",
+                "type":"JS",
+                "import": true
+              }
             ]
         }
     },
@@ -1063,7 +1027,6 @@ vDataJSON['project'] = {
         "Object": "null",
         "RegularExp": "/mypattern/g",
         "Document": "document",
-        "Function": "function () {}"
-    },
-    "sDatabaseList": "mydata.js"
+        "Function" : "function () {}"
+    }
 }

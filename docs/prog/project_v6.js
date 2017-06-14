@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/03 10:46:48",
+    "mod_date": "2017/05/00 8:28:31",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -10,7 +10,7 @@ vDataJSON['project'] = {
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
     "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|<!-- header button: '___BUTTON_TITLE___' -->___CR___<a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
     "sPageTypeHTML": "ConfirmPage",
-    "sPageHTML": "analysis",
+    "sPageHTML": "setting",
     "sButtonHTML": "QUIT",
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
     "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
@@ -20,8 +20,8 @@ vDataJSON['project'] = {
     "sShowAggregations": "show",
     "sShowAssociations": "show",
     "SelectedClass": "DatabaseList",
-    "SelectedPage": "analysis",
-    "SelectedPageType": "DefaultPage",
+    "SelectedPage": "setting",
+    "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
     "SelectedFile": "index.html",
     "SelectedElement": "HTML_TITLE",
@@ -123,10 +123,7 @@ vDataJSON['project'] = {
                 "event": "",
                 "gotoPage": "pPageID:String",
                 "gotoURL": "pFileHTML:String"
-            },
-            "tMethodName": "",
-            "tMethodCode": "",
-            "MethodAccess": {}
+            }
         },
         "AppAbstract": {
             "tClassname": "AppAbstract",
@@ -181,12 +178,7 @@ vDataJSON['project'] = {
                 "load": "",
                 "save": ""
             },
-            "sMethodList": "init",
-            "tMethodName": "",
-            "tLoopObject": "",
-            "tLoopMethod": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "sMethodList": "init"
         },
         "DOMVar": {
             "tClassname": "DOMVar",
@@ -216,10 +208,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "DOMVarList": {
             "tClassname": "DOMVarList",
@@ -249,10 +238,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "CheckBoxList": {
             "tClassname": "CheckBoxList",
@@ -282,10 +268,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "FuzzyLayer": {
             "tClassname": "FuzzyLayer",
@@ -315,10 +298,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "FuzzyController": {
             "tClassname": "FuzzyController",
@@ -348,10 +328,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "ParserHTML": {
             "JSCC_type": "CLASS",
@@ -675,10 +652,7 @@ vDataJSON['project'] = {
                 "save": ""
             },
             "JSCC_type": "CLASS",
-            "JSCC_version": "1",
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "JSCC_version": "1"
         },
         "Server": {
             "tClassname": "Server",
@@ -708,10 +682,7 @@ vDataJSON['project'] = {
             "MethodCode": {},
             "MethodComment": {},
             "AttribComment": {},
-            "MethodParameter": {},
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "MethodParameter": {}
         },
         "LinkParam": {
             "sClassType": "Blue",
@@ -816,10 +787,7 @@ vDataJSON['project'] = {
                 "calcSize": "",
                 "encodeHTML": "pValue:String,pWrapCode:Boolean",
                 "exists": "pVar:String"
-            },
-            "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            }
         }
     },
     "DBID2File": {
@@ -846,29 +814,28 @@ vDataJSON['project'] = {
             "BUTTON_ID": "QUIT",
             "BUTTON_TITLE": "Quit",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 1
+            "counter": 3
         },
         "OK": {
             "BUTTON_ID": "OK",
             "BUTTON_TITLE": "OK",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___)\" data-theme=\"a\">OK</a>",
-            "counter": 0
+            "counter": 1
         },
         "CANCEL": {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___);return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
-            "counter": 1
+            "counter": 7
         }
     },
     "SelectedTypePage": "SaveDialog",
     "PageTypeList": {
         "DefaultPage": {
             "page-type": "DefaultPage",
-            "HEADER_BUTTON1": "OK",
-            "HEADER_BUTTON2": "OK",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "HEADER_BUTTON1": "home",
+            "HEADER_BUTTON2": "",
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "MenuPage": {
             "page-type": "MenuPage",
@@ -886,8 +853,7 @@ vDataJSON['project'] = {
             "page-type": "ConfirmPage",
             "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "CANCEL",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "SaveDialog": {
             "page-type": "SaveDialog",
@@ -899,8 +865,7 @@ vDataJSON['project'] = {
             "page-type": "LoginPage",
             "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "CANCEL",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
-            "content": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: LoginPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         }
     },
     "PageList": {
@@ -919,9 +884,9 @@ vDataJSON['project'] = {
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "setting": {
-            "PAGE_ID": "login",
+            "PAGE_ID": "setting",
             "PAGE_TITLE": "Settings",
-            "page-type": "ConfirmPage",
+            "page-type": "OptionsPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
@@ -932,18 +897,18 @@ vDataJSON['project'] = {
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
-        "load": {
-            "PAGE_ID": "save",
-            "PAGE_TITLE": "Load JSON",
-            "page-type": "MenuPage",
+        "quit": {
+            "PAGE_ID": "quit",
+            "PAGE_TITLE": "Quit App",
+            "page-type": "ConfirmPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
-        "analysis": {
-            "PAGE_ID": "analysis",
-            "PAGE_TITLE": "",
-            "page-type": "SaveDialog",
-            "parent-id": "home",
+        "login": {
+            "PAGE_ID": "login",
+            "PAGE_TITLE": "Login",
+            "page-type": "LoginPage",
+            "parent-id": "quit",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         }
     },
@@ -968,12 +933,15 @@ vDataJSON['project'] = {
     ],
     "FileList": {
         "index.html": {
-            "tFilename": "index.html",
             "sAppClassHTML": "",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "HTML_TITLE",
+            "sElementsFileList": "HTML_TITLE",
+            "tElementHTML": "File index.html - Content of element HTML_TITLE",
+            "tFilename": "index.html",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "login"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File index.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/loginemu.html",
@@ -984,29 +952,27 @@ vDataJSON['project'] = {
             "ImportList": [
                 {
                     "file": "js/login.js",
+                    "type": "JS",
                     "import": true
                 },
                 {
                     "file": "js/geolocation.js",
+                    "type": "JS",
                     "import": true
                 }
             ],
-            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
-            "tElementID": "HTML_TITLE",
-            "sElementsFileList": "",
-            "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "sElementFileList": "HTML_TITLE"
         },
         "app.html": {
-            "tFilename": "app.html",
             "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementsFileList": "",
+            "tElementHTML": "",
+            "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "welcome",
-                "home",
-                "quit",
-                "analysis"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File app.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
@@ -1017,23 +983,26 @@ vDataJSON['project'] = {
             "ImportList": [
                 {
                     "file": "js/qrcode.js",
+                    "type": "JS",
                     "import": true
                 },
                 {
                     "file": "js/geolocation.js",
+                    "type": "JS",
                     "import": true
                 }
             ]
         },
         "submit.html": {
             "sAppClassHTML": "App",
+            "tTemplateHTML": "tpl/Default.html",
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "",
+            "sElementsFileList": "",
+            "tElementHTML": "",
+            "tFilename": "",
             "tAppInitCall": "init(document,vDataJSON)",
-            "tPageIDs": [
-                "welcome",
-                "home",
-                "quit",
-                "newpage"
-            ],
+            "tPageIDs": "welcome|home|quit|newpage",
             "elements": {
                 "HTML_TITLE": "File submit.html - Content of element HTML_TITLE",
                 "SERVER_URL": "https://niehbert.github.io/JavascriptClassCreator/srv/submitemu.html",
@@ -1044,10 +1013,12 @@ vDataJSON['project'] = {
             "ImportList": [
                 {
                     "file": "js/submit.js",
+                    "type": "JS",
                     "import": true
                 },
                 {
                     "file": "js/geolocation.js",
+                    "type": "JS",
                     "import": true
                 }
             ]

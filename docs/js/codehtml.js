@@ -115,7 +115,10 @@ function createPageHTML4Code(pPageHash) {
   var vPageID     = pPageHash["PAGE_ID"];
   var vPageTypeID = pPageHash["page-type"];
   var vPageTpl    = getPageTypeTemplate4Code(vPageTypeID);
-  var vPageContent = vJSCC_DB["PageList"][vPageID]["content"] || " undefined content for page '"+ vPageID+"'";
+  var vPageContent = " undefined content for page '"+ vPageID+"'";
+  if (existsPageJS(vPageID)) {
+    vPageContent = vJSCC_DB["PageList"][vPageID]["content"] || " undefined content for page '"+ vPageID+"'";
+  };
   // Header Buttons are already inserted in PageType-Template
   // ToDo: Insert
   if (vPageTpl) {
@@ -147,8 +150,7 @@ function getPageMenu4ID(vPageID) {
 
 function getConnectedPages4File(pFileID) {
   if (existsFileJS(pFileID)) {
-    var vPageIDs = vJSCC_DB["FileList"][pFileID]["tPageIDs"];
-    var vArrID = vPageIDs.split("|");
+    var vArrID = vJSCC_DB["FileList"][pFileID]["tPageIDs"];
     var vConArrID = getConnectedPageArr(vArrID);
     console.log("Connected Pages for file '"+pFileID+"'\nPagesIN: ["+vArrID.join(",")+"]\nPagesOUT: ["+vConArrID.join(",")+"]");
     return vConArrID;

@@ -168,6 +168,9 @@ function checkFileHTML(pFile) {
     debugLog("File","FileList['"+pFile+"']['elements'] created");
     vJSCC_DB["FileList"][pFile]["elements"] = getElementsHash4Form({},pFile);
   };
+  if (!vJSCC_DB["FileList"][pFile].hasOwnProperty("tPageIDs")) {
+    vJSCC_DB["FileList"][pFile]["tPageIDs"] = ["home"];
+  };
   var vElemHash = vJSCC_DB["FileList"][pFile]["elements"];
   var vElemArrID = getArray4HashID(vElemHash,pFile);
   if (vJSCC_DB["FileList"][pFile]["tElementID"]) {
@@ -370,46 +373,6 @@ function save3LevelID2JSON(pListID,pHashID,pID,pValue) {
     };
 };
 
-function saveID4HashPath2JSON(pHashPath,pValue) {
-  var vPathOK = true;
-  var vID = "";
-  var vPrevHash;
-  var vHash = vJSCC_DB;
-  var vLog = "vJSCC_DB";
-  console.log("saveID4HashPath2JSON('"+pHashPath+"','"+pValue+"') ");
-  if (pHashPath && pHashPath.length>1) {
-    var vArrID = pHashPath.split(".");
-    for (var i = 0; i < vArrID.length; i++) {
-      vID = reduceVarName(vArrID[i]);
-      if (vID != "") { // skip empty ID defined by path ".."
-        if (vPathOK) {
-          if (vHash.hasOwnProperty(vID)) {
-            vLog += "["+vID+"]"; // vID exists in HashPath
-            vPrevHash = vHash;
-            vHash = vHash[vID]; // set Hash to Lower Part of Hash
-          } else {
-            vLog += " OK - Undefined Path ["+vID+"]";
-          };
-        } else {
-          // append undefined part of Hash
-          vLog += "["+vID+"]";
-        }
-      }; // empty ID
-    }; // end For
-  } else {
-    console.log("saveID4HashPath2JSON(): HashPath undefined");
-  };
-  console.log(vLog);
-  if (vPathOK) {
-    //set Value
-    if (vHash) {
-      vHash[vID] = pValue;
-    } else {
-      alert("ERROR: HashPath '"+pHashPath+"' length to short!")
-    };
-  }
-  return vPathOK; // boolead for success of save operation
-}
 function deleteClassForm() {
   console.log("deleteClassForm()");
   var vClassJS = getClassJSON();

@@ -48,6 +48,7 @@
    <script language="javascript" src="plugins/dbedit/schema/class_schema.js"></script>
    <script language="javascript" src="plugins/dbedit/schema/globallibs_schema.js"></script>
    <script language="javascript" src="plugins/dbedit/schema/basicclasses_schema.js"></script>
+   <script language="javascript" src="plugins/dbedit/schema/filelist_schema.js"></script>
    <!-- load the project.js file - JSON of the project is stored in vDataJSON['JSCC'] -->
    <script language="javascript" src="prog/project.js"></script>
    <!-- file.js must be loaded before the function loadProjectJS(pDB) is called -->
@@ -72,13 +73,14 @@
    <script language="javascript" src="js/dom.js"></script>
    <!-- FileSaver Library by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
    <script language="javascript" src="js/filesaver.js"></script>
+   <script language="javascript" src="js/jsoneditor.js"></script>
    <!-- gitbuttons.js is the local version of https://buttons.github.io/buttons.js -->
    <!-- to avoid name conflicts buttons.js was renamed to gitbuttons.js -->
    <script language="javascript" src="js/gitbuttons.js"></script>
    <script language="javascript" src="js/iframe.js"></script>
    <script language="javascript" src="js/jsondb.js"></script>
    <!-- jsoneditor.js is provide by Jason Dorn https://github.com/jdorn/json-editor -->
-   <script language="javascript" src="js/jsoneditor.js"></script>
+   <!-- <script language="javascript" src="js/jsoneditor.js"></script> -->
    <script language="javascript" src="js/localstorage.js"></script>
    <script language="javascript" src="js/loopdef.js"></script>
    <script language="javascript" src="js/openwin.js"></script>
@@ -95,6 +97,9 @@
   <meta name="generator" content="Bluefish 2.2.2" >
   <link href="plugins/jquery/jquery-ui.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="css/jqueryinit.css">
+  <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+  <!-- Bootstrap Core CSS -->
+  <!-- <link href="plugins/dbedit/css/bootstrap.min.css" rel="stylesheet"> -->
   <!-- the following CSS is defined for styles create for JavascriptClassCreator -->
   <link rel="stylesheet" type="text/css" href="css/jscc.css">
 
@@ -168,6 +173,9 @@
               <b>
                 HTML:
                 <font color="blue" id="titleFileNameTab">FileName</font>
+                <button id="bEditFileListJSON" onclick="openEditFileList();return false">
+                  <i class="fa fa-pencil"></i>
+                </button>
               </b>
             </font>
           </td>
@@ -187,18 +195,18 @@
             <b>HTML-File:</b> <input name="tFilename" id="tFilename" value="" type="text" style="font-family: monospace" size="20" onchange="this.value=removeSpaces(this.value);updateFormID2JSON(this.id)">
             <!-- [+] Files -->
             <input name="bCreateNewFile" value="+" onclick="createNewFile()" type="button">
-            <!-- Edit Files -->
-            <input type="button" value="Edit JSON" id="bEditFilesJSON" onclick="openEditFileList();return false">
-            <br>
-            <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
-            <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
-            <br>
-            <div id="divTemplateHTML" style="display:none">
+            <div id="divHiddenHTML" style="display:none">
+              <!-- Edit Files -->
+              <input type="button" value="Edit JSON" id="bEditFilesJSON" onclick="openEditFileList();return false">
+              <br>
+              <b>Main App Class:</b> <select id="sAppClassHTML" name="sAppClassHTML" onchange="updateFileJSON2Form()"></select>
+              <b>App Init Call:</b> <input name="tAppInitCall" id="tAppInitCall" value="init(document,vDataJSON)" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
+              <br>
               <b>Template :</b> <input name="tTemplateHTML" id="tTemplateHTML" value="tpl/Default.html" type="text" style="font-family: monospace" size="25" onchange="updateFormID2JSON(this.id)">
               <b>Path:</b> /tpl/
               <br>
+              <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
             </div>
-            <b>Page IDs:</b> <input name="tPageIDs" id="tPageIDs" value="welcome|home|quit|newpage" type="text" size="65" style="font-family: monospace"  onchange="updateFormPageIDs2JSON()">
           </td>
         </tr>
         <tr>
@@ -241,7 +249,7 @@
             <iframe id="iPageHTML"  src="plugins/ace/ace.html?domid=tPageHTML&mode=html" width="90%" height="100"></iframe>
           </td>
         </tr>
-        <tr>
+        <tr style="display:none">
           <td  colspan="2" bgcolor="#C0C0C0" align="center">
             <font size="+2">
                   <b>
@@ -251,7 +259,7 @@
             </font>
           </td>
         </tr>
-        <tr>
+        <tr style="display:none">
           <td  colspan="2" align="center">
             <b>Select Replace ID:</b>
             <select id="sElementsFileList" name="sElementsFileList" onchange="selectElementFileJS(this.value)">
@@ -326,6 +334,8 @@
             <select id="sPageTypeHTML" name="sPageTypeHTML" onchange="selectPageTypeJS()">
               <option></option>
             </select>
+            <div id="divPageTypeEditor"></div>
+
             <input type="button"  class="deletebutton" id="bDeletePageTypeHTML" onclick="deletePageTypeHTML();return false" value="Delete">
             <input type="button" id="bSavePageTypeHTML" onclick="savePageTypeHTML();return false" value="Save">
             <br>
@@ -334,11 +344,11 @@
             <input type="button" id="bCreateNewPageType" onclick="createNewPageType();return false" value="+">
             <br>
             <b>Header Button 1:</b>
-            <select id="sButtonHeader1" name="sButtonHeader1">
+            <select id="sButtonHeader1" name="sButtonHeader1" onchange="savePageTypeHTML_do()">
               <option></option>
             </select>
             <b>Header Button 2:</b>
-            <select id="sButtonHeader2" name="sButtonHeader2">
+            <select id="sButtonHeader2" name="sButtonHeader2" onchange="savePageTypeHTML_do()">
               <option></option>
             </select>
 

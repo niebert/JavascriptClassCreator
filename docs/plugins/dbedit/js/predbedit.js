@@ -99,6 +99,16 @@ function getWinOpenerDB() {
         };
       }
   }
+};
+
+function updateSchemaDefinitions(pWinOpener) {
+  var vWinOpener = pWinOpener || window.opener;
+  if (typeof vWinOpener === "undefined") {
+    console.log("window.opener undefined or connection lost");
+  } else {
+    var vJSCC_DB = vWinOpener.vJSCC_DB;
+    //----????----------
+  };
 }
 
 function loadInputJSON() {

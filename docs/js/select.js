@@ -125,7 +125,7 @@ function clearForm4Attribute() {
 
 function clearForm4File() {
   console.log("clearForm4File()");
-  var vArrID = ["sFileListHTML","tFilename","tPageIDs","tElementFileIDs","sElementsFileList","tElementID","tElementHTML"];
+  var vArrID = ["sFileListHTML","tFilename","tElementFileIDs","sElementsFileList","tElementID","tElementHTML"];
   clearIDs4DOM(vArrID);
   setEditorValue("iElementHTML","");
   write2innerHTML("sElementsFileList","");
@@ -365,6 +365,7 @@ function selectFileJS(pFileID) {
     console.log("File with ID '"+vFileID+"' exists in selectFileJS()-Call");
     updateFileJSON2Form(vFileID);
     write2value("tFilename",vFileID);
+    selectFilenameHTML(vFileID);
   } else {
     vFileID = "";
     clearFileForm();
@@ -507,6 +508,7 @@ function clearIDs4DOM(pArrID) {
 
 function selectPageTypeJS(pPageTypeID) {
   var vPageTypeID = pPageTypeID || getValueDOM("sPageTypeHTML");
+  console.log("selectPageTypeJS('"+vPageTypeID+"')");
   var vOldPageTypeID = getValueDOM("tPageTypeID"); // old PageTypeID
   var vOldContent = getEditorValue("iPageTypeHTML");
   if (vOldPageTypeID != "") {
@@ -520,6 +522,8 @@ function selectPageTypeJS(pPageTypeID) {
     if (existsPageTypeJS(vPageTypeID)) {
       console.log("PageType with ID '"+vPageTypeID+"' exists in selectPageTypeJS()-Call");
       updatePageTypeJSON4ID2Form(vPageTypeID);
+      write2value("sPageTypeHTML",vPageTypeID);
+      write2value("sPageType4Page",vPageTypeID);
     } else {
       console.log("selectPageTypeJS()-Call: Undefined PageType for '"+vPageTypeID+"' - use old PageType Content '"+vOldPageTypeID+"'.");
       clearPageTypeForm();

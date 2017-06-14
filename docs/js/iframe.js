@@ -10,7 +10,7 @@ function onChangeACE(pID,pContent) {
     case "tPageTypeHTML":
       var vPageTypeID = getValueDOM("sPageTypeHTML");
       if (existsPageTypeJS(vPageTypeID)) {
-        vJSCC_DB["PageTypeList"][vPageTypeID]["content"] = pContent;
+        vJSCC_DB["PageTypeList"][vPageTypeID]["template"] = pContent;
       };
     break;
     default:

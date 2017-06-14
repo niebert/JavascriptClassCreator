@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/03 10:46:48",
+    "mod_date": "2017/05/03 11:16:25",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -15,15 +15,19 @@ vDataJSON['project'] = {
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
     "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
+    "sDatabaseList": "mydata.js",
+    "tPageHTML": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')",
+    "tPageTypeHTML": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+    "tElementHTML": "File app.html - Content of element HTML_TITLE",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
     "SelectedClass": "DatabaseList",
-    "SelectedPage": "analysis",
+    "SelectedPage": "welcome",
     "SelectedPageType": "DefaultPage",
     "SelectedButton": "QUIT",
-    "SelectedFile": "index.html",
+    "SelectedFile": "app.html",
     "SelectedElement": "HTML_TITLE",
     "ClassType": {
         "DOMVar": "Red",
@@ -846,27 +850,27 @@ vDataJSON['project'] = {
             "BUTTON_ID": "QUIT",
             "BUTTON_TITLE": "Quit",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 1
+            "counter": 2
         },
         "OK": {
             "BUTTON_ID": "OK",
             "BUTTON_TITLE": "OK",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___)\" data-theme=\"a\">OK</a>",
-            "counter": 0
+            "counter": 2
         },
         "CANCEL": {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___);return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
-            "counter": 1
+            "counter": 3
         }
     },
     "SelectedTypePage": "SaveDialog",
     "PageTypeList": {
         "DefaultPage": {
             "page-type": "DefaultPage",
-            "HEADER_BUTTON1": "OK",
-            "HEADER_BUTTON2": "OK",
+            "HEADER_BUTTON1": "home",
+            "HEADER_BUTTON2": "",
             "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
             "content": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n        <table  bgcolor=\"#FFFFFF\">\n            <tr>\n                <td>\n                  ___PAGE_CONTENT___\n                </td>\n            </tr>\n        </table>     \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
@@ -874,13 +878,22 @@ vDataJSON['project'] = {
             "page-type": "MenuPage",
             "HEADER_BUTTON1": "welcome",
             "HEADER_BUTTON2": "QUIT",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: MenuPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          ___MENU_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: MenuPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          ___MENU_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+            "content": "     <!-- Page: ___PAGE_ID___     Page Type: MenuPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          ___MENU_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+        },
+        "SubMenuPage": {
+            "page-type": "SubMenuPage",
+            "HEADER_BUTTON1": "home",
+            "HEADER_BUTTON2": "",
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: MenuPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          ___MENU_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+            "content": "     <!-- Page: ___PAGE_ID___     Page Type: MenuPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          ___MENU_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "OptionsPage": {
             "page-type": "OptionsPage",
             "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "save",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: OptionsPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: OptionsPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+            "content": "     <!-- Page: ___PAGE_ID___     Page Type: OptionsPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "ConfirmPage": {
             "page-type": "ConfirmPage",
@@ -919,30 +932,72 @@ vDataJSON['project'] = {
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "setting": {
-            "PAGE_ID": "login",
+            "PAGE_ID": "setting",
             "PAGE_TITLE": "Settings",
             "page-type": "ConfirmPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
-        "save": {
-            "PAGE_ID": "save",
-            "PAGE_TITLE": "Save",
-            "page-type": "SaveDialog",
-            "parent-id": "home",
-            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
-        },
         "load": {
-            "PAGE_ID": "save",
+            "PAGE_ID": "load",
             "PAGE_TITLE": "Load JSON",
             "page-type": "MenuPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
+        "save": {
+            "PAGE_ID": "save",
+            "PAGE_TITLE": "Save JSON",
+            "page-type": "SaveDialog",
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
         "analysis": {
             "PAGE_ID": "analysis",
-            "PAGE_TITLE": "",
-            "page-type": "SaveDialog",
+            "PAGE_TITLE": "Analysis",
+            "page-type": "SubMenuPage",
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "heatmap": {
+            "PAGE_ID": "heatmap",
+            "PAGE_TITLE": "Heatmap",
+            "page-type": "ConfirmPage",
+            "parent-id": "analysis",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "timeseries": {
+            "PAGE_ID": "timeseries",
+            "PAGE_TITLE": "Time Series",
+            "page-type": "ConfirmPage",
+            "parent-id": "analysis",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "data": {
+            "PAGE_ID": "data",
+            "PAGE_TITLE": "Data",
+            "page-type": "SubMenuPage",
+            "parent-id": "home",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "userlocation": {
+            "PAGE_ID": "userlocation",
+            "PAGE_TITLE": "User Location",
+            "page-type": "DefaultPage",
+            "parent-id": "data",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "editdata": {
+            "PAGE_ID": "editdata",
+            "PAGE_TITLE": "Edit Data",
+            "page-type": "DefaultPage",
+            "parent-id": "data",
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+        },
+        "quit": {
+            "PAGE_ID": "quit",
+            "PAGE_TITLE": "Quit",
+            "page-type": "DefaultPage",
             "parent-id": "home",
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         }
@@ -969,7 +1024,7 @@ vDataJSON['project'] = {
     "FileList": {
         "index.html": {
             "tFilename": "index.html",
-            "sAppClassHTML": "",
+            "sAppClassHTML": "App",
             "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": [
                 "login"
@@ -993,13 +1048,13 @@ vDataJSON['project'] = {
             ],
             "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
-            "sElementsFileList": "",
+            "sElementsFileList": "HTML_TITLE",
             "tElementHTML": "File index.html - Content of element HTML_TITLE",
             "sElementFileList": "HTML_TITLE"
         },
         "app.html": {
             "tFilename": "app.html",
-            "sAppClassHTML": "App",
+            "sAppClassHTML": "",
             "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": [
                 "welcome",
@@ -1023,7 +1078,12 @@ vDataJSON['project'] = {
                     "file": "js/geolocation.js",
                     "import": true
                 }
-            ]
+            ],
+            "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
+            "tElementID": "HTML_TITLE",
+            "sElementsFileList": "",
+            "tElementHTML": "File app.html - Content of element HTML_TITLE",
+            "sElementFileList": "HTML_TITLE"
         },
         "submit.html": {
             "sAppClassHTML": "App",
@@ -1064,6 +1124,5 @@ vDataJSON['project'] = {
         "RegularExp": "/mypattern/g",
         "Document": "document",
         "Function": "function () {}"
-    },
-    "sDatabaseList": "mydata.js"
+    }
 }

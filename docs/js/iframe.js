@@ -1,8 +1,9 @@
-function onChangeACE(pID,pContent) {
-  top.write2value(pID,pContent);
-  switch (pID) {
+function onChangeACE(pEditID,pContent) {
+  top.write2value(pEditID,pContent);
+  switch (pEditID) {
     case "tPageHTML":
       var vPageID = getValueDOM("sPageHTML");
+      console.log("onChangeACE('"+pEditID+"',pContent) PageID='"+vPageID+"'");
       if (existsPageJS(vPageID)) {
         vJSCC_DB["PageList"][vPageID]["content"] = pContent;
       };
@@ -13,10 +14,27 @@ function onChangeACE(pID,pContent) {
         vJSCC_DB["PageTypeList"][vPageTypeID]["template"] = pContent;
       };
     break;
+    case "tMethodCode":
+      var vMethID = getValueDOM("sMethodList");
+      var vClassID = getSelectedClassID();
+      setMethodCode(vClassID,vMethID,pContent);
+    break;
+    case "tButtonDefHTML":
+      var vButtonID = getValueDOM("sButtonHTML");
+      if (existsButtonJS(vButtonID)) {
+        vJSCC_DB["ButtonList"][vButtonID]["tButtonDefHTML"] = pContent;
+      };
+    break;
     default:
 
   }
 };
+
+function setMethodCode(pClassID,pMethID,pContent) {
+  if (existsMethodJS(pClassID,pMethID)) {
+    vJSCC_DB["ClassList"][pClassID]["MethodCode"] = pContent;
+  };
+}
 
 function write2editor(pID,pValue,pMode) {
   write2value("t"+pID,pValue);

@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/04 9:56:09",
+    "mod_date": "2017/05/04 6:45:42",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -10,7 +10,7 @@ vDataJSON['project'] = {
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
     "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|<!-- header button: '___BUTTON_TITLE___' -->___CR___<a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
     "sPageTypeHTML": "ConfirmPage",
-    "sPageHTML": "load",
+    "sPageHTML": "analysis",
     "sButtonHTML": "QUIT",
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
     "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
@@ -23,9 +23,9 @@ vDataJSON['project'] = {
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
-    "SelectedClass": "App",
-    "SelectedPage": "load",
-    "SelectedPageType": "ConfirmPage",
+    "SelectedClass": "DatabaseList",
+    "SelectedPage": "home",
+    "SelectedPageType": "DefaultPage",
     "SelectedButton": "QUIT",
     "SelectedFile": "app.html",
     "SelectedElement": "HTML_TITLE",
@@ -50,17 +50,17 @@ vDataJSON['project'] = {
             "JSCC_mod_date": "",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
-            "tAttributes": "aDoc=null\naName=\"DisApp\"\naServer=new Server(\"___SERVER_URL___\")\naDatabaseList=new DatabaseList()\naCurrentPage=\"welcome\"\naFuzzyController=new FuzzyController()\naLinkParam=new LinkParam()",
-            "tMethods": "initDOM(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\nevent(pPageID:String,pButtonID:String,pEventID:String)\ngotoPage(pPageID:String)\ngotoURL(pFileHTML:String)",
+            "tAttributes": "aDoc = null\naName = \"DisApp\"\naServer = new Server(\"___SERVER_URL___\")\naDatabaseList = new DatabaseList()\naCurrentPage = \"welcome\"\naFuzzyController = new FuzzyController()\naLinkParam = new LinkParam()",
+            "tMethods": "initDOM(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\nevent()\ngotoPage(pPageID:String)\ngotoURL(pFileHTML:String)",
             "sAttribList": "aDoc",
             "tAttribName": "aDoc",
             "tAttribType": "Document",
             "tAttribComment": "Attribute: 'aDoc' Type: '' stores ... ",
             "tAttribDefault": "null",
             "sAttribTypeList": "",
-            "tMethodHeader": "gotoPage(pPageID:String)",
-            "tMethodComment": "goto a certain page of the App File",
-            "sMethodList": "gotoPage",
+            "tMethodHeader": "event()",
+            "tMethodComment": "this is the event handler of the App. The handler gets the button or link as parameter, which determines the event handler for event",
+            "sMethodList": "event",
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
@@ -99,8 +99,8 @@ vDataJSON['project'] = {
                 "initDOM": "",
                 "load": "",
                 "save": "",
-                "event": "alert(\"pPageID=\"+pPageID+\" pButtonID=\"+pButtonID+\" pEventID=\"+pEventID)",
-                "gotoPage": "$.mobile.changePage( '#'+pPageID, { transition: 'slideup', changeHash: false })",
+                "event": "",
+                "gotoPage": "",
                 "gotoURL": ""
             },
             "MethodComment": {
@@ -124,18 +124,13 @@ vDataJSON['project'] = {
                 "initDOM": "pDoc:Document,pDatabase:Hash",
                 "load": "",
                 "save": "",
-                "event": "pPageID:String,pButtonID:String,pEventID:String",
+                "event": "",
                 "gotoPage": "pPageID:String",
                 "gotoURL": "pFileHTML:String"
             },
             "tMethodName": "",
             "tMethodCode": "",
-            "MethodAccess": {
-                "event": "private",
-                "gotoPage": "public"
-            },
-            "tMethodAccess": "public",
-            "sClassList": "App"
+            "MethodAccess": {}
         },
         "AppAbstract": {
             "tClassname": "AppAbstract",
@@ -855,18 +850,18 @@ vDataJSON['project'] = {
             "BUTTON_ID": "QUIT",
             "BUTTON_TITLE": "Quit",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>",
-            "counter": 1
+            "counter": 2
         },
         "OK": {
             "BUTTON_ID": "OK",
             "BUTTON_TITLE": "OK",
-            "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___','event___COUNTER___')\" data-theme=\"a\">OK</a>",
-            "counter": 3
+            "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___)\" data-theme=\"a\">OK</a>",
+            "counter": 0
         },
         "CANCEL": {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
-            "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___','___COUNTER___');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
+            "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___',___COUNTER___);return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
             "counter": 4
         }
     },
@@ -904,9 +899,9 @@ vDataJSON['project'] = {
         },
         "ConfirmPage": {
             "page-type": "ConfirmPage",
-            "HEADER_BUTTON1": "OK",
+            "HEADER_BUTTON1": "home",
             "HEADER_BUTTON2": "CANCEL",
-            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
         },
         "SaveDialog": {
             "page-type": "SaveDialog",
@@ -946,9 +941,9 @@ vDataJSON['project'] = {
         "load": {
             "PAGE_ID": "load",
             "PAGE_TITLE": "Load JSON",
-            "page-type": "DefaultPage",
+            "page-type": "MenuPage",
             "parent-id": "home",
-            "content": "<h2>___PAGE_TITLE___</h2>\n<input class=\"button\" type=\"file\" id=\"myImportFile\" >\n<input name=\"bImportProject\" value=\"Import JSON\" onclick=\"vApp.aDatabaseList.importJSON('myImportFile')\" type=\"button\">\n\n"
+            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "save": {
             "PAGE_ID": "save",

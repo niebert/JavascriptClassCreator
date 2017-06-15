@@ -55,8 +55,9 @@ vDOM_TPL.push("tTplSuperClass"); // SuperClass definition without Prototype appr
 vDOM_TPL.push("tTplClassTail"); // Defines the End of the Class Definition
 vDOM_TPL.push("tTplAttribute"); // Public Defines the Attributes definition in a Constructor
 vDOM_TPL.push("tTplAttributePrivate"); // Private Defines the Private Attributes definition in a Constructor
-vDOM_TPL.push("tTplMethodHeader"); // Public Defines the comments before each Method definition
-vDOM_TPL.push("tTplMethodPrivate"); // Private Defines the comments before each Method definition
+vDOM_TPL.push("tTplMethodHeader"); // Public Prototype Defines the comments before each Method definition
+vDOM_TPL.push("tTplMethodPrivate"); // Private Method Header: Defines the comments before each Method definition
+vDOM_TPL.push("tTplMethodPublic"); // Public Method Header: Defines the comments before each Method definition
 vDOM_TPL.push("tMethodPrefix"); //Defines prefix for defining a method
 vDOM_TPL.push("tTplMethodConstructorComment"); //Defines a comment in the constructor for a method with Prototype definition
 vDOM_TPL.push("tMethodPrefixProto"); // Defines the prefiv for defining a method with the protoype approach

@@ -766,6 +766,7 @@ function checkClassJSON(pClassJSON) {
         vClassJS[vID] = {};
       };
     };
+    checkAccess4ClassJSON(vClassJS);
   } else {
     console.log("ERROR: checkClassJSON(pClassJSON) - pClassJSON is undefined");
   }

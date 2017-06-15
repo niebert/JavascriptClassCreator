@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/04 9:56:09",
+    "mod_date": "2017/05/04 7:43:37",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -26,7 +26,7 @@ vDataJSON['project'] = {
     "SelectedClass": "App",
     "SelectedPage": "load",
     "SelectedPageType": "ConfirmPage",
-    "SelectedButton": "QUIT",
+    "SelectedButton": "CANCEL",
     "SelectedFile": "app.html",
     "SelectedElement": "HTML_TITLE",
     "ClassType": {
@@ -51,16 +51,16 @@ vDataJSON['project'] = {
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aDoc=null\naName=\"DisApp\"\naServer=new Server(\"___SERVER_URL___\")\naDatabaseList=new DatabaseList()\naCurrentPage=\"welcome\"\naFuzzyController=new FuzzyController()\naLinkParam=new LinkParam()",
-            "tMethods": "initDOM(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\nevent(pPageID:String,pButtonID:String,pEventID:String)\ngotoPage(pPageID:String)\ngotoURL(pFileHTML:String)",
+            "tMethods": "initDOM(pDoc:Document,pDatabase:Hash)\nload():Boolean\nsave():Boolean\nevent()\ngotoPage(pPageID:String)\ngotoURL(pFileHTML:String)",
             "sAttribList": "aDoc",
             "tAttribName": "aDoc",
             "tAttribType": "Document",
             "tAttribComment": "Attribute: 'aDoc' Type: '' stores ... ",
             "tAttribDefault": "null",
             "sAttribTypeList": "",
-            "tMethodHeader": "gotoPage(pPageID:String)",
-            "tMethodComment": "goto a certain page of the App File",
-            "sMethodList": "gotoPage",
+            "tMethodHeader": "event()",
+            "tMethodComment": "this is the event handler of the App. The handler gets the button or link as parameter, which determines the event handler for event",
+            "sMethodList": "event",
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
@@ -100,7 +100,7 @@ vDataJSON['project'] = {
                 "load": "",
                 "save": "",
                 "event": "alert(\"pPageID=\"+pPageID+\" pButtonID=\"+pButtonID+\" pEventID=\"+pEventID)",
-                "gotoPage": "$.mobile.changePage( '#'+pPageID, { transition: 'slideup', changeHash: false })",
+                "gotoPage": "",
                 "gotoURL": ""
             },
             "MethodComment": {
@@ -131,8 +131,7 @@ vDataJSON['project'] = {
             "tMethodName": "",
             "tMethodCode": "",
             "MethodAccess": {
-                "event": "private",
-                "gotoPage": "public"
+                "event": "public"
             },
             "tMethodAccess": "public",
             "sClassList": "App"

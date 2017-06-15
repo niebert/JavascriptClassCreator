@@ -73,7 +73,7 @@
    <script language="javascript" src="js/dom.js"></script>
    <!-- FileSaver Library by Eli Grey see https://eligrey.com/demos/FileSaver.js/ -->
    <script language="javascript" src="js/filesaver.js"></script>
-   <script language="javascript" src="js/jsoneditor.js"></script>
+   <script language="javascript" src="js/handlebars.js"></script>
    <!-- gitbuttons.js is the local version of https://buttons.github.io/buttons.js -->
    <!-- to avoid name conflicts buttons.js was renamed to gitbuttons.js -->
    <script language="javascript" src="js/gitbuttons.js"></script>
@@ -1152,15 +1152,16 @@ ___ATTRIBUTES___
     //---------------------------------------------------------------------
     //---Methods of Class "___CLASSNAME___()"
     //---------------------------------------------------------------------
+
 ___METHODLIST___
-    //---------------------------------------------------------------------
-    //---PRIVATE Methods of Class "___CLASSNAME___()"
-    //---------------------------------------------------------------------
+    //---PRIVATE METHODS---
 ___METHODSPRIVATE___
-    //---------------------------------------------------------------------
-    //---END Constructor of Class "___CLASSNAME___()"
-    //---------------------------------------------------------------------
+    //---PUBLIC METHODS---
+___METHODSPUBLIC___
 }
+//-------------------------------------------------------------------------
+//---END Constructor of Class "___CLASSNAME___()"
+//-------------------------------------------------------------------------
 
 ___METHODSPROTOTYPE___
     </textarea>
@@ -1188,7 +1189,7 @@ var ___ATTRIB_NAME___ = ___ATTRIB_DEFAULT___;
 <textarea id="tTplMethodsHeadComment" name="tTplMethodsHeadComment" cols="125" rows="3">
 
 //---------------------------------------------------------------------
-//---PUBLIC: Methods of Class "___CLASSNAME___()"
+//---___HEAD_TITLE___: Methods of Class "___CLASSNAME___()"
 //---------------------------------------------------------------------
 </textarea>
 <hr>
@@ -1242,7 +1243,7 @@ ___CLASSNAME___.prototype.constructor=___CLASSNAME___;
 //# last modifications ___MODDATE___
 //#################################################################
 
-___METHODDEFPREFIX___.___METHODNAME___ = function (___METHODPARAMETERS___) {
+___CLASSNAME___.prototype.___METHODNAME___ = function (___METHODPARAMETERS___) {
   //----Debugging------------------------------------------
   // console.log("___CLASSFILENAME___ - Call: ___METHODDEF___");
   // alert("___CLASSFILENAME___ - Call: ___METHODDEF___");
@@ -1279,7 +1280,35 @@ function ___METHODNAME___(___METHODPARAMETERS___) {
   //alert("___CLASSFILENAME___ - Call: ___METHODDEF___")
   //-------------------------------------------------------
 
-___METHODCODEPRIVATE___
+___METHODCODE___
+
+};
+//----End of Private Method ___METHODNAME___ Definition
+
+</textarea>
+<hr>
+  <b>Method Private</b> <tt>[tTplMethodPublic]</tt><br>
+    <textarea id="tTplMethodPublic" name="tTplMethodPublic" cols="125" rows="10">
+
+//#################################################################
+//# ___METHODACCESS___ Method: ___METHODNAME___()
+//#    used in Class: ___CLASSNAME___
+//# Parameter:
+//#    ___PARAMETERDEF___
+//# Comment:
+//#    ___METHODCOMMENT___
+//# ___RETURNCOMMENT___
+//# created with JSCC  ___DATE___
+//# last modifications ___MODDATE___
+//#################################################################
+
+this.___METHODNAME___ = function (___METHODPARAMETERS___) {
+  //----Debugging------------------------------------------
+  // The following alert-Command is useful for debugging
+  //alert("___CLASSFILENAME___ - Call: ___METHODDEF___")
+  //-------------------------------------------------------
+
+___METHODCODE___
 
 };
 //----End of Private Method ___METHODNAME___ Definition

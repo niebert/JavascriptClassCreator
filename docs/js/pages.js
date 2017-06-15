@@ -1585,6 +1585,7 @@ function savePageHTML() {
   var vID = getValueDOM("sPageHTML");
   savePageHTML_do(vID);
   alert("Page ['"+vID+"'] saved!");
+  autoSaveJSON();
 };
 
 
@@ -1602,12 +1603,12 @@ function savePageHTML_do(pID) {
   saveID4HashPath2JSON("SelectedPage",vID);
   saveID4HashPath2JSON("sPageHTML",vID);
   saveID4HashPath2JSON(vPathID + "PAGE_ID",vID);
-  saveID4HashPath2JSON(vPathID + "PAGE_TITLE",getValueDOM(""))
+  saveID4HashPath2JSON(vPathID + "PAGE_TITLE",getValueDOM("tPageTitle"))
   saveID4HashPath2JSON(vPathID + "parent-id",getValueDOM("sParentPage"));
   saveID4HashPath2JSON(vPathID + "page-type",getValueDOM("sPageType4Page"));
   saveID4HashPath2JSON(vPathID + "content",getEditorValue("iPageHTML"));
   //saveJSON2LocalStorage("json");
-  autoSaveJSON();
+  //alert("home PAGE_ID="+vJSCC_DB["PageList"]["home"]["PAGE_ID"])
 }
 
 function savePageTypeHTML() {

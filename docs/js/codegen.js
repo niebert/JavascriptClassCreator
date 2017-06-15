@@ -46,6 +46,7 @@ function getCode4Class(pClass,pCompressed) {
   var vOutput = "";
   if (existsClassJS(vClass)) {
     var vClassJS = getClassJSON(vClass);
+    checkClassJSON(vClassJS);
     var vClassFile  	  = getClassFile4ClassJSON(vClassJS);
     var vSuperClass     = vClassJS["tSuperClass"];
   	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
@@ -628,6 +629,21 @@ function replaceCodeMainVars(pOutput,pClass) {
   return vOutput;
 };
 
+function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
+  var vOutput = pOutput || "undefined pOutput";
+  var vClass = pClass || getValueDOM("tClassname");
+  var vClassJS = getClassJSON(vClass);
+  var vMethodArray = getMethodArray();
+  var vTplMethodHeader = pTplMethodHeader || "undefined Template MethodHeader";
+  var vMethod = vTplMethodHeader;
+  vOutput = replaceString(vOutput,"___METHODSPRIVATE___",getMethodPrivate4Constructor(pClass));
+  vOutput = replaceString(vOutput,"___METHODLIST___",getMethodComments4Constructor(vClass));
+  vOutput = replaceString(vOutput,"___METHODSPUBLIC___",getMethodPublic4Constructor(pClass));
+  vOutput = replaceString(vOutput,"___METHODSPROTOTYPE___",getMethodPrototype4Constructor(vClass));
+  //vOutput = replaceMethodsPublic4Code(vOutput,pTplMethodHeader,pClass);
+  return vOutput;
+};
+
 function isMethod(pMethodHeader) {
   var vIsMethod = false;
   var vOpenBracketPos = pMethodHeader.indexOf("(");
@@ -697,12 +713,17 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix
   //------------------------------------
   //----- Method Comments lines -----
   vReplaceHash["COMMENT"] = getMethodComment(pMethodHeader) || "What does '"+vMethName+"()' do?";
-  vReplaceHash["METHODCOMMENT"] = vReplaceHash["COMMENT"];
+  vReplaceHash["METHODCOMMENT"] = (vReplaceHash["COMMENT"].split("\n")).join("\n//#    ");
   vReplaceHash["METHODCOMMENTLIST"] = "\t"+replaceString(vReplaceHash["COMMENT"],"\n","\n"+getValueDOM("tCommentPrefix")+"\t");
   //------------------------------------
-  vReplaceHash["METHODACCESS"] = (vMethHash["access"]).toUpperCase();
+  var vAccess = (vMethHash["access"]).toUpperCase();
+  if (vAccess == "") {
+    vAccess = "PUBLIC";
+  };
+  vReplaceHash["METHODACCESS"] = vAccess;
+  vReplaceHash["CLASSFILENAME"] = "js/"+(pClass.toLowerCase())+".js";
   vReplaceHash["METHODCALL"] = vMethName+"("+vMethodAllParams+")";
-  vReplaceHash["METHODCODEPRIVATE"] = "\t"+replaceString(vMethHash["code"],"\n","\n\t");
+  vReplaceHash["METHODCODEINDENT"] = "\t"+replaceString(vMethHash["code"],"\n","\n\t");
   vReplaceHash["RETURNCOMMENT"] = vMethHash["returncomment"];
   vReplaceHash["METHODPARAMETERS"] = getMethodAllParams(pMethodHeader);
   var vMethodComment = vMethHash["comment"] || "   What does '"+vMethName+"()' do?";
@@ -716,13 +737,28 @@ function getMethodReplaceHash(pMethodHeader,pClass,pMethName,pFirstCommentPrefix
 
 function getMethodComments4Constructor(pClass) {
   // pTemplateHeadID = "tTplMethodsHeadComment"
+  //Retrieve the template data from the HTML .
+  // var template = $('#handlebars-demo').html();
+  //
+  // var context = { "name" : "Ritesh Kumar", "occupation" : "developer" };
+  //
+  // //Compile the template data into a function
+  // var templateScript = Handlebars.compile(template);
+  //
+  // var html = templateScript(context);
+  // //html = 'My name is Ritesh Kumar . I am a developer.'
+  //
+  // $(document.body).append(html);
+
+  var vTemplateHeadID = "";
   var vCodePrefix = "\n"+getValueDOM("tCommentPrefix")+ "\t";
   var vCommentListPrefix = "\t";
   var vCommentPrefix = "\t"+getValueDOM("tCommentPrefix")+" ";
   var vOutputPrefix = "\t";
 
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodConstructorComment","",vCodePrefix,vCommentPrefix,vCommentPrefix,vOutputPrefix);
+  var vOutput = getMethodCode4Template(pClass,vTemplateHeadID,"tTplMethodConstructorComment","ALL",vCodePrefix,vCommentPrefix,vCommentPrefix,vOutputPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
+  vOutput = vOutput.replace(/\n[^\/][^\/]/g,"\n//");
   vOutput = (vOutput.split("\n")).join("\n\t");
   //vOutput = vCommentPrefix + vOutput;
   return vOutput;
@@ -730,15 +766,18 @@ function getMethodComments4Constructor(pClass) {
 
 function getMethodPrivate4Constructor(pClass) {
   // used to create the private methods in constructor of class
-  var vCodePrefix = "\n\t"+getValueDOM("tCommentPrefix")+getValueDOM("tCommentBoxPrefix");
+  // private methods are always exported if
+  var vTemplateHeadID = ""; // is a template used before the list of methods are generated
+  var vCodePrefix = "\n  "; // is inserted before all code lines
   var vOutputPrefix = ""; // injected before the contructor output
   var vCommentPrefix = "\n";
+  var vCommentListPrefix = "";
   var vAccess = "PRIVATE";
   // Output all Methods in Constructor if checkbox for Prototype = "NO"
-  if (getValueDOM("sPrototype") == "NO") {
-    vAccess = ""; // means no selector PRIVATE/PUBLIC
-  };
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate",vAccess,"",vCodePrefix,vOutputPrefix,vCommentPrefix);
+  //if (getValueDOM("sPrototype") == "NO") {
+  //  vAccess = ""; // means no selector PRIVATE/PUBLIC
+  //};
+  var vOutput = getMethodCode4Template(pClass,vTemplateHeadID,"tTplMethodPrivate",vAccess,vCodePrefix,vCommentListPrefix,vCommentPrefix,vOutputPrefix);
   //vOutput = createIndentDefault(vOutput,"\t");
   vOutput = replaceString(vOutput,"\n","\n\t");
   return vOutput;
@@ -746,14 +785,38 @@ function getMethodPrivate4Constructor(pClass) {
 
 function getMethodPublic4Constructor(pClass) {
   // not used in JSCC currently
-  var vCodePrefix = "\t  ";
-  var vCommentListPrefix = vCodePrefix;
-  var vCommentPrefix = "";
-  var vOutput = getMethodCode4Template(pClass,"","tTplMethodPrivate","PUBLIC",vCodePrefix,vParamDocPrefix,vCommentPrefix);
-  //vOutput = createIndentDefault(vOutput,"\t");
-  vOutput = replaceString(vOutput,"\n","\n\t");
-  return vOutput;
+  if (getValueDOM("sPrototype") == "YES") {
+    //return "//--Prototype htis is emtpy";
+    return "";
+  } else {
+    var vTemplateHeadID = ""; // is a template used before the list of methods are generated
+    var vCodePrefix = "\t  "; // is inserted before all code lines
+    var vCommentListPrefix = vCodePrefix;
+    var vCommentPrefix = "";
+    var vOutputPrefix = "";
+    var vOutput = getMethodCode4Template(pClass,vTemplateHeadID,"tTplMethodPublic","PUBLIC",vCodePrefix,vCommentListPrefix,vCommentPrefix,vOutputPrefix);
+    //vOutput = createIndentDefault(vOutput,"\t");
+    vOutput = replaceString(vOutput,"\n","\n\t");
+    return vOutput;
+  }
 };
+
+
+function getMethodPrototype4Constructor(pClass) {
+  if (getValueDOM("sPrototype") == "YES") {
+    var vTemplateHeadID = ""; // is a template used before the list of methods are generated
+    var vCodePrefix = "  "; // is inserted before all code lines
+    var vCommentListPrefix = vCodePrefix;
+    var vCommentPrefix = "";
+    var vOutputPrefix = "//";
+    var vOutput = getMethodCode4Template(pClass,vTemplateHeadID,"tTplMethodHeader","PUBLIC",vCodePrefix,vCommentListPrefix,vCommentPrefix,vOutputPrefix);
+    //vOutput = createIndentDefault(vOutput,"\t");
+    //vOutput = replaceString(vOutput,"\n","\n\t");
+    return vOutput;
+  } else {
+    return "";
+  }
+}
 
 
 function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCodePrefix,pCommentListPrefix,pCommentPrefix,pOutputPrefix) {
@@ -765,6 +828,7 @@ function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCode
   var vClassJS = getClassJSON(vClass);
   var vMethodArray = getMethodArray(vClass);
   var vTplMethodHeader = getValueDOM(pTemplateID);
+  //alert(vTplMethodHeader);
   //var vTplMethodPrivate = getValueDOM("tTplMethodPrivate");
   var vMethod = vTplMethodHeader;
   var vMethodname = "";
@@ -780,23 +844,25 @@ function getMethodCode4Template(pClass,pTemplateHeadID,pTemplateID,pAccess,pCode
       var vMethHash = getMethHash4Name(vClass,vMethName);
       var vReplaceHash = getMethodReplaceHash(vMethodArray[i],vClass,vMethName,vCodePrefix);
       console.log("getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
-      if ((vReplaceHash["METHODACCESS"] == vAccess) || (vAccess == "")) {
+      if ((vReplaceHash["METHODACCESS"] == vAccess) || (vAccess == "ALL")) {
         console.log("EXPORT: getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
         //vReplaceHash["METHODCOMMENT"] =  ((vReplaceHash["COMMENT"]).split("\n")).join(("\n"+pCommentPrefix));
         vMethod = replaceHash4Content(vReplaceHash,vMethod);
         var vCode = vMethHash["code"] || "//----------- INSERT YOUR CODE HERE ---------------";
         //vCode = vCodePrefix + replaceString(vCode,"\n","\n"+vCodePrefix);
-        vCode = replaceString(vCode,"\n","\n"+vCodePrefix);
+        vCode = vCodePrefix + replaceString(vCode,"\n","\n"+vCodePrefix);
         vMethod = replaceString(vMethod,"___METHODCODE___",vCode);
         //vReplaceHash["METHODCODE"] = replaceString(vCode,"\n","\n"+vCodePrefix);
         vOutput += vMethod;
+      } else {
+        console.log("SKIP: getMethodCode4Template('"+vClass+"') - "+vReplaceHash["METHODACCESS"]+" Method: '"+vMethName+"'");
       };
       //vOutput += vTplMethodHeader;
     } else {
       //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
     };
   };
-  // prepend the output prefix
+  // prepend the output prefix e.g. Indent, tab or "//"
   vOutput = pOutputPrefix + vOutput;
   if (pTemplateHeadID != "") {
     vOutput = "\n"+getValueDOM(pTemplateHeadID)+vOutput;
@@ -842,20 +908,8 @@ function replaceAttributes4Code(pOutput,pClass) {
   return vOutput;
 };
 
-function replaceMethods4Code(pOutput,pTplMethodHeader,pClass) {
-  var vOutput = pOutput || "undefined pOutput";
-  var vClass = pClass || getValueDOM("tClassname");
-  var vClassJS = getClassJSON(vClass);
-  var vMethodArray = getMethodArray();
-  var vTplMethodHeader = pTplMethodHeader || "undefined Template MethodHeader";
-  var vMethod = vTplMethodHeader;
-  vOutput = replaceString(vOutput,"___METHODSPRIVATE___",getMethodPrivate4Constructor(pClass));
-  vOutput = replaceString(vOutput,"___METHODLIST___",getMethodComments4Constructor(vClass));
-  vOutput = replaceMethodsPublic4Code(vOutput,pTplMethodHeader,pClass);
-  return vOutput;
-};
-
 function replaceMethodsPublic4Code(pOutput,pTplMethodHeader,pClass) {
+  // depricated
   var vOutput = pOutput || "undefined pOutput";
   var vClass = pClass || getValueDOM("tClassname");
   var vClassJS = getClassJSON(vClass);
@@ -869,6 +923,7 @@ function replaceMethodsPublic4Code(pOutput,pTplMethodHeader,pClass) {
   // Now OutMeth is collecting all Method Definitions - Prototype-def and this-def
   var vOutMeth = getValueDOM("tTplMethodsHeadComment");
   vOutMeth = replaceString(vOutMeth,"___CLASSNAME___",vClassJS["tClassname"]);
+  vOutMeth = replaceString(vOutMeth,"___HEAD_TITLE___","PROTOTYPE");
   for (var i=0; i<vMethodArray.length; i++) {
     // start with clean MethodHeader Template for each Method Definition
     vMethod = vMethodHeader;

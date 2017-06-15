@@ -844,13 +844,14 @@ function createClassJS(pClass,pClassType,pCallerJS) {
     var vCallerJS = pCallerJS || "";
     debugLog("Class","createClassJS('"+pClass+"','"+pClassType+"') Caller="+vCallerJS);
     var vClassType = pClassType || getValueDOM("sClassType") || "";
+    var vClassJSON = getClassJSON(pClass);
     var vClassExists = existsClassJS(pClass);
     if (vClassExists) {
       //alert("Class '"+pClass+"' already exists!");
       debugLog("Class","Class '"+pClass+"' already exists!");
     } else {
       debugLog("Class","createClassJS('"+pClass+"')-Call: Create Class '"+pClass+"' with ClassTyp='"+vClassType+"' createClassJS()-Call");
-      checkClassList(pClass);
+      checkClassList(vClassJSON);
       vJSCC_DB["ClassList"][pClass] = getDefaultClassHash(pClass,vClassType);
       vJSCC_DB["ClassType"][pClass] = vClassType;
       //vClassJSON = vJSCC_DB["ClassList"][pClass];
@@ -884,7 +885,32 @@ function checkClassList(pClass,pClassType) {
     debugLog("Class","checkClassList('"+pClass+"') created (2) Class in JSON Database");
     vJSCC_DB["ClassList"][pClass] = {};
     setClassTypeJSON(pClass,vClassType);
+    checkAccess4Class(pClass);
   };
+};
+function checkAccess4Class(pClass) {
+  var vClassJS = getClassJSON(pClass);
+  checkAccess4Class(vClassJS);
+};
+
+function checkAccess4ClassJSON(pClassJS) {
+  var vClassJS = pClassJS || getClassJSON(pClass);
+  var vHash = vClassJS["MethodComment"]
+  for (var iMeth in vHash) {
+    if (vHash.hasOwnProperty(iMeth)) {
+      if (!vClassJS["MethodAccess"].hasOwnProperty(iMeth)) {
+        vClassJS["MethodAccess"] = "public";
+      };
+    };
+  };
+  var vHash = vClassJS["AttribDefault"]
+  for (var iMeth in vHash) {
+    if (vHash.hasOwnProperty(iMeth)) {
+      if (!vClassJS["AttribAccess"].hasOwnProperty(iMeth)) {
+        vClassJS["AttribAccess"] = "public";
+      };
+    };
+  }
 };
 
 function getAttribName(pAttribWithParams) {

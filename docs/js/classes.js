@@ -895,15 +895,11 @@ function checkAccess4Class(pClass) {
 
 function checkAccess4ClassJSON(pClassJS) {
   var vClassJS = pClassJS || getClassJSON(pClass);
-  var vHash = vClassJS["MethodComment"]
-  for (var iMeth in vHash) {
-    if (vHash.hasOwnProperty(iMeth)) {
-      if (!vClassJS["MethodAccess"].hasOwnProperty(iMeth)) {
-        vClassJS["MethodAccess"][iMeth] = "public";
-      };
-    };
+  // check Access 4 Attributes
+  if (!isHash(vClassJS["AttribAccess"])) {
+    vClassJS["AttribAccess"] = {};
   };
-  var vHash = vClassJS["AttribDefault"]
+  var vHash = vClassJS["AttribDefault"];
   for (var iAtt in vHash) {
     if (vHash.hasOwnProperty(iAtt)) {
       if (!vClassJS["AttribAccess"].hasOwnProperty(iAtt)) {
@@ -911,6 +907,18 @@ function checkAccess4ClassJSON(pClassJS) {
       };
     };
   }
+  // check Access 4 Methods
+  var vHash = vClassJS["MethodComment"];
+  if (!isHash(vClassJS["MethodAccess"])) {
+    vClassJS["MethodAccess"] = {};
+  };
+  for (var iMeth in vHash) {
+    if (vHash.hasOwnProperty(iMeth)) {
+      if (!vClassJS["MethodAccess"].hasOwnProperty(iMeth)) {
+        vClassJS["MethodAccess"][iMeth] = "public";
+      };
+    };
+  };
 };
 
 function getAttribName(pAttribWithParams) {

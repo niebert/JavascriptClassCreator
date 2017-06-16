@@ -899,15 +899,15 @@ function checkAccess4ClassJSON(pClassJS) {
   for (var iMeth in vHash) {
     if (vHash.hasOwnProperty(iMeth)) {
       if (!vClassJS["MethodAccess"].hasOwnProperty(iMeth)) {
-        vClassJS["MethodAccess"] = "public";
+        vClassJS["MethodAccess"][iMeth] = "public";
       };
     };
   };
   var vHash = vClassJS["AttribDefault"]
-  for (var iMeth in vHash) {
-    if (vHash.hasOwnProperty(iMeth)) {
-      if (!vClassJS["AttribAccess"].hasOwnProperty(iMeth)) {
-        vClassJS["AttribAccess"] = "public";
+  for (var iAtt in vHash) {
+    if (vHash.hasOwnProperty(iAtt)) {
+      if (!vClassJS["AttribAccess"].hasOwnProperty(iAtt)) {
+        vClassJS["AttribAccess"][iAtt] = "public";
       };
     };
   }

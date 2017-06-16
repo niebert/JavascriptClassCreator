@@ -157,36 +157,41 @@
             //-------------------------------------------------------
             //-----check if the vJSCC_DB has a property/key vID
             if (vWinOpener.vJSCC_DB.hasOwnProperty(vID)) {
-              console.log("JSON data jscc='"+vID+"' defined ");
-              vJSON = vWinOpener.vJSCC_DB;
+              console.log("JSON data vJSCC_DB['"+vID+"'] with jscc='"+vID+"' defined in window.opener");
+            };
+            vJSON = vWinOpener.vJSCC_DB;
+            //-------------------------------------------------------
+            // Init Function for JSON data
+            //-------------------------------------------------------
+            if (vLinkParam.exists("initfunc")) {
+              try {
+                var vEval = "vInitData = vWinOpener."+vLinkParam.getValue("initfunc")+"('"+vID+"');";
+                console.log(vEval);
+                eval(vEval);
+              } catch(e) {
+                  alert(e); // error in the above string (in this case, yes)!
+              };
+            } else if (vHash2ArrayID != "") {
               //-------------------------------------------------------
-              // Hash 2 Array convert:
+              // Hash2Array convert:
               // Advantage Hash: properties of hashes can be addressed in a more comprehensive way
               // Disadvantage Hash: JSON editor has a more comprehensive User Interface for arrays
-              if (vLinkParam.exists("initfunc")) {
-                try {
-                  var vEval = "vInitData = vWinOpener."+vLinkParam.getValue("initfunc")+"('"+vID+"');";
-                  eval(vEval);
-                } catch(e) {
-                    alert(e); // error in the above string (in this case, yes)!
-                };
-              } else if (vHash2ArrayID != "") {
-                console.log("Convert Hash2Array for ID=["+vHash2ArrayID+"]");
-                vInitData = convertHash2Array4ID(vJSON[vID],vHash2ArrayID);
-              } else {
-                console.log("Init Data vJSCC_DB['"+vID+"'] loaded from window.opener")
-                vInitData = vJSON[vID];
-              };
-              //-------------------------------------------------------
-              // Load vSchemaJSON from Window opener
-              //-------------------------------------------------------
-              if (vWinOpener.vDataJSON.hasOwnProperty(vID+"_schema")) {
-                vSchemaJSON = vWinOpener.vDataJSON[vID+"_schema"];
-                console.log("JSCC Schema loaded from vDataJSON['"+vID+"_schema'] in window.opener");
-                vSchemaDefined = true;
-              } else {
-                console.log("JSCC Schema vDataJSON['"+vID+"_schema'] not defined in window.opener");
-              }
+              console.log("Convert Hash2Array for ID=["+vHash2ArrayID+"]");
+              vInitData = convertHash2Array4ID(vJSON[vID],vHash2ArrayID);
+            } else {
+              console.log("Init Data vJSCC_DB['"+vID+"'] loaded from window.opener")
+              vInitData = vJSON[vID];
+            };
+            //-------------------------------------------------------
+            // Load vSchemaJSON from Window opener
+            //-------------------------------------------------------
+            console.log("Try Loading JSCC Schema from vDataJSON['"+vID+"_schema'] in window.opener");
+            if (vWinOpener.vDataJSON.hasOwnProperty(vID+"_schema")) {
+              vSchemaJSON = vWinOpener.vDataJSON[vID+"_schema"];
+              console.log("JSCC Schema loaded from vDataJSON['"+vID+"_schema'] in window.opener");
+              vSchemaDefined = true;
+            } else {
+              console.log("JSCC Schema vDataJSON['"+vID+"_schema'] not defined in window.opener");
             };
           }
       };
@@ -228,6 +233,7 @@
               if (typeof(vSyncFunc) == "function") {
                 console.log("Sync Call: window.opener."+vFuncStr+"(editor.getValue()) type: "+typeof(vSyncFunc));
                 editor.on('change',function() {
+                    console.log("Sync: "+vFuncStr+"()-Call");
                     vSyncFunc(editor.getValue());
                   });
               } else {
@@ -246,7 +252,8 @@
       document.getElementById('bExportJSON').addEventListener('click',function() {
         var vContent = JSON.stringify(editor.getValue(),null,4);
         // Get the value from the editor
-        saveFile2HDD(vSchemaID+".json",vContent);
+        var vFile = (vSchemaID+".json").toLowerCase();
+        saveFile2HDD(vFile,vContent);
         //console.log(editor.getValue());
       });
       //-------------------------------------------------------
@@ -254,7 +261,8 @@
       document.getElementById('bExportSchema').addEventListener('click',function() {
         var vContent = JSON.stringify(editor.schema,null,4);
         // Get the value from the editor
-        saveFile2HDD(vSchemaID+"_schema.json",vContent);
+        var vFile = (vSchemaID+"_schema.json").toLowerCase();
+        saveFile2HDD(vFile,vContent);
         //console.log(editor.getValue());
       });
       //-------------------------------------------------------

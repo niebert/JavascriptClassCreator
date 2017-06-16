@@ -404,7 +404,10 @@
               <font size="+2">
                 <b>
                   Class Definition:
-                  <font color="blue" id="titleClassNameTab">FileName</font>
+                <font color="blue" id="titleClassNameTab">FileName</font>
+                <button id="bEditClassJSON" onclick="openEditClass();return false">
+                  <i class="fa fa-pencil"></i>
+                </button>
                 </b>
               </font>
           </td>
@@ -522,7 +525,7 @@
                 <tr>
                   <td colspan="2" align="center">
                   <b>Select Attribute</b>
-                  <select id="sAttribList" name="sAttribList" onchange="selectAttribributeJS(this.id)">
+                  <select id="sAttribList" name="sAttribList" onchange="selectJSAttribs(this.value)">
                   </select>
                   <input name="bDeleteAttribDef" class="deletebutton" value=" Delete " onclick="deleteAttributeForm()" type="button">
                   <input name="bSaveAttribDef" value=" Save " onclick="saveAttributeForm()" type="button">
@@ -534,7 +537,9 @@
                       <option>public</option>
                       <option>private</option>
                     </select>
-                    Name: <input id="tAttribName" name="tAttribName" type="text" size="30" value="" style="font-family: monospace"> =
+                    Name: <input id="tAttribName" name="tAttribName" type="text" size="30" value="" style="font-family: monospace">
+                    <input id name="bNewAttribDef" value="+" onclick="createNewAttribJS()" type="button">
+                     =
                   <input id="tAttribDefault" name="tAttribDefault" type="text" size="40" value="" onchange="updateAttribType4Form(this.value)" style="font-family: monospace">
                 </td>
               </tr>

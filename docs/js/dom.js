@@ -85,7 +85,6 @@ function existsMethodJS(pClass,pMethID) {
 
 function createMethodSelect(pClass,pMethID) {
   // get all Methods in JSON Database of all Classes
-  console.log("");
   var vClass = pClass || getSelectedClassID();
   var vMethID = "";
   var vAccess = "";
@@ -117,6 +116,7 @@ function createMethodSelect(pClass,pMethID) {
       vClassJSON["tMethodHeader"] = vMethodHeader;
     } else {
       console.log("ERROR: createMethodSelect('"+vClass+"','"+vMethID+"') Method UNDEFINED");
+      vMethID = "";
     };
   };
   write2options("sMethodList",vArray);
@@ -126,24 +126,49 @@ function createMethodSelect(pClass,pMethID) {
   write2value("tMethodHeader",vMethodHeader);
   write2innerHTML("titleMethodName",vMethodHeader);
   write2value("tMethodCode",vCode);
+  //alert("iMethodCode='"+vCode+"'");
+  setTimeout("top.updateMethodCodeRemote('"+vClass+"','"+vMethID+"')",300);
   write2value("tMethodReturn",vReturn);
+  write2value("sReturnList",vReturn);
   write2value("tMethodComment",vComment || "");
 };
+
+function updateMethodCodeRemote(pClass,pMethID) {
+  console.log("updateMethodCodeRemote('"+pClass+"','"+pMethID+"')");
+  if (existsClassJS(pClass)) {
+    var vClassJSON = getClassJSON(pClass);
+    var vCode = vClassJSON["MethodCode"][pMethID] || "";
+    setEditorValue("iMethodCode",vCode);
+  }
+}
 
 function createAttribSelect(pClass,pAtt) { // TA=TextArea
   var vClass = pClass || getValueDOM("tClassname") || "";
   if (vClass != "") {
     var vClassJS = getClassJSON(vClass);
-    var vArray = getAttribNameArray();
+    var vArray = getAttribNameArrayJSON();
     var vAttDefaultHash = getForm2AttribDefaultHash(vClass); //classes.js:484
     var vAttCommentHash = getAttribCommentHash(vAttDefaultHash);
     var vSelectedAtt = pAtt || vClassJS["sAttribList"] || vArray[0] || "";
-    console.log("createAttribSelect()-Call: vSelectedAtt='"+vSelectedAtt+"'");
-    var vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
-    var vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
-    var vAttType = vClassJS["AttribType"][vSelectedAtt] || getValueDOM("tAttribType") || "";
+    var vAttDefault =  "";
+    var vAttComment = "";
+    var vAttType =  "";
+    if (existsAttributeJS(vClass,vSelectedAtt)) {
+      console.log("createAttribSelect('"+vClass+"','"+vSelectedAtt+"') Attribute exists");
+      vAttDefault = vClassJS["AttribDefault"][vSelectedAtt] || vAttDefaultHash[vSelectedAtt] || "";
+      vAttComment = vClassJS["AttribComment"][vSelectedAtt] || vAttCommentHash[vSelectedAtt] || "";
+      vAttType = vClassJS["AttribType"][vSelectedAtt] || "";
+    } else {
+      if (vArray.length > 0) {
+          vSelectedAtt = vArray[0]
+      } else {
+        vSelectedAtt = "";
+      }
+    };
+    console.log("createAttribSelect('"+vClass+"')-Call: vSelectedAtt='"+vSelectedAtt+"'");
     // Set the Selected Type for the Attribute
     write2value("sAttribTypeList",vAttType);
+    write2value("tAttribType",vAttType);
     // create Options for the Attribute Selector
     write2options("sAttribList",vArray);
     // set the Selector to the selected attribute
@@ -256,6 +281,13 @@ function createFileSelect4Array(pFileArr) {
   writeFileTitle(vName);
   createElementsFileSelect(vName);
 };
+
+function getAttribTypeArray() {
+  console.log("getAttribTypeArray()-Call");
+  var vArr = getAllClassesArray(); //classes.js 1274
+  vArr.sort();
+  return insertArray1Empty(vArr)
+}
 
 function createAttribTypeSelect() {
   // get all Methods in JSON Database of all Classes

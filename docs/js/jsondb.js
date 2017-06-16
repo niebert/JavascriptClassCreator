@@ -204,13 +204,14 @@ function getElementsHash4Form(pHash,pFile) {
   return vOutHash;
 };
 
-function  updateAttributesJS() {
+function updateAttributesJS() {
   //vClassJSON["tAttributes"] = getAttribDefaultHash();
+  var vClass = getSelectedClassID();
   debugLog("Attrib","updateAttributesJS()-Call called after adding a new Attribute");
-  var vClassJS = getClassJSON();
-  var vAttName = vClassJS["sAttribList"] || "";
+  var vClassJS = getClassJSON(vClass);
+  var vAttName = getValueDOM("sAttribList") || "";
   write2value("sAttribList",vAttName);
-  selectJSAttribs();
+  selectJSAttribs(vAttName);
 };
 function  updateMethodsJS() {
   //vClassJSON["Methods"] = getAttribDefaultHash();
@@ -406,15 +407,19 @@ function deleteAttributeForm() {
   var vClassJS = getClassJSON(vClass);
   var vAttribName = getValueDOM("sAttribList");
   console.log("deleteAttributeForm('"+vAttribName+"')");
-  var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
+  var vOK = confirm("Do you want to delete Method "+vAttribName+"()?");
   if (vOK == true) {
     var vArrID = ["AttribDefault","AttribComment","AttribType","AttribAccess"];
-    for (var iID in vArrID) {
-      if (vArrID.hasOwnProperty(iID)) {
-        delete vClassJS[iID][vAttribName];
+    var vID = "";
+    for (var i = 0; i < vArrID.length; i++) {
+      vID = vArrID[i]
+      if (vClassJS.hasOwnProperty(vID)) {
+        if (vClassJS[vID].hasOwnProperty(vAttribName)) {
+          delete vClassJS[vID][vAttribName];
+        };
       }
     };
-    updateJSON2Form(vClass); //Call: deleteAttributeForm()
+    updateAttribJSON2Form(vClass); //Call: deleteAttributeForm()
   };
 }
 
@@ -440,7 +445,7 @@ function deleteMethodForm() {
   };
 };
 
-function existsAttributeJS(pAttName,pClass) {
+function existsAttributeJS(pClass,pAttName) {
   var vClass = pClass || getSelectedClassID();
   var vClassJS = getClassJSON(vClass);
   var vExists = 0;
@@ -451,6 +456,7 @@ function existsAttributeJS(pAttName,pClass) {
       vExists++;
     };
   };
+  console.log("existsAttributeJS('"+pClass+"','"+pAttName+"')");
   return (vExists > 0)
 };
 
@@ -1027,7 +1033,7 @@ function updateAttribJSON2Form(pClass) {
   var vClassJS = getClassJSON(pClass);
   vClassJS["tAttributes"] = vOut;
   write2value("tAttributes",vOut);
-  createAttribSelect();
+  createAttribSelect(pClass);
 };
 
 function getAttribJSON4Form(pClass) {
@@ -1061,7 +1067,7 @@ function updateForm2AttribJSON(pClass) {
   defineHashIfEmpty(vAttTypeHash,"AttribType",vClassJS);
   var vAttCommentHash = getAttribCommentHash(vAttHash) || {}; // classes.js:356
   defineHashIfUndefined(vAttCommentHash,"AttribComment",vClassJS);
-  createAttribSelect();
+  createAttribSelect(pClass);
   autoSaveJSON();
 };
 

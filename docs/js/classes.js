@@ -73,7 +73,7 @@ function inheritAttributes4Class(pClassJS,pInheritJS) {
 }
 
 function copyAttritbute4Hash(iAtt,pInClass,pOutClass) {
-  copyArrID4Hash(["AttribType","AttribDefault","AttribComment"],iAtt,pInClass,pOutClass);
+  copyArrID4Hash(["AttribAccess","AttribType","AttribDefault","AttribComment"],iAtt,pInClass,pOutClass);
 };
 
 function copyArrID4Hash(pArrID,iAtt,pInHash,pOutHash) {
@@ -120,7 +120,7 @@ function inheritAbstractMethods4Class(pClassJS,pInheritJS) {
       if (vMethHash.hasOwnProperty(iMeth)) {
           if (vInheritHash[iMeth] != vMethHash[iMeth]) {
             console.log("WARNING (inherit): type mismatch Method "+iMeth+"() for Interface - overwrite method parameter");
-            copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+            copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
           } else {
             debugLog("Class","Inherit Return: for safety update Method Return for "+iMeth+"()");
             copyArrID4Hash(["MethodReturn"],iMeth,pInheritJS,pClassJS);
@@ -130,7 +130,7 @@ function inheritAbstractMethods4Class(pClassJS,pInheritJS) {
         vCode = reduceVarName(vCode) || "";
         if (vCode == "") {
           debugLog("Method","Inherit [Parameter,Return,Comment]: for Method Return for "+iMeth+"()");
-          copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+          copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
         } else {
           debugLog("Method","Inherit: Code of Method "+iMeth+"() is defined, INHERIT applied and NO import of Method Interface");
         };
@@ -148,14 +148,14 @@ function inheritMethods4Class(pClassJS,pInheritJS) {
       if (vMethHash.hasOwnProperty(iMeth)) {
           if (vInheritHash[iMeth] != vMethHash[iMeth]) {
             console.log("WARNING (inherit): type mismatch Method "+iMeth+"() for Interface - overwrite method parameter");
-            copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+            copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
           } else {
             debugLog("Method","Inherit Return: for safety update Method Return for "+iMeth+"()");
             copyArrID4Hash(["MethodReturn"],iMeth,pInheritJS,pClassJS);
           };
       } else {
         debugLog("Method","Inherit [Parameter,Return,Comment]: for Method Return for "+iMeth+"()");
-        copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+        copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
       }
     }
   }
@@ -305,9 +305,10 @@ function inheritMethodeCode4Class(pClassJS,pInheritJS) {
       if (reduceVarName(vInheritHash[iMeth]) == "") {
         debugLog("Method","Inherit Meth "+iMeth+"() as Interface - Code is empty");
         if (vMethHash.hasOwnProperty(iMeth)) {
-          copyArrID4Hash(["MethodParameter","MethodReturn"],iMeth,pInheritJS,pClassJS);
+          // update the call and return only
+          copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn"],iMeth,pInheritJS,pClassJS);
         } else {
-          copyArrID4Hash(["MethodParameter","MethodReturn","MethodComment"],iMeth,pInheritJS,pClassJS);
+          copyArrID4Hash(["MethodAccess","MethodParameter","MethodReturn","MethodComment","MethodCode"],iMeth,pInheritJS,pClassJS);
         };
       };
     };
@@ -571,7 +572,6 @@ function updateJSON2tMethods(pClass) {
     if (vArr.length > 0) {
       vOut = vArr.join("\n");
     };
-    "tAttributes", vOut
   };
   vClassJS["tMethods"] = vOut;
   write2value("tMethods",vOut);
@@ -611,7 +611,8 @@ function updateClassJSON2Form(pSelectedClass) {
   };
   createMethodSelect(pSelectedClass,vMethID);
   createAttribTypeSelect(pSelectedClass);
-
+  updateJSON2tAttributes(pSelectedClass);
+  updateJSON2tMethods(pSelectedClass);
 }
 
 function updateJSON2tClassList() {
@@ -672,8 +673,14 @@ function createClassTypeString4Hash(pClassTypeHash) {
 }
 
 function renameClassForm() {
-    var vOldClassName = vJSCC_DB["SelectedClass"];
-    var vNewClassName = getValueDOM("tClassname");
+  var vOldClassName = vJSCC_DB["SelectedClass"];
+  var vNewClassName = getValueDOM("tClassname");
+  renameClassForm_do(vOldClassName,vNewClassName);
+};
+
+function renameClassForm_do(pOldClassName,pNewClassName) {
+    var vOldClassName = pOldClassName || vJSCC_DB["SelectedClass"];
+    var vNewClassName = pNewClassName || getValueDOM("tClassname");
     debugLog("Class","Rename: Clas '"+vOldClassName+"' to '"+vNewClassName+"'");
     if (vOldClassName != vNewClassName) {
       //check if new ClassName exists
@@ -1071,6 +1078,7 @@ function createNewAttribJS(pName,pClass) {
       debugLog("Attrib","createNewAttribJS('"+vName+"','"+vClass+"') Call: selectJSAttribs('"+vName+"')");
       vClassJS["sAttribList"] = vName;
       write2value("sAttribList",vName);
+      createAttribSelect(vClass);
       selectJSAttribs(vName);
       alert("Attribute '"+vName+"' created!");
       autoSaveJSON();

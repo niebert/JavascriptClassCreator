@@ -949,9 +949,10 @@ function selectJSAttribs(pAttribName) {
   write2value("tAttribName",vAttribName);
   var vAttribType = (vClassJSON["AttribType"][vAttribName] || " ");
   write2value("sAttribTypeList",vAttribType);
+  write2value("tAttribType",vAttribType);
   //load method code from  vJSCC_DB if exists
   //loadAttribJSON(vAttribName);
-  saveJSON2LocalStorage();
+  autoSaveJSON();
 };
 
 function updateForm2Database(pDB) {

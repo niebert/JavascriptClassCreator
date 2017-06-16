@@ -32,7 +32,7 @@ function onChangeACE(pEditID,pContent) {
 
 function setMethodCode(pClassID,pMethID,pContent) {
   if (existsMethodJS(pClassID,pMethID)) {
-    vJSCC_DB["ClassList"][pClassID]["MethodCode"] = pContent;
+    vJSCC_DB["ClassList"][pClassID]["MethodCode"][pMethID] = pContent;
   };
 }
 

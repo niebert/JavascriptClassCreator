@@ -1057,6 +1057,7 @@ function updateForm2AttribJSON(pClass) {
   var vAttCommentHash = getAttribCommentHash(vAttHash) || {}; // classes.js:356
   defineHashIfUndefined(vAttCommentHash,"AttribComment",vClassJS);
   createAttribSelect();
+  autoSaveJSON();
 };
 
 function updateForm2MethodJSON(pClass) {
@@ -1111,6 +1112,7 @@ function updateForm2MethodJSON(pClass) {
     defineHash(vMethReturn,"MethodReturn",vClassJS);
     //---------------------------------------------
     createMethodSelect(pClass,vMethName);
+    autoSaveJSON();
   }
 };
 

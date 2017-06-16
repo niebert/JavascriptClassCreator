@@ -983,7 +983,7 @@ vDataJSON['project'] = {
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "load": {
-            "PAGE_ID": "editdata",
+            "PAGE_ID": "load",
             "PAGE_TITLE": "Load JSON",
             "page-type": "ConfirmPage",
             "parent-id": "home",

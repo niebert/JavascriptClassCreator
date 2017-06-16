@@ -131,7 +131,6 @@ vDataJSON['project'] = {
             },
             "tMethodName": "",
             "tMethodCode": "$.mobile.changePage( '#'+pPageID, { transition: 'slideup', changeHash: false })",
-            "MethodAccess": "public",
             "tMethodAccess": "public",
             "sClassList": "App"
         },

@@ -423,15 +423,20 @@ function deleteMethodForm() {
   var vClassJS = getClassJSON(vClass);
   var vMethodName = getValueDOM("sMethodList");
   console.log("deleteMethodForm('"+vMethodName+"')");
+  var vID = "";
   var vOK = confirm("Do you want to delete Method "+vMethodName+"()?");
   if (vOK == true) {
     var vArrID = ["MethodParameter","MethodReturn","MethodCode","MethodComment","MethodAccess"];
-    for (var iID in vArrID) {
-      if (vArrID.hasOwnProperty(iID)) {
-        delete vClassJS[iID][vMethodName];
+    for (var i = 0; i < vArrID.length; i++) {
+      vID = vArrID[i];
+      if (vClassJS.hasOwnProperty(vID)) {
+        if (vClassJS[vID].hasOwnProperty(vMethodName)) {
+          delete vClassJS[vID][vMethodName];
+        };
       }
     };
-    updateJSON2Form(vClass); // Call: deleteMethodForm
+    updateMethodsJSON2Form(vClass);
+    //updateJSON2Form(vClass); // Call: deleteMethodForm
   };
 };
 
@@ -816,7 +821,7 @@ function updateJSON2Form(pClass,pFile,pPageType,pPage) {
   var vPageType = pPageType || getSelectedPageTypeID();
   var vPage = pPage || getSelectedPageID();
   var vDatabase = getSelectedDatabaseID();
-  console.log("updateJSON2Form('"+pClass+"','"+pFile+"','"+pPageType+"')");
+  console.log("updateJSON2Form('"+vClass+"','"+vFile+"','"+vPageType+"')");
   updateBasicClassJSON2Form();
   //--- Create Selectors
   createFileSelect(vFile);
@@ -1133,10 +1138,12 @@ function getReturnCodeInit(pMethod,pReturn,pCode) {
 function updateMethodsJSON2Form(pClass) {
   // write the method list to textarea
   var vClass = pClass || getSelectedClassID();
+  console.log("updateMethodsJSON2Form('"+vClass+"')");
   var vOut = getMethodJSON4Form(vClass);
   var vClassJS = getClassJSON(vClass);
   vClassJS["tMethods"] = vOut;
   write2value("tMethods",vOut);
+  createMethodSelect(pClass);
 };
 
 function getMethodJSON4Form(pClass) {

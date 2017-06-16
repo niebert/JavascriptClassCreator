@@ -396,7 +396,7 @@ function selectJSMethodReturn(pReturnID) {
       vClassJS["tMethodCode"] = vCode;
       vClassJS["tMethodComment"] = vComment;
       write2innerHTML("titleMethodName",vCall);
-      updateMethodsJSON2Form();
+      updateMethodsJSON2Form(vClass);
     };
   };
 }

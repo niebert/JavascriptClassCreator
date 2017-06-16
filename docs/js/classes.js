@@ -1131,8 +1131,8 @@ function createNewMethodJS(pClass,pMethName) {
       vClassJSON["MethodAccess"][vName] = "public"; //getMethodParameter4Call(vMethCall);
       vClassJSON["MethodParameter"][vName] = ""; //getMethodParameter4Call(vMethCall);
       vClassJSON["MethodReturn"][vName] = ""; //getMethodReturn4Call(vMethCall);
-      vClassJSON["MethodCode"][vName] = ""; //vContent;
-      vClassJSON["MethodComment"][vName] = "";
+      vClassJSON["MethodCode"][vName] = ""; // code for "+vName"; //vContent;
+      vClassJSON["MethodComment"][vName] = "what does "+vName+" do?";
       var vMethodList = getValueDOM("tMethods");
       vMethodList = removeEmptyLines(vMethodList);
       var vCR = "\n";

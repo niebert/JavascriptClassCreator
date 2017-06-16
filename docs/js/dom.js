@@ -97,7 +97,7 @@ function createMethodSelect(pClass,pMethID) {
   var vArray = [];
   if (existsClassJS(vClass)) {
     var vClassJSON = getClassJSON(vClass);
-    var vArray = getArray4HashID(vClassJSON["MethodCode"]); //getMethodNameArray();
+    var vArray = getArray4HashID(vClassJSON["MethodCode"]); //getMethodNameArrayForm();
     var vMethCodeHash = vClassJSON["MethodCode"];
     var vMethCommentHash = vClassJSON["MethodComment"];
     vMethID = pMethID || vClassJSON["sMethodList"] || vArray[0] || "";

@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/04 9:56:09",
+    "mod_date": "2017/05/04 18:36:13",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -10,7 +10,7 @@ vDataJSON['project'] = {
     "tPageTypes": "DefaultPage|home|\nMenuPage|welcome|QUIT\nOptionsPage|home|save\nConfirmPage|home|OK\nSaveDialog|home|CANCEL\nLoginPage|home|CANCEL",
     "tButtons": "QUIT|Quit|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"if (confirm('Do you want to quit!')) window.close();\" data-theme=\"c\">Quit</a>\nOK|OK|<a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.confirmClick(this.id);\" data-theme=\"a\">OK</a>\nCANCEL|Cancel|<!-- header button: '___BUTTON_TITLE___' -->___CR___<a href=\"#\" class=\"b_CANCEL\" id=\"b_CANCEL___COUNTER___\" onclick=\"alert('Click Button CANCEL');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>___CR___",
     "sPageTypeHTML": "ConfirmPage",
-    "sPageHTML": "load",
+    "sPageHTML": "editdata",
     "sButtonHTML": "QUIT",
     "tGlobalLibs": "js/string.js\njs/localstorage.js\njs/writedom.js",
     "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
@@ -23,8 +23,8 @@ vDataJSON['project'] = {
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
-    "SelectedClass": "App",
-    "SelectedPage": "load",
+    "SelectedClass": "Editor4JSON",
+    "SelectedPage": "editdata",
     "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
     "SelectedFile": "app.html",
@@ -40,7 +40,8 @@ vDataJSON['project'] = {
         "AppAbstract": "Abstract",
         "Server": "Blue",
         "App": "Blue",
-        "LinkParam": "Blue"
+        "LinkParam": "Blue",
+        "Editor4JSON": "Blue"
     },
     "ClassList": {
         "App": {
@@ -64,7 +65,7 @@ vDataJSON['project'] = {
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
-            "AttribAccess": {},
+            "AttribAccess": "public",
             "AttribDefault": {
                 "aDoc": "null",
                 "aName": "\"DisApp\"",
@@ -75,7 +76,7 @@ vDataJSON['project'] = {
                 "aLinkParam": "new LinkParam()"
             },
             "AttribType": {
-                "aDoc": "",
+                "aDoc": "Document",
                 "aName": "String",
                 "aServer": "Server",
                 "aDatabaseList": "DatabaseList",
@@ -129,11 +130,8 @@ vDataJSON['project'] = {
                 "gotoURL": "pFileHTML:String"
             },
             "tMethodName": "",
-            "tMethodCode": "",
-            "MethodAccess": {
-                "event": "private",
-                "gotoPage": "public"
-            },
+            "tMethodCode": "$.mobile.changePage( '#'+pPageID, { transition: 'slideup', changeHash: false })",
+            "MethodAccess": "public",
             "tMethodAccess": "public",
             "sClassList": "App"
         },
@@ -194,8 +192,8 @@ vDataJSON['project'] = {
             "tMethodName": "",
             "tLoopObject": "",
             "tLoopMethod": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "DOMVar": {
             "tClassname": "DOMVar",
@@ -379,11 +377,11 @@ vDataJSON['project'] = {
             "tAttribComment": "the attribute 'empty' stores in 'Hash' and is initialized by init()",
             "tAttribDefault": "null",
             "sAttribTypeList": "Hash",
-            "tMethodHeader": "init(pDoc:Document)",
+            "tMethodHeader": "toDOM(pString:String):Hash",
             "tMethodName": "init",
-            "tMethodComment": "Comment for makeMap",
-            "sMethodList": "init",
-            "tMethodCode": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
+            "tMethodComment": "Parses HTML content and creates a DOM tree that can be append to certain node in DOM",
+            "sMethodList": "toDOM",
+            "tMethodCode": "parses the HTML input and creates DOM tree that can be added to DOM - error in the syntax are correct e.g. missing closing tags",
             "tLoopObject": "vArray",
             "tLoopMethod": ".init()",
             "AttribType": {
@@ -450,7 +448,7 @@ vDataJSON['project'] = {
                 "init": "// Empty Elements - HTML 4.01\nempty = makeMap(\"area,base,basefont,br,col,frame,hr,img,input,isindex,link,meta,param,embed\");\n\n// Block Elements - HTML 4.01\nblock = makeMap(\"address,applet,blockquote,button,center,dd,del,dir,div,dl,dt,fieldset,form,frameset,hr,iframe,ins,isindex,li,map,menu,noframes,noscript,object,ol,p,pre,script,table,tbody,td,tfoot,th,thead,tr,ul\");\n\n// Inline Elements - HTML 4.01\ninline = makeMap(\"a,abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var\");\n\n// Elements that you can, intentionally, leave open\n// (and which close themselves)\ncloseSelf = makeMap(\"colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr\");\n\n// Attributes that have their values filled in disabled=\"disabled\"\nfillAttrs = makeMap(\"checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected\");\n\n// Special Elements (can contain anything)\nvar special = makeMap(\"script,style\");\n",
                 "toXML": "",
                 "toHTML": "",
-                "toDOM": "parses the HTML input and creates DOM tree that can be added to DOM - error in the syntax are correct e.g. missing closing tags",
+                "toDOM": "",
                 "makeMap": "var obj = {}, items = pCommaSepString.split(\",\");\nfor ( var i = 0; i < items.length; i++ ) {\n\tobj[ items[i] ] = true;\n};\nreturn obj;\n",
                 "parse": ""
             },
@@ -471,7 +469,8 @@ vDataJSON['project'] = {
                 "parse": "public"
             },
             "tMethodAccess": "public",
-            "JSCC_version": "1"
+            "JSCC_version": "1",
+            "sClassList": "ParserHTML"
         },
         "WrapJSON": {
             "tClassname": "WrapJSON",
@@ -544,8 +543,8 @@ vDataJSON['project'] = {
             },
             "JSCC_mod_date": "",
             "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "DatabaseList": {
             "tClassname": "DatabaseList",
@@ -686,8 +685,8 @@ vDataJSON['project'] = {
             "JSCC_type": "CLASS",
             "JSCC_version": "1",
             "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "Server": {
             "tClassname": "Server",
@@ -827,8 +826,49 @@ vDataJSON['project'] = {
                 "exists": "pVar:String"
             },
             "tMethodName": "",
-            "AttribAccess": {},
-            "MethodAccess": {}
+            "AttribAccess": "public",
+            "MethodAccess": "public"
+        },
+        "Editor4JSON": {
+            "JSCC_type": "CLASS",
+            "JSCC_init_date": "15.6.2017",
+            "JSCC_mod_date": "",
+            "tClassname": "Editor4JSON",
+            "tSuperClassname": "",
+            "sClassType": "Blue",
+            "tAuthor": "Engelbert Niehaus",
+            "tEMail": "niehaus@uni-landau.de",
+            "tAttributes": "aEditor = null",
+            "tMethods": "",
+            "sAttribList": "aEditor",
+            "tAttribName": "",
+            "tAttribType": "",
+            "tAttribComment": "",
+            "tAttribDefault": "",
+            "sAttribTypeList": "",
+            "tMethodHeader": "",
+            "tMethodName": "",
+            "tMethodComment": "",
+            "sMethodList": "",
+            "tMethodCode": "",
+            "tLoopObject": "",
+            "tLoopMethod": "",
+            "AttribType": {
+                "aEditor": "JSONEditor"
+            },
+            "AttribAccess": "public",
+            "AttribDefault": {
+                "aEditor": "null"
+            },
+            "AttribComment": {
+                "aEditor": "is the instance of the JSON editor developed by Jeremy Dorn"
+            },
+            "MethodParameter": {},
+            "MethodReturn": {},
+            "MethodCode": {},
+            "MethodComment": {},
+            "MethodAccess": {},
+            "sClassList": "Editor4JSON"
         }
     },
     "DBID2File": {
@@ -861,13 +901,13 @@ vDataJSON['project'] = {
             "BUTTON_ID": "OK",
             "BUTTON_TITLE": "OK",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___','event___COUNTER___')\" data-theme=\"a\">OK</a>",
-            "counter": 3
+            "counter": 4
         },
         "CANCEL": {
             "BUTTON_ID": "CANCEL",
             "BUTTON_TITLE": "Cancel",
             "tButtonDefHTML": "       <!-- header button: '___BUTTON_TITLE___' -->\n       <a href=\"#\" class=\"b___BUTTON_ID___\" id=\"b___BUTTON_ID______COUNTER___\" onclick=\"vApp.event('___PAGE_ID___','___BUTTON_ID___','___COUNTER___');return false\" data-theme=\"a\">___BUTTON_TITLE___</a>\n",
-            "counter": 4
+            "counter": 5
         }
     },
     "SelectedTypePage": "SaveDialog",
@@ -944,9 +984,9 @@ vDataJSON['project'] = {
             "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
         },
         "load": {
-            "PAGE_ID": "load",
+            "PAGE_ID": "editdata",
             "PAGE_TITLE": "Load JSON",
-            "page-type": "DefaultPage",
+            "page-type": "ConfirmPage",
             "parent-id": "home",
             "content": "<h2>___PAGE_TITLE___</h2>\n<input class=\"button\" type=\"file\" id=\"myImportFile\" >\n<input name=\"bImportProject\" value=\"Import JSON\" onclick=\"vApp.aDatabaseList.importJSON('myImportFile')\" type=\"button\">\n\n"
         },
@@ -997,7 +1037,7 @@ vDataJSON['project'] = {
             "PAGE_TITLE": "Edit Data",
             "page-type": "DefaultPage",
             "parent-id": "data",
-            "content": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')"
+            "content": "<h2>___PAGE_TITLE___</h2> \nThe current data was exported and cleaned by Dr. Ajit N. Babu CAGH. Press Pencil button to edit the data.\n<button id=\"bEditFileListJSON\" onclick=\"vApp.aJSONEditor.openWin(vDataJSON['ovitrapmpi_schema'],vDataJSON['ovitrapmpi_data']);return false\">\n    <i class=\"fa fa-pencil\"></i> Edit\n</button>\n            \n\n(ID:'___PAGE_ID___')"
         },
         "quit": {
             "PAGE_ID": "quit",
@@ -1014,11 +1054,43 @@ vDataJSON['project'] = {
     },
     "GlobalLibList": [
         {
-            "file": "js/string.js",
+            "file": "js/bootstrap.js",
+            "import": true
+        },
+        {
+            "file": "js/arrayhash.js",
+            "import": true
+        },
+        {
+            "file": "js/filesaver.js",
+            "import": true
+        },
+        {
+            "file": "js/iframe.js",
             "import": true
         },
         {
             "file": "js/localstorage.js",
+            "import": true
+        },
+        {
+            "file": "js/linkparam.js",
+            "import": true
+        },
+        {
+            "file": "js/lodash.js",
+            "import": true
+        },
+        {
+            "file": "js/jsoneditor.js",
+            "import": true
+        },
+        {
+            "file": "js/predbedit.js",
+            "import": true
+        },
+        {
+            "file": "js/string.js",
             "import": true
         },
         {
@@ -1059,7 +1131,7 @@ vDataJSON['project'] = {
         },
         "app.html": {
             "tFilename": "app.html",
-            "sAppClassHTML": "",
+            "sAppClassHTML": "App",
             "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": [
                 "welcome",
@@ -1086,7 +1158,7 @@ vDataJSON['project'] = {
             ],
             "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
-            "sElementsFileList": "",
+            "sElementsFileList": "HTML_TITLE",
             "tElementHTML": "File app.html - Content of element HTML_TITLE",
             "sElementFileList": "HTML_TITLE"
         },

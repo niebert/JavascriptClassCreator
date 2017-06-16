@@ -1119,9 +1119,11 @@ function createNewMethodJS(pClass,pMethName) {
     if (vClassJSON) {
       checkClassJSON(vClassJSON);
       var vContent = "";
-      vClassJSON["MethodParameter"][vName] = getMethodParameter4Call(vMethCall);
-      vClassJSON["MethodReturn"][vName] = getMethodReturn4Call(vMethCall);
-      vClassJSON["MethodCode"][vName] = vContent;
+      var vMethCall = vName+"()";
+      vClassJSON["MethodAccess"][vName] = "public"; //getMethodParameter4Call(vMethCall);
+      vClassJSON["MethodParameter"][vName] = ""; //getMethodParameter4Call(vMethCall);
+      vClassJSON["MethodReturn"][vName] = ""; //getMethodReturn4Call(vMethCall);
+      vClassJSON["MethodCode"][vName] = ""; //vContent;
       vClassJSON["MethodComment"][vName] = "";
       var vMethodList = getValueDOM("tMethods");
       vMethodList = removeEmptyLines(vMethodList);
@@ -1619,7 +1621,7 @@ function getMethodHash() {
   return vRetHash;
 };
 
-function getMethodNameArray() {
+function getMethodNameArrayForm() {
   var vMethods = getFormMethodsString();
   var vRetArr = [];
   if (vMethods.length > 0) {

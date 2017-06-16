@@ -1008,7 +1008,7 @@ function updateForm2MissingJSON(pClass) {
   // Define Hash in Attribute Hash if undefined
   defineHashIfUndefined(vAttHash,"AttribType",vClassJSON);
   defineHashIfUndefined(vAttHash,"AttribComment",vClassJSON);
-  var vMethArr = getMethodNameArray(); //classes.js:275
+  var vMethArr = getMethodNameArrayForm(); //classes.js:275
   var vMethHash = {};
   for (var i = 0; i < vMethArr.length; i++) {
     vMethHash[vMethArr[i]] = vMethArr[i];
@@ -1061,11 +1061,11 @@ function updateForm2AttribJSON(pClass) {
 
 function updateForm2MethodJSON(pClass) {
   var vClass = pClass || getSelectedClassID();
-  debugLog("Method","updateForm2MethodJSON('"+vClass+"')");
-  if (existsClassJS(pClass)) {
-    var vClassJS = getClassJSON();
+  console.log("updateForm2MethodJSON('"+vClass+"')");
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
     saveMethodCallJS(vClass); // saves the definition of the method call
-    var vMethArr = getMethodNameArray(); //classes.js:275
+    var vMethArr = getMethodNameArrayForm(); //classes.js:275
     var vMethCallArr = getMethodArray(); //classes.js:598
     var vParam = "";
     var vCall = "";

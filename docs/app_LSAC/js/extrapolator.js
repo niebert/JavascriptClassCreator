@@ -87,10 +87,10 @@ function Extrapolator () {
 	//	extrapolate needs an array of hashes. e.g. an array of hashes that contain a geolocation and a username, by using the aMap with key/value pairs. if aMissingID in a record is empty of undefined then the missing data is set, if the aMap is defined for the missing value aKeyID.
   //----PUBLIC Method: Extrapolator.setKey(pKey)-----
 	// setKey(pKey)
-  //	setKeys defines the pKey for mapping the values of pKey to missing values stored in the pMissingID of the JSON data aDataJSON.
+  //	setKeys defines the pKey for mapping the values of pKey to missing values stored in the pMissingID of the JSON data aData array.
   //----PUBLIC Method: Extrapolator.setMissingID(pMissingID)-----
 	// setMissingID(pKey)
-	//	setMissingID defines the missing ID for mapping the values of this.aKey to missing values stored in the pMissingID of the JSON data aDataJSON.
+	//	setMissingID defines the missing ID for mapping the values of this.aKey to missing values stored in the pMissingID of the JSON data aData array.
 	//----PUBLIC Method: Extrapolator.loopDB(pCall4Hash)-----
 	// loopDB()
 	//	loopDB iterates over the array of hashes and checks if aDataJSON is array and all array elements are hashes. if that is the case the method loopDB is called for all hashes
@@ -100,6 +100,12 @@ function Extrapolator () {
     var vContent = JSON.stringify(this.aData,null,4);
     this.saveFile2HDD(pFilename,vContent);
   };
+  //----PUBLIC Method: Extrapolator.saveFile2HDD(pFile)-----
+  // saveFile2HDD(pFile,pContent) creates a download for the file with the content,
+  this.downloadErrors = function () {
+      var vContent = "Extrapolator Errors:\n"+this.aErrors.join("\n");
+      this.saveFile2HDD("extrapolation_errors.txt",vContent);
+  }
   //----PUBLIC Method: Extrapolator.saveFile2HDD(pFile)-----
   // saveFile2HDD(pFile,pContent) creates a download for the file with the content,
   this.saveFile2HDD = function (pFilename,pContent) {
@@ -149,21 +155,37 @@ function Extrapolator () {
   //	scan4Hash will populates the this.aMap
 	this.scan4Hash = function (pHash) {
       // check if aKey in defined in pHash
-      if (pHash.hasOwnProperty(this.aKey) && (pHash[this.aKey] != "")) {
+      if (pHash.hasOwnProperty(this.aKey) && (!this.isMissing(pHash[this.aKey]))) {
         // check if aMissingID in defined in pHash
-        if (pHash.hasOwnProperty(this.aMissingID) && (pHash[this.aMissingID] != "")) {
+        if (pHash.hasOwnProperty(this.aMissingID) && (!this.isMissing(pHash[this.aMissingID]))) {
           // check if aMissingID value is not empty
           var vMapID = pHash[this.aKey];
-          if (this.aMap.hasOwnProperty(vMapID)) {
-            if (this.aMap[vMapID] != pHash[this.aMissingID]) {
-              var vError = "for MapID['"+vMapID+"'] differs map values (1) '"+this.aMap[vMapID]+"' (2) '"+pHash[this.aMissingID]+"'";
-              console.log(vError);
-              this.aErrors.push(vError);
+          if (!this.isMissing(vMapID)) {
+            //vMapID is not missing e.g. vMapID=trapNumber=2737
+            if (!this.isMissing(pHash[this.aMissingID])) {
+              // also the extrapolation data is available
+              // does a previous defintion in exist in aMap?
+              console.log("Scan ['"+vMapID+"']->'"+pHash[this.aMissingID]+"'");
+              if (this.aMap.hasOwnProperty(vMapID)) {
+                // it exists, now check if previous definition match with this new definition
+                if (this.aMap[vMapID] != pHash[this.aMissingID]) {
+                  // mismath found throw Warning in Errors
+                  var vError = "WARNING "+this.aErrors.length+": for MapID['"+vMapID+"'] differs map values (1) '"+this.aMap[vMapID]+"' (2) '"+pHash[this.aMissingID]+"'";
+                  console.log(vError);
+                  this.aErrors.push(vError);
+                };
+              } else {
+                // no previous definition
+                this.aMap[vMapID] = pHash[this.aMissingID];
+                console.log("Found Mapping '"+vMapID+"' to '"+pHash[this.aMissingID]+"'");
+              };
             };
-          } else {
-            this.aMap[vMapID] = pHash[this.aMissingID];
           }
+        } else {
+          console.log("this.aMissingID is undefined");
         }
+      } else {
+        console.log("this.aKey is undefined");
       }
     };
     //----PUBLIC Method: extrapolate4Hash(pHashDB)-----
@@ -195,14 +217,15 @@ function Extrapolator () {
         if (pValue) {
           for (var key in this.aEqui2Missing) {
             if (this.aEqui2Missing.hasOwnProperty(key)) {
-              if (this.aEqui2Missing[key] = pValue) {
+              if (this.aEqui2Missing[key] == pValue) {
                 vMissing = true;
               };
             }
           }
         } else {
           vMissing = true;
-        }
+        };
+        return vMissing;
       }
 
 }
@@ -232,6 +255,7 @@ Extrapolator.prototype.scan = function () {
   //-------------------------------------------------------
   this.call4Hash = this.scan4Hash;
   this.loopDB();
+  alert("Scan JSON for Extrapolation finished!\nTry to extrapolate missing data or Download Scan Errors and Warnings");
 };
 //----End of Method scan Definition
 
@@ -256,8 +280,17 @@ Extrapolator.prototype.extrapolate = function () {
   //    var vMyInstance = new Extrapolator();
   //    vMyInstance.extrapolate();
   //-------------------------------------------------------
-  this.call4Hash = this.extrapolate4Hash;
-  this.loopDB();
+  var vCount = 0;
+  for (var iKey in this.aMapt) {
+    if (this.aMap.hasOwnProperty(iKey)) {
+      vCount++
+    }
+  };
+  if (vCount>0) {
+    this.call4Hash = this.extrapolate4Hash;
+    this.loopDB();
+    alert("Extrapolation finshed!\n Goto analysis of data\ncheck data via edit or check data locally with Save JSON")
+  };
 };
 //----End of Method extrapolate Definition
 
@@ -307,7 +340,7 @@ Extrapolator.prototype.setMissingID = function (pMissingID) {
   //    var vMyInstance = new Extrapolator();
   //    vMyInstance.setMissingID(pMissingID);
   //-------------------------------------------------------
-  this.aMissingID = pMissingID
+  this.aMissingID = pMissingID;
   console.log("set Extrapolator missingID='"+pMissingID+"'");
 };
 //----End of Method setKeys Definition
@@ -335,18 +368,18 @@ Extrapolator.prototype.loopDB = function () {
   //-------------------------------------------------------
 
   this.aErrors = [];
-  if (isArray(this.aDataJSON)) {
-      for (var i = 0; i < this.aDataJSON.length; i++) {
-        if (isHash(this.aDataJSON[i])) {
-           this.call4Hash(this.aDataJSON[i]);
+  if (isArray(this.aData)) {
+      for (var i = 0; i < this.aData.length; i++) {
+        if (isHash(this.aData[i])) {
+           this.call4Hash(this.aData[i]);
         } else {
-          var vError = "Extrapolator: this.aDataJSON["+i+"] is not a hash"
+          var vError = "Extrapolator: this.aData["+i+"] is not a hash"
           console.log(vError);
           this.aErrors.push(vError);
        }
       }
   } else {
-      var vError = "Extrapolator: this.aDataJSON is not an array"
+      var vError = "Extrapolator: this.aData is not an array"
       console.log(vError);
       this.aErrors.push(vError);
   };

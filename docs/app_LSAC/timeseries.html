@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="js/raphael-min.js"></script>
+<!-- required jquery-1.8.2.min.js -->
+<script src="js/jquery.min.js"></script>
+<script src="js/morris.min.js"></script>
+<script src="js/linkparam.js"></script>
+<meta charset=utf-8 />
+<title>OviTrap/MPI temporal</title>
+</head>
+<body>
+  <div id="line-example"></div>
+  <script>
+  /*
+   * Play with this code and it'll update in the panel opposite.
+   *
+   * Why not try some of the options above?
+   */
+   var vInitData = [
+     { y: '2006-12', a: 100, b: 90 },
+     { y: '2007-01', a: 75,  b: 65 },
+     { y: '2007-06',  b: 35 },
+     { y: '2008', a: 50,  b: 40 },
+     { y: '2009', a: 75,  b: 65 },
+     { y: '2010', a: 50,  b: 40 },
+     { y: '2011', a: 75,  b: 65 },
+     { y: '2012', a: 100, b: 90 }
+   ];
+
+   if (window.opener) {
+     var w = window.opener;
+     if (w.vApp) {
+       //vInitData = w.vApp.aData4Graph.getData();
+     }
+   }
+
+  Morris.Line({
+    element: 'line-example',
+    data: vInitData,
+    xkey: 'y',
+    ykeys: ['a', 'b'],
+    labels: ['Series A', 'Series B']
+  });
+  </script>
+
+</body>
+</html>

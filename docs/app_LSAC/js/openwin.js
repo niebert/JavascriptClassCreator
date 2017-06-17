@@ -10,6 +10,11 @@ function getWinName() {
   return vWinName;
 };
 
+function openWinMorrisJS(pDBID) {
+  // pDBID="ovitrapmpi"
+  openWinHTMLsize("timeseries.html",1000,600);
+};
+
 function changeJQueryPage(pPageID) {
   console.log("Change JQuery Page to PageID ["+pPageID+"] - openwin.js (needs to be updated due to depricated changePage");
   $.mobile.changePage(pPageID); //depricate in JQuery Mobile 1.4

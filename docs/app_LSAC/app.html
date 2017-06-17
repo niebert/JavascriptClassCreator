@@ -45,6 +45,7 @@
       <script type="text/javascript" src="js/linkparam.js"></script>
       <script type="text/javascript" src="js/wrapjson.js"></script>
       <script type="text/javascript" src="js/databasejson.js"></script>
+      <script type="text/javascript" src="js/data4graph.js"></script>
       <script type="text/javascript" src="js/extrapolator.js"></script>
       <script type="text/javascript" src="js/databaselist.js"></script>
       <script type="text/javascript" src="js/appabstract.js"></script>
@@ -169,18 +170,22 @@
 
                   <input type="search"  id="extrapolateKey" value="trapNumber" onchange="vApp.aExtrapolator.setKey(this.value)"/>
 
-                  <br /><br />
+                  <hr /><br />
                   <label>Extrapolator Missing Key:</label>
                   <br /><br />
 
-                  <input type="text" id="missingID" value="geolocation"  onchange="vApp.aExtrapolator.setMissingID(this.value)"/>
+                  <input type="text" id="missingID" value="geoLocation"  onchange="vApp.aExtrapolator.setMissingID(this.value)"/>
+                  <br /><br />
 
                   <label>Extrapolator Equivalent to Missing:</label>
                   <br /><br />
 
-                  <input type="text" id="equir2missing" value="0.0,0.0"  onchange="vApp.aExtrapolator.setEqui2Missing(this.value)"/>
+                  <input type="search" id="equi2missing1" value="0.0,0.0"  onchange="vApp.aExtrapolator.setEqui2Missing(this.id,this.value)"/>
                   <br />
-
+                  <input type="search" id="equi2missing2" value="N/A"  onchange="vApp.aExtrapolator.setEqui2Missing(this.id,this.value)"/>
+                  <br />
+                  <input type="search" id="equi2missing3" value="null"  onchange="vApp.aExtrapolator.setEqui2Missing(this.id,this.value)"/>
+                  <br />
             </div>
 
         </div>
@@ -190,13 +195,16 @@
      <div data-role="page" id="load">
          <div data-role="header" data-position="fixed">
            <!-- header button: 'OK' -->
+           <!--
            <a href="#" id="bOK2" onclick="vApp.event('load','OK','eventLoadJSON')" data-theme="a">OK</a>
+            -->
+           <a href="#" id="bHOME3" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
            <h1>Load JSON</h1>
            <!-- header button: 'Cancel' -->
            <!--
            <a href="#" class="bCANCEL" id="bCANCEL2" onclick="vApp.event('load','CANCEL','2');return false" data-theme="a">Cancel</a>
            -->
-           <a href="#" class="bCANCEL" id="bCANCEL2" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false"  data-theme="a">Cancel</a>
+           <a href="#" class="bCANCEL" id="bCANCEL2" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false"  data-theme="a">Cancel</a>
          </div>
          <!-- /header -->
        <div data-role="content">
@@ -260,7 +268,7 @@
        </div>
          <!-- /header -->
        <div data-role="content">
-          Content of Analysis (ID:'analysis')
+          <h2>Analysis of Data</h2>
           <ul data-role="listview" data-inset="true">
             <li><a href="#heatmap">Heatmap</a></li>
             <li><a href="#timeseries">Time Series</a></li>
@@ -272,14 +280,22 @@
      <div data-role="page" id="heatmap">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'OK' -->
+                  <!--
                   <a href="#" id="bOK3" onclick="vApp.event('heatmap','OK','event3')" data-theme="a">OK</a>
-                  <h1>Heatmap</h1>
+                  -->
+                <a href="#" id="bANALYIS1" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Analysis</a>
+                <h1>Heatmap</h1>
                   <!-- header button: 'Cancel' -->
+                  <!--
                   <a href="#" class="bCANCEL" id="bCANCEL4" onclick="vApp.event('heatmap','CANCEL','4');return false" data-theme="a">Cancel</a>
+                  -->
+                  <a href="#" class="bCANCEL" id="bCANCEL4" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+
          </div>
          <!-- /header -->
          <div data-role="content">
-            Content of Heatmap (ID:'heatmap')
+            <h2>Heatmap</h2>
+            The HeatMap is generated with OpenLayers for the Browser Version.
         </div>
     <!-- /page ID: heatmap -->
     </div>
@@ -287,15 +303,24 @@
      <div data-role="page" id="timeseries">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'OK' -->
+                  <!--
                   <a href="#" id="bOK4" onclick="vApp.event('timeseries','OK','event4')" data-theme="a">OK</a>
+                  -->
+                  <a href="#" id="bANALYIS1" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Analysis</a>
                   <h1>Time Series</h1>
                   <!-- header button: 'Cancel' -->
                   <a href="#" class="bCANCEL" id="bCANCEL5" onclick="vApp.event('timeseries','CANCEL','5');return false" data-theme="a">Cancel</a>
        </div>
          <!-- /header -->
        <div data-role="content">
-          Content of Time Series (ID:'timeseries')
-       </div>
+         <h2>Temporal Analysis</h2>
+         <h3>for OviTrap and MPI</h3>
+         The ovitrap egg count and the Mosquito Perception Index are visulised in one graph.
+         <button id="bOpenMorrisJS" onclick="openWinMorrisJS('ovitrapmpi');return false">
+           <i class="fa fa-diagram"></i> Edit
+         </button>
+
+      </div>
     <!-- /page ID: timeseries -->
     </div>
      <!-- Page: data     Page Type: MenuPage -->
@@ -307,24 +332,25 @@
         </div>
          <!-- /header -->
          <div data-role="content">
-              Content of Data (ID:'data')
+            <h2>Data Manipulation</h2>
              <ul data-role="listview" data-inset="true">
-                <li><a href="#userlocation">User Location</a></li>
                 <li><a href="#editdata">Edit Data</a></li>
-	           </ul>
+                <li><a href="#extrapolation">Extrapolate GeoLocation</a></li>
+             </ul>
        </div>
     <!-- /page ID: data -->
     </div>
-     <!-- Page: userlocation     Page Type: DefaultPage -->
-     <div data-role="page" id="userlocation">
+     <!-- Page: extrapolation     Page Type: DefaultPage -->
+     <div data-role="page" id="extrapolation">
          <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Home' link to page 'home' -->
-                  <a href="#" id="bHOME6" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-                  <h1>User Location</h1>
+                  <!-- header button: 'Data' link to page 'data' -->
+                  <a href="#" id="bDATA1" onclick="$.mobile.changePage( '#data', { transition: 'slideup', changeHash: false });return false" data-theme="a">Data</a>
+                  <h1>GeoLocation</h1>
+                  <a href="#" id="bCANCEL6" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Cancel</a>
          </div>
          <!-- /header -->
          <div data-role="content">
-           <h3>Extrapolation User Location</h3>
+           <h3>Extrapolation Geo Location</h3>
             OviTrap with a certain unique are not moved to different geolocation.
             GPS location is not always available on a mobile device.
             Users Location for OviTraps can be extrapolated for specific OviTrap IDs
@@ -332,20 +358,28 @@
             <hr>
             <h4>Scan OviTrap Geolocation</h4>
             Scan the OviTrap geolocations first for all users.
-            <button id="bScanOviTrapGeoLoc" onclick="vApp.aExtrapolator.scan();return false" data-theme="c">&lt;&lt;</button>
+            <button id="bScanOviTrapGeoLoc" onclick="vApp.aExtrapolator.scan();return false" data-theme="c">
+              <i class="fa fa-search"></i> Scan JSON
+            </button>
             <h4>Extrapolate Missing OviTrap Geolocation</h4>
             The scanned  OviTrap geolocations are used for imputation of missing Geolocations.
-            <button id="bExtrapolateOviTrapGeoLoc" onclick="vApp.aExtrapolator.extrapolate();return false" data-theme="c">&lt;&lt;</button>
+            <button id="bExtrapolateOviTrapGeoLoc" onclick="vApp.aExtrapolator.extrapolate();return false" data-theme="c">
+              <i class="fa fa-cogs"></i> Extrapolate GeoLoc
+            </button>
+            <button id="bDownloadErrors" onclick="vApp.aExtrapolator.downloadErrors();return false" data-theme="c">
+              <i class="fa fa-download"></i> Download Errors
+            </button>
         </div>
-    <!-- /page ID: userlocation -->
+    <!-- /page ID: extrapolation -->
     </div>
      <!-- Page: editdata     Page Type: DefaultPage -->
      <div data-role="page" id="editdata">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Home' link to page 'home' -->
-                  <a href="#" id="bHOME7" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+                  <a href="#" id="bDATA1" onclick="$.mobile.changePage( '#data', { transition: 'slideup', changeHash: false });return false" data-theme="a">Data</a>
                   <h1>Edit Data</h1>
-         </div>
+                  <a href="#" id="bCANCEL7" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Cancel</a>
+        </div>
          <!-- /header -->
         <div data-role="content">
           <h2>Edit Data</h2>

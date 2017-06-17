@@ -57,10 +57,10 @@ function App () {
     //---------------------------------------------------------------------
     //---Attributes of Class "App()"
     //---------------------------------------------------------------------
-	//---PUBLIC: aDoc (Document): Attribute: 'aDoc' Type: '' stores ...
+	//---PUBLIC: aDoc (Document): Attribute: 'aDoc' Type: '' document
 	this.aDoc = null;
 	//---PUBLIC: aName (String): Attribute: 'aName' Type: 'String' stores ...
-	this.aName = "DisApp";
+	this.aName = "DisAppTool";
 	//---PUBLIC: aServer (Server): Attribute: 'aServer' Type: 'Server' stores ...
 	//this.aServer = new Server("___SERVER_URL___");
 	//---PUBLIC: aDatabaseList (DatabaseList): stores all databases loaded in the app
@@ -71,7 +71,10 @@ function App () {
 	// this.aFuzzyController = new FuzzyController();
 	//---PUBLIC: aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
 	this.aLinkParam = new LinkParam();
+	//---PUBLIC: aExtrapolator extrapolates data by mapping trapNumber to geolocation
 	this.aExtrapolator = new Extrapolator();
+	//---PUBLIC: aData4Graph generated the JSON for MorrisJS and the heatmap
+	this.aData4Graph = new Data4Graph();
 
     //---------------------------------------------------------------------
     //---Methods of Class "App()"
@@ -131,9 +134,15 @@ App.prototype.init = function (pDoc,pDataJSON) {
 	this.aLinkParam.init(pDoc);
 	this.aDatabaseList.init(this,pDataJSON);
 	this.aDatabaseList.selectDB("ovitrapmpi");
-	this.aExtrapolator.init(this.aDatabaseList,"ovitrapmpi",pDataJSON["ovitrapmpi"]);
-	this.aExtrapolator.setKey($("#extrapolateKey").val());
-	this.aExtrapolator.setMissingID($("#missingID").val());
+	var x = this.aExtrapolator;
+	x.init(this.aDatabaseList,"ovitrapmpi",pDataJSON["ovitrapmpi"]);
+	x.setKey($("#extrapolateKey").val());
+	x.setMissingID($("#missingID").val());
+	x.setEqui2Missing("equi2missing1","0.0,0.0");
+	x.setEqui2Missing("equi2missing2","N/A");
+	x.setEqui2Missing("equi2missing3","null");
+	x = this.aData4Graph;
+	x.init(this.aDatabaseList,"ovitrapmpi",pDataJSON["ovitrapmpi"]);
 };
 //----End of Method initDOM Definition
 
@@ -254,7 +263,19 @@ App.prototype.event = function (pPageID,pButtonID,pEventID) {
 
 	console.log("pPageID="+pPageID+" pButtonID="+pButtonID+" pEventID="+pEventID);
 	alert("vApp.event() pPageID="+pPageID+" pButtonID="+pButtonID+" pEventID="+pEventID);
+	switch (pPageID) {
+		case "timeseries":
+				switch (pButtonID) {
+					case "OK":
 
+						break;
+					default:
+						this.gotoPage("analysis");
+				}
+		break;
+		default:
+			this.gotoPage("home");
+	}
 };
 //----End of Method event Definition
 

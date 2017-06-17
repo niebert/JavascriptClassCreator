@@ -281,7 +281,7 @@ Extrapolator.prototype.extrapolate = function () {
   //    vMyInstance.extrapolate();
   //-------------------------------------------------------
   var vCount = 0;
-  for (var iKey in this.aMapt) {
+  for (var iKey in this.aMap) {
     if (this.aMap.hasOwnProperty(iKey)) {
       vCount++
     }
@@ -290,7 +290,9 @@ Extrapolator.prototype.extrapolate = function () {
     this.call4Hash = this.extrapolate4Hash;
     this.loopDB();
     alert("Extrapolation finshed!\n Goto analysis of data\ncheck data via edit or check data locally with Save JSON")
-  };
+  } else {
+		alert("No Mappings for Extrapolations available. Please scan the JSON Data first.")
+	};
 };
 //----End of Method extrapolate Definition
 

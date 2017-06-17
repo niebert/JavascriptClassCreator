@@ -64,18 +64,19 @@ function App () {
 	//---PUBLIC: aServer (Server): Attribute: 'aServer' Type: 'Server' stores ...
 	//this.aServer = new Server("___SERVER_URL___");
 	//---PUBLIC: aDatabaseList (DatabaseList): stores all databases loaded in the app
-	//this.aDatabaseList = new DatabaseList();
+	this.aDatabaseList = new DatabaseList();
 	//---PUBLIC: aCurrentPage (String): Attribute: 'aCurrentPage' Type: 'String' stores ...
 	this.aCurrentPage = "welcome";
 	//---PUBLIC: aFuzzyController (FuzzyController): Attribute: 'aFuzzyController' Type: 'FuzzyController' stores ...
 	// this.aFuzzyController = new FuzzyController();
 	//---PUBLIC: aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
 	this.aLinkParam = new LinkParam();
+	this.aExtrapolator = new Extrapolator();
 
     //---------------------------------------------------------------------
     //---Methods of Class "App()"
     //---------------------------------------------------------------------
-	//----PUBLIC Method: App.initDOM(pDoc:Document,pDatabase:Hash)-----
+	//----PUBLIC Method: App.init(pDoc:Document,pDatabase:Hash)-----
 	// init(pDoc,pDatabase)
 	//	1) inits the DOM content of the App and writes dynamic content into the Document Object Model of the HTML-file
 	//	2) populates the content with the current records of the databases 3) the LinkParameter are available at this time of the call initDOM is called from the init() Method defined in AppAbstract
@@ -108,7 +109,7 @@ function App () {
 //#    used in Class: App
 //# Parameter:
 //#    pDoc:Document
-//#    pDatabase:Hash
+//#    pDataJSON:Hash
 //# Comment:
 //#    1) inits the DOM content of the App and writes dynamic content into the Document Object Model of the HTML-file
 //#    2) populates the content with the current records of the databases 3) the LinkParameter are available at this time of the call initDOM is called from the init() Method defined in AppAbstract
@@ -117,7 +118,7 @@ function App () {
 //# last modifications 2017/05/05 9:27:29
 //#################################################################
 
-App.prototype.init = function (pDoc,pDatabase) {
+App.prototype.init = function (pDoc,pDataJSON) {
   //----Debugging------------------------------------------
   // console.log("js/app.js - Call: initDOM(pDoc:Document,pDatabase:Hash)");
   // alert("js/app.js - Call: initDOM(pDoc:Document,pDatabase:Hash)");
@@ -126,8 +127,13 @@ App.prototype.init = function (pDoc,pDatabase) {
   //    vMyInstance.initDOM(pDoc,pDatabase);
   //-------------------------------------------------------
   this.aDoc = pDoc;
-	this.aDataJSON = pDatabase;
+	this.aDataJSON = pDataJSON;
 	this.aLinkParam.init(pDoc);
+	this.aDatabaseList.init(this,pDataJSON);
+	this.aDatabaseList.selectDB("ovitrapmpi");
+	this.aExtrapolator.init(this.aDatabaseList,"ovitrapmpi",pDataJSON["ovitrapmpi"]);
+	this.aExtrapolator.setKey($("#extrapolateKey").val());
+	this.aExtrapolator.setMissingID($("#missingID").val());
 };
 //----End of Method initDOM Definition
 
@@ -136,7 +142,7 @@ App.prototype.init = function (pDoc,pDatabase) {
 //# PUBLIC Method: load()
 //#    used in Class: App
 //# Parameter:
-//#
+//#			pDBID:String , pDBJSON:JSON
 //# Comment:
 //#    load Databases and DOMVars from LocalStorage if the exist in local storage
 //# Return: Boolean
@@ -144,17 +150,36 @@ App.prototype.init = function (pDoc,pDatabase) {
 //# last modifications 2017/05/05 9:27:29
 //#################################################################
 
-App.prototype.load = function () {
+App.prototype.load = function (pDBID,pDBJSON) {
   //----Debugging------------------------------------------
-  // console.log("js/app.js - Call: load():Boolean");
-  // alert("js/app.js - Call: load():Boolean");
+  // console.log("js/app.js - Call: load(pDBID,pDBJSON):JSON");
+  // alert("js/app.js - Call: load(pDBID,pDBJSON):JSON");
   //----Create Object/Instance of App----
   //    var vMyInstance = new App();
   //    vMyInstance.load();
   //-------------------------------------------------------
-
-  //----------- INSERT YOUR CODE HERE ---------------
-
+	var vDBJSON = pDBJSON;
+	if (typeof(Storage) != "undefined") {
+    // Store
+    if (typeof(localStorage.getItem(pDBID)) !== undefined) {
+      console.log("JSON-DB '"+pDBID+"' try loading from Local Storage");
+      var vJSONstring = localStorage.getItem(pDBID);
+	    if (!vJSONstring) {
+        console.log("JSON-DB '"+pDBID+"' undefined in Local Storage.\nSave default as JSON");
+        localStorage.setItem(pDBID, JSON.stringify(pDBJSON));
+	    } else {
+        console.log("parse DB '"+pDBID+"') from LocalStorage JSONstring='"+vJSONstring.substr(0,120)+"...'");
+        //vDB = parseJSONDB(pDBID,vJSONstring);
+        vDBJSON = JSON.parse(vJSONstring);
+	   }
+    } else {
+      console.log("JSON-DB '"+pDBID+"' is undefined in Local Storage.\nSave default as JSON");
+      localStorage.setItem(pDBID, JSON.stringify(pDBJSON));
+    };
+  }	 else {
+    console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
+  };
+	return vDBJSON;
 };
 //----End of Method load Definition
 
@@ -163,7 +188,7 @@ App.prototype.load = function () {
 //# PUBLIC Method: save()
 //#    used in Class: App
 //# Parameter:
-//#
+//#			pDBID:String , pDBJSON:JSON
 //# Comment:
 //#    save Databases and DOMVars to LocalStorage
 //# Return: Boolean
@@ -171,17 +196,35 @@ App.prototype.load = function () {
 //# last modifications 2017/05/05 9:27:29
 //#################################################################
 
-App.prototype.save = function () {
+App.prototype.save = function (pDBID,pDBJSON) {
   //----Debugging------------------------------------------
-  // console.log("js/app.js - Call: save():Boolean");
-  // alert("js/app.js - Call: save():Boolean");
+  // console.log("js/app.js - Call: save(pDBID,pDBJSON):Boolean");
+  // alert("js/app.js - Call: save(pDBID,pDBJSON):Boolean");
   //----Create Object/Instance of App----
   //    var vMyInstance = new App();
   //    vMyInstance.save();
   //-------------------------------------------------------
-
-  //----------- INSERT YOUR CODE HERE ---------------
-
+	var vSuccess = false;
+	if (typeof(Storage) != "undefined") {
+		// Store
+		if (typeof(pDBJSON) != undefined) {
+			console.log("JSON-DB '"+pDBID+"' is defined, JSONDB in  Local Storage");
+			if (pDBJSON) {
+				//console.log("pDBJSON '"+pDBID+"' is saved to Local Storage");
+				var vJSONstring = JSON.stringify(pDBJSON)
+				console.log("saveLocalDB('"+pDBID+"') JSONstring='"+vJSONstring.substr(0,120)+"...'");
+				localStorage.setItem(pDBID,vJSONstring);
+				vSuccess = true;
+			} else {
+				console.log("pDBJSON DOM-Node is NOT defined");
+			}
+		} else {
+			console.log("pDBJSON is undefined");
+		};
+	}	 else {
+		console.log("WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...");
+	};
+	return vSuccess;
 };
 //----End of Method save Definition
 
@@ -209,7 +252,8 @@ App.prototype.event = function (pPageID,pButtonID,pEventID) {
   //    vMyInstance.event(pPageID,pButtonID,pEventID);
   //-------------------------------------------------------
 
-  console.log("pPageID="+pPageID+" pButtonID="+pButtonID+" pEventID="+pEventID)
+	console.log("pPageID="+pPageID+" pButtonID="+pButtonID+" pEventID="+pEventID);
+	alert("vApp.event() pPageID="+pPageID+" pButtonID="+pButtonID+" pEventID="+pEventID);
 
 };
 //----End of Method event Definition

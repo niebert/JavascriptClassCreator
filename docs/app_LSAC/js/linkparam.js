@@ -52,13 +52,10 @@ function LinkParam () {
     //---------------------------------------------------------------------
       //---size: Counts the Number of Parameter
       this.size = 0;
-          //---aVars: Attribute: 'aVars' Type: 'Hash' stores all URL parameters
+      //---aVars: Attribute: 'aVars' Type: 'Hash' stores all URL parameters
       this.aVars = {};
-          //---aLink: Attribute: 'aLink' Type: 'String' stores the Link before '?'
+      //---aLink: Attribute: 'aLink' Type: 'String' stores the Link before '?'
       this.aLink = "";
-
-
-
 
     //---------------------------------------------------------------------
     //---END Constructor of Class "LinkParam()"
@@ -94,9 +91,7 @@ LinkParam.prototype.init = function (pDoc) {
 	//save "document" object in aDoc as Attribute for further use
 	this.aDoc = pDoc;
 	this.aLink = pDoc.location;
-	this.aVars = this.parseURL(pDoc.document.search)
-
-
+	this.aVars = this.parseURL(pDoc.location.search);
 };
 //----End of Method init Definition
 
@@ -121,7 +116,7 @@ LinkParam.prototype.parseURL = function (pLink) {
   //    var vMyInstance = new LinkParam();
   //    vMyInstance.parseURL(pLink);
   //-------------------------------------------------------
-
+  console.log("LinkParam.parseURL('..."+pLink+"')");
 	var vLink = pLink || "";
 	var params = {},
 	    tokens,
@@ -129,7 +124,7 @@ LinkParam.prototype.parseURL = function (pLink) {
 	if (vLink != "") {
 	  vLink = vLink.split('+').join(' ');
 	  while (tokens = re.exec(vLink)) {
-	        params[decodeURIComponent(tokens[1])] = decodeURIComponent(this.decodeURLparam(tokens[2]));
+	     params[decodeURIComponent(tokens[1])] = decodeURIComponent(this.decodeParam(tokens[2]));
 	     this.calcSize();
 	  };
 	} else {
@@ -181,8 +176,9 @@ LinkParam.prototype.getURL = function (pVarHash) {
 //#    pVar:String
 //#    pValue:String
 //# Comment:
-//#    Comment for setValue
-//#
+//#    sets the value of a link parameter, this is useful
+//#    when a parameter for URL are generated from the link parameters
+//#    defined in LinkParam
 //# created
 //# last modifications
 //#################################################################
@@ -195,10 +191,8 @@ LinkParam.prototype.setValue = function (pVar,pValue) {
   //    var vMyInstance = new LinkParam();
   //    vMyInstance.setValue(pVar,pValue);
   //-------------------------------------------------------
-
-
+    this.aVars[pVar] = pValue;
 	  this.calcSize();
-
 };
 //----End of Method setValue Definition
 
@@ -329,7 +323,6 @@ LinkParam.prototype.getParam4URL = function () {
 	  };
 	  return vOut;
 
-
 };
 //----End of Method getParam4URL Definition
 
@@ -358,7 +351,6 @@ LinkParam.prototype.decodeParam = function (pParam) {
 	pParam = pParam.replace(/\+/g,  " ");
 	pParam = decodeURIComponent(pParam);
 	return pParam;
-
 
 };
 //----End of Method decodeParam Definition
@@ -520,7 +512,11 @@ LinkParam.prototype.calcSize = function () {
 
 	var vRet = 0;
 	if (this.aVars) {
-	    vRet = keys(this.aVars).length;
+    for (var iID in this.aVars) {
+      if (this.aVars.hasOwnProperty(iID)) {
+        vRet++;
+      }
+    };
 	} else {
 	    console.log("ERROR: variable '"+pVar+"' does not exist in LinkParam");
 	};
@@ -598,7 +594,6 @@ LinkParam.prototype.exists = function (pVar) {
 	   vRet = this.aVars.hasOwnProperty(pVar)
 	};
 	return vRet;
-
 
 };
 //----End of Method exists Definition

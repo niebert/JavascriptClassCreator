@@ -152,15 +152,15 @@ function openEditClass() {
   openEditorJSON("Class");
 };
 
-function reverseMap(pMap) {
-  var vReverseMap = {};
-  for (var key in pMap) {
-    if (pMap.hasOwnProperty(key)) {
-      vReverseMap[pMap[key]] = key;
-    }
-  };
-  return vReverseMap
-};
+// function reverseMap(pMap) {
+//   var vReverseMap = {};
+//   for (var key in pMap) {
+//     if (pMap.hasOwnProperty(key)) {
+//       vReverseMap[pMap[key]] = key;
+//     }
+//   };
+//   return vReverseMap
+// };
 
 var vMapAtt2Edit = {
   "AttribAccess":"visibility",

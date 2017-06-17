@@ -17,7 +17,7 @@
   left: 10px;
 }
 
-input[type=button] {
+input[type=file] {
     padding:5px 15px;
     background:#ccc;
     border:0 none;

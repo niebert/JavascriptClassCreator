@@ -23,26 +23,29 @@
            });
          //--------------END iOS-Inspired------------
       </script>
-            <!-- JSON Databases -->
-      <script type="text/javascript" src="db/dummy.js"></script>
-      <script type="text/javascript" src="db/mydata.js"></script>
+      <!-- JSON Databases -->
+      <script type="text/javascript" src="db/ovitrapmpi_data.js"></script>
+      <script type="text/javascript" src="schema/ovitrapmpi_schema.js"></script>
 
       <!-- Global JavaScript Libraries for ALL files -->
-      <script type="text/javascript" src="js/bootstrap.js"></script>
       <script type="text/javascript" src="js/arrayhash.js"></script>
       <script type="text/javascript" src="js/filesaver.js"></script>
       <script type="text/javascript" src="js/iframe.js"></script>
       <script type="text/javascript" src="js/localstorage.js"></script>
       <script type="text/javascript" src="js/linkparam.js"></script>
       <script type="text/javascript" src="js/lodash.js"></script>
+      <script type="text/javascript" src="js/openwin.js"></script>
       <script type="text/javascript" src="js/jsoneditor.js"></script>
       <script type="text/javascript" src="js/predbedit.js"></script>
       <script type="text/javascript" src="js/string.js"></script>
+      <script type="text/javascript" src="js/syncjsoneditor.js"></script>
       <script type="text/javascript" src="js/writedom.js"></script>
 
       <!-- Classes Javascript-Libs -->
       <script type="text/javascript" src="js/linkparam.js"></script>
       <script type="text/javascript" src="js/wrapjson.js"></script>
+      <script type="text/javascript" src="js/databasejson.js"></script>
+      <script type="text/javascript" src="js/extrapolator.js"></script>
       <script type="text/javascript" src="js/databaselist.js"></script>
       <script type="text/javascript" src="js/appabstract.js"></script>
       <script type="text/javascript" src="js/server.js"></script>
@@ -129,15 +132,13 @@
           <h1>DisApp Tool</h1>
              <ul data-role="listview" data-inset="true">
                <li><a href="#welcome">Welcome</a></li>
-               <li><a href="#setting">Settings</a></li>
                <li><a href="#load">Load JSON</a></li>
                <li><a href="#save">Save JSON</a></li>
-               <li><a href="#analysis">Analysis</a></li>
                <li><a href="#data">Data</a></li>
-               <!--
+               <li><a href="#analysis">Analysis</a></li>
+               <li><a href="#setting">Settings</a></li>
                <li><a href="#quit">Quit</a></li>
-               -->
-	            </ul>
+              </ul>
         </div>
        <!-- /page ID: home -->
      </div>
@@ -145,14 +146,43 @@
      <div data-role="page" id="setting">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'OK' -->
+                  <!--
                   <a href="#" id="bOK1" onclick="vApp.event('setting','OK','event1')" data-theme="a">OK</a>
+                  <a href="#" class="bCANCEL" id="bCANCEL1" onclick="vApp.event('setting','CANCEL','1');return false" data-theme="a">Cancel</a>
+                  -->
+                  <a href="#" id="bHOME2" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
                   <h1>Settings</h1>
                   <!-- header button: 'Cancel' -->
-                  <a href="#" class="bCANCEL" id="bCANCEL1" onclick="vApp.event('setting','CANCEL','1');return false" data-theme="a">Cancel</a>
          </div>
          <!-- /header -->
          <div data-role="content">
-            Content of Settings
+            <h2>Settings</h2>
+            <div data-role="fieldcontain">
+                  <!--
+                  <label>Range Inputs:</label>
+                  <br /><br />
+
+                  <input type="range" id="setting_range"/>
+                  -->
+                  <label>Extrapolator Map Key:</label>
+                  <br /><br />
+
+                  <input type="search"  id="extrapolateKey" value="trapNumber" onchange="vApp.aExtrapolator.setKey(this.value)"/>
+
+                  <br /><br />
+                  <label>Extrapolator Missing Key:</label>
+                  <br /><br />
+
+                  <input type="text" id="missingID" value="geolocation"  onchange="vApp.aExtrapolator.setMissingID(this.value)"/>
+
+                  <label>Extrapolator Equivalent to Missing:</label>
+                  <br /><br />
+
+                  <input type="text" id="equir2missing" value="0.0,0.0"  onchange="vApp.aExtrapolator.setEqui2Missing(this.value)"/>
+                  <br />
+
+            </div>
+
         </div>
     <!-- /page ID: setting -->
     </div>
@@ -160,20 +190,38 @@
      <div data-role="page" id="load">
          <div data-role="header" data-position="fixed">
            <!-- header button: 'OK' -->
-           <a href="#" id="bOK2" onclick="vApp.event('load','OK','event2')" data-theme="a">OK</a>
+           <a href="#" id="bOK2" onclick="vApp.event('load','OK','eventLoadJSON')" data-theme="a">OK</a>
            <h1>Load JSON</h1>
            <!-- header button: 'Cancel' -->
+           <!--
            <a href="#" class="bCANCEL" id="bCANCEL2" onclick="vApp.event('load','CANCEL','2');return false" data-theme="a">Cancel</a>
+           -->
+           <a href="#" class="bCANCEL" id="bCANCEL2" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false"  data-theme="a">Cancel</a>
          </div>
          <!-- /header -->
        <div data-role="content">
           <h2>Load JSON</h2>
-          The current data was exported and cleaned by Dr. Ajit N. Babu CAGH. Press Pencil button to edit the data.
+          <h3>Select new JSON File</h3>
+          <div data-role="fieldcontain">
+            <input type="file" name="fileJSON" value="Select JSON File" id="fileJSON" />
+          </div>
+          <table style="background:white" width="100%" cellpadding="10px">
+            <tr>
+              <td>
+                Select a new JSON file from your device and press the <b>Import JSON</b>-Button.
+              </td>
+            </tr>
+          </table>
+          <button id="bImportJSON" onclick="vApp.aExtrapolator.importJSON('fileJSON');return false">
+            <i class="fa fa-external-link"></i> Import JSON
+          </button>
+
           <hr>
-          <h3>Select JSON File</h3>
-          <input type="file" name="fileJSON" id="fileJSON" />
-          <button id="bEditFileListJSON" onclick="vApp.aJSONEditor.openWin(vDataJSON['ovitrapmpi_schema'],vDataJSON['ovitrapmpi_data']);return false">
-            <i class="fa fa-pencil"></i> Edit
+          <h3>Edit current JSON File</h3>
+          Press Edit Button to check current JSON file with data. <br>
+
+          <button id="bEditFileListJSON" onclick="$.mobile.changePage( '#editdata', { transition: 'slideup', changeHash: false });return false">
+            <i class="fa fa-pencil"></i> Edit JSON Data
           </button>
        </div>
     <!-- /page ID: editdata -->
@@ -189,8 +237,18 @@
         </div>
          <!-- /header -->
          <div data-role="content">
-           Content of Save JSON (ID:'save')
-         </div>
+           <h2>Save JSON</h2>
+           <table style="background:white" width="100%" cellpadding="10px">
+             <tr>
+               <td>
+                 If you extrapolated or edited the JSON data, you can save the current JSON data to your device.
+               </td>
+             </tr>
+           </table>
+           <button id="bSaveJSON" onclick="vApp.aExtrapolator.saveJSON('ovitrapmpi.json');return false">
+             <i class="fa fa-download"></i> Save JSON
+           </button>
+        </div>
     <!-- /page ID: save -->
     </div>
      <!-- Page: analysis     Page Type: MenuPage -->
@@ -266,8 +324,19 @@
          </div>
          <!-- /header -->
          <div data-role="content">
-           Content of User Location (ID:'userlocation')
-         </div>
+           <h3>Extrapolation User Location</h3>
+            OviTrap with a certain unique are not moved to different geolocation.
+            GPS location is not always available on a mobile device.
+            Users Location for OviTraps can be extrapolated for specific OviTrap IDs
+            if at least one GPS location can be determined in all records in the database.
+            <hr>
+            <h4>Scan OviTrap Geolocation</h4>
+            Scan the OviTrap geolocations first for all users.
+            <button id="bScanOviTrapGeoLoc" onclick="vApp.aExtrapolator.scan();return false" data-theme="c">&lt;&lt;</button>
+            <h4>Extrapolate Missing OviTrap Geolocation</h4>
+            The scanned  OviTrap geolocations are used for imputation of missing Geolocations.
+            <button id="bExtrapolateOviTrapGeoLoc" onclick="vApp.aExtrapolator.extrapolate();return false" data-theme="c">&lt;&lt;</button>
+        </div>
     <!-- /page ID: userlocation -->
     </div>
      <!-- Page: editdata     Page Type: DefaultPage -->
@@ -281,9 +350,37 @@
         <div data-role="content">
           <h2>Edit Data</h2>
           The current data was exported and cleaned by Dr. Ajit N. Babu CAGH. Press Pencil button to edit the data.
-          <button id="bEditFileListJSON" onclick="vApp.aJSONEditor.openWin(vDataJSON['ovitrapmpi_schema'],vDataJSON['ovitrapmpi_data']);return false">
-            <i class="fa fa-pencil"></i> Edit
-          </button>
+          <ul  id="ulResponseDB" data-role='listview' data-inset='true'>
+
+              <li>
+                <div id="vNavQuestRESPONSE" >
+                  <table width="100%">
+                    <tr  align="center">
+                      <td id="footerRESPONSEprev">
+                        <button id="bPreviousRESPONSE" onclick="vApp.aDatabaseList.prevRecord();return false" data-theme="c">&lt;&lt;</button>
+                      </td>
+                      <td id="footerRESPONSEcount">
+                        [1]
+                      </td>
+                      <td id="footerRESPONSEnext">
+                        <button id="bNextRESPONSE" onclick="vApp.aDatabaseList.nextRecord();return false" data-theme="c">&gt;&gt;</button>
+                      </td>
+                    </tr>
+                    <tr  align="center">
+                      <td id="footerRESPONSEheader" colspan="3">
+                        Database Record
+                      </td>
+                    </tr>
+
+                  </table>
+                </div>
+             </li>
+              <li>
+                <button id="bEditFileListJSON" onclick="openWinEditorJSON('ovitrapmpi');return false">
+                  <i class="fa fa-pencil"></i> Edit
+                </button>
+              </li>
+           </ul>
        </div>
     <!-- /page ID: editdata -->
     </div>

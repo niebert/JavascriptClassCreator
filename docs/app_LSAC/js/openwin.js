@@ -10,6 +10,7 @@ function getWinName() {
   return vWinName;
 };
 
+
 function openWinMorrisJS(pDBID) {
   // pDBID="ovitrapmpi"
   openWinHTMLsize("timeseries.html",1000,600);

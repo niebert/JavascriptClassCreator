@@ -45,8 +45,8 @@
       <script type="text/javascript" src="js/linkparam.js"></script>
       <script type="text/javascript" src="js/wrapjson.js"></script>
       <script type="text/javascript" src="js/databasejson.js"></script>
-      <script type="text/javascript" src="js/data4graph.js"></script>
       <script type="text/javascript" src="js/extrapolator.js"></script>
+      <script type="text/javascript" src="js/data4graph.js"></script>
       <script type="text/javascript" src="js/databaselist.js"></script>
       <script type="text/javascript" src="js/appabstract.js"></script>
       <script type="text/javascript" src="js/server.js"></script>
@@ -270,9 +270,9 @@
        <div data-role="content">
           <h2>Analysis of Data</h2>
           <ul data-role="listview" data-inset="true">
-            <li><a href="#heatmap">Heatmap</a></li>
-            <li><a href="#timeseries">Time Series</a></li>
-	        </ul>
+            <li><a href="#timeseries">Temporal Analysis</a></li>
+	          <li><a href="#heatmap">Heatmap</a></li>
+          </ul>
       </div>
     <!-- /page ID: analysis -->
     </div>
@@ -296,6 +296,10 @@
          <div data-role="content">
             <h2>Heatmap</h2>
             The HeatMap is generated with OpenLayers for the Browser Version.
+            <button id="bOpenMorrisJS" onclick="  openWinHTMLsize('heatmap.html',1000,600);return false">
+              <i class="fa fa-line-chart"></i> Show HeatMap
+            </button>
+
         </div>
     <!-- /page ID: heatmap -->
     </div>
@@ -316,8 +320,16 @@
          <h2>Temporal Analysis</h2>
          <h3>for OviTrap and MPI</h3>
          The ovitrap egg count and the Mosquito Perception Index are visulised in one graph.
+         MPI is the Mosquito Perception Index MPI
+         <select id="sGraphSelect" onchange="vApp.aData4Graph.setGraphOutput(this.value)">
+           <option value="OviTrapMPI">OviTrap and MPI</option>
+           <option value="OviTrap">OviTrap</option>
+           <option value="OviTrapRaw">OviTrap raw data</option>
+           <option value="MPI">MPI</option>
+           <option value="OviTrapRaw">MPI raw data</option>
+          </select>
          <button id="bOpenMorrisJS" onclick="openWinMorrisJS('ovitrapmpi');return false">
-           <i class="fa fa-diagram"></i> Edit
+           <i class="fa fa-line-chart"></i> Show Graph
          </button>
 
       </div>
@@ -350,25 +362,38 @@
          </div>
          <!-- /header -->
          <div data-role="content">
-           <h3>Extrapolation Geo Location</h3>
-            OviTrap with a certain unique are not moved to different geolocation.
-            GPS location is not always available on a mobile device.
-            Users Location for OviTraps can be extrapolated for specific OviTrap IDs
-            if at least one GPS location can be determined in all records in the database.
-            <hr>
+           <h3>Extrapolation Geo Location
+             <a id="bExtrapolateInfo" href="#" onclick="$('#extrapolate_info').toggle();return false">
+               <i class="fa fa-info-circle"></i>
+            </a>
+           </h3>
+           <div id="extrapolate_info" style="display:none">
+             OviTrap with a certain unique trapNumber are not moved to different geolocation.
+             GPS location is not always available on a mobile device.
+             Users Location for OviTraps can be extrapolated for specific OviTrap IDs
+             if at least one GPS location can be determined in all records in the database.
+             <hr>
+           </div>
             <h4>Scan OviTrap Geolocation</h4>
             Scan the OviTrap geolocations first for all users.
-            <button id="bScanOviTrapGeoLoc" onclick="vApp.aExtrapolator.scan();return false" data-theme="c">
+            <button id="bScanOviTrapGeoLoc" onclick="vApp.aExtrapolator.scan();$('#extrapolate_interface').show();return false" data-theme="c">
               <i class="fa fa-search"></i> Scan JSON
             </button>
-            <h4>Extrapolate Missing OviTrap Geolocation</h4>
-            The scanned  OviTrap geolocations are used for imputation of missing Geolocations.
-            <button id="bExtrapolateOviTrapGeoLoc" onclick="vApp.aExtrapolator.extrapolate();return false" data-theme="c">
-              <i class="fa fa-cogs"></i> Extrapolate GeoLoc
-            </button>
-            <button id="bDownloadErrors" onclick="vApp.aExtrapolator.downloadErrors();return false" data-theme="c">
-              <i class="fa fa-download"></i> Download Errors
-            </button>
+            <div id="extrapolate_interface" style="display:none">
+              <h4>Extrapolate Missing OviTrap Geolocation</h4>
+              The scanned  OviTrap geolocations are used for imputation of missing Geolocations.
+              <button id="bExtrapolateOviTrapGeoLoc" onclick="vApp.aExtrapolator.extrapolate();$('#divSaveExtrapolatedJSON').show();return false" data-theme="c">
+                <i class="fa fa-cogs"></i> Extrapolate GeoLoc
+              </button>
+              <button id="bDownloadErrors" onclick="vApp.aExtrapolator.downloadErrors();return false" data-theme="c">
+                <i class="fa fa-download"></i> Download Errors
+              </button>
+            </div>
+            <div id="divSaveExtrapolatedJSON" style="display:none">
+              <button id="bSaveExtrapolatedJSON" onclick="vApp.gotoPage('save');return false" data-theme="c">
+                <i class="fa fa-floppy-o"></i> Save JSON
+              </button>
+            </div>
         </div>
     <!-- /page ID: extrapolation -->
     </div>

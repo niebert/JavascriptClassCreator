@@ -100,10 +100,10 @@
                     "DATABASE": {
                         "type": "string",
                         "id": "/items/properties/elements/properties/DATABASE",
-                        "title": "Database for HTML file",
+                        "title": "JSCC Database for HTML file",
                         "default": "db/mydata.js",
                         "format": "text",
-                        "description": "This replace."
+                        "description": "JSCC Database is a JSON object that contains a 'schema' and a 'data' key for the JSON schema and JSON data"
                     }
                 }
             },

@@ -102,10 +102,10 @@ function Extrapolator () {
   };
   //----PUBLIC Method: Extrapolator.saveFile2HDD(pFile)-----
   // saveFile2HDD(pFile,pContent) creates a download for the file with the content,
-  this.downloadErrors = function () {
-      var vContent = "Extrapolator Errors:\n"+this.aErrors.join("\n");
-      this.saveFile2HDD("extrapolation_errors.txt",vContent);
-  }
+	this.downloadErrors = function () {
+			var vContent = "Extrapolator Errors:\n"+this.aErrors.join("\n");
+			this.saveFile2HDD("extrapolation_errors.txt",vContent);
+	}
   //----PUBLIC Method: Extrapolator.saveFile2HDD(pFile)-----
   // saveFile2HDD(pFile,pContent) creates a download for the file with the content,
   this.saveFile2HDD = function (pFilename,pContent) {
@@ -165,12 +165,12 @@ function Extrapolator () {
             if (!this.isMissing(pHash[this.aMissingID])) {
               // also the extrapolation data is available
               // does a previous defintion in exist in aMap?
-              console.log("Scan ['"+vMapID+"']->'"+pHash[this.aMissingID]+"'");
+              console.log("Scan "+this.aKey+"['"+vMapID+"']->"+this.aMissingID+"'"+pHash[this.aMissingID]+"'");
               if (this.aMap.hasOwnProperty(vMapID)) {
                 // it exists, now check if previous definition match with this new definition
                 if (this.aMap[vMapID] != pHash[this.aMissingID]) {
                   // mismath found throw Warning in Errors
-                  var vError = "WARNING "+this.aErrors.length+": for MapID['"+vMapID+"'] differs map values (1) '"+this.aMap[vMapID]+"' (2) '"+pHash[this.aMissingID]+"'";
+                  var vError = "WARNING "+(this.aErrors.length+1)+": for "+this.aKey+"['"+vMapID+"'] different "+this.aMissingID+" values (1) '"+this.aMap[vMapID]+"' (2) '"+pHash[this.aMissingID]+"'";
                   console.log(vError);
                   this.aErrors.push(vError);
                 };
@@ -185,7 +185,7 @@ function Extrapolator () {
           console.log("this.aMissingID is undefined");
         }
       } else {
-        console.log("this.aKey is undefined");
+        //console.log("this.aKey is undefined");
       }
     };
     //----PUBLIC Method: extrapolate4Hash(pHashDB)-----
@@ -202,11 +202,15 @@ function Extrapolator () {
               if (this.isMissing(pHash[this.aMissingID])) {
                 // the value is missing so perfrom extrapolation
                 pHash[this.aMissingID] = this.aMap[vMapID]
-                console.log("add Missing Data of '"+this.aMissingID+"' for key['"+this.aKey+"']='"+vMapID+"' extrapolate '"+this.aMap[vMapID]+"'");
+                var vSuc = "DONE: add Missing Data of '"+this.aMissingID+"' for key['"+this.aKey+"']='"+vMapID+"' extrapolate '"+this.aMap[vMapID]+"'";
+								this.aErrors.push(vSuc);
+								console.log(vSuc);
               };
             } else {
-              console.log("WARNING: Extrapolation needed for Missing Data of '"+this.aMissingID+"' for key['"+this.aKey+"']='"+vMapID+"' but extrapolation failed!");
-            }
+              var vWarn = "WARNING: Extrapolation needed for Missing Data of '"+this.aMissingID+"' for key['"+this.aKey+"']='"+vMapID+"' but extrapolation failed!";
+							this.aErrors.push(vWarn);
+							console.log(vWarn);
+						}
           }
         }
       };
@@ -280,6 +284,7 @@ Extrapolator.prototype.extrapolate = function () {
   //    var vMyInstance = new Extrapolator();
   //    vMyInstance.extrapolate();
   //-------------------------------------------------------
+	alert("Start extrapolation - please wait ...");
   var vCount = 0;
   for (var iKey in this.aMap) {
     if (this.aMap.hasOwnProperty(iKey)) {
@@ -375,13 +380,13 @@ Extrapolator.prototype.loopDB = function () {
         if (isHash(this.aData[i])) {
            this.call4Hash(this.aData[i]);
         } else {
-          var vError = "Extrapolator: this.aData["+i+"] is not a hash"
+          var vError = "Extrapolator: this.aData["+i+"] is not a hash";
           console.log(vError);
           this.aErrors.push(vError);
        }
       }
   } else {
-      var vError = "Extrapolator: this.aData is not an array"
+      var vError = "Extrapolator: this.aData is not an array";
       console.log(vError);
       this.aErrors.push(vError);
   };

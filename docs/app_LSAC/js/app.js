@@ -72,9 +72,9 @@ function App () {
 	//---PUBLIC: aLinkParam (LinkParam): stores all parameters from the URL in aLinkParam.aVars
 	this.aLinkParam = new LinkParam();
 	//---PUBLIC: aExtrapolator extrapolates data by mapping trapNumber to geolocation
-	this.aExtrapolator = new Extrapolator();
+	this.aExtrapolator = new Data4Graph(); //new Extrapolator();
 	//---PUBLIC: aData4Graph generated the JSON for MorrisJS and the heatmap
-	this.aData4Graph = new Data4Graph();
+	this.aData4Graph = this.aExtrapolator; //new Data4Graph()
 
     //---------------------------------------------------------------------
     //---Methods of Class "App()"
@@ -141,8 +141,7 @@ App.prototype.init = function (pDoc,pDataJSON) {
 	x.setEqui2Missing("equi2missing1","0.0,0.0");
 	x.setEqui2Missing("equi2missing2","N/A");
 	x.setEqui2Missing("equi2missing3","null");
-	x = this.aData4Graph;
-	x.init(this.aDatabaseList,"ovitrapmpi",pDataJSON["ovitrapmpi"]);
+	//aDataGraph is an alias for aExtrapolator generated as instance of aDataGraph
 };
 //----End of Method initDOM Definition
 

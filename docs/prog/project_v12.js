@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/00 7:24:30",
+    "mod_date": "2017/05/01 14:15:53",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -23,7 +23,7 @@ vDataJSON['project'] = {
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
-    "SelectedClass": "LinkParam",
+    "SelectedClass": "Editor4JSON",
     "SelectedPage": "editdata",
     "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
@@ -780,7 +780,7 @@ vDataJSON['project'] = {
             "tMethodHeader": "getParam4URL():String",
             "tMethodComment": "get the parameter string for the URL starting with ? if aVars contains variables",
             "sMethodList": "getParam4URL",
-            "tMethodCode": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + encodeURLparam(iID) + \"=\" + encodeURLparam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
+            "tMethodCode": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + this.encodeParam(iID) + \"=\" + this.encodeParam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribDefault": {
@@ -902,17 +902,17 @@ vDataJSON['project'] = {
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aEditor = null\naData = []\ncurrent = -1\naSchemaJSON = null",
-            "tMethods": "init(pDOMID:String,pData:Array,pSchema:Hash)\nprev()\nnext()\ngoto()\nfirst()\nlast()\nedit()",
+            "tMethods": "init(pDOMID:String,pData:Array,pSchema:Hash)\nprev()\nnext()\ngoto()\nfirst()\nlast()\nedit()\nsetSchema(pSchemaJSON:Hash)\ngetSchema():Hash\nexport()\nexportData()\nexportSchema()",
             "sAttribList": "current",
             "tAttribName": "",
             "tAttribType": "",
             "tAttribComment": "",
             "tAttribDefault": "",
             "sAttribTypeList": "",
-            "tMethodHeader": "edit()",
+            "tMethodHeader": "exportSchema()",
             "tMethodName": "",
             "tMethodComment": "edit calls the JSON editor of Jeremy Dorn for the selected record. It sets the init value of the JSON editor.  ",
-            "sMethodList": "edit",
+            "sMethodList": "exportSchema",
             "tMethodCode": "",
             "tLoopObject": "",
             "tLoopMethod": "",
@@ -947,7 +947,12 @@ vDataJSON['project'] = {
                 "goto": "",
                 "first": "",
                 "last": "",
-                "edit": ""
+                "edit": "",
+                "setSchema": "pSchemaJSON:Hash",
+                "getSchema": "",
+                "export": "",
+                "exportData": "",
+                "exportSchema": ""
             },
             "MethodReturn": {
                 "init": "",
@@ -956,7 +961,12 @@ vDataJSON['project'] = {
                 "goto": "",
                 "first": "",
                 "last": "",
-                "edit": ""
+                "edit": "",
+                "setSchema": "",
+                "getSchema": "Hash",
+                "export": "",
+                "exportData": "",
+                "exportSchema": ""
             },
             "MethodCode": {
                 "init": "",
@@ -965,7 +975,12 @@ vDataJSON['project'] = {
                 "goto": "",
                 "first": "",
                 "last": "",
-                "edit": ""
+                "edit": "",
+                "setSchema": "",
+                "getSchema": "",
+                "export": "",
+                "exportData": "",
+                "exportSchema": ""
             },
             "MethodComment": {
                 "init": "Comment for init",
@@ -974,7 +989,12 @@ vDataJSON['project'] = {
                 "goto": "Comment for goto",
                 "first": "Comment for first",
                 "last": "Comment for last",
-                "edit": "edit calls the JSON editor of Jeremy Dorn for the selected record. It sets the init value of the JSON editor.  "
+                "edit": "edit calls the JSON editor of Jeremy Dorn for the selected record. It sets the init value of the JSON editor.  ",
+                "setSchema": "Comment for setSchema",
+                "getSchema": "Comment for getSchema",
+                "export": "Comment for export",
+                "exportData": "Comment for exportData",
+                "exportSchema": "Comment for exportSchema"
             },
             "MethodAccess": {
                 "init": "public",
@@ -983,7 +1003,12 @@ vDataJSON['project'] = {
                 "goto": "public",
                 "first": "public",
                 "last": "public",
-                "edit": "public"
+                "edit": "public",
+                "setSchema": "public",
+                "getSchema": "public",
+                "export": "public",
+                "exportData": "public",
+                "exportSchema": "public"
             },
             "sClassList": "Editor4JSON",
             "tMethodAccess": "public"

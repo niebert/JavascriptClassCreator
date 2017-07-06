@@ -2,7 +2,7 @@
 <html>
     <head>
       <meta charset="utf-8"/>
-      <title>App LSAC</title>
+      <title>Map4SDG</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
       <meta name="apple-mobile-web-app-capable" content="yes">
       <link type="text/css" href="css/jquery.mobile-1.2.0.min.css" rel="stylesheet" />
@@ -48,112 +48,21 @@
                   <!--
                   <a href="#" id="bHOME1" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
                   -->
-            <h1>Welcome</h1>
+            <h1>Welcome Map4SDG</h1>
 
        </div>
          <!-- /header -->
        <div data-role="content">
          <h2>
-           DisApp Visualization
+           Map4SDG
          </h2>
-          <button onclick="openWinHTML('app.html')"> Start DisApp Tool
+         This tool supports you in creating a map for locations that are connected to <a href="http://www.un.org/sustainabledevelopment/sustainable-development-goals/" target="_blank">Sustainable Development Goals (SDG)</a>. 
+           Map4SDG is an editor for map and viewer to display the final map.  
+          <button onclick="openWinHTML('app.html')"> Mapping Tool for SDGs
           </button>
        </div>
     <!-- /page ID: welcome -->
     </div>
-     <!-- Page: home     Page Type: MenuPage -->
-     <div data-role="page" id="home">
-         <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Welcome' -->
-       <a href="#" id="bWELCOME2" onclick="$.mobile.changePage( '#welcome', { transition: 'slideup', changeHash: false });return false" data-theme="a">Welcome</a>
-
-            <h1>Home</h1>
-           <a href="#" id="bQUIT3" onclick="if (confirm('Do you want to quit!')) window.close();" data-theme="c">Quit</a>
-       </div>
-         <!-- /header -->
-       <div data-role="content">
-          Content for Page 'home'
-             <ul data-role="listview" data-inset="true">
-       <li><a href="#welcome">Welcome</a></li>
-  <li><a href="#setting">Settings</a></li>
-  <li><a href="#save">Save</a></li>
-  <li><a href="#quit">Quit App</a></li>
-
-	</ul>
-
-       </div>
-    <!-- /page ID: home -->
-    </div>
-     <!-- Page: setting     Page Type: OptionsPage -->
-     <div data-role="page" id="setting">
-         <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Home' -->
-       <a href="#" id="bHOME3" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-
-            <h1>Settings</h1>
-                  <!-- header button: 'Save' -->
-       <a href="#" id="bSAVE4" onclick="$.mobile.changePage( '#save', { transition: 'slideup', changeHash: false });return false" data-theme="a">Save</a>
-
-       </div>
-         <!-- /header -->
-       <div data-role="content">
-          Content for Page 'setting'
-       </div>
-    <!-- /page ID: setting -->
-    </div>
-     <!-- Page: save     Page Type: SaveDialog -->
-     <div data-role="page" id="save">
-         <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Home' -->
-       <a href="#" id="bHOME5" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-
-            <h1>Save</h1>
-                  <!-- header button: 'Cancel' -->
-       <a href="#" class="b_CANCEL" id="b_CANCEL5" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
-
-       </div>
-         <!-- /header -->
-       <div data-role="content">
-          Content for Page 'save'
-       </div>
-    <!-- /page ID: save -->
-    </div>
-     <!-- Page: quit     Page Type: ConfirmPage -->
-     <div data-role="page" id="quit">
-         <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Home' -->
-       <a href="#" id="bHOME6" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-
-            <h1>Quit App</h1>
-                  <!-- header button: 'Cancel' -->
-       <a href="#" class="b_CANCEL" id="b_CANCEL6" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
-
-       </div>
-         <!-- /header -->
-       <div data-role="content">
-          Content for Page 'quit'
-       </div>
-    <!-- /page ID: quit -->
-    </div>
-     <!-- Page: login     Page Type: LoginPage -->
-     <div data-role="page" id="login">
-         <div data-role="header" data-position="fixed">
-                  <!-- header button: 'Home' -->
-       <a href="#" id="bHOME7" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-
-            <h1>Login</h1>
-                  <!-- header button: 'Cancel' -->
-       <a href="#" class="b_CANCEL" id="b_CANCEL7" onclick="alert('Click Button CANCEL');return false" data-theme="a">Cancel</a>
-
-       </div>
-         <!-- /header -->
-       <div data-role="content">
-          Content for Page 'login'
-       </div>
-    <!-- /page ID: login -->
-    </div>
-
-
 
 <!--
 =============================================

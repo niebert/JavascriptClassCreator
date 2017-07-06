@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
       <meta charset="utf-8"/>
       <title>App LSAC</title>
@@ -96,15 +96,19 @@
        </div>
          <!-- /header -->
        <div data-role="content">
-         <h2>Welcome</h2>
+         <h2>Welcome to Map4SDG</h2>
          <h3>Introduction</h3>
-         DisApp-Tool is a WebApp that needs no Server Connection and runs in browser. DisApp-Tool has mapping capabilities and visualizes demo data in graphs.
+         The Tool Map4SDG is a WebApp that needs no Server Connection and runs in browser.
+         DisApp-Tool has mapping capabilities and visualizes demo data in graphs.
 
          <h3>Used Packages</h3>
-         DisApp-Tool uses
+         Map4SDG-Tool uses
          <ul>
+          <li>
+             <a href="https://github.com/jdorn/json-editor" target="_blank">JSON Editor</a>  by Jemery Dorn for editor the editing the Title, Abstract, Link and Geolocation for activities and locations tha refer to specific SDGs.
+          </li>
            <li>
-             <a href="http://morrisjs.github.io/morris.js/" target="_blank">MorrisJS</a>
+             <a href="http://morrisjs.github.io/morris.js/" target="_blank">MorrisJS</a> for creating a Pie-chart for collected items for SDG.
           </li>
           <li>
             <a href="https://openlayers.org/" target="_blank">OpenLayers</a> for visualisation of data.
@@ -113,7 +117,6 @@
             <a href="https://niebert.github.io/JavascriptClassCreator" target="_blank">JavascriptClassCreator</a>
           </li>
         </ul>
-         for visualisation of data.
        </div>
     <!-- /page ID: welcome -->
     </div>
@@ -130,13 +133,15 @@
          <!-- /header -->
         <!-- Page: home  -->
        <div data-role="content">
-          <h1>DisApp Tool</h1>
+          <h1>Map4SDG Tool</h1>
              <ul data-role="listview" data-inset="true">
+               <!--
                <li><a href="#welcome">Welcome</a></li>
-               <li><a href="#load">Load JSON</a></li>
-               <li><a href="#save">Save JSON</a></li>
-               <li><a href="#data">Data</a></li>
-               <li><a href="#analysis">Analysis</a></li>
+               -->
+               <li><a href="#load">Load</a></li>
+               <li><a href="#save">Save</a></li>
+               <li><a href="#data">SDG Database</a></li>
+               <li><a href="#viewer">Viewer</a></li>
                <li><a href="#setting">Settings</a></li>
                <li><a href="#quit">Quit</a></li>
               </ul>
@@ -204,7 +209,7 @@
            <!--
            <a href="#" class="bCANCEL" id="bCANCEL2" onclick="vApp.event('load','CANCEL','2');return false" data-theme="a">Cancel</a>
            -->
-           <a href="#" class="bCANCEL" id="bCANCEL2" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false"  data-theme="a">Cancel</a>
+           <a href="#" class="bCANCEL" id="bCANCEL2" onclick="$.mobile.changePage( '#viewer', { transition: 'slideup', changeHash: false });return false"  data-theme="a">Cancel</a>
          </div>
          <!-- /header -->
        <div data-role="content">
@@ -259,22 +264,24 @@
         </div>
     <!-- /page ID: save -->
     </div>
-     <!-- Page: analysis     Page Type: MenuPage -->
-     <div data-role="page" id="analysis">
+     <!-- Page: viewer     Page Type: MenuPage -->
+     <div data-role="page" id="viewer">
          <div data-role="header" data-position="fixed">
                   <!-- header button: 'Home' link to page 'home' -->
                   <a href="#" id="bHOME4" onclick="$.mobile.changePage( '#home', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
-                  <h1>Analysis</h1>
+                  <h1>Viewer</h1>
        </div>
          <!-- /header -->
        <div data-role="content">
-          <h2>Analysis of Data</h2>
+          <h2>Viewer of Data</h2>
           <ul data-role="listview" data-inset="true">
-            <li><a href="#timeseries">Temporal Analysis</a></li>
-	          <li><a href="#heatmap">Heatmap</a></li>
+            <li><a href="#markermap">SDG Map Viewer</a></li>
+	        <li><a href="#piechart">Pie Chart for SDGs</a></li>
+	        <li><a href="#timeseries">Time Line of SDG Activities</a></li>
+	        <li><a href="#heatmap">SDG Activity Heatmap</a></li>
           </ul>
       </div>
-    <!-- /page ID: analysis -->
+    <!-- /page ID: viewer -->
     </div>
      <!-- Page: heatmap     Page Type: ConfirmPage -->
      <div data-role="page" id="heatmap">
@@ -283,13 +290,13 @@
                   <!--
                   <a href="#" id="bOK3" onclick="vApp.event('heatmap','OK','event3')" data-theme="a">OK</a>
                   -->
-                <a href="#" id="bANALYIS1" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Analysis</a>
+                <a href="#" id="bVIEWER1" onclick="$.mobile.changePage( '#viewer', { transition: 'slideup', changeHash: false });return false" data-theme="a">Viewer</a>
                 <h1>Heatmap</h1>
                   <!-- header button: 'Cancel' -->
                   <!--
                   <a href="#" class="bCANCEL" id="bCANCEL4" onclick="vApp.event('heatmap','CANCEL','4');return false" data-theme="a">Cancel</a>
                   -->
-                  <a href="#" class="bCANCEL" id="bCANCEL4" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
+                  <a href="#" class="bCANCEL" id="bCANCEL4" onclick="$.mobile.changePage( '#viewer', { transition: 'slideup', changeHash: false });return false" data-theme="a">Home</a>
 
          </div>
          <!-- /header -->
@@ -302,7 +309,6 @@
 
         </div>
     <!-- /page ID: heatmap -->
-    </div>
      <!-- Page: timeseries     Page Type: ConfirmPage -->
      <div data-role="page" id="timeseries">
          <div data-role="header" data-position="fixed">
@@ -310,14 +316,14 @@
                   <!--
                   <a href="#" id="bOK4" onclick="vApp.event('timeseries','OK','event4')" data-theme="a">OK</a>
                   -->
-                  <a href="#" id="bANALYIS1" onclick="$.mobile.changePage( '#analysis', { transition: 'slideup', changeHash: false });return false" data-theme="a">Analysis</a>
+                  <a href="#" id="bVIEWER1" onclick="$.mobile.changePage( '#viewer', { transition: 'slideup', changeHash: false });return false" data-theme="a">Viewer</a>
                   <h1>Time Series</h1>
                   <!-- header button: 'Cancel' -->
                   <a href="#" class="bCANCEL" id="bCANCEL5" onclick="vApp.event('timeseries','CANCEL','5');return false" data-theme="a">Cancel</a>
        </div>
          <!-- /header -->
        <div data-role="content">
-         <h2>Temporal Analysis</h2>
+         <h2>SDG Viewer</h2>
          <h3>for OviTrap and MPI</h3>
          The ovitrap egg count and the Mosquito Perception Index are visulised in one graph.
          MPI is the Mosquito Perception Index MPI

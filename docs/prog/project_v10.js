@@ -2,7 +2,7 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
-    "mod_date": "2017/05/00 7:24:30",
+    "mod_date": "2017/05/00 5:15:27",
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -23,7 +23,7 @@ vDataJSON['project'] = {
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
-    "SelectedClass": "LinkParam",
+    "SelectedClass": "Editor4JSON",
     "SelectedPage": "editdata",
     "SelectedPageType": "ConfirmPage",
     "SelectedButton": "QUIT",
@@ -65,15 +65,7 @@ vDataJSON['project'] = {
             "tLoopObject": "myArray",
             "tLoopMethod": ".myLoopMethod(pID)",
             "AttribName": {},
-            "AttribAccess": {
-                "aDoc": "public",
-                "aName": "public",
-                "aServer": "public",
-                "aDatabaseList": "public",
-                "aCurrentPage": "public",
-                "aFuzzyController": "public",
-                "aLinkParam": "public"
-            },
+            "AttribAccess": "public",
             "AttribDefault": {
                 "aDoc": "null",
                 "aName": "\"DisApp\"",
@@ -140,15 +132,7 @@ vDataJSON['project'] = {
             "tMethodName": "",
             "tMethodCode": "$.mobile.changePage( '#'+pPageID, { transition: 'slideup', changeHash: false })",
             "tMethodAccess": "public",
-            "sClassList": "App",
-            "MethodAccess": {
-                "initDOM": "public",
-                "load": "public",
-                "save": "public",
-                "event": "public",
-                "gotoPage": "public",
-                "gotoURL": "public"
-            }
+            "sClassList": "App"
         },
         "AppAbstract": {
             "tClassname": "AppAbstract",
@@ -207,15 +191,8 @@ vDataJSON['project'] = {
             "tMethodName": "",
             "tLoopObject": "",
             "tLoopMethod": "",
-            "AttribAccess": {
-                "aLinkParam": "public",
-                "aDatabaseList": "public"
-            },
-            "MethodAccess": {
-                "init": "public",
-                "load": "public",
-                "save": "public"
-            }
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "DOMVar": {
             "tClassname": "DOMVar",
@@ -565,19 +542,8 @@ vDataJSON['project'] = {
             },
             "JSCC_mod_date": "",
             "tMethodName": "",
-            "AttribAccess": {
-                "data": "public"
-            },
-            "MethodAccess": {
-                "update": "public",
-                "exists": "public",
-                "getValue": "public",
-                "splitID": "public",
-                "splitPathID": "public",
-                "init": "public",
-                "setValue": "public",
-                "getType": "public"
-            }
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "DatabaseList": {
             "tClassname": "DatabaseList",
@@ -718,16 +684,8 @@ vDataJSON['project'] = {
             "JSCC_type": "CLASS",
             "JSCC_version": "1",
             "tMethodName": "",
-            "AttribAccess": {
-                "aSourceDB": "public",
-                "aDB": "public"
-            },
-            "MethodAccess": {
-                "init": "public",
-                "checkFormat": "public",
-                "load": "public",
-                "save": "public"
-            }
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "Server": {
             "tClassname": "Server",
@@ -777,10 +735,10 @@ vDataJSON['project'] = {
             "tAttribComment": "Counts the Number of Parameter",
             "tAttribDefault": "0",
             "sAttribTypeList": "Integer",
-            "tMethodHeader": "getParam4URL():String",
-            "tMethodComment": "get the parameter string for the URL starting with ? if aVars contains variables",
-            "sMethodList": "getParam4URL",
-            "tMethodCode": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + encodeURLparam(iID) + \"=\" + encodeURLparam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
+            "tMethodHeader": "calcSize()",
+            "tMethodComment": "calculates the number of variables defined in the URL parameters, stores result in length",
+            "sMethodList": "calcSize",
+            "tMethodCode": "var vRet = 0;\nif (this.aVars) {\n    var vHash = this.aVars;\n    for (var key in vHash) {\n        vRet++;\n    };\n} else {\n    console.log(\"ERROR: variable '\"+pVar+\"' does not exist in LinkParam\");\n};\nreturn vRet;",
             "tLoopObject": "vMyHash",
             "tLoopMethod": ".init()",
             "AttribDefault": {
@@ -840,7 +798,7 @@ vDataJSON['project'] = {
                 "getValue": "var vRet = \"\";\nif (this.aVars.hasOwnProperty(pVar)) {\n    vRet = this.aVars[pVar]\n} else {\n    console.log(\"ERROR: variable '\"+pVar+\"' does not exist in LinkParam\");\n};\nreturn vRet;",
                 "deleteValue": "var vRet = false;\nif (this.aVars.hasOwnProperty(pVar)) {\n    delete this.aVars[pVar];\n    vRet = true;\n    this.calcSize();\n};\nreturn vRet;",
                 "getLink4URL": "return this.aLink;",
-                "getParam4URL": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + this.encodeParam(iID) + \"=\" + this.encodeParam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
+                "getParam4URL": "  var vHash = this.aVars || {};\n  var vOut = \"\";\n  var vSep = \"?\";\n  for (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut = vSep + encodeURLparam(iID) + \"=\" + encodeURLparam(vHash[iID]);\n      vSep = \"&\";\n    };\n  };\n  return vOut;\n",
                 "decodeParam": "pParam = pParam.replace(/\\+/g,  \" \");\npParam = decodeURIComponent(pParam);\nreturn pParam;\n",
                 "encodeParam": "var vParam = encodeURIComponent(pParam);\nvParam = vParam.replace(/'/g,\"%27\").replace(/\"/g,\"%22\");\nreturn vParam;",
                 "getTableHTML": "var vOut = \"\";\nvar vHash = this.aVars;\nvOut += \"<table border=1>\";\nvOut += \"<tr><td><b>Variable</b></td><td>Value</td></tr>\";\nvar vWrapCode = true;\nfor (var iID in vHash) {\n    if (vHash.hasOwnProperty(iID)) {\n      vOut += \"<tr>\";\n      vOut += \"<td>\";\n      vOut += \"<b>\"+iID+\"</b>\";\n      vOut += \"</td>\";\n      vOut += \"<td>\";\n      // second parameter vWrapCode = true for non textarea use; \n      vOut += this.encodeHTML(vHash[iID],vWrapCode);\n      vOut += \"</td>\";\n      vOut += \"</tr>\";\n    };\n};\nvOut += \"</table>\";\nreturn vOut;",
@@ -867,30 +825,8 @@ vDataJSON['project'] = {
                 "exists": "pVar:String"
             },
             "tMethodName": "",
-            "AttribAccess": {
-                "size": "public",
-                "aVars": "public",
-                "aLink": "public"
-            },
-            "MethodAccess": {
-                "init": "public",
-                "parseURL": "public",
-                "getURL": "public",
-                "getLink4URL": "public",
-                "getParam4URL": "public",
-                "setValue": "public",
-                "getValue": "public",
-                "deleteValue": "public",
-                "decodeParam": "public",
-                "encodeParam": "public",
-                "getTableHTML": "public",
-                "getEditTableHTML": "public",
-                "calcSize": "public",
-                "encodeHTML": "public",
-                "exists": "public"
-            },
-            "tMethodAccess": "public",
-            "sClassList": "LinkParam"
+            "AttribAccess": "public",
+            "MethodAccess": "public"
         },
         "Editor4JSON": {
             "JSCC_type": "CLASS",
@@ -902,7 +838,7 @@ vDataJSON['project'] = {
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aEditor = null\naData = []\ncurrent = -1\naSchemaJSON = null",
-            "tMethods": "init(pDOMID:String,pData:Array,pSchema:Hash)\nprev()\nnext()\ngoto()\nfirst()\nlast()\nedit()",
+            "tMethods": "init()\nprev()\nnext()\ngoto()\nfirst()\nlast()\nedit()",
             "sAttribList": "current",
             "tAttribName": "",
             "tAttribType": "",
@@ -911,7 +847,7 @@ vDataJSON['project'] = {
             "sAttribTypeList": "",
             "tMethodHeader": "edit()",
             "tMethodName": "",
-            "tMethodComment": "edit calls the JSON editor of Jeremy Dorn for the selected record. It sets the init value of the JSON editor.  ",
+            "tMethodComment": "",
             "sMethodList": "edit",
             "tMethodCode": "",
             "tLoopObject": "",
@@ -941,7 +877,7 @@ vDataJSON['project'] = {
                 "aSchemaJSON": "the attribute 'aSchemaJSON' stores in JSON schema that defines the structure of JSON records in the array"
             },
             "MethodParameter": {
-                "init": "pDOMID:String,pData:Array,pSchema:Hash",
+                "init": "",
                 "prev": "",
                 "next": "",
                 "goto": "",
@@ -985,8 +921,7 @@ vDataJSON['project'] = {
                 "last": "public",
                 "edit": "public"
             },
-            "sClassList": "Editor4JSON",
-            "tMethodAccess": "public"
+            "sClassList": "Editor4JSON"
         }
     },
     "DBID2File": {

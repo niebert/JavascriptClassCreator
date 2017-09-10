@@ -43,6 +43,8 @@
 
 ## JavascriptClassCreator (JSCC)
 
+Demo/Prototype: [JavascriptClassCreator](https://niebert.github.io/JavascriptClassCreator)
+
 An Extensible Software Environment for Improvement and Adaptation (ESEIA) is a web-based tool, that allows novice developers to tweak software without digging very deep into libraries and code of the project.
 
 * edit the content of a page in the Web App
@@ -356,6 +358,8 @@ ___JSCC___ opens a windows with JSON Editor. The schema is defined by file in fo
 If you want to add map feature to your WebApp [OpenLayers](https://openlayers.org/) makes it easy to put a dynamic map in any web page, especially mobile applications. OpenLayers can display map tiles, vector data and markers loaded from any source. See [OpenLayers examples](https://openlayers.org/en/latest/examples/) to experience, what OpenLayers can be used for in you web development. For this application see (see [JQuery Mobile example with OpenLayers](http://dev.openlayers.org/examples/mobile-jq.html#mappage)). This could be one page of you WebApp.
 
 ## ToDo
+* [REFACTORING](https://en.wikipedia.org/wiki/Code_refactoring): Replace template engine with [HandleBars](http://handlebarsjs.com/)
+* REFACTORING: Use [JSON-Editor](https://github.com/niebert/json-editor) forked from Jeremy Dorn as an underlying editor for JSCC classes, App files and App pages 
 * UglifyJS can parse the syntactic structure of Javascript code. Parsing Javascript code. The syntax tree AST of the Javascript code can be used to generate other object oriented code of other languages (Python, C, Java, PHP, ...). UglifyJS can be used for to crosscompilation of Javascript Classes in other programming languages. Use the tree walker over the [AST Abstract Syntax Tree](http://lisperator.net/uglifyjs/ast).
 * implement createNewPageType() in jsondb.js  which adds a new PageType definition
 * Integrate UglifyJS for parsing Javascript Code of Classes for exporting to Code2XML with AST and TreeWalker

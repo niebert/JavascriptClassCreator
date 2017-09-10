@@ -1,3 +1,31 @@
+
+function createCode4Class(pClass) {
+  // called when user presses [Create JS]
+  var vClass = pClass || getSelectedClassID();
+  console.log("createCode4Class() '"+vClass+"'");
+  var vCode = getCode4Class(vClass,getCheckBox("checkCompressCode"));
+  write2editor("Output",vCode);
+  //if (getCheckBox("checkCompressCode")) {
+  //  console.log("Open Compressor Window and compress class '"+pClass+"'");
+  //  compressCode4Class();
+  //};
+};
+
+function createDoc4Class(pClass) {
+  // called when user presses [Create JS]
+  var vClass = pClass || getSelectedClassID();
+  console.log("createDoc4Class() '"+vClass+"'");
+  var vCode = getDoc4Class(vClass);
+  write2editor("Output",vCode);
+  //if (getCheckBox("checkCompressCode")) {
+  //  console.log("Open Compressor Window and compress class '"+pClass+"'");
+  //  compressCode4Class();
+  //};
+};
+
+
+
+
 function compressCode4ClassWindow() {
   console.log("compressCode4Class() not used in JSCC");
   displayCompress();
@@ -38,8 +66,79 @@ function createProjectJSON() {
   saveCode4JSON_JS(vJSCC_DB,vExportFile,"Project JSON",vUsePrefix);
 };
 
+
+function getDoc4Class(pClass) {
+  // called from createDoc4Class():571
+  var vClass = pClass || "";
+  console.log("getCode4Class('"+vClass+"',vCompressed)");
+  var vOutput = "";
+  if (existsClassJS(vClass)) {
+    var vClassJS = getClassJSON(vClass);
+    checkClassJSON(vClassJS);
+    var vClassFile  	  = getClassFile4ClassJSON(vClassJS);
+    var vSuperClass     = vClassJS["tSuperClass"];
+  	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
+    var vClassTail    	= getValueDOM("tTplClassTail");
+    vOutput += "## Javascript Class: "+ pClass;
+    vOutput += "\ncreated Javascript Class Creator JSCC "+getDateTime();
+    vOutput += "\nhttps://niebert.github.io/JavascriptClassCreator";
+    vOutput += "\nFile: js/"+vClass.toLowerCase()+".js";
+    vOutput += "\n";
+    // DOC Attributes
+    vOutput += "\n### Attributes: "+ pClass+"";
+    var vAttribArray    = getAttribNameArrayJSON(vClass);
+  	var vClassJS = getClassJSON(vClass);
+	var vAttribDef = "";
+	var vAtts = "";
+  	var vID = "";
+  	for (var i=0; i<vAttribArray.length; i++) {
+   		 vOutput += "\n";
+    	//alert(vAttribArray[i]);
+    	vID = vAttribArray[i];
+    	var vAccess = vClassJS["AttribAccess"][vID] || "public";
+    	vOutput += "\n#### "+ vID +":"+vClassJS["AttribType"][vID]+"";
+    	vOutput += "\n* Default value: "+ vClassJS["AttribDefault"][vID];
+    	vOutput += "\n* Visibility: "+ vAccess;
+    	vOutput += "\n* Comment: "+ vClassJS["AttribComment"][vID];
+  	};
+    // DOC Methods
+ 	var vMethodArray = getMethodArray();
+ 	vOutput += "\n";
+    vOutput += "\n### Methods: "+ pClass;
+    for (var i=0; i<vMethodArray.length; i++) {
+ 		if (isMethod(vMethodArray[i]) == true) {
+		 vOutput += "\n";
+    	  vID = getMethodName(vMethodArray[i]);
+		  var vAccess = vClassJS["MethodAccess"][vID] || "public";
+		  var vReturnType = vClassJS["MethodReturn"][vID];
+		  var vParameter = vClassJS["MethodParameter"][vID];
+		  var vParameterComment = "";
+		  if (vParameter != "") {
+		  	ParameterComment = "\n* Parameter: " + vParameter.split(",").join("\n* Parameter: ")
+		  };
+		  var vReturnTypeComment = "";
+		  if (vReturnType != "") {
+		  	vReturnType = ":"+vReturnType;
+		  	vReturnTypeComment = "\n* Return Type: "+vReturnType
+		  };
+    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnType+"";
+    	  vOutput += vParameterComment+vReturnTypeComment;
+    	  vOutput += "\n* Visibility: "+ vAccess;
+   		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";
+   		} else {
+		  //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
+		}
+    }    
+  } else {
+    console.log("ERROR: getDoc4Class('"+vClass+"') Class does not exist");
+    vOutput = "// ERROR: Documentation for Class '"+vClass+"' does not exist"
+  };
+  return vOutput;
+};
+
+
 function getCode4Class(pClass,pCompressed) {
-  // called from createCode4Class():571
+  // called from createCode4Class():2
   var vClass = pClass || "";
   var vCompressed = pCompressed || false;
   console.log("getCode4Class('"+vClass+"',vCompressed)");
@@ -574,18 +673,6 @@ function saveCode4Class() {
   alert("Javascript Class Created!\nCopy Javascript Code into File and\nuse filename '"+vFilePathHDD+"'!");
   saveFile2HDD(vFileHDD,vCode);
 }
-
-function createCode4Class(pClass) {
-  // called when user presses [Create JS]
-  var vClass = pClass || getSelectedClassID();
-  console.log("createCode4Class() '"+vClass+"'");
-  var vCode = getCode4Class(vClass,getCheckBox("checkCompressCode"));
-  write2editor("Output",vCode);
-  //if (getCheckBox("checkCompressCode")) {
-  //  console.log("Open Compressor Window and compress class '"+pClass+"'");
-  //  compressCode4Class();
-  //};
-};
 
 function getClassFile4ClassJSON(pClassJS) {
   var vClassname = pClassJS["tClassname"] || "UndefinedClass";

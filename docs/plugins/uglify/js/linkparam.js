@@ -6,7 +6,7 @@
 //# Author of Class:      Engelbert Niehaus
 //# email:                niehaus@uni-landau.de
 //# created
-//# last modifications    5.5.2017
+//# last modifications    4.5.2017
 //# GNU Public License V3 - OpenSource
 //#
 //# created with JavaScript Class Generator by Engelbert Niehaus
@@ -50,11 +50,11 @@ function LinkParam () {
     //---------------------------------------------------------------------
     //---Attributes of Class "LinkParam()"
     //---------------------------------------------------------------------
-      //---size (Integer): Counts the Number of Parameter
+      //---size: Counts the Number of Parameter
       this.size = 0;
-          //---aVars (Hash): Attribute: 'aVars' Type: 'Hash' stores all URL parameters
+      //---aVars: Attribute: 'aVars' Type: 'Hash' stores all URL parameters
       this.aVars = {};
-          //---aLink (String): Attribute: 'aLink' Type: 'String' stores the Link before '?'
+      //---aLink: Attribute: 'aLink' Type: 'String' stores the Link before '?'
       this.aLink = "";
 
     //---------------------------------------------------------------------
@@ -92,7 +92,6 @@ LinkParam.prototype.init = function (pDoc) {
 	this.aDoc = pDoc;
 	this.aLink = pDoc.location;
 	this.aVars = this.parseURL(pDoc.location.search);
-
 };
 //----End of Method init Definition
 
@@ -117,21 +116,21 @@ LinkParam.prototype.parseURL = function (pLink) {
   //    var vMyInstance = new LinkParam();
   //    vMyInstance.parseURL(pLink);
   //-------------------------------------------------------
-
+  console.log("LinkParam.parseURL('..."+pLink+"')");
 	var vLink = pLink || "";
-	var vParams = {},
-	    vTokens,
-	    vRE = /[?&]?([^=]+)=([^&]*)/g;
+	var params = {},
+	    tokens,
+	    re = /[?&]?([^=]+)=([^&]*)/g;
 	if (vLink != "") {
 	  vLink = vLink.split('+').join(' ');
-	  while (vTokens = vRE.exec(vLink)) {
-	    vParams[this.decodeParam(vTokens[1])] = this.decodeParam(vTokens[2]);
-	    this.calcSize();
+	  while (tokens = re.exec(vLink)) {
+	     params[decodeURIComponent(tokens[1])] = decodeURIComponent(this.decodeParam(tokens[2]));
+	     this.calcSize();
 	  };
 	} else {
 	    console.log("parseURL(pLink) - pLink contains no parameters")
 	};
-	return vParams;
+	return params;
 
 };
 //----End of Method parseURL Definition
@@ -177,8 +176,9 @@ LinkParam.prototype.getURL = function (pVarHash) {
 //#    pVar:String
 //#    pValue:String
 //# Comment:
-//#    Comment for setValue
-//#
+//#    sets the value of a link parameter, this is useful
+//#    when a parameter for URL are generated from the link parameters
+//#    defined in LinkParam
 //# created
 //# last modifications
 //#################################################################
@@ -191,10 +191,8 @@ LinkParam.prototype.setValue = function (pVar,pValue) {
   //    var vMyInstance = new LinkParam();
   //    vMyInstance.setValue(pVar,pValue);
   //-------------------------------------------------------
-
-
+    this.aVars[pVar] = pValue;
 	  this.calcSize();
-
 };
 //----End of Method setValue Definition
 
@@ -319,12 +317,11 @@ LinkParam.prototype.getParam4URL = function () {
 	  var vSep = "?";
 	  for (var iID in vHash) {
 	    if (vHash.hasOwnProperty(iID)) {
-	      vOut = vSep + encodeURLparam(iID) + "=" + encodeURLparam(vHash[iID]);
+        vOut += vSep + this.encodeParam(iID) + "=" + this.encodeParam(vHash[iID]);
 	      vSep = "&";
 	    };
 	  };
 	  return vOut;
-
 
 };
 //----End of Method getParam4URL Definition
@@ -354,7 +351,6 @@ LinkParam.prototype.decodeParam = function (pParam) {
 	pParam = pParam.replace(/\+/g,  " ");
 	pParam = decodeURIComponent(pParam);
 	return pParam;
-
 
 };
 //----End of Method decodeParam Definition
@@ -413,7 +409,6 @@ LinkParam.prototype.getTableHTML = function () {
 	var vOut = "";
 	var vHash = this.aVars;
 	vOut += "<table border=1>";
-	vOut += "<tr><td><b>Variable</b></td><td>Value</td></tr>";
 	var vWrapCode = true;
 	for (var iID in vHash) {
 	    if (vHash.hasOwnProperty(iID)) {
@@ -517,10 +512,11 @@ LinkParam.prototype.calcSize = function () {
 
 	var vRet = 0;
 	if (this.aVars) {
-      var vHash = this.aVars;
-      for (var key in vHash) {
+    for (var iID in this.aVars) {
+      if (this.aVars.hasOwnProperty(iID)) {
         vRet++;
-      };
+      }
+    };
 	} else {
 	    console.log("ERROR: variable '"+pVar+"' does not exist in LinkParam");
 	};
@@ -598,7 +594,6 @@ LinkParam.prototype.exists = function (pVar) {
 	   vRet = this.aVars.hasOwnProperty(pVar)
 	};
 	return vRet;
-
 
 };
 //----End of Method exists Definition

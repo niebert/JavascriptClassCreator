@@ -317,7 +317,7 @@ LinkParam.prototype.getParam4URL = function () {
 	  var vSep = "?";
 	  for (var iID in vHash) {
 	    if (vHash.hasOwnProperty(iID)) {
-	      vOut = vSep + encodeURLparam(iID) + "=" + encodeURLparam(vHash[iID]);
+        vOut += vSep + this.encodeParam(iID) + "=" + this.encodeParam(vHash[iID]);
 	      vSep = "&";
 	    };
 	  };

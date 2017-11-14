@@ -2,7 +2,11 @@ vDataJSON['project'] = {
     "JSCC_type": "JSCC",
     "JSCC_version": "1",
     "init_date": "2017/03/05 18:13:28",
+<<<<<<< HEAD
     "mod_date": "2017/06/04 6:35:03",
+=======
+    "mod_date": "2017/10/19 9:50:04",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
     "sStandalone": "YES",
     "tMainAuthor": "Engelbert Niehaus",
     "tMainEMail": "niehaus@uni-landau.de",
@@ -16,14 +20,23 @@ vDataJSON['project'] = {
     "tDatabases": "db/mydata.js\n../jquery/db/dummy.json",
     "tExportPrefix": "vDataJSON['___DB___'] = ",
     "sDatabaseList": "mydata.js",
+<<<<<<< HEAD
     "tPageHTML": "<h2>___PAGE_TITLE___</h2> \nThe current data was exported and cleaned by Dr. Ajit N. Babu CAGH. Press Pencil button to edit the data.\n<button id=\"bEditFileListJSON\" onclick=\"vApp.aJSONEditor.openWin(vDataJSON['ovitrapmpi_schema'],vDataJSON['ovitrapmpi_data']);return false\">\n    <i class=\"fa fa-pencil\"></i> Edit\n</button>\n            \n\n(ID:'___PAGE_ID___')",
     "tPageTypeHTML": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+=======
+    "tPageHTML": "Content of ___PAGE_TITLE___ (ID:'___PAGE_ID___')",
+    "tPageTypeHTML": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n         ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
     "tElementHTML": "File app.html - Content of element HTML_TITLE",
     "sExportPrefix": "",
     "sShowGeneralizations": "show",
     "sShowAggregations": "show",
     "sShowAssociations": "show",
+<<<<<<< HEAD
     "SelectedClass": "Editor4JSON",
+=======
+    "SelectedClass": "WikiDownloader",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
     "SelectedPage": "home",
     "SelectedPageType": "DefaultPage",
     "SelectedButton": "QUIT",
@@ -41,7 +54,13 @@ vDataJSON['project'] = {
         "Server": "Blue",
         "App": "Blue",
         "LinkParam": "Blue",
+<<<<<<< HEAD
         "Editor4JSON": "Blue"
+=======
+        "Editor4JSON": "Blue",
+        "Wiki2Reveal": "Default",
+        "WikiDownloader": "Default"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
     },
     "ClassList": {
         "App": {
@@ -895,25 +914,41 @@ vDataJSON['project'] = {
         "Editor4JSON": {
             "JSCC_type": "CLASS",
             "JSCC_init_date": "15.6.2017",
+<<<<<<< HEAD
             "JSCC_mod_date": "2017/06/04 5:44:55",
+=======
+            "JSCC_mod_date": "2017/07/06 13:44:06",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             "tClassname": "Editor4JSON",
             "tSuperClassname": "",
             "sClassType": "Blue",
             "tAuthor": "Engelbert Niehaus",
             "tEMail": "niehaus@uni-landau.de",
             "tAttributes": "aEditor = null\naName = \"myjson\"\naData = []\ncurrent = -1\naSchemaJSON = null\naEditURL = \"\"\naDOMID = null",
+<<<<<<< HEAD
             "tMethods": "init(pDOMID:Hash,pData:Array,pSchema:Hash)\ncheck()\nupdateDOM()\nprev()\nnext()\ngoto(i)\nfirst()\nlast()\nedit()\nsetSchema(pSchemaJSON:Hash)\ngetSchema():Hash\nexport()\nexportData()\nexportSchema()\ngetLocalStorageID4Name(pName:String):String\nloadLS()\nload()\nsaveLS()\nsave()\nvalidate():Boolean\nonChange()\ndeleteRecord()\ndeleteAsk()\nsetEditorData(pEditorData:Hash)\ngetEditorData():Hash",
+=======
+            "tMethods": "init(pDOMID:Hash,pData:Array,pSchema:Hash)\nprev()\nnext()\ngoto(pNumberString:String)\nfirst()\nlast()\nedit()\nsetSchema(pSchemaJSON:Hash)\ngetSchema():Hash\nexport()\nexportData()\nexportSchema()\ngetLocalStorageID4Name(pName:String):String\nloadLS()\nsaveLS()\nvalidate():Boolean\nonChange()\ndeleteRecord()\ndeleteAsk()\ncheck()\nupdateDOM()\nsetEditorData(pEditorData:Hash)\ngetEditorData():Hash\nload()\nsave()\nadd()\nimportJSON(pStringJSON:String)",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             "sAttribList": "aName",
             "tAttribName": "",
             "tAttribType": "",
             "tAttribComment": "",
             "tAttribDefault": "",
             "sAttribTypeList": "",
+<<<<<<< HEAD
             "tMethodHeader": "save()",
             "tMethodName": "",
             "tMethodComment": "Comment for save",
             "sMethodList": "save",
             "tMethodCode": "",
+=======
+            "tMethodHeader": "getEditorData():Hash",
+            "tMethodName": "",
+            "tMethodComment": "getEditorData() create a Hash for this.current, this.aData and this.aSchema",
+            "sMethodList": "getEditorData",
+            "tMethodCode": "var vEditorData = {\n\t\"current\" : this.current,\n\t\"data\" : this.aData,\n\t\"schema\" : this.aSchemaJSON\n};\nreturn vEditorData;",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             "tLoopObject": "",
             "tLoopMethod": "",
             "AttribType": {
@@ -956,7 +991,11 @@ vDataJSON['project'] = {
                 "init": "pDOMID:Hash,pData:Array,pSchema:Hash",
                 "prev": "",
                 "next": "",
+<<<<<<< HEAD
                 "goto": "i",
+=======
+                "goto": "pNumberString:String",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
                 "first": "",
                 "last": "",
                 "edit": "",
@@ -977,7 +1016,13 @@ vDataJSON['project'] = {
                 "setEditorData": "pEditorData:Hash",
                 "getEditorData": "",
                 "load": "",
+<<<<<<< HEAD
                 "save": ""
+=======
+                "save": "",
+                "add": "",
+                "importJSON": "pStringJSON:String"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             },
             "MethodReturn": {
                 "init": "",
@@ -1004,6 +1049,7 @@ vDataJSON['project'] = {
                 "setEditorData": "",
                 "getEditorData": "Hash",
                 "load": "",
+<<<<<<< HEAD
                 "save": ""
             },
             "MethodCode": {
@@ -1011,6 +1057,17 @@ vDataJSON['project'] = {
                 "prev": "if (this.current > 0) {\n    this.current--;\n};\nconsole.log(\"Prev Click [\"+this.current+\"]\");\nthis.edit();",
                 "next": "if (this.current < (this.aData.length-1)) {\n      this.current++;\n};\nconsole.log(\"Next Click [\"+this.current+\"]\");\nthis.edit();",
                 "goto": "if ((i >= 0) && (i < this.aData.length)) {\n    this.current = i;\n} else if (this.aData.length > 0) {\n    this.current = 0;\n} else {\n    this.current = -1;\n};\nconsole.log(\"Goto [\"+this.current+\"]\");\nthis.edit();",
+=======
+                "save": "",
+                "add": "",
+                "importJSON": ""
+            },
+            "MethodCode": {
+                "init": "this.aSchema = pSchema;\nthis.aData = pData;\nthis.loadLS(); // load aData from local storage if that exists\nthis.aDOMID = pDOMID; // is a Hash with keys \"name\" of Schema, DOM ID \"editor\", \"validator\",\nthis.aName = pDOMID[\"name\"] || \"myjson\";\nthis.aEditorConfig = {\n        // Enable fetching schemas via ajax\n        ajax: true,\n        \n        // The schema for the editor\n        schema: pSchema,\n        \n       \n        // Disable additional properties\n        no_additional_properties: true,\n        \n        // Require all properties by default\n        required_by_default: true\n      };\n// Seed the form with a starting value for the Editor if pData contains at least one record\n if (pData.length > 0) {\n    this.aEditorConfig.startval = pData[0];\n};\n// create the editor\nvar vEditorDOM = document.getElementById(this.aDOMID[\"editor\"]);\nif (vEditorDOM) {\n    this.aEditor = new JSONEditor(vEditorDOM,this.aEditorConfig);\n} else {\n    console.log(\"ERROR: Editor DOM with ID=â€˜\"+this.aDOMID[\"editor\"]+\"' does not exist!\")\n};\n\n// Hook up the validation indicator to update its \n// status whenever the editor changes\nthis.aEditor.on('change',function() {\n        // upadte the currect record in large array\n        vEditor4JSON.onChange()\n      });\n//update the current index\nthis.updateDOM();\n",
+                "prev": "if (this.current > 0) {\n    this.current--;\n};\nconsole.log(\"Prev Click [\"+this.current+\"]\");\nthis.edit();",
+                "next": "if (this.current < (this.aData.length-1)) {\n      this.current++;\n};\nconsole.log(\"Next Click [\"+this.current+\"]\");\nthis.edit();",
+                "goto": "console.log(\"goto('\"+pNumberString+\"') String Parameter\");\nif (pNumberString.length > 0) {\n\tpNumberString = pNumberString.replace(/[^0-9]/g,'');\n\ti = parseInt(pNumberString);\n\tif ((i >= 0) && (i < this.aData.length)) {\n\t      this.current = i;\n\t} else if (this.aData.length > 0) {\n\t      this.current = i;\n\t\t\t\tthis.check();\n\t} else {\n\t      this.current = -1;\n\t};\n};\nconsole.log(\"Goto [\"+this.current+\"]\");\nthis.edit();\nthis.updateDOM();",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
                 "first": "this.current = 0;\nconsole.log(\"First Click [\"+this.current+\"]\");\nthis.edit();",
                 "last": "this.current = this.aData.length - 1;\nconsole.log(\"Last Click [\"+this.current+\"]\");\nthis.edit();",
                 "edit": "// edit creates at least one record in the array this.aData\nif (this.aData.length == 0) {\n    // push an empty JSON hash\n    console.log(\"pData is empty create an empty element in the large array\")\n    this.aData.push({});\n};\nif (this.current < 0) {\n    console.log(\"current index in large array is not for the large array - use first element\")\n    this.current = 0;\n};\nthis.aEditor.setValue(this.aData[this.current]);\nthis.updateDOM();",
@@ -1023,6 +1080,7 @@ vDataJSON['project'] = {
                 "loadLS": "if (typeof(Storage) != \"undefined\") {\n    // Store\n    if (typeof(localStorage.getItem(this.aName)) !== undefined) {\n      console.log(\"JSON-DB '\"+this.aName+\"' try loading from Local Storage\");\n      var vJSONstring = localStorage.getItem(this.aName);\n\t  if (!vJSONstring) {\n        console.log(\"JSON-DB '\"+this.aName+\"' undefined in Local Storage.\\nSave default as JSON\");\n        localStorage.setItem(this.aName, JSON.stringify(this.getEditorData()));\n\t  } else {\n        console.log(\"parse DB '\"+this.aName+\"') from LocalStorage JSONstring='\"+vJSONstring.substr(0,120)+\"...'\");\n        try {\n            this.setEditorData(JSON.parse(vJSONstring));\n        } catch(e) {\n            alert(e)\n        };\n\t  }\n    } else {\n      console.log(\"JSON-DB '\"+this.aName+\"' is undefined in Local Storage.\\nSave default as JSON\");\n      localStorage.setItem(vDBID, JSON.stringify(this.aData));\n    };\n}\t else {\n    console.log(\"WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...\");\n};",
                 "saveLS": "if (typeof(Storage) != \"undefined\") {\n    // Store\n    if (typeof(this.aData) != undefined) {\n      console.log(\"JSON-DB '\"+this.aName+\"' is defined, JSONDB in  Local Storage\");\n      if (this.aData) {\n        //console.log(\"pJSONDB '\"+this.aName+\"' is saved to Local Storage\");\n        var vJSONstring = JSON.stringify(this.aData)\n        console.log(\"saveLS('\"+this.aName+\"') JSONstring='\"+vJSONstring.substr(0,120)+\"...'\");\n        localStorage.setItem(this.aName,vJSONstring);\n      } else {\n        console.log(\"this.aData in Editor4JSON is NOT defined\");\n      }\n    } else {\n      console.log(\"pJSONDB is undefined\");\n    };\n  }\t else {\n    console.log(\"WARNING: Sorry, your browser does not support Local Storage of JSON Database. Use Firefox ...\");\n  }",
                 "validate": "\n// Get an array of errors from the validator\n//var errors = editor.validate();\nvar errors = this.aEditor.validate();\nvar vValid = true;\nif (errors.length) {\n  vValid = false;\n};\nvar vID = this.aDOMID['valid_indicator'] || 'valid_indicator';\nvar indicator = document.getElementById(vID);\nif (!indicator) {\n    console.log(\"DOM element '\"+vID+\"' does not exist\")\n} else {\n    if (errors.length) {\n        // Not valid\n        //indicator.style.color = 'red';\n        indicator.style.color = 'white';\n        indicator.style.backgroundColor = 'red';\n        indicator.textContent = \" not valid \";\n    } else {\n        // Valid\n        //indicator.style.color = 'green';\n        indicator.style.color = 'white';\n        indicator.style.backgroundColor = 'green';\n        indicator.textContent = \" valid \";\n    }\n};\nreturn vValid;\n",
+<<<<<<< HEAD
                 "onChange": "if (this.current > -1) {\n    if (this.current < this.aData.length) {\n    this.aData[this.current] = this.aEditor.getValue();\n};\nthis.saveLS();",
                 "deleteRecord": "this.check(); // is in the range of indices of the array this.aData\nif (this.current > -1) {\n    this.aData.splice(this.current, 1);\n};\nthis.edit();",
                 "deleteAsk": "var vOK = confirm(\"Do you really want to delete the current record?\");\nif(vOK == true) {\n    this.deleteRecord();\n} else {\n    console.log(\"Delete Record cancelled\")\n};",
@@ -1032,12 +1090,29 @@ vDataJSON['project'] = {
                 "getEditorData": "this.aSchema = pSchema;\nthis.aData = pData;\nthis.loadLS(); // load aData from local storage if that exists\nthis.aDOMID = pDOMID; // is a Hash with keys \"name\" of Schema, DOM ID \"editor\", \"validator\",\nthis.aName = pDOMID[\"name\"] || \"myjson\";\nthis.aEditorConfig = {\n        // Enable fetching schemas via ajax\n        ajax: true,\n        \n        // The schema for the editor\n        schema: pSchema,\n        \n       \n        // Disable additional properties\n        no_additional_properties: true,\n        \n        // Require all properties by default\n        required_by_default: true\n      };\n// Seed the form with a starting value for the Editor if pData contains at least one record\n if (pData.length > 0) {\n    this.aEditorConfig.startval = pData[0];\n};\n// create the editor\nvar vEditorDOM = document.getElementById(this.aDOMID[\"editor\"]);\nif (vEditorDOM) {\n    this.aEditor = new JSONEditor(vEditorDOM,this.aEditorConfig);\n} else {\n    console.log(\"ERROR: Editor DOM with ID=‘\"+this.aDOMID[\"editor\"]+\"' does not exist!\")\n};\n\n// Hook up the validation indicator to update its \n// status whenever the editor changes\nthis.aEditor.on('change',function() {\n        // upadte the currect record in large array\n        vEditor4JSON.onChange()\n      });\n//update the current index\nthis.updateDOM();\n",
                 "load": "this.loadLS();\nthis.edit();\nthis.updateDOM();",
                 "save": "this.saveLS();\nthis.exportData();"
+=======
+                "onChange": "if (this.current > -1) {\n    if (this.current < this.aData.length) {\n        this.aData[this.current] = this.aEditor.getValue();\n    };\n};\nthis.saveLS();",
+                "deleteRecord": "this.check(); // is in the range of indices of the array this.aData\nif (this.current > -1) {\n    this.aData.splice(this.current, 1);\n};\nthis.check();\n// if this.current is still in the range of indices of the array this.aData\n// this could happen if last element in array was deleted\nthis.edit();",
+                "deleteAsk": "var vOK = confirm(\"Do you really want to delete the current record?\");\nif(vOK == true) {\n    this.deleteRecord();\n} else {\n    console.log(\"Delete Record cancelled\")\n};",
+                "check": "if (this.aData.length === 0) {\n    this.current = -1\n} else {\n    if (this.current < 0) { \n        this.current = 0\n    };\n    if (this.current >= this.aData.length) {\n        this.current = this.aData.length - 1;\n    };\n};\n",
+                "updateDOM": "//--- update current array index ------------\nvar vID = this.aDOMID[\"current\"] || \"array_index\";\nwrite2value(vID,(this.current+1));\n//--- update array length -------------------\nvID = this.aDOMID[\"length\"] || \"array_length\";\nwrite2innerHTML(vID,this.aData.length);\n//--- update title ID='record_title'---------\nif (this.aDOMID.hasOwnProperty(\"title\")) {\n    vID = this.aDOMID[\"title\"];\n    if (this.aData[this.current].hasOwnProperty(vID)) {\n        write2innerHTML(vID,this.aData.length);\n    };\n};\n// validate the record against Schema JSON\nthis.validate();",
+                "setEditorData": "this.current = pEditorData[\"current\"] || 0;\nthis.aData = pEditorData[\"data\"] || [];\nthis.aSchemaJSON = pEditorData[\"schema\"] || vDataJSON[\"car\"]",
+                "getEditorData": "var vEditorData = {\n\t\"current\" : this.current,\n\t\"data\" : this.aData,\n\t\"schema\" : this.aSchemaJSON\n};\nreturn vEditorData;",
+                "load": "\tvar vThis = this; // necessary due to visibility of this in onload handler\n\tvar fileToLoad = document.getElementById(pFileID4DOM).files[0]; //for input type=file\n\tif (fileToLoad) {\n\t\tconsole.log(\"importJSON() - File '\"+fileToLoad.name+\"' exists.\");\n\t\tvar fileReader = new FileReader();\n\t\t// set the onload handler\n\t\tfileReader.onload = function(fileLoadedEvent){\n\t\t\t\tvar vTextFromFileLoaded = fileLoadedEvent.target.result;\n\t\t\t\t//document.getElementById(\"inputTextToSave\").value = textFromFileLoaded;\n\t\t\t\t//alert(\"textFromFileLoaded=\"+textFromFileLoaded);\n\t\t\t\tvThis.aLoadedFile = fileToLoad.name;\n\t\t\t\tvThis.importJSON(vTextFromFileLoaded);\n\t\t\t};\n\t\t//onload handler set now start loading the file\n\t\tfileReader.readAsText(fileToLoad, \"UTF-8\");\n\t} else {\n\t\talert(\"File is missing\");\n\t};\n  this.edit();\n  this.updateDOM();\n",
+                "save": "  this.saveLS();\n  this.exportData();\n",
+                "add": "this.aData.push({});\nthis.current = this.aData.length - 1; // this is the index of the last new element \nthis.edit();\nthis.updateDOM(); // updateDOM()-call necessary because length and current index changed due to add-click of user",
+                "importJSON": " console.log(\"importJSON('\"+this.aLoadedFile+\"')\");\nif (pStringJSON) {\n    try {\n        this.aData = JSON.parse(pStringJSON);\n        alert(\"File JSON '\"+this.aLoadedFile+\"' loaded successfully!\")\n    } catch(e) {\n        alert(e); // error in the above string (in this case, yes)!\n    }\n};"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             },
             "MethodComment": {
                 "init": "(1)pDOMID is hash with DOM ids that contains the following key/value pairs\n - \"name\" is the name of JSON database that is used for the exported filename for JSON\n - \"editor\" the DOM element where the JSON editor is injected (editor_holder of JSON editor).\n - \"validator\" is the DOM element to \"valid\" or \"not valid\" to (innerHTML) used in updateDOM()\n - \"current\" is the DOM element to write the currently selected array index into a text input box (value) used in updateDOM()\n - \"length\" is the DOM element to write the current array length to (innerHTML) used in updateDOM()\n(2) pData is the large array that is edited and \n(3) pSchema defines the JSON schema of a single record in the large thisarray",
                 "prev": "goto previous record",
                 "next": "Goto next record",
+<<<<<<< HEAD
                 "goto": "goto record with index i",
+=======
+                "goto": "goto record with index i, i is determined by an input string set by the user with an onchange event.",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
                 "first": "shows the first element in the large record",
                 "last": "goes to the last record in large array",
                 "edit": "edit calls the JSON editor of Jeremy Dorn for the selected record. It sets the init value of the JSON editor.  ",
@@ -1058,7 +1133,13 @@ vDataJSON['project'] = {
                 "setEditorData": "setEditorData() sets the Editor with current, data and schema",
                 "getEditorData": "getEditorData() create a Hash for this.current, this.aData and this.aSchema",
                 "load": "loads the file from Local Storage and updates the DOM values with current, aData loadLS() and load() cannot be merged because loadLS() is called in the this.init() without the possibility to edit() due to the fact that the JSON editor is not created and dependent on the loaded values of the schema",
+<<<<<<< HEAD
                 "save": "save() stores current index, JSON data and JSON schema with storeLS() into local storage and exports the current JSON data as file"
+=======
+                "save": "save() stores current index, JSON data and JSON schema with storeLS() into local storage and exports the current JSON data as file",
+                "add": "add() appends a new record at the end of the array",
+                "importJSON": "importJSON() parses the JSON string in pStringJSON and stores the JSON in this.aData"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             },
             "MethodAccess": {
                 "init": "public",
@@ -1085,11 +1166,145 @@ vDataJSON['project'] = {
                 "setEditorData": "public",
                 "getEditorData": "public",
                 "load": "public",
+<<<<<<< HEAD
                 "save": "public"
+=======
+                "save": "public",
+                "add": "public",
+                "importJSON": "public"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             },
             "sClassList": "Editor4JSON",
             "tMethodAccess": "public",
             "JSCC_version": "1"
+<<<<<<< HEAD
+=======
+        },
+        "Wiki2Reveal": {
+            "JSCC_type": "CLASS",
+            "JSCC_init_date": "18.10.2017",
+            "JSCC_mod_date": "",
+            "tClassname": "Wiki2Reveal",
+            "tSuperClassname": "",
+            "sClassType": "Default",
+            "tAuthor": "Engelbert Niehaus",
+            "tEMail": "niehaus@uni-landau.de",
+            "tAttributes": "",
+            "tMethods": "",
+            "sAttribList": "",
+            "tAttribName": "",
+            "tAttribType": "",
+            "tAttribComment": "",
+            "tAttribDefault": "",
+            "sAttribTypeList": "",
+            "tMethodHeader": "",
+            "tMethodName": "",
+            "tMethodComment": "",
+            "sMethodList": "",
+            "tMethodCode": "",
+            "tLoopObject": "",
+            "tLoopMethod": "",
+            "AttribType": {},
+            "AttribAccess": {},
+            "AttribDefault": {},
+            "AttribComment": {},
+            "MethodParameter": {},
+            "MethodReturn": {},
+            "MethodCode": {},
+            "MethodComment": {},
+            "MethodAccess": {},
+            "sClassList": "Wiki2Reveal"
+        },
+        "WikiDownloader": {
+            "JSCC_type": "CLASS",
+            "JSCC_init_date": "18.10.2017",
+            "JSCC_mod_date": "",
+            "tClassname": "WikiDownloader",
+            "tSuperClassname": "",
+            "sClassType": "Default",
+            "tAuthor": "Engelbert Niehaus",
+            "tEMail": "niehaus@uni-landau.de",
+            "tAttributes": "",
+            "tMethods": "init(pURL:String)\ndownload()\nsetSource(pText:String)\ngetSource():String\nconvertLink2Web()\ncreateMediaArray()\nreplaceWikiMath()\ndownloadZIP()",
+            "sAttribList": "",
+            "tAttribName": "",
+            "tAttribType": "",
+            "tAttribComment": "",
+            "tAttribDefault": "",
+            "sAttribTypeList": "",
+            "tMethodHeader": "downloadZIP()",
+            "tMethodName": "",
+            "tMethodComment": "",
+            "sMethodList": "downloadZIP",
+            "tMethodCode": "",
+            "tLoopObject": "",
+            "tLoopMethod": "",
+            "AttribType": {},
+            "AttribAccess": {},
+            "AttribDefault": {},
+            "AttribComment": {},
+            "MethodParameter": {
+                "init": "pURL:String",
+                "download": "",
+                "convertLink": "",
+                "replaceWikiMath": "",
+                "setSource": "pText:String",
+                "getSource": "",
+                "convertLink2Web": "",
+                "createMediaArray": "",
+                "downloadZIP": "",
+                "convertMedia2Local": ""
+            },
+            "MethodReturn": {
+                "init": "",
+                "download": "",
+                "convertLink": "String",
+                "replaceWikiMath": "",
+                "setSource": "",
+                "getSource": "String",
+                "convertLink2Web": "",
+                "createMediaArray": "",
+                "downloadZIP": "",
+                "convertMedia2Local": ""
+            },
+            "MethodCode": {
+                "init": "",
+                "download": "",
+                "convertLink": "",
+                "replaceWikiMath": "",
+                "setSource": "",
+                "getSource": "",
+                "convertLink2Web": "",
+                "createMediaArray": "",
+                "downloadZIP": "",
+                "convertMedia2Local": ""
+            },
+            "MethodComment": {
+                "init": "Comment for init",
+                "download": "Comment for download",
+                "convertLink": "Comment for convertLink",
+                "replaceWikiMath": "Comment for replaceWikiMath",
+                "setSource": "Comment for setSource",
+                "getSource": "Comment for getSource",
+                "convertLink2Web": "Comment for convertLink2Web",
+                "createMediaArray": "Comment for createMediaArray",
+                "downloadZIP": "what does downloadZIP do?",
+                "convertMedia2Local": "Comment for convertMedia2Local"
+            },
+            "MethodAccess": {
+                "init": "public",
+                "download": "public",
+                "convertLink": "public",
+                "replaceWikiMath": "public",
+                "setSource": "public",
+                "getSource": "public",
+                "convertLink2Web": "public",
+                "createMediaArray": "public",
+                "downloadZIP": "public",
+                "convertMedia2Local": "public"
+            },
+            "sClassList": "WikiDownloader"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
         }
     },
     "DBID2File": {
@@ -1167,7 +1382,11 @@ vDataJSON['project'] = {
             "page-type": "ConfirmPage",
             "HEADER_BUTTON1": "OK",
             "HEADER_BUTTON2": "CANCEL",
+<<<<<<< HEAD
             "template": "     <!-- Page: ___PAGE_ID___     Page Type: ConfirmPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n          ___PAGE_CONTENT___\n          \n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+=======
+            "template": "     <!-- Page: ___PAGE_ID___     Page Type: DefaultPage -->\n     <div data-role=\"page\" id=\"___PAGE_ID___\">\n         <div data-role=\"header\" data-position=\"fixed\">\n           ___HEADER_BUTTON1___\n            <h1>___PAGE_TITLE___</h1>\n           ___HEADER_BUTTON2___\n       </div>\n         <!-- /header -->\n       <div data-role=\"content\">\n         ___PAGE_CONTENT___\n       </div>\n    <!-- /page ID: ___PAGE_ID___ -->\n    </div>\n"
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
         },
         "SaveDialog": {
             "page-type": "SaveDialog",
@@ -1352,7 +1571,11 @@ vDataJSON['project'] = {
         },
         "app.html": {
             "tFilename": "app.html",
+<<<<<<< HEAD
             "sAppClassHTML": "",
+=======
+            "sAppClassHTML": "App",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             "tAppInitCall": "init(document,vDataJSON)",
             "tPageIDs": [
                 "welcome",
@@ -1379,7 +1602,11 @@ vDataJSON['project'] = {
             ],
             "tElementFileIDs": "HTML_TITLE|SERVER_URL|USERNAME|SESSION|DATABASE",
             "tElementID": "HTML_TITLE",
+<<<<<<< HEAD
             "sElementsFileList": "",
+=======
+            "sElementsFileList": "HTML_TITLE",
+>>>>>>> index.html updated with tempate ___DATE___ removed from Class Export Template - caused an undefined
             "tElementHTML": "File app.html - Content of element HTML_TITLE",
             "sElementFileList": "HTML_TITLE"
         },

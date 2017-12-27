@@ -79,13 +79,13 @@ function getDoc4Class(pClass) {
     var vSuperClass     = vClassJS["tSuperClass"];
   	var vTplMethodHeader   = getValueDOM("tTplMethodHeader");
     var vClassTail    	= getValueDOM("tTplClassTail");
-    vOutput += "## Javascript Class: "+ pClass;
+    vOutput += "## Javascript Class: `"+ pClass+"`";
     vOutput += "\ncreated Javascript Class Creator JSCC "+getDateTime();
     vOutput += "\nhttps://niebert.github.io/JavascriptClassCreator";
-    vOutput += "\nFile: js/"+vClass.toLowerCase()+".js";
+    vOutput += "\nFile: `js/"+vClass.toLowerCase()+".js`";
     vOutput += "\n";
     // DOC Attributes
-    vOutput += "\n### Attributes: "+ pClass+"";
+    vOutput += "\n### Attributes: `"+ pClass+"``";
     var vAttribArray    = getAttribNameArrayJSON(vClass);
   	var vClassJS = getClassJSON(vClass);
 	var vAttribDef = "";
@@ -97,14 +97,14 @@ function getDoc4Class(pClass) {
     	vID = vAttribArray[i];
     	var vAccess = vClassJS["AttribAccess"][vID] || "public";
     	vOutput += "\n#### "+ vID +":"+vClassJS["AttribType"][vID]+"";
-    	vOutput += "\n* Default value: "+ vClassJS["AttribDefault"][vID];
-    	vOutput += "\n* Visibility: "+ vAccess;
+    	vOutput += "\n* Default value: `"+ vClassJS["AttribDefault"][vID]+"`";
+    	vOutput += "\n* Visibility: `"+ vAccess+"`";
     	vOutput += "\n* Comment: "+ vClassJS["AttribComment"][vID];
   	};
     // DOC Methods
  	var vMethodArray = getMethodArray();
  	vOutput += "\n";
-    vOutput += "\n### Methods: "+ pClass;
+    vOutput += "\n### Methods: `"+ pClass+"`";
     for (var i=0; i<vMethodArray.length; i++) {
  		if (isMethod(vMethodArray[i]) == true) {
 		 vOutput += "\n";
@@ -114,21 +114,21 @@ function getDoc4Class(pClass) {
 		  var vParameter = vClassJS["MethodParameter"][vID];
 		  var vParameterComment = "";
 		  if (vParameter != "") {
-		  	ParameterComment = "\n* Parameter: " + vParameter.split(",").join("\n* Parameter: ")
+		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")
 		  };
-		  var vReturnTypeComment = "";
+		  var vReturnTypeComment = "`";
 		  if (vReturnType != "") {
-		  	vReturnType = ":"+vReturnType;
+		  	vReturnType = "`"+vReturnType."``";
 		  	vReturnTypeComment = "\n* Return Type: "+vReturnType
 		  };
     	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnType+"";
     	  vOutput += vParameterComment+vReturnTypeComment;
-    	  vOutput += "\n* Visibility: "+ vAccess;
+    	  vOutput += "\n* Visibility: `"+ vAccess+"`";
    		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";
    		} else {
 		  //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
 		}
-    }    
+    }
   } else {
     console.log("ERROR: getDoc4Class('"+vClass+"') Class does not exist");
     vOutput = "// ERROR: Documentation for Class '"+vClass+"' does not exist"

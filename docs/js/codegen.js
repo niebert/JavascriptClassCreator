@@ -114,7 +114,7 @@ function getDoc4Class(pClass) {
 		  var vParameter = vClassJS["MethodParameter"][vID];
 		  var vParameterComment = "";
 		  if (vParameter != "") {
-		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")
+		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")+"`";
 		  };
 		  var vReturnTypeComment = "";
       var vReturnInsert = "";
@@ -123,9 +123,9 @@ function getDoc4Class(pClass) {
         vReturnInsert = ":"+vReturnType;
 		  };
     	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnInsert+"";
-    	  vOutput += vParameterComment ;
+    	  vOutput += vParameterComment + vReturnTypeComment;
     	  vOutput += "\n* Visibility: `"+ vAccess+"`";
-   		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";
+   		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")";
    		} else {
 		  //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
 		}

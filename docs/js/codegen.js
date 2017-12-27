@@ -123,7 +123,7 @@ function getDoc4Class(pClass) {
         vReturnInsert = ":"+vReturnType;
 		  };
     	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnInsert+"";
-    	  vOutput += vParameterComment+vReturnTypeComment;
+    	  vOutput += vParameterComment ;
     	  vOutput += "\n* Visibility: `"+ vAccess+"`";
    		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";
    		} else {

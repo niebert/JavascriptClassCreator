@@ -85,7 +85,7 @@ function getDoc4Class(pClass) {
     vOutput += "\nFile: `js/"+vClass.toLowerCase()+".js`";
     vOutput += "\n";
     // DOC Attributes
-    vOutput += "\n### Attributes: `"+ pClass+"``";
+    vOutput += "\n### Attributes: `"+ pClass+"`";
     var vAttribArray    = getAttribNameArrayJSON(vClass);
   	var vClassJS = getClassJSON(vClass);
 	var vAttribDef = "";

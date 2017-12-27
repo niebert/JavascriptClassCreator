@@ -118,10 +118,10 @@ function getDoc4Class(pClass) {
 		  };
 		  var vReturnTypeComment = "`";
 		  if (vReturnType != "") {
-		  	vReturnType = "`"+vReturnType."``";
-		  	vReturnTypeComment = "\n* Return Type: "+vReturnType
+		  	vReturnType = vReturnType;
+		  	vReturnTypeComment = "\n* Return Type: `"+vReturnType+"`"
 		  };
-    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnType+"";
+    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+"):"+vReturnType+"";
     	  vOutput += vParameterComment+vReturnTypeComment;
     	  vOutput += "\n* Visibility: `"+ vAccess+"`";
    		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";

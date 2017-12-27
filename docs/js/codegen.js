@@ -116,12 +116,13 @@ function getDoc4Class(pClass) {
 		  if (vParameter != "") {
 		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")
 		  };
-		  var vReturnTypeComment = "`";
+		  var vReturnTypeComment = "";
+      var vReturnInsert = "";
 		  if (vReturnType != "") {
-		  	vReturnType = vReturnType;
 		  	vReturnTypeComment = "\n* Return Type: `"+vReturnType+"`"
+        vReturnInsert = ":"+vReturnType;
 		  };
-    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+"):"+vReturnType+"";
+    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnInsert+"";
     	  vOutput += vParameterComment+vReturnTypeComment;
     	  vOutput += "\n* Visibility: `"+ vAccess+"`";
    		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")"+vReturnType+" ";

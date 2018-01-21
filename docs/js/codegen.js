@@ -88,11 +88,11 @@ function getDoc4Class(pClass) {
     vOutput += "\n### Attributes: `"+ pClass+"`";
     var vAttribArray    = getAttribNameArrayJSON(vClass);
   	var vClassJS = getClassJSON(vClass);
-	var vAttribDef = "";
-	var vAtts = "";
+	  var vAttribDef = "";
+	  var vAtts = "";
   	var vID = "";
   	for (var i=0; i<vAttribArray.length; i++) {
-   		 vOutput += "\n";
+   		vOutput += "\n";
     	//alert(vAttribArray[i]);
     	vID = vAttribArray[i];
     	var vAccess = vClassJS["AttribAccess"][vID] || "public";
@@ -102,34 +102,35 @@ function getDoc4Class(pClass) {
     	vOutput += "\n* Comment: "+ vClassJS["AttribComment"][vID];
   	};
     // DOC Methods
- 	var vMethodArray = getMethodArray();
- 	vOutput += "\n";
+ 	  var vMethodArray = getMethodArray();
+ 	  vOutput += "\n";
     vOutput += "\n### Methods: `"+ pClass+"`";
     for (var i=0; i<vMethodArray.length; i++) {
- 		if (isMethod(vMethodArray[i]) == true) {
-		 vOutput += "\n";
-    	  vID = getMethodName(vMethodArray[i]);
-		  var vAccess = vClassJS["MethodAccess"][vID] || "public";
-		  var vReturnType = vClassJS["MethodReturn"][vID];
-		  var vParameter = vClassJS["MethodParameter"][vID];
-		  var vParameterComment = "";
-		  if (vParameter != "") {
-		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")+"`";
-		  };
-		  var vReturnTypeComment = "";
-      var vReturnInsert = "";
-		  if (vReturnType != "") {
-		  	vReturnTypeComment = "\n* Return Type: `"+vReturnType+"`"
-        vReturnInsert = ":"+vReturnType;
-		  };
-    	  vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnInsert+"";
-    	  vOutput += vParameterComment + vReturnTypeComment;
-    	  vOutput += "\n* Visibility: `"+ vAccess+"`";
-   		  vOutput += "\n"+vClassJS["MethodComment"][vID]+")";
-   		} else {
-		  //alert("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
-		}
-    }
+      if (isMethod(vMethodArray[i]) == true) {
+  		    vOutput += "\n";
+      	  vID = getMethodName(vMethodArray[i]);
+  		    var vAccess = vClassJS["MethodAccess"][vID] || "public";
+          var vReturnType = vClassJS["MethodReturn"][vID];
+    		  var vParameter = vClassJS["MethodParameter"][vID];
+    		  var vParameterComment = "";
+    		  if (vParameter != "") {
+    		  	ParameterComment = "\n* Parameter: `" + vParameter.split(",").join("\n* Parameter: `")+"`";
+    		  };
+    		  var vReturnTypeComment = "";
+          var vReturnInsert = "";
+    		  if (vReturnType != "") {
+    		  	vReturnTypeComment = "\n* Return Type: `"+vReturnType+"`"
+            vReturnInsert = ":"+vReturnType;
+    		  };
+        	vOutput += "\n#### "+ vID +"("+vClassJS["MethodParameter"][vID]+")"+vReturnInsert+"";
+          // append the ReturnType in Docu, e.g. vReturnTypeComment = "Return: String"
+        	vOutput += vParameterComment + vReturnTypeComment;
+        	vOutput += "\n* Visibility: `"+ vAccess+"`";
+       		vOutput += "\n"+vClassJS["MethodComment"][vID]+"";
+       	} else {
+    		  console.log("ERROR: Method definition error!\n No opening bracket!\n"+vMethodArray[i]);
+    		};
+    };
   } else {
     console.log("ERROR: getDoc4Class('"+vClass+"') Class does not exist");
     vOutput = "// ERROR: Documentation for Class '"+vClass+"' does not exist"

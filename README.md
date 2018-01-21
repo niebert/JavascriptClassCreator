@@ -162,7 +162,7 @@ will be replaced by the title of the HTML page. In general markers that are repl
 
 The notation with 3 underscores before an after the uppercase identifier is used, because it creates less conflict with other programming languages and the programming infrastructure of the JavaScriptClassCreator can be extended to other languages as well.
 
-Refactoring: HandleBars will be used as new template engine.
+**Refactoring:** [HandleBars](http://handlebarsjs.com/installation.html) will be used as new template engine.
 
 ### Pages (Parent: FileHTML)
 Pages are sections in HTML files that are shown separately with JQuery in the WebApp. In general the user will perceive switching from page to an other page like following from one HTML page to an other HTML page. From the programming site we have to distinguish `pages` and `html-files` because the browser will not leave the HTML-page, when an other pages is displayed. For `pages` the previous page is hidden and the new page is shown by application of `JQuery`. Pages must have a unique ID `PAGE_ID`, so that single pages can be addressed by JQuery via `hide()` and `show()`.

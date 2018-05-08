@@ -44,6 +44,7 @@
    var vWinUML = null; // window, where the UML diagram is displayed, necessary for communication between windows.
    var vWinCompress = null; // window, that is opened for the code compressor,  necessary for exchanging code between windows.
    </script>
+   <script language="javascript" src="db/uml_default.js"></script>
    <!-- Load Schema for JSON Editor-->
    <script language="javascript" src="plugins/dbedit/schema/class_schema.js"></script>
    <script language="javascript" src="plugins/dbedit/schema/globallibs_schema.js"></script>
@@ -492,6 +493,7 @@
 
             <input name="bCreatorDocButton" value="Doc" onclick="createDoc4Class()" type="button">
             <input name="bCreatorButton" value=" Create JS " onclick="createCode4Class()" type="button">
+            <input name="bCreatorUMLButton" value=" Create UML " onclick="createUML4Class()" type="button">
             <!--
             <input name="bCompressButton" value=" Compress " onclick="compressCode4Class()" type="button">
            -->

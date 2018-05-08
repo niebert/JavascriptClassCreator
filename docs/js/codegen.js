@@ -23,8 +23,88 @@ function createDoc4Class(pClass) {
   //};
 };
 
+function createUML4Class(pClass) {
+  // called when user presses [Create JS]
+  var vClass = pClass || getSelectedClassID();
+  console.log("createUML4Class() '"+vClass+"'");
+  var vUML = getDefaultUML(vClass);
+  var c = getClassJSON(vClass);
+  checkClassJSON(c);
+  var u = vUML.data;
+  u.classname = vClass;
+  u.superclassname = c.tSuperClassname;
+  u.reposinfo.repository += vClass;
+  u.reposinfo.author = c.tAuthor;
+  u.reposinfo.email = c.tEMail;
+  u.reposinfo.created = c.init_date;
+  u.reposinfo.modified = c.mod_date;
+  var vLibs = {};
+  var cl = vUML.settings.localclasslist;
+  for (var i = 0; i < cl.length; i++) {
+    vLibs[cl[i]] = cl[i];
+  };
+  vLibs[u.superclassname] = u.superclassname;
+  for (var key in c.AttribDefault) {
+    if (c.AttribDefault.hasOwnProperty(key)) {
+      u.attributes.push({
+        "name" : key,
+        "visibility": "public",
+        "init" : c.AttribDefault[key],
+        "class" : c.AttribType[key],
+        "comment": c.AttribComment[key]
+      });
+    };
+    if (c.AttribType[key] != "") {
+      vLibs[c.AttribType[key]] = c.AttribType[key];
+    };
+  };
+  var par = [];
+  for (var key in c.MethodCode) {
+    if (c.MethodCode.hasOwnProperty(key)) {
+      par = [];
+      var p = c.MethodParameter[key];
+      var p_split = p.split(",");
+      for (var i = 0; i < p_split.length; i++) {
+        var pvar = p_split[i].split(":");
+        par.push({
+          "name" : pvar[0],
+          "class" : pvar[1],
+          "comment" : "parameter '"+pvar[0]+"' stores ..."
+        })
+      };
+      u.methods.push({
+        "name" : key,
+        "visibility" : "public",
+        "return" : c.MethodReturn[key],
+        "code" : c.MethodCode[key],
+        "comment": c.MethodComment[key],
+        "parameter": par
+      });
+      if (c.MethodReturn[key] != "") {
+        vLibs[c.MethodReturn[key]] = c.MethodReturn[key];
+      };
+    };
+  };
+  var vLibArr = [];
+  for (var lib in vLibs) {
+    if (vLibs.hasOwnProperty(lib)) {
+      vLibArr.push(lib);
+    };
+  };
+  vUML.settings.localclasslist = vLibArr;
+  var vContent = JSON.stringify(vUML,null,4);
+  var vFileName = vClass.toLowerCase()+"_uml.json";
+  write2editor("Output",vContent);
+  saveFile2HDD(vFileName,vContent)
+  //if (getCheckBox("checkCompressCode")) {
+  //  console.log("Open Compressor Window and compress class '"+pClass+"'");
+  //  compressCode4Class();
+  //};
+};
 
-
+function getDefaultUML () {
+  return cloneJSON(vDataJSON["uml_default"]);
+}
 
 function compressCode4ClassWindow() {
   console.log("compressCode4Class() not used in JSCC");
